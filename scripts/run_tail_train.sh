@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 # Short native two-block experiment with an explicitly split execution path.
 set -euo pipefail
-[[ $# -eq 2 ]] || { echo "Usage: $0 OUTPUT MODEL" >&2; exit 2; }
+[[ $# -ge 2 && $# -le 3 ]] || { echo "Usage: $0 OUTPUT MODEL [PRIOR_RESULTS]" >&2; exit 2; }
 run_out=$1
 source_model=$2
+continuation=()
+steps=128
+eval_every=8
+if [[ $# -eq 3 ]]; then
+  continuation=(--initial-tail "$3/native_tail.pt" --prior-results "$3"
+    --early-eval-steps 8 32 128 --max-training-seconds 1050)
+  steps=4096
+  eval_every=128
+fi
 source_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 export PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false
 export TORCHINDUCTOR_COMPILE_THREADS=${TORCHINDUCTOR_COMPILE_THREADS:-4}
@@ -20,4 +29,5 @@ python -m watching.family_data --task probe \
   --out "$run_out/data.json" --tokenizer "$source_model" --max-length 96
 python -m watching.tail_train --checkpoint "$source_model" --data "$run_out/data.json" \
   --out "$run_out/fit" --probe-layer 14 --tail-layers 2 --train-prompts 16 \
-  --validation-prompts 8 --test-prompts 32 --steps 128 --eval-every 8 --lr 5e-6 --length 96
+  --validation-prompts 8 --test-prompts 32 --steps "$steps" --eval-every "$eval_every" \
+  --lr 5e-6 --length 96 "${continuation[@]}"

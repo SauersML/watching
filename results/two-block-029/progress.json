@@ -1,0 +1,2176 @@
+{
+  "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit",
+  "manifest": {
+    "checkpoint": "Qwen/Qwen3-8B",
+    "data": "/workspace/runs/watching-two-block-029r/mpd-data/runpod/watching-two-block-029r/out/data.json",
+    "out": "/workspace/runs/watching-two-block-029r/mpd-data/runpod/watching-two-block-029r/out/fit",
+    "probe_layer": 14,
+    "tail_layers": 2,
+    "train_prompts": 16,
+    "validation_prompts": 8,
+    "test_prompts": 32,
+    "test_split": null,
+    "steps": 128,
+    "eval_every": 8,
+    "lr": 5e-06,
+    "length": 96,
+    "seed": 20261017,
+    "condition": "probe",
+    "answer_order": [
+      "No",
+      "Yes"
+    ],
+    "labels": {
+      "No": 2753,
+      "Yes": 9454
+    },
+    "model_commit": null,
+    "torch": "2.10.0+cu128",
+    "gpu": "NVIDIA L40S",
+    "updated_blocks": [
+      34,
+      35
+    ],
+    "active_parameters": 385896960,
+    "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
+    "primary_path": "split_inference",
+    "stock_runtime_parity_claimed": false,
+    "output_head_updated": false,
+    "new_classifier": false,
+    "objective": "balanced paired full-vocabulary cross entropy",
+    "optimizer": "FP32-master AdamW, separate condition gradients accumulated in FP32, zero decay, gradient norm clip1",
+    "test_source_split": "test_wording",
+    "test_evaluated_only_after_training": true,
+    "selection": "fixed step count; reporting validation does not select checkpoints",
+    "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+    "data_sha256": "9321889d38cc5b070844a7a3692811f86e0c70905e7e4d5fbe790f8fab07b755",
+    "source_sha256": "7ea4762c3ae4f7f862226bcb9f4d4b9daa609e39d98633dc95b7aa7d1fde5c93"
+  },
+  "data_sha256": "131e4675108b44be3e327695ee858887fea0e869fc379cc51f074572cfc2e14b",
+  "identity_scope": "Every checkpoint must contain the same complete prompt-index set, mapped to saved data.json; optional row identity fields are checked. Score files do not contain independently verifiable per-step token hashes.",
+  "intervals": "5000 whole-prompt paired bootstrap resamples; pointwise 95% intervals; conditional on these prompts and this single run, not training-seed uncertainty.",
+  "status": "complete",
+  "curves": {
+    "train": {
+      "n_prompts": 16,
+      "points": [
+        {
+          "step": 0,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_0_split_inference.json",
+          "source_sha256": "16b1338f81fd9a321360ceed20cc270ecc2a41b15761b7c95407da0252b47fa9",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.09375,
+              "ci95": [
+                -0.1640625,
+                -0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49771640755294044,
+              "ci95": [
+                0.49381922344585444,
+                0.4999281907462313
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.09375,
+              "ci95": [
+                -0.1640625,
+                -0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49771640755294044,
+              "ci95": [
+                0.49381922344585444,
+                0.4999281907462313
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 8,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_8_split_inference.json",
+          "source_sha256": "be0fcfb96ca46252cf7338e9c5ec3e05329b6eb5bcf98a48807a60d7a77e3b3c",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.0625,
+              "ci95": [
+                -0.125,
+                0.0
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49147413963080533,
+              "ci95": [
+                0.4828893366710858,
+                0.4979708712558022
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.0625,
+              "ci95": [
+                -0.125,
+                0.0
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49147413963080533,
+              "ci95": [
+                0.4828893366710858,
+                0.4979708712558022
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 16,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_16_split_inference.json",
+          "source_sha256": "e5f8f17bd457281ab18c566270aa3e1d5c6854e472ff07a8056771fc9d737b87",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.0390625,
+                0.0390625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4787510961177759,
+              "ci95": [
+                0.4666201507207006,
+                0.4897060271468945
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.0390625,
+                0.0390625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4787510961177759,
+              "ci95": [
+                0.4666201507207006,
+                0.4897060271468945
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 24,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_24_split_inference.json",
+          "source_sha256": "71a015befed80c17854aa0c772b98a9c93cfe3413691f89d7b12e1c5f14b902a",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.03125,
+              "ci95": [
+                -0.078125,
+                0.015625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4879759870527778,
+              "ci95": [
+                0.48003856165451,
+                0.494953298533801
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.03125,
+              "ci95": [
+                -0.078125,
+                0.015625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4879759870527778,
+              "ci95": [
+                0.48003856165451,
+                0.494953298533801
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 32,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_32_split_inference.json",
+          "source_sha256": "744632519295ac5611e8bd0574e0c27767c1f73617340e85e4b497d44d06c2b8",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0078125,
+              "ci95": [
+                -0.0390625,
+                0.0546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49361905024852604,
+              "ci95": [
+                0.48979223042260855,
+                0.49718044977635145
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0078125,
+              "ci95": [
+                -0.0390625,
+                0.0546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49361905024852604,
+              "ci95": [
+                0.48979223042260855,
+                0.49718044977635145
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 40,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_40_split_inference.json",
+          "source_sha256": "241841822ec65e62ab36f1ad11dd90d6853e02e74051dcb82f72e2ddabfac977",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.0390625,
+              "ci95": [
+                -0.078125,
+                0.0078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4913642720784992,
+              "ci95": [
+                0.48582053068093956,
+                0.4968697016593069
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.0390625,
+              "ci95": [
+                -0.078125,
+                0.0078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4913642720784992,
+              "ci95": [
+                0.48582053068093956,
+                0.4968697016593069
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 48,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_48_split_inference.json",
+          "source_sha256": "e91c40f56b2aeaa2d04b3660d445f2f9cc409ffac821682d3d71938fbd9745f4",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.03125,
+              "ci95": [
+                -0.0078125,
+                0.0703125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.499836431350559,
+              "ci95": [
+                0.4945303392596543,
+                0.5050440072081983
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.03125,
+              "ci95": [
+                -0.0078125,
+                0.0703125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.499836431350559,
+              "ci95": [
+                0.4945303392596543,
+                0.5050440072081983
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 56,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_56_split_inference.json",
+          "source_sha256": "caec533ff3391cc329a7d95baaec284b48ce9d53eccf540fc6e14da056d905e0",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.03125,
+              "ci95": [
+                -0.0546875,
+                -0.0078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4949111011810601,
+              "ci95": [
+                0.4922371655702591,
+                0.4972339062951505
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.03125,
+              "ci95": [
+                -0.0546875,
+                -0.0078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4949111011810601,
+              "ci95": [
+                0.4922371655702591,
+                0.4972339062951505
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 64,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_64_split_inference.json",
+          "source_sha256": "a01eb31b1d4e6225bfb8279862e1a95e3e8e5357c72a06d3132e038b6d87b778",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 15,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.0625,
+                0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4964730264618993,
+              "ci95": [
+                0.4912205310538411,
+                0.5018278518691659
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.46875,
+              "ci95": [
+                0.40625,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.0625,
+                0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4964730264618993,
+              "ci95": [
+                0.4912205310538411,
+                0.5018278518691659
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.46875,
+              "ci95": [
+                0.40625,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 72,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_72_split_inference.json",
+          "source_sha256": "d1ca2a183d3dc115f19f6a7dc0f1e05eb86c3767b3779b9f388da67cf50cf846",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0234375,
+              "ci95": [
+                0.0,
+                0.046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.501194451469928,
+              "ci95": [
+                0.4990407107397914,
+                0.5038893180899322
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0234375,
+              "ci95": [
+                0.0,
+                0.046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.501194451469928,
+              "ci95": [
+                0.4990407107397914,
+                0.5038893180899322
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 80,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_80_split_inference.json",
+          "source_sha256": "d8f9d1abe45d94a215cae5ab133beff7300714298138d1e756772e899cc79b91",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0078125,
+              "ci95": [
+                -0.0546875,
+                0.0546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5000099753960967,
+              "ci95": [
+                0.49260039906948805,
+                0.5060519576072693
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0078125,
+              "ci95": [
+                -0.0546875,
+                0.0546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5000099753960967,
+              "ci95": [
+                0.49260039906948805,
+                0.5060519576072693
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 88,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_88_split_inference.json",
+          "source_sha256": "04dc3f1afdb6dbd8ecc552d7d8eb6884e5db82ad257b96dad381cc03f238a9c5",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.046875,
+                0.0390625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4994809441268444,
+              "ci95": [
+                0.49373775999993086,
+                0.5043676532804966
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.046875,
+                0.0390625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4994809441268444,
+              "ci95": [
+                0.49373775999993086,
+                0.5043676532804966
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 96,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_96_split_inference.json",
+          "source_sha256": "3a9283e771f31b951dfe26a3f6c2b73ab67e530f9fb9ad32f125e2f6d0ef3243",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 15,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0234375,
+              "ci95": [
+                -0.0234375,
+                0.0703125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5022760387510061,
+              "ci95": [
+                0.49642015621066093,
+                0.5078858565539122
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.46875,
+              "ci95": [
+                0.40625,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0234375,
+              "ci95": [
+                -0.0234375,
+                0.0703125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5022760387510061,
+              "ci95": [
+                0.49642015621066093,
+                0.5078858565539122
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.46875,
+              "ci95": [
+                0.40625,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 104,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_104_split_inference.json",
+          "source_sha256": "8f2c9dd4a02d04ab71e6e98eccfb3890e81753cb83ebd06bab26b3794e1abcb3",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 16,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.046875,
+              "ci95": [
+                0.0078125,
+                0.09375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5049851764924824,
+              "ci95": [
+                0.5005411352030933,
+                0.5099983559921384
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.046875,
+              "ci95": [
+                0.0078125,
+                0.09375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5049851764924824,
+              "ci95": [
+                0.5005411352030933,
+                0.5099983559921384
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 112,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_112_split_inference.json",
+          "source_sha256": "bfd5d03298e6733e1324345e055b28c9ee4cffe09aff97e8983cc3cf6304ee39",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 18,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.03125,
+              "ci95": [
+                -0.0234375,
+                0.0859375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5032363310456276,
+              "ci95": [
+                0.4965016506612301,
+                0.5098372036591172
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.4375,
+                0.6875
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.03125,
+              "ci95": [
+                -0.0234375,
+                0.0859375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5032363310456276,
+              "ci95": [
+                0.4965016506612301,
+                0.5098372036591172
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.4375,
+                0.6875
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 120,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_120_split_inference.json",
+          "source_sha256": "ed9dcda8a5097167a6999a817322339e8705e84ebf821a68e13b41bd26d2c653",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 17,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0546875,
+              "ci95": [
+                0.0,
+                0.09375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5058010732755065,
+              "ci95": [
+                0.4994220221415162,
+                0.5107141761109233
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.53125,
+              "ci95": [
+                0.5,
+                0.59375
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0546875,
+              "ci95": [
+                0.0,
+                0.09375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5058010732755065,
+              "ci95": [
+                0.4994220221415162,
+                0.5107141761109233
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.53125,
+              "ci95": [
+                0.5,
+                0.59375
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 128,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_128_split_inference.json",
+          "source_sha256": "508b745f4d7bbe9b531ee091d4c3bbcbc2c56be0cd12314bf8908913ae13bc72",
+          "n_prompts": 16,
+          "n_executions": 32,
+          "greedy_correct_count": 18,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0390625,
+              "ci95": [
+                0.015625,
+                0.0703125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5039859134703875,
+              "ci95": [
+                0.5009073363617063,
+                0.5077779917046428
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.5,
+                0.65625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0390625,
+              "ci95": [
+                0.015625,
+                0.0703125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5039859134703875,
+              "ci95": [
+                0.5009073363617063,
+                0.5077779917046428
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.5,
+                0.65625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        }
+      ]
+    },
+    "validation": {
+      "n_prompts": 8,
+      "points": [
+        {
+          "step": 0,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_0_split_inference.json",
+          "source_sha256": "f07a271dc57f54a8242d77795e4f4457026e1e19ad40aa026301c9a4a82d97b1",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.15625,
+                0.1875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5001317535207392,
+              "ci95": [
+                0.49990004053189097,
+                0.5004718439354705
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.15625,
+                0.1875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5001317535207392,
+              "ci95": [
+                0.49990004053189097,
+                0.5004718439354705
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 8,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_8_split_inference.json",
+          "source_sha256": "4efc01ad18b0bb0af14be0b4c04f4e7e41a6dfa4d128201b849ad51a6e150d7d",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.078125,
+                0.078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49634274702111725,
+              "ci95": [
+                0.4900173933310725,
+                0.5013536759033741
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.078125,
+                0.078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49634274702111725,
+              "ci95": [
+                0.4900173933310725,
+                0.5013536759033741
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 16,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_16_split_inference.json",
+          "source_sha256": "2ea91f0dbfea5b55330f2fee862abc6f020c20da91d597a2d961861464121c3c",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.0625,
+                0.0625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.48808879853459075,
+              "ci95": [
+                0.47204537654761225,
+                0.5020343369105831
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.0625,
+                0.0625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.48808879853459075,
+              "ci95": [
+                0.47204537654761225,
+                0.5020343369105831
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 24,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_24_split_inference.json",
+          "source_sha256": "2486b208fdbbf16e43620a6371784270b7f33195c0acfb93ff2966cdf9c28682",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.015625,
+              "ci95": [
+                0.0,
+                0.046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4961582957475912,
+              "ci95": [
+                0.49264522548764944,
+                0.4993622805341147
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.015625,
+              "ci95": [
+                0.0,
+                0.046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4961582957475912,
+              "ci95": [
+                0.49264522548764944,
+                0.4993622805341147
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 32,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_32_split_inference.json",
+          "source_sha256": "ffa83f798216a3600987db58c919f9dde7f77946c78c69f560373a6acd5d1bd8",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.09375,
+                0.046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4954067120561376,
+              "ci95": [
+                0.48988994921091944,
+                0.5009180437773466
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.09375,
+                0.046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4954067120561376,
+              "ci95": [
+                0.48988994921091944,
+                0.5009180437773466
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 40,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_40_split_inference.json",
+          "source_sha256": "2230bb3ff5fab55f8380ffbc59a56c38aa10d6b3b8d83ced3ba8fc8d48452ac0",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.015625,
+              "ci95": [
+                0.0,
+                0.046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4979043509811163,
+              "ci95": [
+                0.4943506419658661,
+                0.5018940512090921
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.015625,
+              "ci95": [
+                0.0,
+                0.046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4979043509811163,
+              "ci95": [
+                0.4943506419658661,
+                0.5018940512090921
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 48,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_48_split_inference.json",
+          "source_sha256": "63472b0de1d5ee5b8205b1550a96557d25eb7f5343cfd9ebb083e17eb3af7ac3",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.0625,
+                0.0625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49746951228007674,
+              "ci95": [
+                0.4906836710870266,
+                0.5045449039898813
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.0625,
+                0.0625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49746951228007674,
+              "ci95": [
+                0.4906836710870266,
+                0.5045449039898813
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 56,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_56_split_inference.json",
+          "source_sha256": "f3cace9400390db8030daf422bff58b6aab19171f83b2d55735ffa723feda17e",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.046875,
+              "ci95": [
+                -0.015625,
+                0.109375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5023239871952683,
+              "ci95": [
+                0.49617049586959183,
+                0.5075322531629354
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.046875,
+              "ci95": [
+                -0.015625,
+                0.109375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5023239871952683,
+              "ci95": [
+                0.49617049586959183,
+                0.5075322531629354
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 64,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_64_split_inference.json",
+          "source_sha256": "20fe6c45871a2f939e13beed7b0b9e603926a1d14094bf299960c31ce8db4dea",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.0625,
+                0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49717849865555763,
+              "ci95": [
+                0.4921032218262553,
+                0.5019536400213838
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.0625,
+                0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49717849865555763,
+              "ci95": [
+                0.4921032218262553,
+                0.5019536400213838
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 72,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_72_split_inference.json",
+          "source_sha256": "02fc84c24a75768a20fdee497f9859c47f2f84fdc6277c51b17374db519a07f8",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.0625,
+                0.0625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49787323968485,
+              "ci95": [
+                0.49231185484677553,
+                0.5031033637933433
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.0625,
+                0.0625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49787323968485,
+              "ci95": [
+                0.49231185484677553,
+                0.5031033637933433
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 80,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_80_split_inference.json",
+          "source_sha256": "dd677c03477a7493f659f41bd1bc70bf38d588023d4620c20020b4d3394c9dfa",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.0625,
+                0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49828264117240906,
+              "ci95": [
+                0.49300690554082394,
+                0.5039706770330667
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.0625,
+                0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49828264117240906,
+              "ci95": [
+                0.49300690554082394,
+                0.5039706770330667
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 88,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_88_split_inference.json",
+          "source_sha256": "bdd9e6bf008c139937dd2f80de39f43a4443095e889b955f7bbabe0187085ede",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 9,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.109375,
+                0.078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.498070833273232,
+              "ci95": [
+                0.48699654173105955,
+                0.5094335386529565
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.5,
+                0.6875
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.109375,
+                0.078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.498070833273232,
+              "ci95": [
+                0.48699654173105955,
+                0.5094335386529565
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.5,
+                0.6875
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 96,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_96_split_inference.json",
+          "source_sha256": "705e6735b545312acf8f0f4e2928f8b952ede8ff5e01901693729ff5aaf41372",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.046875,
+                0.0
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4977516196668148,
+              "ci95": [
+                0.4940373878926039,
+                0.4997197277843952
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.046875,
+                0.0
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4977516196668148,
+              "ci95": [
+                0.4940373878926039,
+                0.4997197277843952
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 104,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_104_split_inference.json",
+          "source_sha256": "53cab14b7babaed63e0e5ac563a2b5192df42358f4c17e1f9b9c4102f84e18f7",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.046875,
+              "ci95": [
+                0.015625,
+                0.09375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5038024559617043,
+              "ci95": [
+                0.5005665346980095,
+                0.5076132118701935
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.046875,
+              "ci95": [
+                0.015625,
+                0.09375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5038024559617043,
+              "ci95": [
+                0.5005665346980095,
+                0.5076132118701935
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 112,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_112_split_inference.json",
+          "source_sha256": "bc588130342b37ca7d3e07061bf4d90e600771eaf1a080fa04ae366138bf711e",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0625,
+              "ci95": [
+                0.015625,
+                0.109375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5063863955438137,
+              "ci95": [
+                0.5012499839067459,
+                0.5115173775702715
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0625,
+              "ci95": [
+                0.015625,
+                0.109375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5063863955438137,
+              "ci95": [
+                0.5012499839067459,
+                0.5115173775702715
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 120,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_120_split_inference.json",
+          "source_sha256": "88c91f65db9108e1c8d3a9d94b3126f0cfe6642f65c78040c236d826b75de305",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.015625,
+              "ci95": [
+                -0.03125,
+                0.0625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5012045707553625,
+              "ci95": [
+                0.49552416056394577,
+                0.5067210402339697
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.015625,
+              "ci95": [
+                -0.03125,
+                0.0625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5012045707553625,
+              "ci95": [
+                0.49552416056394577,
+                0.5067210402339697
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 128,
+          "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_128_split_inference.json",
+          "source_sha256": "9df6dc83358b951d41e37fa89b738c3ac9bb6f9d8c0f3df90a0f1d0dcfc74034",
+          "n_prompts": 8,
+          "n_executions": 16,
+          "greedy_correct_count": 8,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.03125,
+              "ci95": [
+                -0.03125,
+                0.078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5028055589646101,
+              "ci95": [
+                0.49584645591676235,
+                0.5091319642961025
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.03125,
+              "ci95": [
+                -0.03125,
+                0.078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5028055589646101,
+              "ci95": [
+                0.49584645591676235,
+                0.5091319642961025
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        }
+      ]
+    }
+  },
+  "wholegraph_transfer": {
+    "train": {
+      "step": 128,
+      "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/train_128_wholegraph_transfer.json",
+      "source_sha256": "da5a2c2b923d49d149eb78dd86c815449b482066d2337ce13b43ac5485c590f1",
+      "n_prompts": 16,
+      "n_executions": 32,
+      "greedy_correct_count": 16,
+      "prompt_bootstrap": {
+        "separation": {
+          "mean": 0.03125,
+          "ci95": [
+            -0.015625,
+            0.078125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5032183611765504,
+          "ci95": [
+            0.497635954990983,
+            0.5087828170508146
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.40625,
+            0.59375
+          ]
+        }
+      },
+      "displayed": {
+        "separation": {
+          "mean": 0.03125,
+          "ci95": [
+            -0.015625,
+            0.078125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5032183611765504,
+          "ci95": [
+            0.497635954990983,
+            0.5087828170508146
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.40625,
+            0.59375
+          ]
+        }
+      },
+      "resampling_unit": "whole paired prompt",
+      "bootstrap_draws": 5000,
+      "bootstrap_seed": 20261016
+    },
+    "validation": {
+      "step": 128,
+      "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/validation_128_wholegraph_transfer.json",
+      "source_sha256": "f00b031edbd853d247d26be87ef88c2e71e27fdd3a8da6f472160484ed6da0cc",
+      "n_prompts": 8,
+      "n_executions": 16,
+      "greedy_correct_count": 8,
+      "prompt_bootstrap": {
+        "separation": {
+          "mean": 0.015625,
+          "ci95": [
+            -0.03125,
+            0.0625
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5008108261972666,
+          "ci95": [
+            0.4955573230981827,
+            0.5062262490391731
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      "displayed": {
+        "separation": {
+          "mean": 0.015625,
+          "ci95": [
+            -0.03125,
+            0.0625
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5008108261972666,
+          "ci95": [
+            0.4955573230981827,
+            0.5062262490391731
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      "resampling_unit": "whole paired prompt",
+      "bootstrap_draws": 5000,
+      "bootstrap_seed": 20261016
+    },
+    "test": {
+      "step": 128,
+      "source": "/Users/user/mpd-data/runpod/watching-two-block-029r/out/fit/test_128_wholegraph_transfer.json",
+      "source_sha256": "75f9985ade298cd3de6ccc2368195d9803b552a9f9f463031e9ff26b5c2cf4e1",
+      "n_prompts": 32,
+      "n_executions": 64,
+      "greedy_correct_count": 32,
+      "prompt_bootstrap": {
+        "separation": {
+          "mean": 0.0,
+          "ci95": [
+            -0.03125,
+            0.03125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.4990629981039092,
+          "ci95": [
+            0.49528977181762457,
+            0.5028852852992713
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.4375,
+            0.5625
+          ]
+        }
+      },
+      "displayed": {
+        "separation": {
+          "mean": 0.0,
+          "ci95": [
+            -0.03125,
+            0.03125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.4990629981039092,
+          "ci95": [
+            0.49528977181762457,
+            0.5028852852992713
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.4375,
+            0.5625
+          ]
+        }
+      },
+      "resampling_unit": "whole paired prompt",
+      "bootstrap_draws": 5000,
+      "bootstrap_seed": 20261016
+    }
+  }
+}

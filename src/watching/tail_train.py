@@ -200,11 +200,134 @@ def summarize(rows, seed):
     }
 
 
+def file_digest(path):
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for block in iter(lambda: stream.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def validate_initial_tail(artifact, tail, *, checkpoint, model_commit, head_sha256):
+    """Validate every tensor before loading anything into the learner."""
+    if not isinstance(artifact, dict) or artifact.get("version") != 1:
+        raise ValueError("Unsupported native-tail artifact version")
+    if artifact.get("checkpoint") != checkpoint or artifact.get("first_layer") != tail.first_layer:
+        raise ValueError("Native-tail checkpoint or first layer does not match")
+    saved_commit = artifact.get("model_commit")
+    if saved_commit is not None and saved_commit != model_commit:
+        raise ValueError("Native-tail model commit does not match")
+    if artifact.get("head_sha256") != head_sha256:
+        raise ValueError("Native-tail artifact names a different frozen output head")
+    for name, current in (("layers", tail.layers.state_dict()), ("norm", tail.norm.state_dict())):
+        saved = artifact.get(name)
+        if not isinstance(saved, dict) or set(saved) != set(current):
+            raise ValueError(f"Native-tail {name} keys do not match")
+        for key, expected in current.items():
+            value = saved[key]
+            if (
+                not isinstance(value, torch.Tensor)
+                or value.shape != expected.shape
+                or value.dtype != expected.dtype
+                or not torch.isfinite(value).all()
+            ):
+                raise ValueError(
+                    f"Invalid native-tail tensor {name}.{key}: shape, dtype, or values"
+                )
+
+
+def context_key(record):
+    for key in ("context_id", "context", "text"):
+        if key in record:
+            return record[key]
+    raise ValueError("Record has no context identity")
+
+
+def continuation_records(
+    raw, prior_data, prior_manifest, *, train_count, validation_count, test_count, test_split, seed
+):
+    """Reuse practiced records exactly and exclude every previously tested context."""
+    data = {}
+    for split, expected_count in (("train", train_count), ("validation", validation_count)):
+        previous = prior_data[split]
+        if len(previous) != expected_count:
+            raise ValueError("Continuation must retain the prior train/reporting prompt counts")
+        indexed = {context_key(record): record for record in raw[split]}
+        if len(indexed) != len(raw[split]):
+            raise ValueError("Current source data contains duplicate context identities")
+        for record in previous:
+            key = context_key(record)
+            without_index = {k: v for k, v in record.items() if k != "source_index"}
+            if key not in indexed or without_index != {
+                k: v for k, v in indexed[key].items() if k != "source_index"
+            }:
+                raise ValueError(
+                    "Prior practiced context or question differs from current source data"
+                )
+        data[split] = copy.deepcopy(previous)
+    excluded = set(prior_manifest.get("excluded_test_context_ids", []))
+    excluded.update(context_key(record) for record in prior_data["test"])
+    eligible = [
+        (index, record)
+        for index, record in enumerate(raw[test_split])
+        if context_key(record) not in excluded
+    ]
+    chosen = stratified_records([record for _, record in eligible], test_count, seed)
+    for record in chosen:
+        record["source_index"] = eligible[record["source_index"]][0]
+    data["test"] = chosen
+    return data, sorted(excluded)
+
+
+def compare_prior_rows(current, previous):
+    """Describe a restart discrepancy; do not disguise it as additional learning."""
+
+    def keyed(rows):
+        result = {(r["index"], r["capture"]): r for r in rows}
+        if len(result) != len(rows):
+            raise ValueError("Duplicate prompt/condition score rows")
+        return result
+
+    now, before = keyed(current), keyed(previous)
+    if set(now) != set(before):
+        raise ValueError("Restart comparison requires matching prompt/condition rows")
+    report = {}
+    for field in ("yes_minus_no", "logp_yes", "logp_no", "ce", "full_vocab_correct_probability"):
+        deltas = [float(now[key][field]) - float(before[key][field]) for key in sorted(now)]
+        if not all(math.isfinite(value) for value in deltas):
+            raise ValueError("Nonfinite restart comparison")
+        report[field] = {
+            "exactly_equal": all(value == 0 for value in deltas),
+            "fraction_different": sum(value != 0 for value in deltas) / len(deltas),
+            "mean_difference": sum(deltas) / len(deltas),
+            "max_abs_difference": max(abs(value) for value in deltas),
+        }
+    return report
+
+
+def state_fingerprint(state):
+    return {
+        name: None
+        if tensor is None
+        else {
+            "sha256": tensor_digest(tensor),
+            "shape": list(tensor.shape),
+            "dtype": str(tensor.dtype),
+            "stride": list(tensor.stride()),
+        }
+        for name, tensor in zip(("hidden", "mask", "cos", "sin"), state, strict=True)
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--initial-tail", type=Path)
+    parser.add_argument("--prior-results", type=Path)
+    parser.add_argument("--early-eval-steps", type=int, nargs="*", default=[8, 32, 128])
+    parser.add_argument("--max-training-seconds", type=float, default=0)
     parser.add_argument("--probe-layer", type=int, default=14)
     parser.add_argument("--tail-layers", type=int, default=2)
     parser.add_argument("--train-prompts", type=int, default=16)
@@ -223,6 +346,16 @@ def main():
         or not 0 < args.lr < 1
     ):
         parser.error("Invalid steps, evaluation interval, length, or learning rate")
+    if bool(args.initial_tail) != bool(args.prior_results):
+        parser.error("--initial-tail and --prior-results must be supplied together")
+    if (
+        any(step < 1 for step in args.early_eval_steps)
+        or args.max_training_seconds < 0
+        or not math.isfinite(args.max_training_seconds)
+    ):
+        parser.error(
+            "Early evaluation steps must be positive and the time limit finite/nonnegative"
+        )
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is required for the native compiled source")
     args.out.mkdir(parents=True, exist_ok=True)
@@ -231,8 +364,11 @@ def main():
     torch.manual_seed(args.seed)
     torch.set_num_threads(4)
     started = time.monotonic()
+    starting_global_step = 0
 
     def emit(event, **fields):
+        if "step" in fields:
+            fields.setdefault("global_step", starting_global_step + fields["step"])
         item = {"event": event, "seconds": time.monotonic() - started, **fields}
         line = json.dumps(item, allow_nan=False)
         print(line, flush=True)
@@ -241,20 +377,52 @@ def main():
 
     raw = json.loads(args.data.read_text())
     test_split = args.test_split or ("test_wording" if "test_wording" in raw else "test")
-    data = {
-        name: stratified_records(raw[source], count, args.seed)
-        for name, source, count in (
-            ("train", "train", args.train_prompts),
-            ("validation", "validation", args.validation_prompts),
-            ("test", test_split, args.test_prompts),
+    prior_manifest = prior_data = None
+    excluded_test_context_ids = []
+    if args.prior_results:
+        prior_manifest = json.loads((args.prior_results / "manifest.json").read_text())
+        prior_data = json.loads((args.prior_results / "data.json").read_text())
+        previous_steps = prior_manifest.get("completed_steps", prior_manifest["steps"])
+        if type(previous_steps) is not int or previous_steps < 1:
+            raise ValueError("Prior run has no completed training steps")
+        starting_global_step = prior_manifest.get("starting_global_step", 0) + previous_steps
+        for split in ("train", "validation"):
+            if not (
+                args.prior_results / f"{split}_{previous_steps}_split_inference.json"
+            ).is_file():
+                raise ValueError("Prior final train/reporting evaluations are required")
+        if (
+            prior_manifest["checkpoint"] != args.checkpoint
+            or prior_manifest["probe_layer"] != args.probe_layer
+            or prior_manifest["tail_layers"] != args.tail_layers
+            or prior_manifest["length"] != args.length
+        ):
+            raise ValueError("Continuation source model, probe, tail, or input length changed")
+        data, excluded_test_context_ids = continuation_records(
+            raw,
+            prior_data,
+            prior_manifest,
+            train_count=args.train_prompts,
+            validation_count=args.validation_prompts,
+            test_count=args.test_prompts,
+            test_split=test_split,
+            seed=args.seed,
         )
-    }
+    else:
+        data = {
+            name: stratified_records(raw[source], count, args.seed)
+            for name, source, count in (
+                ("train", "train", args.train_prompts),
+                ("validation", "validation", args.validation_prompts),
+                ("test", test_split, args.test_prompts),
+            )
+        }
     if all("question_family" in r for r in data["train"] + data["test"]):
         if {r["question_family"] for r in data["train"]} & {
             r["question_family"] for r in data["test"]
         }:
             raise ValueError("Tail test must use question families absent from tail training")
-    keys = [{r.get("context_id", r["context"]) for r in rows} for rows in data.values()]
+    keys = [{context_key(r) for r in rows} for rows in data.values()]
     if any(a & b for i, a in enumerate(keys) for b in keys[i + 1 :]):
         raise ValueError("Tail train/reporting/test contexts overlap")
     write_json(args.out / "data.json", data)
@@ -316,8 +484,46 @@ def main():
     extract = torch.compile(capture_wrapper, fullgraph=True, dynamic=False)
     tail = EagerNativeTail(model, args.tail_layers)
     original_head_digest = tensor_digest(model.lm_head.weight)
+    initial_tail_sha256 = None
+    if args.initial_tail:
+        artifact = torch.load(args.initial_tail, map_location="cpu", weights_only=True)
+        validate_initial_tail(
+            artifact,
+            tail,
+            checkpoint=args.checkpoint,
+            model_commit=getattr(model.config, "_commit_hash", None),
+            head_sha256=original_head_digest,
+        )
+        if artifact.get("global_step", starting_global_step) != starting_global_step:
+            raise ValueError("Initial-tail step disagrees with prior-results training history")
+        initial_tail_sha256 = file_digest(args.initial_tail)
+        prior_weights = args.prior_results / "native_tail.pt"
+        if not prior_weights.is_file():
+            raise ValueError("Prior-results saved native_tail.pt is required for provenance")
+        if (
+            prior_weights.resolve() != args.initial_tail.resolve()
+            and file_digest(prior_weights) != initial_tail_sha256
+        ):
+            raise ValueError("Initial-tail artifact differs from prior-results saved weights")
+        # Never install learned weights into the frozen source before caching.
+        tail.layers.load_state_dict(artifact["layers"])
+        tail.norm.load_state_dict(artifact["norm"])
+        del artifact
     manifest = {
         **{k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
+        "starting_global_step": starting_global_step,
+        "completed_steps": 0,
+        "initial_tail_sha256": initial_tail_sha256,
+        "excluded_test_context_ids": excluded_test_context_ids,
+        "optimizer_state_restored": False,
+        "continuation_note": (
+            "Weights continue; Adam moments restart; frozen source is freshly compiled"
+            if args.initial_tail
+            else None
+        ),
+        "whole_vs_split_note": (
+            "On continuation this includes prior learned weights, not only runtime differences"
+        ),
         "condition": "probe",
         "answer_order": ["No", "Yes"],
         "labels": {"No": no, "Yes": yes},
@@ -394,7 +600,13 @@ def main():
             raise RuntimeError("No probe footprint survives at the frozen-source boundary")
 
     def save_evaluation(rows, step, split, path):
-        summary = {"step": step, "split": split, "path": path, **summarize(rows, args.seed)}
+        summary = {
+            "step": step,
+            "global_step": starting_global_step + step,
+            "split": split,
+            "path": path,
+            **summarize(rows, args.seed),
+        }
         write_json(args.out / f"{split}_{step}_{path}.json", {"summary": summary, "rows": rows})
         emit("evaluation", **summary)
 
@@ -419,16 +631,65 @@ def main():
                     rows.append(score(logits, index, present, no, yes))
             save_evaluation(rows, step, split, "split_inference")
 
+    def save_cache():
+        torch.save(
+            {
+                "version": 1,
+                "checkpoint": args.checkpoint,
+                "model_commit": manifest["model_commit"],
+                "cut_layer": cut,
+                "length": args.length,
+                "conditions": [False, True],
+                "states": cache,
+                "data": {s: data[s] for s in cache},
+                "batches": {s: batches[s] for s in cache},
+            },
+            args.out / "cache_states.pt",
+        )
+        write_json(
+            args.out / "cache_fingerprints.json",
+            {
+                split: [
+                    {
+                        "index": index,
+                        "context_id": context_key(data[split][index]),
+                        "positions_sha256": tensor_digest(batches[split][index]["position_ids"]),
+                        "absent": state_fingerprint(pair[0]),
+                        "present": state_fingerprint(pair[1]),
+                    }
+                    for index, pair in enumerate(pairs)
+                ]
+                for split, pairs in cache.items()
+            },
+        )
+
     for split in ("train", "validation"):
         cache_split(split)
         save_evaluation(baseline[split], 0, split, "original_wholegraph")
+    save_cache()
     audit_gradient_forward(0)
     evaluate(0, ("train", "validation"))
+    if args.prior_results:
+        comparison = {}
+        for split in ("train", "validation"):
+            previous = json.loads(
+                (args.prior_results / f"{split}_{previous_steps}_split_inference.json").read_text()
+            )
+            current = json.loads((args.out / f"{split}_0_split_inference.json").read_text())
+            comparison[split] = {
+                "prior_summary": previous["summary"],
+                "current_summary": current["summary"],
+                "differences": compare_prior_rows(current["rows"], previous["rows"]),
+            }
+            emit("continuation_comparison", split=split, step=0, **comparison[split])
+        write_json(args.out / "continuation_comparison.json", comparison)
     optimizer = PairedMasterAdam(tail.active_parameters(), args.lr)
     order = list(range(len(cache["train"])))
     rng = random.Random(args.seed)
     rng.shuffle(order)
     emit("training_start", steps=args.steps, allocated_gpu_bytes=torch.cuda.memory_allocated())
+    training_started = time.monotonic()
+    completed_steps = 0
     for step in range(1, args.steps + 1):
         if step > 1 and (step - 1) % len(order) == 0:
             rng.shuffle(order)
@@ -454,18 +715,30 @@ def main():
             gradient_norm=norm,
             actual_weight_update_l2=movement,
         )
-        if step % args.eval_every == 0 or step == args.steps:
+        completed_steps = step
+        time_limited = (
+            args.max_training_seconds > 0
+            and time.monotonic() - training_started >= args.max_training_seconds
+        )
+        if (
+            step % args.eval_every == 0
+            or step in args.early_eval_steps
+            or step == args.steps
+            or time_limited
+        ):
             audit_gradient_forward(step)
             evaluate(step, ("train", "validation"))
+        if time_limited:
+            emit("training_time_limit", step=step, requested_steps=args.steps)
+            break
     del optimizer
-    # Test inputs are first executed here, after the fixed training schedule.
-    cache_split("test")
-    evaluate(args.steps, ("test",))
     if tensor_digest(model.lm_head.weight) != original_head_digest:
         raise RuntimeError("Frozen native output head changed")
     torch.save(
         {
             "version": 1,
+            "completed_steps": completed_steps,
+            "global_step": starting_global_step + completed_steps,
             "checkpoint": args.checkpoint,
             "model_commit": manifest["model_commit"],
             "first_layer": tail.first_layer,
@@ -476,6 +749,15 @@ def main():
         },
         args.out / "native_tail.pt",
     )
+    manifest["completed_steps"] = completed_steps
+    manifest["ending_global_step"] = starting_global_step + completed_steps
+    manifest["training_status"] = "complete" if completed_steps == args.steps else "time_limited"
+    write_json(args.out / "manifest.json", manifest)
+    emit("tail_checkpoint_saved", step=completed_steps, path=str(args.out / "native_tail.pt"))
+    # New test inputs are first executed after saving the fixed/time-limited training endpoint.
+    cache_split("test")
+    save_cache()
+    evaluate(completed_steps, ("test",))
     tail.install(model)
     tail.install(observed_model)
     for split in ("train", "validation", "test"):
@@ -500,11 +782,13 @@ def main():
                 rows.append(score(logits, index, present, no, yes))
                 native_wrapper.captured = capture_wrapper.captured = []
                 capture_wrapper.boundary = None
-        save_evaluation(rows, args.steps, split, "wholegraph_transfer")
+        save_evaluation(rows, completed_steps, split, "wholegraph_transfer")
     if tensor_digest(model.lm_head.weight) != original_head_digest:
         raise RuntimeError("Output head changed during tail installation")
     emit(
         "complete",
+        step=completed_steps,
+        status=manifest["training_status"],
         tail_artifact=str(args.out / "native_tail.pt"),
         head_unchanged=True,
         frozen_source_bit_identical=True,

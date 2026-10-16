@@ -1,0 +1,46 @@
+{
+  "checkpoint": "Qwen/Qwen3-8B",
+  "data": "/workspace/runs/watching-two-block-029r/mpd-data/runpod/watching-two-block-029r/out/data.json",
+  "out": "/workspace/runs/watching-two-block-029r/mpd-data/runpod/watching-two-block-029r/out/fit",
+  "probe_layer": 14,
+  "tail_layers": 2,
+  "train_prompts": 16,
+  "validation_prompts": 8,
+  "test_prompts": 32,
+  "test_split": null,
+  "steps": 128,
+  "eval_every": 8,
+  "lr": 5e-06,
+  "length": 96,
+  "seed": 20261017,
+  "condition": "probe",
+  "answer_order": [
+    "No",
+    "Yes"
+  ],
+  "labels": {
+    "No": 2753,
+    "Yes": 9454
+  },
+  "model_commit": null,
+  "torch": "2.10.0+cu128",
+  "gpu": "NVIDIA L40S",
+  "updated_blocks": [
+    34,
+    35
+  ],
+  "active_parameters": 385896960,
+  "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
+  "primary_path": "split_inference",
+  "stock_runtime_parity_claimed": false,
+  "output_head_updated": false,
+  "new_classifier": false,
+  "objective": "balanced paired full-vocabulary cross entropy",
+  "optimizer": "FP32-master AdamW, separate condition gradients accumulated in FP32, zero decay, gradient norm clip1",
+  "test_source_split": "test_wording",
+  "test_evaluated_only_after_training": true,
+  "selection": "fixed step count; reporting validation does not select checkpoints",
+  "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "data_sha256": "9321889d38cc5b070844a7a3692811f86e0c70905e7e4d5fbe790f8fab07b755",
+  "source_sha256": "7ea4762c3ae4f7f862226bcb9f4d4b9daa609e39d98633dc95b7aa7d1fde5c93"
+}

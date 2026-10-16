@@ -159,3 +159,162 @@ def test_two_condition_master_updates_match_fp32_reference_adam():
         assert torch.equal(optimizer.masters[0], reference)
         assert torch.equal(parameter, reference.to(torch.bfloat16))
         assert movement == pytest.approx(float((parameter.detach().float() - before).norm()))
+
+
+def native_artifact(tail):
+    return {
+        "version": 1,
+        "checkpoint": "example/qwen",
+        "model_commit": "abc123",
+        "first_layer": tail.first_layer,
+        "head_sha256": "head-digest",
+        "layers": {k: v.clone() for k, v in tail.layers.state_dict().items()},
+        "norm": {k: v.clone() for k, v in tail.norm.state_dict().items()},
+    }
+
+
+def validate_artifact(artifact, tail):
+    from watching.tail_train import validate_initial_tail
+
+    validate_initial_tail(
+        artifact,
+        tail,
+        checkpoint="example/qwen",
+        model_commit="abc123",
+        head_sha256="head-digest",
+    )
+
+
+def test_resume_loads_learner_without_changing_original_source_or_head():
+    model = tiny_model(torch.bfloat16)
+    before = {k: v.clone() for k, v in model.state_dict().items()}
+    tail = EagerNativeTail(model)
+    artifact = native_artifact(tail)
+    first_key = next(iter(artifact["layers"]))
+    artifact["layers"][first_key].add_(0.125)
+    validate_artifact(artifact, tail)
+    tail.layers.load_state_dict(artifact["layers"])
+    tail.norm.load_state_dict(artifact["norm"])
+    assert torch.equal(tail.layers.state_dict()[first_key], artifact["layers"][first_key])
+    assert all(torch.equal(value, before[key]) for key, value in model.state_dict().items())
+    assert tail.head_weight.data_ptr() == model.lm_head.weight.data_ptr()
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "version",
+        "checkpoint",
+        "first_layer",
+        "head_sha256",
+        "model_commit",
+        "keys",
+        "shape",
+        "dtype",
+        "nan",
+    ],
+)
+def test_resume_rejects_incompatible_artifact_before_mutation(mutation):
+    model = tiny_model(torch.bfloat16)
+    tail = EagerNativeTail(model)
+    before = {k: v.clone() for k, v in tail.state_dict().items()}
+    artifact = native_artifact(tail)
+    key = next(iter(artifact["layers"]))
+    if mutation in ("version", "first_layer"):
+        artifact[mutation] += 1
+    elif mutation in ("checkpoint", "head_sha256", "model_commit"):
+        artifact[mutation] = "wrong"
+    elif mutation == "keys":
+        artifact["layers"].pop(key)
+    elif mutation == "shape":
+        artifact["layers"][key] = artifact["layers"][key].reshape(-1)
+    elif mutation == "dtype":
+        artifact["layers"][key] = artifact["layers"][key].float()
+    elif mutation == "nan":
+        artifact["layers"][key].fill_(float("nan"))
+    with pytest.raises(ValueError):
+        validate_artifact(artifact, tail)
+    assert all(torch.equal(v, before[k]) for k, v in tail.state_dict().items())
+
+
+def continuation_fixture():
+    def rows(prefix, count):
+        return [
+            {
+                "context_id": f"{prefix}{i}",
+                "text": f"Question {prefix}{i}",
+                "question_family": f"f{i % 2}",
+            }
+            for i in range(count)
+        ]
+
+    raw = {"train": rows("a", 4), "validation": rows("b", 4), "test_wording": rows("c", 8)}
+    prior = {
+        "train": [{**raw["train"][i], "source_index": i} for i in (3, 1)],
+        "validation": [{**raw["validation"][i], "source_index": i} for i in (2, 0)],
+        "test": [{**raw["test_wording"][i], "source_index": i} for i in (0, 3)],
+    }
+    return raw, prior
+
+
+def select_continuation(raw, prior, **overrides):
+    from watching.tail_train import continuation_records
+
+    arguments = dict(
+        train_count=2, validation_count=2, test_count=4, test_split="test_wording", seed=17
+    )
+    arguments.update(overrides)
+    return continuation_records(raw, prior, {"excluded_test_context_ids": ["c1"]}, **arguments)
+
+
+def test_continuation_reuses_exact_order_and_excludes_all_old_test_contexts():
+    raw, prior = continuation_fixture()
+    selected, excluded = select_continuation(raw, prior)
+    assert selected["train"] == prior["train"]
+    assert selected["validation"] == prior["validation"]
+    assert excluded == ["c0", "c1", "c3"]
+    assert len(selected["test"]) == 4
+    for row in selected["test"]:
+        assert row["context_id"] not in excluded
+        assert row["text"] == raw["test_wording"][row["source_index"]]["text"]
+    selected["train"][0]["text"] = "Changed only copy"
+    assert prior["train"][0]["text"] != "Changed only copy"
+
+
+def test_continuation_rejects_changed_questions_counts_and_exhausted_test_pool():
+    raw, prior = continuation_fixture()
+    with pytest.raises(ValueError, match="counts"):
+        select_continuation(raw, prior, train_count=3)
+    with pytest.raises(ValueError, match="count"):
+        select_continuation(raw, prior, test_count=6)
+    raw["train"][3]["text"] = "A different question"
+    with pytest.raises(ValueError, match="differs"):
+        select_continuation(raw, prior)
+
+
+def test_restart_comparison_reports_finite_drift_and_rejects_misaligned_rows():
+    from watching.tail_train import compare_prior_rows
+
+    previous = [score(torch.tensor([[0.0, 1.0, 2.0]]), 0, p, 0, 1) for p in (False, True)]
+    current = copy.deepcopy(previous)
+    current[1]["yes_minus_no"] += 0.25
+    result = compare_prior_rows(current, list(reversed(previous)))
+    assert result["yes_minus_no"]["fraction_different"] == 0.5
+    assert result["yes_minus_no"]["max_abs_difference"] == 0.25
+    assert result["logp_yes"]["exactly_equal"]
+    with pytest.raises(ValueError, match="matching"):
+        compare_prior_rows(current[:1], previous)
+    with pytest.raises(ValueError, match="Duplicate"):
+        compare_prior_rows(current + current, previous)
+
+
+def test_cache_fingerprints_track_values_and_optional_mask():
+    from watching.tail_train import state_fingerprint
+
+    state = (torch.ones(1, 2, 4, dtype=torch.bfloat16), None, torch.zeros(1, 2), torch.ones(1, 2))
+    first = state_fingerprint(state)
+    assert first == state_fingerprint(tuple(None if t is None else t.clone() for t in state))
+    assert first["mask"] is None
+    assert first["hidden"]["shape"] == [1, 2, 4]
+    state[0][0, 0, 0] += 1
+    assert first["hidden"]["sha256"] != state_fingerprint(state)["hidden"]["sha256"]

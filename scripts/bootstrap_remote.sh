@@ -16,6 +16,7 @@ case "$run_kind" in
   answer_rows) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   untied_pair|fp32_pair|head_fit|cached_readout|suffix|tail_train|execution_fit|native_fit|execution_choices) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   probe_ood|probe_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires a model and answer-row artifact" >&2; exit 2; } ;;
+  tail_continue) [[ $# -eq 5 ]] || { echo "$run_kind requires model and prior results" >&2; exit 2; } ;;
   condition_choices) [[ $# -eq 6 ]] || { echo "$run_kind requires model, condition, and detector rows" >&2; exit 2; } ;;
   diverse_choices|scaled_choices|family_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires model and condition" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
@@ -28,7 +29,9 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == tail_train ]]; then
+if [[ $run_kind == tail_continue ]]; then
+  bash "$run_source/scripts/run_tail_train.sh" "$run_output" "$4" "$5"
+elif [[ $run_kind == tail_train ]]; then
   bash "$run_source/scripts/run_tail_train.sh" "$run_output" "$4"
 elif [[ $run_kind == family_choices ]]; then
   bash "$run_source/scripts/run_family_choices.sh" "$run_output" "$4" "$5"

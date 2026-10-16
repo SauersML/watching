@@ -89,3 +89,64 @@ def test_completion_and_partial_stream_record(tmp_path):
     assert module.collect(tmp_path, draws=100)["status"] == "intermediate"
     (tmp_path / "metrics.jsonl").write_text('{"event":"complete"}\n')
     assert module.collect(tmp_path, draws=100)["status"] == "complete"
+
+
+def test_continuation_uses_global_steps_and_resumed_baseline(tmp_path):
+    data = fixture(tmp_path)
+    manifest_path = tmp_path / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest.update(starting_global_step=128, optimizer_state_restored=False)
+    manifest_path.write_text(json.dumps(manifest))
+    save(tmp_path, data, "train", 0)
+    baseline = module.collect(tmp_path, draws=100)
+    fig = module.draw(baseline)
+    assert any("resumed baseline at update 128" in text.get_text() for text in fig.texts)
+    assert any("Adam moments restarted" in text.get_text() for text in fig.texts)
+    fig.savefig(tmp_path / "resumed_baseline.png")
+    module.plt.close(fig)
+
+    path = save(tmp_path, data, "train", 8)
+    saved = json.loads(path.read_text())
+    saved["summary"]["global_step"] = 136
+    path.write_text(json.dumps(saved))
+    report = module.collect(tmp_path, draws=100)
+    assert [p["global_step"] for p in report["curves"]["train"]["points"]] == [128, 136]
+    assert "not the original model" in report["baseline_scope"]
+    fig = module.draw(report)
+    assert list(fig.axes[0].lines[0].get_xdata()) == [128, 136]
+    assert fig.axes[0].get_xlabel() == "Global optimizer updates"
+    assert fig.axes[0].get_xlim()[0] > 0
+    fig.savefig(tmp_path / "continuation.png")
+    module.plt.close(fig)
+
+    saved["summary"]["global_step"] = 8
+    path.write_text(json.dumps(saved))
+    with pytest.raises(ValueError, match="Global step disagrees"):
+        module.collect(tmp_path, draws=100)
+
+
+def test_time_limit_is_not_completed_schedule(tmp_path):
+    data = fixture(tmp_path)
+    save(tmp_path, data, "train", 0)
+    manifest_path = tmp_path / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["training_status"] = "time_limited"
+    manifest_path.write_text(json.dumps(manifest))
+    (tmp_path / "metrics.jsonl").write_text('{"event":"complete"}\n')
+    report = module.collect(tmp_path, draws=100)
+    assert report["status"] == "time_limited"
+    fig = module.draw(report)
+    assert any("Run ended at time limit" in text.get_text() for text in fig.texts)
+    module.plt.close(fig)
+
+
+@pytest.mark.parametrize("offset", [-1, 1.5, True])
+def test_invalid_step_offset_rejected(tmp_path, offset):
+    data = fixture(tmp_path)
+    save(tmp_path, data, "train", 0)
+    path = tmp_path / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["starting_global_step"] = offset
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="nonnegative integer"):
+        module.collect(tmp_path, draws=100)
