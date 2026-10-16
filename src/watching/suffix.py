@@ -24,10 +24,15 @@ from watching.probe import ProbeModel
 class ResidualCapture(ProbeModel):
     """Expose an existing decoder boundary and its actual attention arguments."""
 
-    def __init__(self, model, probe_layer, cut_layer):
+    def __init__(self, model, probe_layer, cut_layer, capture_style="reference"):
         if not probe_layer <= cut_layer < len(model.model.layers) - 1:
             raise ValueError("Cut must follow the probe and leave at least one upper block")
+        if capture_style not in ("reference", "buffer"):
+            raise ValueError("Boundary capture style must be reference or buffer")
         super().__init__(model, probe_layer)
+        self.capture_style = capture_style
+        self._preparing_buffers = False
+        self._buffers_ready = False
         self.boundary = None
         self.boundary_handle = model.model.layers[cut_layer + 1].register_forward_pre_hook(
             self.record_boundary, with_kwargs=True
@@ -35,7 +40,48 @@ class ResidualCapture(ProbeModel):
 
     def record_boundary(self, module, args, kwargs):
         cos, sin = kwargs["position_embeddings"]
-        self.boundary = (args[0], kwargs["attention_mask"], cos, sin)
+        state = (args[0], kwargs["attention_mask"], cos, sin)
+        if self.capture_style == "reference" or self._preparing_buffers:
+            self.boundary = state
+            return
+        if not self._buffers_ready:
+            raise RuntimeError("Prepare boundary buffers before compiling or executing capture")
+        copied = []
+        for name, value in zip(("hidden", "mask", "cos", "sin"), state, strict=True):
+            destination = getattr(self, "boundary_" + name)
+            if value is None:
+                if destination is not None:
+                    raise RuntimeError("Boundary attention mask presence changed")
+            elif destination is None or destination.shape != value.shape:
+                raise RuntimeError("Boundary buffer shape changed")
+            else:
+                destination.copy_(value)
+            copied.append(destination)
+        self.boundary = tuple(copied)
+
+    def prepare_buffers(self, example):
+        """Allocate persistent destinations from an eager forward, before compilation.
+
+        The eager values are discarded; only shapes, dtypes, and devices are used.
+        Every compiled capture overwrites all four destinations. Returned buffers
+        alias these destinations, so callers must clone before the next capture.
+        """
+        if self.capture_style != "buffer" or self._buffers_ready:
+            raise RuntimeError("Buffer preparation is supported exactly once in buffer mode")
+        self._preparing_buffers = True
+        try:
+            with torch.no_grad():
+                _, _, state = self(**example, capture=False)
+            for name, value in zip(("hidden", "mask", "cos", "sin"), state, strict=True):
+                self.register_buffer(
+                    "boundary_" + name, None if value is None else torch.empty_like(value),
+                    persistent=False,
+                )
+            self._buffers_ready = True
+        finally:
+            self._preparing_buffers = False
+            self.boundary = None
+            self.captured = []
 
     def forward(self, input_ids, attention_mask, position_ids, capture):
         logits, observed = super().forward(input_ids, attention_mask, position_ids, capture)
@@ -112,6 +158,7 @@ def main():
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--probe-layer", type=int, default=14)
     parser.add_argument("--cut-layer", type=int, default=14)
+    parser.add_argument("--capture-style", choices=["reference", "buffer"], default="buffer")
     parser.add_argument("--train-prompts", type=int, default=256)
     parser.add_argument("--validation-prompts", type=int, default=32)
     parser.add_argument("--test-prompts", type=int, default=64)
@@ -200,7 +247,11 @@ def main():
 
     model, observed_model = load(), load()
     ordinary = ProbeModel(model, args.probe_layer)
-    observed = ResidualCapture(observed_model, args.probe_layer, args.cut_layer)
+    observed = ResidualCapture(
+        observed_model, args.probe_layer, args.cut_layer, args.capture_style
+    )
+    if args.capture_style == "buffer":
+        observed.prepare_buffers({k: v.cuda() for k, v in batches["train"][0].items()})
     suffix = NativeSuffix(model, args.cut_layer)
     # Only these original parameters receive optimizer updates. Keeping all other
     # requires_grad flags unchanged preserves the baseline compilation setup.

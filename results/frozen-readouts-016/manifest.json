@@ -1,0 +1,27 @@
+{
+  "checkpoint": "/workspace/runs/watching-readouts-016/mpd-data/checkpoints/watching-sft-003r",
+  "features": null,
+  "out": "/workspace/runs/watching-readouts-016/mpd-data/runpod/watching-readouts-016/out/readouts",
+  "layer": 14,
+  "train_prompts": 256,
+  "validation_prompts": 64,
+  "test_prompts": 64,
+  "steps": 512,
+  "eval_every": 64,
+  "batch_pairs": 32,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "hidden": 64,
+  "seeds": [
+    20261016,
+    20261017,
+    20261018
+  ],
+  "torch": "2.10.0+cu128",
+  "fit_device": "cpu",
+  "fit_dtype": "float32",
+  "purpose": "External diagnostic; no native model weights updated",
+  "selection": "Minimum validation balanced binary cross-entropy",
+  "uncertainty": "Pointwise prompt bootstrap; conditional on seed and templates",
+  "source_sha256": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51"
+}

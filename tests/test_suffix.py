@@ -38,10 +38,13 @@ def inputs():
 
 
 @pytest.mark.parametrize("capture", [False, True])
-def test_native_boundary_replays_entire_vocabulary(capture):
+@pytest.mark.parametrize("capture_style", ["reference", "buffer"])
+def test_native_boundary_replays_entire_vocabulary(capture, capture_style):
     model = tiny_model()
     baseline = ProbeModel(copy.deepcopy(model), 0)
-    measured = ResidualCapture(model, 0, 0)
+    measured = ResidualCapture(model, 0, 0, capture_style)
+    if capture_style == "buffer":
+        measured.prepare_buffers(inputs())
     suffix = NativeSuffix(model, 0)
     with torch.no_grad():
         full, probe, state = measured(**inputs(), capture=capture)
@@ -87,3 +90,51 @@ def test_boundary_must_leave_trainable_layers_and_follow_probe():
         ResidualCapture(tiny_model(), 1, 0)
     with pytest.raises(ValueError, match="Cut must"):
         ResidualCapture(tiny_model(), 1, 2)
+
+
+def test_buffer_capture_requires_preparation_and_reuses_storage():
+    measured = ResidualCapture(tiny_model(), 0, 0, "buffer")
+    with pytest.raises(RuntimeError, match="Prepare"):
+        with torch.no_grad():
+            measured(**inputs(), capture=False)
+    measured.prepare_buffers(inputs())
+    with pytest.raises(RuntimeError, match="exactly once"):
+        measured.prepare_buffers(inputs())
+    with torch.no_grad():
+        _, _, first = measured(**inputs(), capture=False)
+        snapshot = tuple(None if t is None else t.clone() for t in first)
+        changed = inputs()
+        changed["input_ids"] = torch.tensor([[0, 0, 3, 4, 6]])
+        _, _, second = measured(**changed, capture=False)
+    assert first[0].data_ptr() == second[0].data_ptr()
+    assert not torch.equal(snapshot[0], second[0])
+    assert all("boundary_" not in name for name in measured.state_dict())
+    assert all(not t.requires_grad for t in second if t is not None)
+
+
+def test_buffer_capture_handles_none_attention_mask():
+    measured = ResidualCapture(tiny_model(), 0, 0, "buffer")
+    x = inputs()
+    x["attention_mask"] = torch.ones_like(x["attention_mask"])
+    measured.prepare_buffers(x)
+    with torch.no_grad():
+        _, _, state = measured(**x, capture=False)
+        expected, _ = ProbeModel(copy.deepcopy(measured.model), 0)(**x, capture=False)
+        replayed = NativeSuffix(measured.model, 0)(*state, x["position_ids"])
+    torch.testing.assert_close(replayed, expected, rtol=0, atol=0)
+
+
+def test_buffer_capture_survives_fullgraph_functionalization():
+    measured = ResidualCapture(tiny_model(), 0, 0, "buffer")
+    measured.prepare_buffers(inputs())
+    compiled = torch.compile(measured, backend="aot_eager", fullgraph=True)
+    # This checks graph capture and buffer mutation, not CUDA Inductor parity.
+    with torch.no_grad():
+        for capture in (False, True):
+            expected, _, state = measured(**inputs(), capture=capture)
+            snapshot = tuple(None if t is None else t.clone() for t in state)
+            actual, probe, captured = compiled(**inputs(), capture=capture)
+            assert len(probe) == int(capture)
+            assert torch.equal(actual, expected)
+            for value, saved in zip(captured, snapshot, strict=True):
+                assert value is None if saved is None else torch.equal(value, saved)
