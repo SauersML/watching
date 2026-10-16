@@ -139,6 +139,19 @@ def tensor_digest(tensor):
     return hashlib.sha256(raw).hexdigest()
 
 
+def paired_training_groups(records):
+    """Keep each distinct context and both of its executions in one CV group."""
+    contexts = [row.get("context_id") for row in records]
+    groups = [row.get("selection_group") for row in records]
+    if any(not isinstance(value, str) or not value for value in contexts + groups):
+        raise ValueError("Grouped fitting requires context_id and selection_group on every prompt")
+    if len(contexts) != len(set(contexts)):
+        raise ValueError("Training context IDs must be unique before pairing conditions")
+    if len(set(groups)) < 3:
+        raise ValueError("Grouped fitting needs at least three distinct training groups")
+    return [group for group in groups for _ in (False, True)]
+
+
 def data_manifest(data, fallback_counts, source):
     """Record the data actually used separately from generated-data CLI defaults."""
     counts = {split: len(records) for split, records in data.items()}
@@ -278,13 +291,17 @@ def main():
     parser.add_argument("--answer-pair-mass", type=float)
     parser.add_argument("--preserve-data", type=Path)
     parser.add_argument("--preserve-validation", action="store_true")
+    parser.add_argument("--fit-objective", choices=("ridge", "grouped_ce"), default="ridge")
+    parser.add_argument("--export-eval-features", action="store_true")
     args = parser.parse_args()
     if not 1 <= args.steps <= 3 or not 0 < args.target_gap <= 12 or args.length <= 0:
         parser.error("Use 1–3 corrections, target gap in (0, 12], and a positive length")
     if args.answer_pair_mass is not None and not 0 < args.answer_pair_mass < 1:
         parser.error("--answer-pair-mass must be strictly between zero and one")
     if args.preserve_data and (
-        args.answer_pair_mass is None or args.eval_only or args.compare_answer_rows
+        (args.answer_pair_mass is None and args.fit_objective == "ridge")
+        or args.eval_only
+        or args.compare_answer_rows
     ):
         parser.error("--preserve-data requires a training fit with --answer-pair-mass")
     if args.preserve_validation and not (
@@ -307,6 +324,20 @@ def main():
         parser.error(
             "--ridge-grid requires a cached training fit and unique positive finite values"
         )
+    if args.fit_objective == "grouped_ce" and (
+        args.ridge_grid
+        or args.answer_pair_mass is not None
+        or args.preserve_validation
+        or args.eval_only
+        or args.compare_answer_rows
+    ):
+        parser.error(
+            "grouped_ce uses its fixed grouped-CV rule, not ridge targets or validation selection"
+        )
+    if args.export_eval_features and not args.eval_only:
+        parser.error("--export-eval-features is only for fresh evaluation")
+    if args.fit_objective == "grouped_ce" and args.preserve_data and not args.initial_answer_rows:
+        parser.error("grouped_ce preservation requires the existing detector row artifact")
     if args.eval_only and args.data is None:
         parser.error("Fresh evaluation requires the saved --data file")
     if args.answer_rows and not args.eval_only:
@@ -438,7 +469,7 @@ def main():
         initial_indices, initial_rows = validate_initial_rows(
             initial_artifact, args.checkpoint, model_commit, head, indices
         )
-        if args.preserve_validation:
+        if args.preserve_validation or args.fit_objective == "grouped_ce":
             preserved_answers = initial_artifact["answers"]
             preserved_indices = initial_indices.cpu().tolist()
             if len(preserved_answers) != 2 or [
@@ -555,6 +586,22 @@ def main():
             for p in Path(__file__).parent.glob("*.py")
         },
     }
+    if args.fit_objective == "grouped_ce":
+        manifest.update(
+            method="Full-vocabulary cross-entropy of native answer rows on fixed features",
+            fit_targets="Observed condition labels; no fixed logit gap or answer probability",
+            selection=(
+                "Three-fold training question-family CV; fixed lambda grid; "
+                "no validation/test selection"
+            ),
+            surrogate=(
+                "FP64 baseline native logits plus hidden-state dot row update; "
+                "final BF16 native checks required"
+            ),
+        )
+        manifest["preservation"]["constraint"] = (
+            "Equal-task-weight correct detector-token cross-entropy on training anchors"
+        )
     write_json(args.out / "manifest.json", manifest)
     emit("setup", **manifest)
     first_forwards = set()
@@ -678,6 +725,10 @@ def main():
                         "greedy_correct": top_token == label,
                     }
                 )
+                if split == "preserve_train" and args.fit_objective == "grouped_ce":
+                    rows[-1]["preserved_correct_logit"] = float(
+                        values[preserved_indices[int(enabled)]]
+                    )
             hidden_rows.extend([pair[False], pair[True]])
             if (i + 1) % 32 == 0:
                 emit(
@@ -705,6 +756,10 @@ def main():
             ),
             "rest": torch.tensor([r["rest_logsumexp"] for r in rows], dtype=torch.float64),
         }
+        if split == "preserve_train" and args.fit_objective == "grouped_ce":
+            collected_values[split]["correct_logit"] = torch.tensor(
+                [r["preserved_correct_logit"] for r in rows], dtype=torch.float64
+            )
         summary = {
             "phase": phase,
             "split": split,
@@ -720,7 +775,19 @@ def main():
         collected_summaries[split] = summary
         write_json(args.out / f"{phase}_{split}_{step}.json", {"summary": summary, "rows": rows})
         emit("preservation_collection" if preservation_only else "evaluation", **summary)
-        return torch.cat(hidden_rows), torch.tensor([r["yes_minus_no"] for r in rows]).double()
+        features = torch.cat(hidden_rows)
+        scores = torch.tensor([r["yes_minus_no"] for r in rows]).double()
+        if args.export_eval_features and phase == "fresh":
+            torch.save(
+                {
+                    "features": features,
+                    "scores": scores,
+                    "condition_order": [False, True],
+                    "context_ids": [r.get("context_id") for r in data[split]],
+                },
+                args.out / f"fresh_{split}_features.pt",
+            )
+        return features, scores
 
     def install(new_rows):
         with torch.no_grad():
@@ -750,9 +817,91 @@ def main():
         emit("complete", eval_only=True)
         return
 
+    def fit_calibrated_rows():
+        from watching.calibrated_fit import CalibratedData, PreservationData, fit_grouped_ce
+
+        groups = paired_training_groups(data["train"])
+        install(original_rows)
+        hidden, scores = collect("train", 0, "many")
+        baseline_logits = collected_values["train"]["logits"].clone()
+        training = CalibratedData(
+            features=hidden,
+            baseline_logits=baseline_logits,
+            rest_logsumexp=collected_values["train"]["rest"].clone(),
+            labels=torch.arange(len(hidden)) % 2,
+            groups=groups,
+        )
+        torch.save(
+            {
+                "features": hidden,
+                "scores": scores,
+                "context_ids": [r["context_id"] for r in data["train"]],
+            },
+            args.out / "many_features.pt",
+        )
+        anchors = anchor_hidden = None
+        if preservation:
+            anchor_groups = paired_training_groups(preservation)
+            if [r["context_id"] for r in preservation] != [r["context_id"] for r in data["train"]]:
+                raise ValueError("Detector and animal training contexts must align for grouped CV")
+            if anchor_groups != groups:
+                raise ValueError("Detector and animal CV groups must align")
+            anchor_hidden, _ = collect("preserve_train", 0, "many", preservation_only=True)
+            anchors = PreservationData(
+                features=anchor_hidden,
+                baseline_logits=collected_values["preserve_train"]["logits"].clone(),
+                rest_logsumexp=collected_values["preserve_train"]["rest"].clone(),
+                correct_logit=collected_values["preserve_train"]["correct_logit"].clone(),
+                groups=anchor_groups,
+            )
+
+        def progress(event):
+            emit(event["event"], **{key: value for key, value in event.items() if key != "event"})
+
+        delta, report = fit_grouped_ce(training, anchors=anchors, callback=progress)
+        write_json(args.out / "grouped_cv.json", report)
+        manifest["grouped_cv"] = report
+        write_json(args.out / "manifest.json", manifest)
+        new_rows = (original_rows.float() + delta.T.to(head.device, torch.float32)).to(head.dtype)
+        # Selection is complete before any development-validation or test scoring.
+        for split in data:
+            if split != "train":
+                collect(split, 0, "many")
+        install(new_rows)
+        final_hidden, _ = collect("train", args.steps, "many")
+        if not torch.equal(final_hidden, hidden):
+            raise RuntimeError("Calibrated row updates changed native training features")
+        predicted = (
+            baseline_logits
+            + hidden.double() @ (new_rows.cpu().double() - original_rows.cpu().double()).T
+        )
+        mismatch = predicted - collected_values["train"]["logits"]
+        emit(
+            "surrogate_native_comparison",
+            max_answer_logit_error=float(mismatch.abs().max()),
+            mean_answer_logit_error=float(mismatch.abs().mean()),
+            scope="FP64 linear surrogate versus actual BF16 native head, selected weights only",
+        )
+        if preservation:
+            final_anchor, _ = collect("preserve_train", args.steps, "many", preservation_only=True)
+            if not torch.equal(final_anchor, anchor_hidden):
+                raise RuntimeError("Calibrated rows changed detector preservation features")
+        for split in data:
+            if split != "train":
+                collect(split, args.steps, "many")
+        emit(
+            "selected_native_verification",
+            all_vocabulary_parity=True,
+            cached_head=replay is not None,
+        )
+
     # The first fixed pair provides an early integration result, then its edit
     # is removed before the independently fitted many-prompt experiment.
-    for phase, limit in [("single", 1), ("many", None)]:
+    phases = [("single", 1), ("many", None)]
+    if args.fit_objective == "grouped_ce":
+        fit_calibrated_rows()
+        phases = []
+    for phase, limit in phases:
         install(original_rows)
         hidden, scores = collect("train", 0, phase, limit)
         original_hidden = hidden.clone()

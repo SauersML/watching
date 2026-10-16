@@ -67,6 +67,19 @@ include these failures, OOD evaluations, and checks of the preserved detectors.
 
 ## Measurement
 
+The [027–028 protocol](experiments/family-choices-027-028.md) uses
+[192 explicitly AI-authored question templates](data/QUESTION_FAMILIES.md),
+training-only question-family cross-validation, and full-vocabulary
+cross-entropy fitting of native output rows. Its [evaluation splits](data/FAMILY_DATA.md)
+separate new contexts, new question structures, and both together. External
+validation and OOD scores do not select regularization. This is a new experiment,
+not an established improvement in OOD performance.
+
+```sh
+bash scripts/run_family_choices.sh runs/family-probe Qwen/Qwen3-8B probe
+bash scripts/run_family_choices.sh runs/family-execution Qwen/Qwen3-8B execution
+```
+
 The [023–024 protocol](experiments/diverse-choices-023-024.md) addresses animal
 answers losing to other vocabulary tokens. It fits both answer logits to a
 specified combined probability, adds training-only preservation anchors, and

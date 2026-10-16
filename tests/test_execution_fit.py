@@ -13,12 +13,36 @@ from watching.execution_fit import (
     data_manifest,
     evaluation_splits,
     make_execution_data,
+    paired_training_groups,
     rest_logsumexp,
     summarize_execution,
     tensor_digest,
     validate_answer_rows,
     validate_initial_rows,
 )
+
+
+def test_training_groups_keep_condition_pairs_together():
+    records = [
+        {"context_id": f"context-{i}", "selection_group": group}
+        for i, group in enumerate(["a", "b", "c", "a"])
+    ]
+    assert paired_training_groups(records) == ["a", "a", "b", "b", "c", "c", "a", "a"]
+
+
+@pytest.mark.parametrize("fault", ["missing_group", "duplicate_context", "few_groups"])
+def test_training_groups_reject_ambiguous_or_insufficient_grouping(fault):
+    records = [
+        {"context_id": f"context-{i}", "selection_group": str(i)} for i in range(3)
+    ]
+    if fault == "missing_group":
+        records[0]["selection_group"] = None
+    elif fault == "duplicate_context":
+        records[0]["context_id"] = records[1]["context_id"]
+    else:
+        records[0]["selection_group"] = records[1]["selection_group"]
+    with pytest.raises(ValueError):
+        paired_training_groups(records)
 
 
 def test_manifest_counts_loaded_splits_not_unused_generator_defaults(tmp_path):
