@@ -69,7 +69,9 @@ def compare_scores(before, after, *, seed=0, draws=5000):
         "median_change": statistics.median(changes),
         "change_sign_test": exact_sign_test(changes),
         "final_sign_test": exact_sign_test(list(final.values())),
-        "change_ci95": [boot[int(0.025 * draws)], boot[int(0.975 * draws) - 1]],
+        "change_ci95": (
+            [boot[int(0.025 * draws)], boot[int(0.975 * draws) - 1]] if count > 1 else None
+        ),
         "bootstrap_seed": seed,
         "bootstrap_draws": draws,
     }

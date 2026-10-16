@@ -41,3 +41,9 @@ def test_exact_sign_test_ignores_ties_and_does_not_claim_significance_from_four_
 
 def test_all_ties_provide_no_sign_evidence():
     assert exact_sign_test([0, 0])["p_greater"] == 1
+
+
+def test_one_prompt_has_no_population_interval():
+    result = compare_scores(rows([0]), rows([1]))
+    assert result["change_in_separation"] == 1
+    assert result["change_ci95"] is None
