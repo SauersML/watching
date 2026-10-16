@@ -4,6 +4,8 @@ This supplement makes locally retained historical results available alongside th
 
 Audited **27 historical run directories**. Added **1317 previously unarchived compact artifacts** (22.40 MiB). Exact-byte duplicates reference their existing archive location in [coverage.json](coverage.json).
 
+Whole-job completion was checked against every run’s last recorded terminal status. A stage-local `complete` event is insufficient: run 021 completed its detector but failed during later animal-task initialization. The audit identifies 18 completed jobs, eight interrupted/failed attempts, and one partially successful job with a later-stage failure.
+
 The main additions are complete raw score histories for runs 013–015, intermediate score files omitted from earlier compact learning-rate summaries, and explicit failure records. Each source artifact is indexed by run-relative path, SHA-256, size, and repository archive path.
 
 | Run | Status | Added artifacts | Already archived |
@@ -13,7 +15,7 @@ The main additions are complete raw score histories for runs 013–015, intermed
 | [watching-drift-007](runs/watching-drift-007/README.md) | completed | 0 | 3 |
 | [watching-execution-018](runs/watching-execution-018/README.md) | interrupted_or_failed | 0 | 0 |
 | [watching-execution-018r](runs/watching-execution-018r/README.md) | completed | 0 | 24 |
-| [watching-execution8b-021](runs/watching-execution8b-021/README.md) | completed | 0 | 23 |
+| [watching-execution8b-021](runs/watching-execution8b-021/README.md) | partial_success/later_stage_failed | 0 | 23 |
 | [watching-head-015](runs/watching-head-015/README.md) | completed | 13 | 1 |
 | [watching-larger-011](runs/watching-larger-011/README.md) | completed | 132 | 20 |
 | [watching-native-019](runs/watching-native-019/README.md) | completed | 0 | 24 |
@@ -39,6 +41,7 @@ The main additions are complete raw score histories for runs 013–015, intermed
 ## Missing or intentionally excluded material
 
 - Original 003 and 004 attempts did not synchronize all stdout events into their metrics files. Additional structured events are recovered through updates 460 and 500 respectively; later events and unsaved intermediate weights cannot be reconstructed.
+- Run 021 completed the execution-detector fit, then failed with the same CPU-index/CUDA mismatch as 022 while initializing the animal task. Its successful detector scores are preserved; later stages were completed in 021r.
 - Attempts 006 and 009 ended during initial compilation without training results. Attempt 018 failed before its bootstrap script started. Attempts 017/017b failed numerical parity checks. Attempt 022 failed a device-placement check before fitting.
 - Full checkpoint tensors and cached activation tensors remain local. Compact answer-row checkpoints are indexed and archived. The checkpoint inventory lists remaining local file names and sizes without including their contents.
 - Runs 021r and 022r belong to the separate animal-choice archive; current 023/024 runs are outside this historical audit. Their absence here is not a missing historical result.

@@ -1130,7 +1130,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.1067
+      "observed_cost_usd": 0.1067,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 25,
+          "status": 0,
+          "text": "2026-10-16 13:30:21 watching-answer-012 ended with status 0",
+          "source_sha256": "c5ab3797215884f19e1b75c427d31d9475f5fdf242f64e4115e002129207103d"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-audit-005",
@@ -1193,7 +1203,17 @@
           "reason": "Feature cache, diagnostic weights, or non-result file"
         }
       ],
-      "observed_cost_usd": 0.0358
+      "observed_cost_usd": 0.0358,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 25,
+          "status": 0,
+          "text": "2026-10-16 11:57:59 watching-audit-005 ended with status 0",
+          "source_sha256": "428d6d1b7878279079fe077ae1428ac62bf3286c4da3b3ef83ed54ec28acf316"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-drift-007",
@@ -1228,7 +1248,17 @@
           "reason": "Feature cache, diagnostic weights, or non-result file"
         }
       ],
-      "observed_cost_usd": 0.0706
+      "observed_cost_usd": 0.0706,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 20,
+          "status": 0,
+          "text": "2026-10-16 12:51:30 watching-drift-007 ended with status 0",
+          "source_sha256": "440f436027b2549a709e7449a112aa30cfbd7b7a413ae8234b8ed534cc8b3f79"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-execution-018",
@@ -1251,7 +1281,17 @@
           "text": "2026-10-16 14:03:37 watching-execution-018 ended with status 127",
           "source_sha256": "7b2a16d21a308948cea1b91684b6b75908f3c2fe63e7ca5cb3ee8f563f54ce2d"
         }
-      ]
+      ],
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 23,
+          "status": 127,
+          "text": "2026-10-16 14:03:37 watching-execution-018 ended with status 127",
+          "source_sha256": "7b2a16d21a308948cea1b91684b6b75908f3c2fe63e7ca5cb3ee8f563f54ce2d"
+        }
+      ],
+      "runner_final_status": 127
     },
     {
       "run": "watching-execution-018r",
@@ -1480,11 +1520,21 @@
           "reason": "Feature cache, diagnostic weights, or non-result file"
         }
       ],
-      "observed_cost_usd": 0.0804
+      "observed_cost_usd": 0.0804,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 26,
+          "status": 0,
+          "text": "2026-10-16 14:14:13 watching-execution-018r ended with status 0",
+          "source_sha256": "05045eeecea1a0ea2e29eb1a233bd1d14dffb724a5b4ce2b60b41f77d6ef823f"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-execution8b-021",
-      "status": "completed",
+      "status": "partial_success/later_stage_failed",
       "artifacts": [
         {
           "source": "out/execution/answer_rows.pt",
@@ -1667,7 +1717,33 @@
           "reason": "Feature cache, diagnostic weights, or non-result file"
         }
       ],
-      "observed_cost_usd": 0.0948
+      "observed_cost_usd": 0.0948,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 28,
+          "status": 1,
+          "text": "2026-10-16 14:35:17 watching-execution8b-021 ended with status 1",
+          "source_sha256": "1a92f722d515a19b12d84f22f75dc6edb3849d9a019c0e68cf5564036212a2fa"
+        }
+      ],
+      "runner_final_status": 1,
+      "failure_reason": "The execution-detector fit completed and emitted its final metrics and answer rows. The later animal-preference stage failed while validating those initial rows: index_select received a CPU index for a CUDA tensor. The overall runner ended with status 1, so this is a successful detector stage followed by a failed stage, not a completed whole job. No preference fit or fresh-reload result was produced by this attempt; the 021r retry supplies those later results.",
+      "failure_evidence": [
+        {
+          "source": "run.log",
+          "line": 250,
+          "text": "RuntimeError: Expected all tensors to be on the same device, but got index is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA__index_select)",
+          "source_sha256": "8a8ffe82671661875af11712617337d8c612a2f9fa2cd118251e69f6f60e42a5"
+        },
+        {
+          "source": "rp-run.log",
+          "line": 28,
+          "status": 1,
+          "text": "2026-10-16 14:35:17 watching-execution8b-021 ended with status 1",
+          "source_sha256": "1a92f722d515a19b12d84f22f75dc6edb3849d9a019c0e68cf5564036212a2fa"
+        }
+      ]
     },
     {
       "run": "watching-head-015",
@@ -1818,7 +1894,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.023
+      "observed_cost_usd": 0.023,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 20,
+          "status": 0,
+          "text": "2026-10-16 13:46:52 watching-head-015 ended with status 0",
+          "source_sha256": "f23ed4e12716b33f4ebf9cf34ad840703bf9fc6be32dcb5ee585a8e4aad00d1b"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-larger-011",
@@ -2942,7 +3028,24 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.2165
+      "observed_cost_usd": 0.2165,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 6,
+          "status": 1,
+          "text": "2026-10-16 13:12:51 watching-larger-011 ended with status 1",
+          "source_sha256": "a8dd76e85441c86fee6db205a1733efd005da941a4c59caaccfee4c9e7bea7fe"
+        },
+        {
+          "source": "rp-run.log",
+          "line": 37,
+          "status": 0,
+          "text": "2026-10-16 13:29:36 watching-larger-011 ended with status 0",
+          "source_sha256": "a8dd76e85441c86fee6db205a1733efd005da941a4c59caaccfee4c9e7bea7fe"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-native-019",
@@ -3143,7 +3246,17 @@
           "reason": "Feature cache, diagnostic weights, or non-result file"
         }
       ],
-      "observed_cost_usd": 0.15760000000000002
+      "observed_cost_usd": 0.15760000000000002,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 31,
+          "status": 0,
+          "text": "2026-10-16 14:14:37 watching-native-019 ended with status 0",
+          "source_sha256": "628379234b3aa911214a0caf2a77a09b05ddaf629ea2851e0e2103f50f426a1e"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-ood-020",
@@ -3244,7 +3357,17 @@
         }
       ],
       "excluded": [],
-      "observed_cost_usd": 0.084
+      "observed_cost_usd": 0.084,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 30,
+          "status": 0,
+          "text": "2026-10-16 14:31:52 watching-ood-020 ended with status 0",
+          "source_sha256": "b60ebee06dc2d7863475c36a07d4cc13d80e16dda723f2dd377e12caff652a4a"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-paired-006",
@@ -3298,7 +3421,17 @@
           "text": "2026-10-16 12:20:51 watching-paired-006 ended with status 1",
           "source_sha256": "a93729ccff7d3f39530661e4a12c6cf416f4dd6341d49c2282e35f55a158adad"
         }
-      ]
+      ],
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 17,
+          "status": 1,
+          "text": "2026-10-16 12:20:51 watching-paired-006 ended with status 1",
+          "source_sha256": "a93729ccff7d3f39530661e4a12c6cf416f4dd6341d49c2282e35f55a158adad"
+        }
+      ],
+      "runner_final_status": 1
     },
     {
       "run": "watching-paired-006r",
@@ -3652,7 +3785,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.1201
+      "observed_cost_usd": 0.1201,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 28,
+          "status": 0,
+          "text": "2026-10-16 12:34:13 watching-paired-006r ended with status 0",
+          "source_sha256": "ad3ecedde901c65dad6f84bb37b87cfa26c8c7644d7d09dc2291bab253e4f635"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-precision-014",
@@ -5889,7 +6032,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.0713
+      "observed_cost_usd": 0.0713,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 28,
+          "status": 0,
+          "text": "2026-10-16 13:51:47 watching-precision-014 ended with status 0",
+          "source_sha256": "d7bffcf118677194846259c2c15291a5c98359600ca86d231de0210c711b506f"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-probechoices-022",
@@ -5934,7 +6087,17 @@
           "text": "2026-10-16 14:38:25 watching-probechoices-022 ended with status 1",
           "source_sha256": "4250700d34921d38e7223c97be87449e7cc5dfc71411cf37d0b122e39a52bb40"
         }
-      ]
+      ],
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 26,
+          "status": 1,
+          "text": "2026-10-16 14:38:25 watching-probechoices-022 ended with status 1",
+          "source_sha256": "4250700d34921d38e7223c97be87449e7cc5dfc71411cf37d0b122e39a52bb40"
+        }
+      ],
+      "runner_final_status": 1
     },
     {
       "run": "watching-rate-008",
@@ -7282,7 +7445,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.0846
+      "observed_cost_usd": 0.0846,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 29,
+          "status": 0,
+          "text": "2026-10-16 13:26:28 watching-rate-008 ended with status 0",
+          "source_sha256": "1580e6da5672cf374ea62667e0b660bc61b8c2278340055d1bb5e6ac225f1bd8"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-readouts-016",
@@ -7414,7 +7587,17 @@
           "reason": "Feature cache, diagnostic weights, or non-result file"
         }
       ],
-      "observed_cost_usd": 0.046
+      "observed_cost_usd": 0.046,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 29,
+          "status": 0,
+          "text": "2026-10-16 14:04:57 watching-readouts-016 ended with status 0",
+          "source_sha256": "e68d3b9b5e4ea9e6ad599895314e93309b5f490698748babe652ba4d91d0eef1"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-sft-002",
@@ -7799,7 +7982,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.0932
+      "observed_cost_usd": 0.0932,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 34,
+          "status": 0,
+          "text": "2026-10-15 23:19:53 watching-sft-002 ended with status 0",
+          "source_sha256": "e99cc64dc38a9246249e516cb2781d7decede4fd58ecf15e1f8f49cbddff6114"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-sft-003",
@@ -7902,7 +8095,17 @@
           "text": "2026-10-15 23:44:28 watching-sft-003 ended with status 143",
           "source_sha256": "af3237e019a0b9705213e65ac9b720ce8bfeb065e19f05c422ee1e8e247adc7c"
         }
-      ]
+      ],
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 22,
+          "status": 143,
+          "text": "2026-10-15 23:44:28 watching-sft-003 ended with status 143",
+          "source_sha256": "af3237e019a0b9705213e65ac9b720ce8bfeb065e19f05c422ee1e8e247adc7c"
+        }
+      ],
+      "runner_final_status": 143
     },
     {
       "run": "watching-sft-003r",
@@ -8511,7 +8714,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.0916
+      "observed_cost_usd": 0.0916,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 23,
+          "status": 0,
+          "text": "2026-10-16 00:06:03 watching-sft-003r ended with status 0",
+          "source_sha256": "c40afe8767808858377eaeef76508ccf37ea451b5b628a18cac690a3f20b8ea4"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-single-004",
@@ -8676,7 +8889,17 @@
           "text": "2026-10-16 01:21:06 watching-single-004 ended with status 1",
           "source_sha256": "f97d78ee119fc8a7a9f2f586ef40a0a386d140dce2cc39101e07250dbc4a2605"
         }
-      ]
+      ],
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 24,
+          "status": 1,
+          "text": "2026-10-16 01:21:06 watching-single-004 ended with status 1",
+          "source_sha256": "f97d78ee119fc8a7a9f2f586ef40a0a386d140dce2cc39101e07250dbc4a2605"
+        }
+      ],
+      "runner_final_status": 1
     },
     {
       "run": "watching-single-004r",
@@ -9285,7 +9508,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.2054
+      "observed_cost_usd": 0.2054,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 25,
+          "status": 0,
+          "text": "2026-10-16 12:07:45 watching-single-004r ended with status 0",
+          "source_sha256": "563692cf09a6dc29744bbed411d609ffb3fbc8a35ac02f6991eded2027ea7723"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-slow-010",
@@ -10409,7 +10642,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.0467
+      "observed_cost_usd": 0.0467,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 26,
+          "status": 0,
+          "text": "2026-10-16 13:23:12 watching-slow-010 ended with status 0",
+          "source_sha256": "85a643dc369c13d3954462303a579e08ab5dc933f5bc8fbef31b10f2b905e385"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-strong-009",
@@ -10463,7 +10706,17 @@
           "text": "2026-10-16 13:23:38 watching-strong-009 ended with status 143",
           "source_sha256": "51ccdf05c9daf7077d61216d83fd16a5fadf5d9b9c07010baa9060c406edcf5a"
         }
-      ]
+      ],
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 21,
+          "status": 143,
+          "text": "2026-10-16 13:23:38 watching-strong-009 ended with status 143",
+          "source_sha256": "51ccdf05c9daf7077d61216d83fd16a5fadf5d9b9c07010baa9060c406edcf5a"
+        }
+      ],
+      "runner_final_status": 143
     },
     {
       "run": "watching-strong-009r",
@@ -11587,7 +11840,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.1182
+      "observed_cost_usd": 0.1182,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 38,
+          "status": 0,
+          "text": "2026-10-16 13:37:07 watching-strong-009r ended with status 0",
+          "source_sha256": "bc170adf6e856f4d6159c1e470057c823c36433a67b5cc6c927ebc852ea8b910"
+        }
+      ],
+      "runner_final_status": 0
     },
     {
       "run": "watching-suffix-017",
@@ -11647,7 +11910,17 @@
           "text": "2026-10-16 14:03:04 watching-suffix-017 ended with status 1",
           "source_sha256": "71042998a57da198a3c3adac6c99021f0971265777627c9116163092d00962f8"
         }
-      ]
+      ],
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 24,
+          "status": 1,
+          "text": "2026-10-16 14:03:04 watching-suffix-017 ended with status 1",
+          "source_sha256": "71042998a57da198a3c3adac6c99021f0971265777627c9116163092d00962f8"
+        }
+      ],
+      "runner_final_status": 1
     },
     {
       "run": "watching-suffix-017b",
@@ -11707,7 +11980,17 @@
           "text": "2026-10-16 14:10:22 watching-suffix-017b ended with status 1",
           "source_sha256": "2a6ca147c09b77152572d14bd9c6aeac3eb5e65ec126476a80908d758de7d45f"
         }
-      ]
+      ],
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 29,
+          "status": 1,
+          "text": "2026-10-16 14:10:22 watching-suffix-017b ended with status 1",
+          "source_sha256": "2a6ca147c09b77152572d14bd9c6aeac3eb5e65ec126476a80908d758de7d45f"
+        }
+      ],
+      "runner_final_status": 1
     },
     {
       "run": "watching-untied-013",
@@ -13944,7 +14227,17 @@
           "reason": "Full checkpoint or checkpoint support file"
         }
       ],
-      "observed_cost_usd": 0.0912
+      "observed_cost_usd": 0.0912,
+      "runner_terminal_history": [
+        {
+          "source": "rp-run.log",
+          "line": 26,
+          "status": 0,
+          "text": "2026-10-16 13:53:46 watching-untied-013 ended with status 0",
+          "source_sha256": "c8993eeec0c45d5a90d7fce4125154d729a50ecf02db96ac7ff17641744e8b0e"
+        }
+      ],
+      "runner_final_status": 0
     }
   ],
   "local_checkpoints": [
@@ -14177,5 +14470,6 @@
         }
       ]
     }
-  ]
+  ],
+  "completion_rule": "Whole-job status is verified against the last recorded runner exit status. Stage-local complete events alone do not establish whole-job completion."
 }
