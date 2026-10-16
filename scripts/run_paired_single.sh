@@ -23,3 +23,7 @@ export TORCHINDUCTOR_CACHE_DIR="$cache_root/eval"
 python -m watching --out "$run_out/fresh_eval" --checkpoint "$run_out/checkpoint" \
   --eval-only --dataset expanded --train-prompts 1 --train-eval-prompts 1 \
   --batch-size 1 --length 64 --steps 512
+export TORCHINDUCTOR_CACHE_DIR="$cache_root/eval_grad"
+python -m watching --out "$run_out/fresh_grad_eval" --checkpoint "$run_out/checkpoint" \
+  --eval-only --eval-only-grad --dataset expanded --train-prompts 1 --train-eval-prompts 1 \
+  --batch-size 1 --length 64 --steps 512

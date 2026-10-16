@@ -33,6 +33,8 @@ def validate_arguments(args):
         raise ValueError("batch_size must divide 32, 128, and 512 for static-shape compilation")
     if args.eval_only and not args.checkpoint:
         raise ValueError("--eval-only requires --checkpoint")
+    if args.eval_only_grad and not args.eval_only:
+        raise ValueError("--eval-only-grad requires --eval-only")
     if args.save_every < 0:
         raise ValueError("save_every must be nonnegative")
     if (
@@ -73,6 +75,7 @@ def main():
     ap.add_argument("--validation-eval-prompts", type=int, default=512)
     ap.add_argument("--checkpoint", default=None)
     ap.add_argument("--eval-only", action="store_true")
+    ap.add_argument("--eval-only-grad", action="store_true")
     ap.add_argument("--objective", choices=["sft", "paired"], default="sft")
     ap.add_argument("--train-prompts", type=int, default=512)
     ap.add_argument("--dataset", choices=["legacy", "expanded"], default="legacy")
@@ -229,7 +232,7 @@ def main():
         return summary
 
     if args.eval_only:
-        evaluate("test", args.steps)
+        evaluate("test", args.steps, grad_mode=args.eval_only_grad)
         emit("complete", evaluation_only=True)
         return
 
@@ -259,6 +262,7 @@ def main():
     evaluate("train", 0, limit=args.train_eval_prompts)
     evaluate("validation", 0, grad_mode=True, limit=32)
     evaluate("validation", 0)
+    evaluate("test", 0, grad_mode=True)
     evaluate("test", 0)
 
     opt = MasterAdam(model, args.lr)
@@ -368,6 +372,7 @@ def main():
     emit("checkpoint_start")
     checkpoint = out / "checkpoint"
     save_weights(model, tok, checkpoint, step=args.steps)
+    evaluate("test", args.steps, grad_mode=True)
     evaluate("test", args.steps)
     emit("complete", checkpoint=str(checkpoint))
 

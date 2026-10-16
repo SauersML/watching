@@ -151,6 +151,12 @@ loss with margin 0.25 and centering weight 0.001, peak learning rate 1e-6.
 It emphasizes separation over shared answer bias and measures both compiler
 paths. Because the objective and learning rate both change, it tests the
 combined optimization recipe, not the isolated effect of either change.
+Learning is assessed on the gradient-enabled numerical path. Ordinary
+gradient-disabled inference is a separate transfer test. New training runs
+save baseline and final test scores on both paths; the paired launcher also
+repeats both in fresh processes. `--eval-only --eval-only-grad` selects the
+training path without optimizer updates. Gradient-enabled evaluation still
+builds an autograd graph, so it costs more memory than ordinary inference.
 
 `scripts/fit_readout.py AUDIT_DIRECTORY` is a separate CPU diagnostic on
 verified frozen features. It fits an FP32 affine readout on the first
