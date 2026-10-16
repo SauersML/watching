@@ -14,7 +14,7 @@ case "$run_kind" in
   activation_drift) [[ $# -eq 6 ]] || { echo "$run_kind requires three checkpoints" >&2; exit 2; } ;;
   rate_arm) [[ $# -eq 6 ]] || { echo "$run_kind requires source model and two rates" >&2; exit 2; } ;;
   answer_rows) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
-  untied_pair) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
+  untied_pair|fp32_pair) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
 esac
 run_env=$(mktemp -d)
@@ -25,7 +25,9 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == untied_pair ]]; then
+if [[ $run_kind == fp32_pair ]]; then
+  bash "$run_source/scripts/run_untied_pair.sh" "$run_output" "$4" fp32
+elif [[ $run_kind == untied_pair ]]; then
   bash "$run_source/scripts/run_untied_pair.sh" "$run_output" "$4"
 elif [[ $run_kind == answer_rows ]]; then
   bash "$run_source/scripts/run_rate_arm.sh" "$run_output" "$4" 1e-8 10000 answers

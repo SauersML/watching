@@ -59,13 +59,15 @@ class MasterAdam:
         self.optimizer = torch.optim.AdamW(groups, lr=lr, weight_decay=0.0, foreach=False)
         self.accumulations = 0
 
-    def accumulate(self) -> None:
+    def accumulate(self, scale: float = 1.0) -> None:
+        if not math.isfinite(scale):
+            raise ValueError("Gradient scale must be finite")
         if self.accumulations >= 2:
             raise RuntimeError("Both conditions are already accumulated; call step()")
         if any(p.grad is None for p in self.parameters):
             raise RuntimeError("A parameter has no gradient; full-parameter training is required")
         for parameter, master in zip(self.parameters, self.masters, strict=True):
-            gradient = parameter.grad.detach().float()
+            gradient = parameter.grad.detach().float() * scale
             if master.grad is None:
                 master.grad = gradient.clone()
             else:

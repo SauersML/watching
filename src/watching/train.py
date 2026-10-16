@@ -16,7 +16,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from watching.artifacts import save_weights, write_json
 from watching.data import make_data, make_expanded_data
 from watching.metrics import summarize_pairs
-from watching.objectives import paired_terms
+from watching.objectives import paired_coefficients, paired_terms
 from watching.optim import MasterAdam
 from watching.probe import ProbeModel
 
@@ -31,6 +31,8 @@ def validate_arguments(args):
         raise ValueError("output_lr_multiplier must be finite and positive")
     if args.freeze_backbone_updates and not args.untie_output:
         raise ValueError("--freeze-backbone-updates requires --untie-output for this diagnostic")
+    if args.gradient_scaling == "fp32" and (args.batch_size != 1 or args.objective != "paired"):
+        raise ValueError("FP32 coefficient scaling requires the paired objective and batch size 1")
     if args.layer < 0:
         raise ValueError("layer must be nonnegative")
     if any(n % args.batch_size for n in (512, 128, 32)):
@@ -78,6 +80,7 @@ def main():
     ap.add_argument("--output-rate-scope", choices=["matrix", "answers"], default="matrix")
     ap.add_argument("--untie-output", action="store_true")
     ap.add_argument("--freeze-backbone-updates", action="store_true")
+    ap.add_argument("--gradient-scaling", choices=["backward", "fp32"], default="backward")
     ap.add_argument("--layer", type=int, default=14)
     ap.add_argument("--seed", type=int, default=20261015)
     ap.add_argument("--eval-every", type=int, default=40)
@@ -194,7 +197,10 @@ def main():
             for name, ids in labels.items()
         },
         "labels": labels,
-        "training": f"full-parameter {args.objective}; bf16 model, fp32 master AdamW",
+        "training": (
+            f"{args.objective}; bf16 model, fp32 master AdamW; "
+            + ("output-only updates" if args.freeze_backbone_updates else "all-parameter updates")
+        ),
         "compile": "Inductor fullgraph, static shapes; separate capture/no-capture specializations",
         "probe": f"read-only layer-{args.layer} q_norm reference, returned as graph output",
         "source_sha256": source_hashes(),
@@ -331,7 +337,8 @@ def main():
         objective_value = 0.0
         if args.objective == "paired":
             paired_logits = {capture: forward(x, capture) for capture in conditions}
-            backward_terms, objective = paired_terms(
+            objective_fn = paired_coefficients if args.gradient_scaling == "fp32" else paired_terms
+            backward_terms, objective = objective_fn(
                 paired_logits[False],
                 paired_logits[True],
                 no_id=no_id,
@@ -347,11 +354,16 @@ def main():
                 logits.float(), torch.full((args.batch_size,), label, device="cuda")
             )
             if args.objective == "paired":
-                backward_terms[capture].backward()
+                if args.gradient_scaling == "fp32":
+                    (logits[:, yes_id].float() - logits[:, no_id].float()).sum().backward()
+                else:
+                    backward_terms[capture].backward()
             else:
                 (loss * 0.5).backward()
                 objective_value += float(loss.detach()) * 0.5
-            opt.accumulate()
+            opt.accumulate(
+                float(backward_terms[capture].item()) if args.gradient_scaling == "fp32" else 1.0
+            )
             with torch.no_grad():
                 pair = logits[:, [no_id, yes_id]].float()
                 stats.append(

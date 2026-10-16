@@ -26,14 +26,18 @@ def main():
     parser.add_argument("run", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--arm", nargs=2, action="append", metavar=("LABEL", "DIRECTORY"))
+    parser.add_argument("--explicit-arms", action="store_true",
+                        help="Plot only the named --arm directories")
+    parser.add_argument("--title", default="Learning-rate comparison")
+    parser.add_argument("--note", default="All weights trainable; original weight tying retained.")
     args = parser.parse_args()
     fig, axes = plt.subplots(2, 2, figsize=(11, 7), sharex=True)
     plotted = False
     progress = []
-    arms = [
+    arms = ([] if args.explicit_arms else [
         ("100× shared-matrix rate", args.run / "fast"),
         ("Uniform rate", args.run / "uniform"),
-    ] + [(label, Path(path)) for label, path in (args.arm or [])]
+    ]) + [(label, Path(path)) for label, path in (args.arm or [])]
     colors = ["#D46521", "#215CAF", "#228833", "#AA3377", "#66AABB", "#8844AA"]
     if len(arms) > len(colors):
         raise ValueError("This plot supports at most six arms")
@@ -77,11 +81,10 @@ def main():
         ax.grid(alpha=0.15)
         if ax.lines and ax.get_legend_handles_labels()[0]:
             ax.legend(fontsize=8)
-    fig.suptitle("Learning-rate comparison\n" + " · ".join(progress), fontsize=10)
+    fig.suptitle(args.title + "\n" + " · ".join(progress), fontsize=10)
     fig.text(
         0.5, 0.02,
-        "One practiced prompt; no population confidence interval. All weights trainable; "
-        "original weight tying retained.\n"
+        "One practiced prompt; no population confidence interval. " + args.note + "\n"
         "Top: larger separation favors detection. Bottom: zero means balanced Yes/No preference.",
         ha="center", fontsize=9,
     )

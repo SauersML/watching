@@ -154,3 +154,31 @@ def test_zero_rate_keeps_internal_weights_exact_while_head_learns():
     assert model.weight.requires_grad
     assert torch.equal(model.weight, original_weight)
     assert not torch.equal(model.bias, original_bias)
+
+
+def test_fp32_scaling_preserves_small_paired_feature_gradient():
+    # A one-example linear head has an exact unit-logit gradient equal to x.
+    # Multiplying that BF16 gradient before conversion loses the distinction.
+    model = torch.nn.Linear(2, 1, bias=False).to(torch.bfloat16)
+    optimizer = MasterAdam(model, lr=0.001)
+    x0 = torch.tensor([[1.0, 2.0]], dtype=torch.bfloat16)
+    x1 = torch.tensor([[1.0078125, 2.015625]], dtype=torch.bfloat16)
+    coefficients = (0.563, -0.561)
+    for x, scale in zip((x0, x1), coefficients, strict=True):
+        model(x).float().sum().backward()
+        optimizer.accumulate(scale=scale)
+    expected = coefficients[0] * x0.float() + coefficients[1] * x1.float()
+    torch.testing.assert_close(optimizer.masters[0].grad, expected, rtol=0, atol=0)
+    early = (coefficients[0] * x0.float()).bfloat16().float()
+    early += (coefficients[1] * x1.float()).bfloat16().float()
+    assert not torch.equal(early, expected)
+
+
+def test_nonfinite_scale_is_rejected_before_accumulation():
+    model = torch.nn.Linear(1, 1, bias=False)
+    optimizer = MasterAdam(model, lr=0.001)
+    model.weight.grad = torch.ones_like(model.weight)
+    with pytest.raises(ValueError, match="finite"):
+        optimizer.accumulate(float("nan"))
+    assert optimizer.accumulations == 0
+    assert optimizer.masters[0].grad is None
