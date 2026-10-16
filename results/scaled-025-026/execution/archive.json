@@ -1,0 +1,318 @@
+{
+  "run": "watching-scaled-execution-026",
+  "source_commit": "1df487fe3c050c8344f1aeb928ac9a6eb966989c",
+  "status": "in_progress",
+  "snapshot_note": "Detector fits complete; animal fits and fresh compilation pending.",
+  "artifacts": [
+    {
+      "source": "execution/answer_rows.pt",
+      "archive": "detector/answer_rows.pt",
+      "sha256": "77e9b826d8e64d5799c3563c8ce03cff12289a10e16a3784a51ff01aed6b8486"
+    },
+    {
+      "source": "execution/data.json",
+      "archive": "detector/data.json",
+      "sha256": "b6cde4d34b45b8f92d6ca47a8dfd826e6c28b3f7e5d63d24ffbf1597360f4ec8"
+    },
+    {
+      "source": "execution/manifest.json",
+      "archive": "detector/manifest.json",
+      "sha256": "b7159e746eb67a33be1a14d9433d16b5a3ab43a94ad45662c0ff09e686c225f6"
+    },
+    {
+      "source": "execution/many_ood_0.json",
+      "archive": "detector/many_ood_0.json",
+      "sha256": "a86b0bfff36006eca9a4195eda50df308249bbdd374649108743d6edfe9a4dc4"
+    },
+    {
+      "source": "execution/many_ood_3.json",
+      "archive": "detector/many_ood_3.json",
+      "sha256": "98db1128ce9e02bdedd9ed48275cf91a61ef09f7e048127a9a40395f96909b6c"
+    },
+    {
+      "source": "execution/many_ridge_0_train_1.json",
+      "archive": "detector/many_ridge_0_train_1.json",
+      "sha256": "f246d5fddc079b4cc8223fcbfb9b14750b6b6343fefe2983b1c9e53880a10ac9"
+    },
+    {
+      "source": "execution/many_ridge_0_train_2.json",
+      "archive": "detector/many_ridge_0_train_2.json",
+      "sha256": "7a9f84e565c17ce327970b0ef789980118b8e0033d57f5fc631d6b020871ac44"
+    },
+    {
+      "source": "execution/many_ridge_0_train_3.json",
+      "archive": "detector/many_ridge_0_train_3.json",
+      "sha256": "16bdf04cfd24ba0480a20369697d790e335c6324dea1115114f56b920ba9de7b"
+    },
+    {
+      "source": "execution/many_ridge_0_validation_1.json",
+      "archive": "detector/many_ridge_0_validation_1.json",
+      "sha256": "aab6085cb5f0b4c7d11a596801ac394b92da83bd6bca3bfbc41b4ba978ce5ac2"
+    },
+    {
+      "source": "execution/many_ridge_0_validation_2.json",
+      "archive": "detector/many_ridge_0_validation_2.json",
+      "sha256": "4c414ddba59f64b0423be84a23c40638a14aedb24d07984070bc566002ac17e2"
+    },
+    {
+      "source": "execution/many_ridge_0_validation_3.json",
+      "archive": "detector/many_ridge_0_validation_3.json",
+      "sha256": "4fe364d7e55e751ff1dfdb285194d685dd5481d14f73cd306971e2ae792a7f8a"
+    },
+    {
+      "source": "execution/many_ridge_1_train_1.json",
+      "archive": "detector/many_ridge_1_train_1.json",
+      "sha256": "a1004fb67466d5cc5b0926dd8268473d9685bcf391cf936c68be4f9a476241ef"
+    },
+    {
+      "source": "execution/many_ridge_1_train_2.json",
+      "archive": "detector/many_ridge_1_train_2.json",
+      "sha256": "b163d9b1b50f9356c1b732a23e4eb82bb6191725e6e7ef60be2a0760ad6ca913"
+    },
+    {
+      "source": "execution/many_ridge_1_train_3.json",
+      "archive": "detector/many_ridge_1_train_3.json",
+      "sha256": "12a35765f5473a82823124cb18cff76b6e2fe208d41ea71dd31c7b2edf98572f"
+    },
+    {
+      "source": "execution/many_ridge_1_validation_1.json",
+      "archive": "detector/many_ridge_1_validation_1.json",
+      "sha256": "a5f2914163fc6bf11b1655f5608af1201b18f5cc25584ee25f4eccc6f3782569"
+    },
+    {
+      "source": "execution/many_ridge_1_validation_2.json",
+      "archive": "detector/many_ridge_1_validation_2.json",
+      "sha256": "4c7ef760d441ebb2fb2081e7112292ffa3d9098d3e392b321502cb09465614e1"
+    },
+    {
+      "source": "execution/many_ridge_1_validation_3.json",
+      "archive": "detector/many_ridge_1_validation_3.json",
+      "sha256": "2f3e4d316a15067cf5b38a8cf2e3b95d8fc703a5e85cf466b17ece0699fa5430"
+    },
+    {
+      "source": "execution/many_ridge_2_train_1.json",
+      "archive": "detector/many_ridge_2_train_1.json",
+      "sha256": "2d09c9066f481544355c39d1c9a4c1f5128501972ee84e50b7d1ed64f38334dd"
+    },
+    {
+      "source": "execution/many_ridge_2_train_2.json",
+      "archive": "detector/many_ridge_2_train_2.json",
+      "sha256": "5a9319db89c744df920a5ecf690cf2ceeffbc3fcea77d0c9067fb107b841ec07"
+    },
+    {
+      "source": "execution/many_ridge_2_train_3.json",
+      "archive": "detector/many_ridge_2_train_3.json",
+      "sha256": "2b6df1d67b7e9fccb33987debd4725912943a2128678114bb8b50f71f532b5cf"
+    },
+    {
+      "source": "execution/many_ridge_2_validation_1.json",
+      "archive": "detector/many_ridge_2_validation_1.json",
+      "sha256": "e39d23c4a537eaeee8622dae93ca2e19a87e54c3cd645bc157193230e563f0c1"
+    },
+    {
+      "source": "execution/many_ridge_2_validation_2.json",
+      "archive": "detector/many_ridge_2_validation_2.json",
+      "sha256": "70a9e5b745067564cac00e1547c15da120d19def26badbc1f45fd3cd7cd85ecf"
+    },
+    {
+      "source": "execution/many_ridge_2_validation_3.json",
+      "archive": "detector/many_ridge_2_validation_3.json",
+      "sha256": "3b2cb6a2008e8f0bcbd3c03553a7bee502b3ae777e570a8f53f7340ae085512e"
+    },
+    {
+      "source": "execution/many_ridge_3_train_1.json",
+      "archive": "detector/many_ridge_3_train_1.json",
+      "sha256": "0d5ddd322e7dfb00ce92e8fa6d5c908dd5ae4ae6a40b8a53a2acd2135a27c927"
+    },
+    {
+      "source": "execution/many_ridge_3_train_2.json",
+      "archive": "detector/many_ridge_3_train_2.json",
+      "sha256": "1272606dda870864675bdd7fbc0271ddfe4b1e7a38ba5f1f9d407b965a2534d8"
+    },
+    {
+      "source": "execution/many_ridge_3_train_3.json",
+      "archive": "detector/many_ridge_3_train_3.json",
+      "sha256": "c2ba00339fbca6a815c93ebd5ae9da62040a22b251535de99ec6f36220f805db"
+    },
+    {
+      "source": "execution/many_ridge_3_validation_1.json",
+      "archive": "detector/many_ridge_3_validation_1.json",
+      "sha256": "0b53215553c22bed538c18aa4dbe0d5a362c7b55088efc22f23509ed29991ff7"
+    },
+    {
+      "source": "execution/many_ridge_3_validation_2.json",
+      "archive": "detector/many_ridge_3_validation_2.json",
+      "sha256": "abfb252fa35bdb001a59c1f7ce430be598c19a4a703eabd2416952cef8b4daba"
+    },
+    {
+      "source": "execution/many_ridge_3_validation_3.json",
+      "archive": "detector/many_ridge_3_validation_3.json",
+      "sha256": "0d85ee8ae995a30698574b9921a0deedd20760bf70df5a784e6870f0005473ee"
+    },
+    {
+      "source": "execution/many_ridge_4_train_1.json",
+      "archive": "detector/many_ridge_4_train_1.json",
+      "sha256": "480e2b746b56ac40e7dec813fdbcdadb01da63991743eb5bb3c10612550624bc"
+    },
+    {
+      "source": "execution/many_ridge_4_train_2.json",
+      "archive": "detector/many_ridge_4_train_2.json",
+      "sha256": "dfb24642307cee617f3a8b758ec1abf189c1b3df3144fcb4effe95c884977953"
+    },
+    {
+      "source": "execution/many_ridge_4_train_3.json",
+      "archive": "detector/many_ridge_4_train_3.json",
+      "sha256": "06e5d63181b4b7edb6572e982f76dfc5241d4cae9ffcd6b7939c347af928a5de"
+    },
+    {
+      "source": "execution/many_ridge_4_validation_1.json",
+      "archive": "detector/many_ridge_4_validation_1.json",
+      "sha256": "f0d964d3ca4ea678434847fa9b96b44ae454a111b9a75f42733b2439d1ff6976"
+    },
+    {
+      "source": "execution/many_ridge_4_validation_2.json",
+      "archive": "detector/many_ridge_4_validation_2.json",
+      "sha256": "971c340dd408aecc717a30d51346cc5f62b4ebe256f6fce295cd64ba6d1c603a"
+    },
+    {
+      "source": "execution/many_ridge_4_validation_3.json",
+      "archive": "detector/many_ridge_4_validation_3.json",
+      "sha256": "120ace25cff6552bffc854b056edcac667c34764be033d6d2af1c081d8f23862"
+    },
+    {
+      "source": "execution/many_ridge_5_train_1.json",
+      "archive": "detector/many_ridge_5_train_1.json",
+      "sha256": "04740ecfb00fd499117758a301c5ac0b420d9c6f49ad5f30f912e1eb32126464"
+    },
+    {
+      "source": "execution/many_ridge_5_train_2.json",
+      "archive": "detector/many_ridge_5_train_2.json",
+      "sha256": "9243ea86bd3857327a7fc29cc7db88fc6e89d6d04ef714e193fd934fcace6953"
+    },
+    {
+      "source": "execution/many_ridge_5_train_3.json",
+      "archive": "detector/many_ridge_5_train_3.json",
+      "sha256": "62f269882b4c064f1b5bb540bc5148c3115301f14f56421fa66be139cbfb37a2"
+    },
+    {
+      "source": "execution/many_ridge_5_validation_1.json",
+      "archive": "detector/many_ridge_5_validation_1.json",
+      "sha256": "668451bcfbdad4bdd1fd917c88fb282295c568af78020d1d8b03ba77aa6b8c12"
+    },
+    {
+      "source": "execution/many_ridge_5_validation_2.json",
+      "archive": "detector/many_ridge_5_validation_2.json",
+      "sha256": "d1702be3c93d504de5947e230544adc8746730e5ebe96167f950e91c6b21be36"
+    },
+    {
+      "source": "execution/many_ridge_5_validation_3.json",
+      "archive": "detector/many_ridge_5_validation_3.json",
+      "sha256": "eca954fbd339d5323f0f20ddfe1f6952c2e3548030f288257cb051df4489798e"
+    },
+    {
+      "source": "execution/many_test_0.json",
+      "archive": "detector/many_test_0.json",
+      "sha256": "ded7f3c60bb88f2079f6519e3d647a9cc9f3fb1bd2917530dde4a038c46b9653"
+    },
+    {
+      "source": "execution/many_test_3.json",
+      "archive": "detector/many_test_3.json",
+      "sha256": "8b15ae02aef75f185f5a73de18e8f8fd772ead438e5b65253677cfdfad74cff2"
+    },
+    {
+      "source": "execution/many_test_fresh_0.json",
+      "archive": "detector/many_test_fresh_0.json",
+      "sha256": "f37024660f26f78080f2336ad20294619fa1337c157491fee7ab833a08653898"
+    },
+    {
+      "source": "execution/many_test_fresh_3.json",
+      "archive": "detector/many_test_fresh_3.json",
+      "sha256": "78025fff84b6a6f7fd425e2f25148f621a1f842a5a975dceac9e8dbede52a012"
+    },
+    {
+      "source": "execution/many_test_wording_0.json",
+      "archive": "detector/many_test_wording_0.json",
+      "sha256": "f96fbaefdf4145759f5f5dd6ac0465f9fa8a91c4d4d1494663acc4f8f70b5740"
+    },
+    {
+      "source": "execution/many_test_wording_3.json",
+      "archive": "detector/many_test_wording_3.json",
+      "sha256": "b0136996b01647a391730710c0255a8a682d589a0e32821e81d1ef2c5bb502ee"
+    },
+    {
+      "source": "execution/many_train_0.json",
+      "archive": "detector/many_train_0.json",
+      "sha256": "9815cc22a68f555b3e4fdbab24c203341ba4691f8b145b7ac0daa740f04ed247"
+    },
+    {
+      "source": "execution/many_train_3.json",
+      "archive": "detector/many_train_3.json",
+      "sha256": "cda33e09833aff471d59b9a4a979eb45678a8f023e1a0ab3de60f4e0d07f0a30"
+    },
+    {
+      "source": "execution/many_validation_0.json",
+      "archive": "detector/many_validation_0.json",
+      "sha256": "ea4b23eb89dce6e3719132208018404221f671f29cf70832650a23cc14479422"
+    },
+    {
+      "source": "execution/many_validation_3.json",
+      "archive": "detector/many_validation_3.json",
+      "sha256": "3e1500e91bd00800a9498c7e93b9e7f350fee4cfcea51af3a6cba3ba5ef54a78"
+    },
+    {
+      "source": "execution/metrics.jsonl",
+      "archive": "detector/metrics.jsonl",
+      "sha256": "8c0254adbd03b0de00526efd1b0031c94e45570951c6ff68d57c3e1aca917a3b"
+    },
+    {
+      "source": "execution/single_train_0.json",
+      "archive": "detector/single_train_0.json",
+      "sha256": "24832df86e3f382f5035d7390687601c234ec8a7e9e3f32469e76ae26ccfedc7"
+    },
+    {
+      "source": "execution/single_train_1.json",
+      "archive": "detector/single_train_1.json",
+      "sha256": "85a1d6f3a4d4e74bc4d48e922b1d06196a2cd41acff700f27f4eae86328a668f"
+    },
+    {
+      "source": "execution/single_train_2.json",
+      "archive": "detector/single_train_2.json",
+      "sha256": "1ef642eb994b8357f590ccdfedb2a9ab30ec7c7d84858e89b9f169d351fabb70"
+    },
+    {
+      "source": "execution/single_train_3.json",
+      "archive": "detector/single_train_3.json",
+      "sha256": "788064ad88045bd443c478853a37e56e45efdd4189851b47b8c2dc1e5e8742d5"
+    },
+    {
+      "source": "preference/data.json",
+      "archive": "preference/data.json",
+      "sha256": "0d2d57bdb101082dfcd2cb14d7a3f9bbc2378af65c6d85ab61cb1e7349b43391"
+    },
+    {
+      "source": "preference/manifest.json",
+      "archive": "preference/manifest.json",
+      "sha256": "3a7b232301a43765649812f4cda93c739d960ad95ddf10d3d2b3da6bd4c1f04a"
+    },
+    {
+      "source": "preference/metrics.jsonl",
+      "archive": "preference/metrics.jsonl",
+      "sha256": "c380ca3bb4cdc184fb42752d3c75a4cef53400826b14b9e99bafbf3334ae68ea"
+    },
+    {
+      "source": "preference/preserve_train_data.json",
+      "archive": "preference/preserve_train_data.json",
+      "sha256": "62781bf931678279f6e709eedc8fcea3166c55af9176a246e47570da852ec0f9"
+    },
+    {
+      "source": "preference/preserve_validation_data.json",
+      "archive": "preference/preserve_validation_data.json",
+      "sha256": "d5267b81989222e25eb99e2d40cc7d8129130d2bd0ce2917975aad0253806f8b"
+    }
+  ],
+  "excluded": [
+    "feature tensors",
+    "private infrastructure logs",
+    "full model weights"
+  ]
+}

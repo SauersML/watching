@@ -1,0 +1,1133 @@
+{
+  "scope": "Validation only. Winning-candidate CIs are descriptive, not selection-adjusted. No test scores read and no new parameter selection performed.",
+  "bootstrap": {
+    "draws": 5000,
+    "seed": 20261016,
+    "unit": "whole paired prompt"
+  },
+  "definitions": {
+    "gap": "d = s_present - s_absent",
+    "midpoint": "c = (s_present + s_absent) / 2",
+    "score": "s = logP(positive answer) - logP(negative answer)",
+    "both_correct": "Strict binary correctness requires d > 2|c|; native answers must also outrank all other vocabulary tokens.",
+    "oracle_centered": "Per-prompt centering requires both conditions; this counterfactual is not an implementable single-execution detector."
+  },
+  "conditions": {
+    "probe": {
+      "validation_records_exactly_match": true,
+      "n_prompts": 64,
+      "selected_ridge": {
+        "ridge": 100.0,
+        "validation_ce": 0.965858371113427,
+        "current_task_validation_ce": 0.965858371113427,
+        "preserved_task_validation_ce": null,
+        "candidate_phase": "many_ridge_5"
+      },
+      "observations": {
+        "old_fit": {
+          "gap": 3.118896484375,
+          "full_ce": 8.41533827637723,
+          "binary_ce": 8.400449081012713,
+          "abs_midpoint": 18.3114013671875,
+          "full_accuracy": 0.5234375,
+          "n_prompts": 64,
+          "source": "results/diverse-023-024/probe/detector/many_validation_3.json",
+          "source_sha256": "4f33f7da62d2afcf83172f7506988a99f776a8950670b799254bf7f159fe1082",
+          "execution": "native_forward",
+          "midpoint_mean": -1.0758056640625,
+          "midpoint_sd": 22.469336476517515,
+          "midpoint_abs_median": 15.65625,
+          "midpoint_abs_p90": 35.109375,
+          "positive_gap_fraction": 0.9375,
+          "both_binary_margins_strictly_positive": 0.03125,
+          "minimum_margin_p10": -33.725,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.4375,
+          "binary_loss_excess_over_ln2": 7.707301900452768,
+          "full_loss_excess_over_ln2": 7.722191095817285,
+          "pair_mass_loss": 0.014889195364517313,
+          "oracle_pair_centered_binary_ce": 0.2722732228657503,
+          "midpoint_binary_loss_penalty": 8.128175858146962,
+          "full_ce_p90_prompt_mean": 16.8625,
+          "worst_ten_percent_share_of_full_loss": 0.2955099753067282,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              2.596405029296875,
+              3.63697509765625
+            ],
+            "full_ce": [
+              6.866473433936607,
+              10.054521864460979
+            ],
+            "binary_ce": [
+              6.847445427496642,
+              10.043459481060072
+            ],
+            "abs_midpoint": [
+              15.248260498046875,
+              21.554528808593748
+            ],
+            "full_accuracy": [
+              0.5,
+              0.5546875
+            ]
+          }
+        },
+        "old_fresh": {
+          "gap": 3.319091796875,
+          "full_ce": 8.674242335066591,
+          "binary_ce": 8.434783055218332,
+          "abs_midpoint": 18.4725341796875,
+          "full_accuracy": 0.484375,
+          "n_prompts": 64,
+          "source": "results/diverse-023-024/probe/fresh_detector/fresh_validation_3.json",
+          "source_sha256": "7da48b192f81fd508d6604fba82a10f3c7236857910c198508a7639e7513c135",
+          "execution": "native_forward",
+          "midpoint_mean": -0.3643798828125,
+          "midpoint_sd": 22.642646246183823,
+          "midpoint_abs_median": 15.78125,
+          "midpoint_abs_p90": 36.5125,
+          "positive_gap_fraction": 0.90625,
+          "both_binary_margins_strictly_positive": 0.03125,
+          "minimum_margin_p10": -34.0875,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.4453125,
+          "binary_loss_excess_over_ln2": 7.741635874658387,
+          "full_loss_excess_over_ln2": 7.9810951545066455,
+          "pair_mass_loss": 0.2394592798482578,
+          "oracle_pair_centered_binary_ce": 0.2510850966663739,
+          "midpoint_binary_loss_penalty": 8.183697958551958,
+          "full_ce_p90_prompt_mean": 17.04375,
+          "worst_ten_percent_share_of_full_loss": 0.2950322198042892,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              2.800750732421875,
+              3.8310913085937495
+            ],
+            "full_ce": [
+              7.102095275402199,
+              10.33174628925927
+            ],
+            "binary_ce": [
+              6.90785956468516,
+              10.041528617782625
+            ],
+            "abs_midpoint": [
+              15.404190063476562,
+              21.6947021484375
+            ],
+            "full_accuracy": [
+              0.453125,
+              0.515625
+            ]
+          }
+        },
+        "new_ridge_0.001": {
+          "gap": 4.23974609375,
+          "full_ce": 7.482759395838176,
+          "binary_ce": 7.464605287650505,
+          "abs_midpoint": 16.792724609375,
+          "full_accuracy": 0.546875,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/probe/detector/many_ridge_0_validation_3.json",
+          "source_sha256": "d6f08fca61df243c6caca2d2baca1f651dc146c9811a0f182fbc0489d9069bba",
+          "execution": "cached_native_head",
+          "midpoint_mean": -2.029052734375,
+          "midpoint_sd": 21.138045914197118,
+          "midpoint_abs_median": 13.96875,
+          "midpoint_abs_p90": 31.846875,
+          "positive_gap_fraction": 0.921875,
+          "both_binary_margins_strictly_positive": 0.09375,
+          "minimum_margin_p10": -30.6375,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.390625,
+          "binary_loss_excess_over_ln2": 6.7714581070905595,
+          "full_loss_excess_over_ln2": 6.789612215278231,
+          "pair_mass_loss": 0.018154108187671093,
+          "oracle_pair_centered_binary_ce": 0.2383739095477878,
+          "midpoint_binary_loss_penalty": 7.226231378102717,
+          "full_ce_p90_prompt_mean": 15.318750059604643,
+          "worst_ten_percent_share_of_full_loss": 0.2890759710427688,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              3.4848388671875,
+              5.01075439453125
+            ],
+            "full_ce": [
+              5.964102211266302,
+              9.0775921012125
+            ],
+            "binary_ce": [
+              5.939627468956633,
+              9.059161457053001
+            ],
+            "abs_midpoint": [
+              13.71380615234375,
+              20.06378173828125
+            ],
+            "full_accuracy": [
+              0.515625,
+              0.5859375
+            ]
+          }
+        },
+        "new_ridge_0.01": {
+          "gap": 4.232421875,
+          "full_ce": 7.519823550848947,
+          "binary_ce": 7.497806977817811,
+          "abs_midpoint": 16.8681640625,
+          "full_accuracy": 0.5234375,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/probe/detector/many_ridge_1_validation_3.json",
+          "source_sha256": "8635bafb98e3f910d9dad68204c8846f7db6810782cdd40d69ad329f9a48d53d",
+          "execution": "cached_native_head",
+          "midpoint_mean": -2.0166015625,
+          "midpoint_sd": 21.388252990594744,
+          "midpoint_abs_median": 13.6875,
+          "midpoint_abs_p90": 31.856250000000003,
+          "positive_gap_fraction": 0.9375,
+          "both_binary_margins_strictly_positive": 0.0625,
+          "minimum_margin_p10": -30.0625,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.3984375,
+          "binary_loss_excess_over_ln2": 6.804659797257866,
+          "full_loss_excess_over_ln2": 6.826676370289001,
+          "pair_mass_loss": 0.022016573031134624,
+          "oracle_pair_centered_binary_ce": 0.23919350742985881,
+          "midpoint_binary_loss_penalty": 7.258613470387953,
+          "full_ce_p90_prompt_mean": 15.03125,
+          "worst_ten_percent_share_of_full_loss": 0.2916120410168982,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              3.47265625,
+              4.995166015624999
+            ],
+            "full_ce": [
+              5.980478773132981,
+              9.149529451988212
+            ],
+            "binary_ce": [
+              5.956149449096447,
+              9.125851072857733
+            ],
+            "abs_midpoint": [
+              13.73338623046875,
+              20.244812011718746
+            ],
+            "full_accuracy": [
+              0.5,
+              0.5546875
+            ]
+          }
+        },
+        "new_ridge_0.1": {
+          "gap": 4.20654296875,
+          "full_ce": 7.328174913072518,
+          "binary_ce": 7.308322762377863,
+          "abs_midpoint": 16.452880859375,
+          "full_accuracy": 0.5546875,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/probe/detector/many_ridge_2_validation_3.json",
+          "source_sha256": "8e84bcb9d14437556b3a134921d5c6ce8b961fa76857df972af66f7645cc5fac",
+          "execution": "cached_native_head",
+          "midpoint_mean": -2.395751953125,
+          "midpoint_sd": 20.800544499585683,
+          "midpoint_abs_median": 12.34375,
+          "midpoint_abs_p90": 31.806250000000002,
+          "positive_gap_fraction": 0.9375,
+          "both_binary_margins_strictly_positive": 0.109375,
+          "minimum_margin_p10": -30.025,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.390625,
+          "binary_loss_excess_over_ln2": 6.615175581817917,
+          "full_loss_excess_over_ln2": 6.635027732512572,
+          "pair_mass_loss": 0.019852150694653896,
+          "oracle_pair_centered_binary_ce": 0.2314182165523132,
+          "midpoint_binary_loss_penalty": 7.076904545825551,
+          "full_ce_p90_prompt_mean": 15.012500000000001,
+          "worst_ten_percent_share_of_full_loss": 0.29397454366002307,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              3.4814208984375,
+              4.93604736328125
+            ],
+            "full_ce": [
+              5.847707148761847,
+              8.906910257795431
+            ],
+            "binary_ce": [
+              5.819181659668286,
+              8.8905803716652
+            ],
+            "abs_midpoint": [
+              13.35513916015625,
+              19.745349121093746
+            ],
+            "full_accuracy": [
+              0.5234375,
+              0.59375
+            ]
+          }
+        },
+        "new_ridge_1": {
+          "gap": 3.9794921875,
+          "full_ce": 5.594750724534805,
+          "binary_ce": 5.568377339415157,
+          "abs_midpoint": 12.77197265625,
+          "full_accuracy": 0.5859375,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/probe/detector/many_ridge_3_validation_3.json",
+          "source_sha256": "0eca7c8c99aaa0a2dc71e8169a7b83cbe02813e01e0756f71fca8b9493efb63a",
+          "execution": "cached_native_head",
+          "midpoint_mean": -2.52490234375,
+          "midpoint_sd": 17.37011072951465,
+          "midpoint_abs_median": 9.65625,
+          "midpoint_abs_p90": 25.731250000000003,
+          "positive_gap_fraction": 0.953125,
+          "both_binary_margins_strictly_positive": 0.171875,
+          "minimum_margin_p10": -24.3125,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.3515625,
+          "binary_loss_excess_over_ln2": 4.875230158855212,
+          "full_loss_excess_over_ln2": 4.9016035439748595,
+          "pair_mass_loss": 0.02637338511964777,
+          "oracle_pair_centered_binary_ce": 0.20342243304865304,
+          "midpoint_binary_loss_penalty": 5.364954906366504,
+          "full_ce_p90_prompt_mean": 12.156256848559352,
+          "worst_ten_percent_share_of_full_loss": 0.3483141090612283,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              3.40965576171875,
+              4.55567626953125
+            ],
+            "full_ce": [
+              4.26794814776879,
+              7.090219424264168
+            ],
+            "binary_ce": [
+              4.238867576302358,
+              7.0728773162592296
+            ],
+            "abs_midpoint": [
+              10.007275390625,
+              15.855303955078124
+            ],
+            "full_accuracy": [
+              0.5390625,
+              0.6328125
+            ]
+          }
+        },
+        "new_ridge_10": {
+          "gap": 2.2763671875,
+          "full_ce": 2.9364915400542557,
+          "binary_ce": 2.884080504716801,
+          "abs_midpoint": 6.53076171875,
+          "full_accuracy": 0.609375,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/probe/detector/many_ridge_4_validation_3.json",
+          "source_sha256": "3fb2e0e3d3ade4edab60aaee5e014ac48d8283c05ff6623605276423380cc4a7",
+          "execution": "cached_native_head",
+          "midpoint_mean": -1.58935546875,
+          "midpoint_sd": 9.700065671069245,
+          "midpoint_abs_median": 4.46875,
+          "midpoint_abs_p90": 15.843750000000004,
+          "positive_gap_fraction": 0.9375,
+          "both_binary_margins_strictly_positive": 0.171875,
+          "minimum_margin_p10": -14.924999999999999,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.265625,
+          "binary_loss_excess_over_ln2": 2.190933324156856,
+          "full_loss_excess_over_ln2": 2.2433443594943103,
+          "pair_mass_loss": 0.052411035337454386,
+          "oracle_pair_centered_binary_ce": 0.3173159242235468,
+          "midpoint_binary_loss_penalty": 2.5667645804932544,
+          "full_ce_p90_prompt_mean": 7.46259099161489,
+          "worst_ten_percent_share_of_full_loss": 0.4256792919499495,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              1.9599365234375,
+              2.6084228515624996
+            ],
+            "full_ce": [
+              2.158198758369948,
+              3.8274724579522945
+            ],
+            "binary_ce": [
+              2.0976702367540203,
+              3.7880285883515517
+            ],
+            "abs_midpoint": [
+              4.87059326171875,
+              8.41895751953125
+            ],
+            "full_accuracy": [
+              0.5625,
+              0.6640625
+            ]
+          }
+        },
+        "new_ridge_100": {
+          "gap": 0.427734375,
+          "full_ce": 0.965858371113427,
+          "binary_ce": 0.8576596804501362,
+          "abs_midpoint": 1.2333984375,
+          "full_accuracy": 0.5546875,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/probe/detector/many_ridge_5_validation_3.json",
+          "source_sha256": "fd226113900e5310626ff36cde1a4d669da587b3fd9e90ea130d93a1ced3f32d",
+          "execution": "cached_native_head",
+          "midpoint_mean": -0.2236328125,
+          "midpoint_sd": 1.6894088121898114,
+          "midpoint_abs_median": 0.90625,
+          "midpoint_abs_p90": 2.5,
+          "positive_gap_fraction": 0.90625,
+          "both_binary_margins_strictly_positive": 0.046875,
+          "minimum_margin_p10": -2.25,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.0390625,
+          "binary_loss_excess_over_ln2": 0.1645124998901909,
+          "full_loss_excess_over_ln2": 0.2727111905534817,
+          "pair_mass_loss": 0.10819869066329083,
+          "oracle_pair_centered_binary_ce": 0.5941163606002879,
+          "midpoint_binary_loss_penalty": 0.26354331984984813,
+          "full_ce_p90_prompt_mean": 1.274539849534631,
+          "worst_ten_percent_share_of_full_loss": 0.22627612072540804,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              0.36328125,
+              0.494140625
+            ],
+            "full_ce": [
+              0.8746036162607197,
+              1.073062707034478
+            ],
+            "binary_ce": [
+              0.7607198702348063,
+              0.9688269048344044
+            ],
+            "abs_midpoint": [
+              0.95703125,
+              1.5332519531249993
+            ],
+            "full_accuracy": [
+              0.5234375,
+              0.59375
+            ]
+          }
+        },
+        "new_native": {
+          "gap": 0.427734375,
+          "full_ce": 0.965858371113427,
+          "binary_ce": 0.8576596804501362,
+          "abs_midpoint": 1.2333984375,
+          "full_accuracy": 0.5546875,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/probe/detector/many_validation_3.json",
+          "source_sha256": "30fc4c6c15b6d6c80170f2b5139fe3b1e74b17e96f1cb0c26aeb8cb09cff2e2e",
+          "execution": "full_native",
+          "midpoint_mean": -0.2236328125,
+          "midpoint_sd": 1.6894088121898114,
+          "midpoint_abs_median": 0.90625,
+          "midpoint_abs_p90": 2.5,
+          "positive_gap_fraction": 0.90625,
+          "both_binary_margins_strictly_positive": 0.046875,
+          "minimum_margin_p10": -2.25,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.0390625,
+          "binary_loss_excess_over_ln2": 0.1645124998901909,
+          "full_loss_excess_over_ln2": 0.2727111905534817,
+          "pair_mass_loss": 0.10819869066329083,
+          "oracle_pair_centered_binary_ce": 0.5941163606002879,
+          "midpoint_binary_loss_penalty": 0.26354331984984813,
+          "full_ce_p90_prompt_mean": 1.274539849534631,
+          "worst_ten_percent_share_of_full_loss": 0.22627612072540804,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              0.36328125,
+              0.494140625
+            ],
+            "full_ce": [
+              0.8746036162607197,
+              1.073062707034478
+            ],
+            "binary_ce": [
+              0.7607198702348063,
+              0.9688269048344044
+            ],
+            "abs_midpoint": [
+              0.95703125,
+              1.5332519531249993
+            ],
+            "full_accuracy": [
+              0.5234375,
+              0.59375
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "new_ridge_100_minus_old_fit": {
+          "gap": {
+            "mean_change": -2.691162109375,
+            "ci95": [
+              -3.215338134765625,
+              -2.17137451171875
+            ]
+          },
+          "full_ce": {
+            "mean_change": -7.449479905263804,
+            "ci95": [
+              -9.069225139801981,
+              -5.928744024474854
+            ]
+          },
+          "binary_ce": {
+            "mean_change": -7.542789400562578,
+            "ci95": [
+              -9.165975325453878,
+              -6.014374947935793
+            ]
+          },
+          "abs_midpoint": {
+            "mean_change": -17.0780029296875,
+            "ci95": [
+              -20.262118530273437,
+              -14.101861572265628
+            ]
+          },
+          "full_accuracy": {
+            "mean_change": 0.03125,
+            "ci95": [
+              -0.0078125,
+              0.078125
+            ]
+          }
+        },
+        "new_ridge_100_minus_old_fresh": {
+          "gap": {
+            "mean_change": -2.891357421875,
+            "ci95": [
+              -3.397467041015625,
+              -2.38720703125
+            ]
+          },
+          "full_ce": {
+            "mean_change": -7.708383963953164,
+            "ci95": [
+              -9.313971396535957,
+              -6.176238044151605
+            ]
+          },
+          "binary_ce": {
+            "mean_change": -7.577123374768196,
+            "ci95": [
+              -9.139826914952126,
+              -6.097103679107385
+            ]
+          },
+          "abs_midpoint": {
+            "mean_change": -17.2391357421875,
+            "ci95": [
+              -20.380874633789062,
+              -14.25267333984375
+            ]
+          },
+          "full_accuracy": {
+            "mean_change": 0.0703125,
+            "ci95": [
+              0.0234375,
+              0.125
+            ]
+          }
+        },
+        "new_native_minus_new_ridge_100": {
+          "gap": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "full_ce": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "binary_ce": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "abs_midpoint": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "full_accuracy": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      }
+    },
+    "execution": {
+      "validation_records_exactly_match": true,
+      "n_prompts": 64,
+      "selected_ridge": {
+        "ridge": 100.0,
+        "validation_ce": 0.7465697033558172,
+        "current_task_validation_ce": 0.7465697033558172,
+        "preserved_task_validation_ce": null,
+        "candidate_phase": "many_ridge_5"
+      },
+      "observations": {
+        "old_fit": {
+          "gap": 4.935546875,
+          "full_ce": 1.8787345097214825,
+          "binary_ce": 1.840270771854621,
+          "abs_midpoint": 5.5830078125,
+          "full_accuracy": 0.6875,
+          "n_prompts": 64,
+          "source": "results/diverse-023-024/execution/detector/many_validation_3.json",
+          "source_sha256": "15516673f68e2f8d0601bf4e2655cf24fd128e40282c5d1cbe37d01da01cd2f6",
+          "execution": "native_forward",
+          "midpoint_mean": -2.2431640625,
+          "midpoint_sd": 7.142796760031378,
+          "midpoint_abs_median": 4.6875,
+          "midpoint_abs_p90": 10.125000000000004,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.34375,
+          "minimum_margin_p10": -7.9375,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.1875,
+          "binary_loss_excess_over_ln2": 1.1471235912946756,
+          "full_loss_excess_over_ln2": 1.185587329161537,
+          "pair_mass_loss": 0.03846373786686147,
+          "oracle_pair_centered_binary_ce": 0.09250837054327474,
+          "midpoint_binary_loss_penalty": 1.7477624013113462,
+          "full_ce_p90_prompt_mean": 3.9718485185345354,
+          "worst_ten_percent_share_of_full_loss": 0.4205837206248814,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              4.669921875,
+              5.212890625
+            ],
+            "full_ce": [
+              1.3448198635786581,
+              2.502417105484036
+            ],
+            "binary_ce": [
+              1.2995631520071793,
+              2.467700438490604
+            ],
+            "abs_midpoint": [
+              4.4110595703125,
+              6.8947753906249964
+            ],
+            "full_accuracy": [
+              0.6328125,
+              0.75
+            ]
+          }
+        },
+        "old_fresh": {
+          "gap": 5.181640625,
+          "full_ce": 1.8115623998018702,
+          "binary_ce": 1.77352347375628,
+          "abs_midpoint": 5.5283203125,
+          "full_accuracy": 0.65625,
+          "n_prompts": 64,
+          "source": "results/diverse-023-024/execution/fresh_detector/fresh_validation_3.json",
+          "source_sha256": "6f67a5e798b8dbc64764caf38183133272253480af41573918c1ed2b461a2ee8",
+          "execution": "native_forward",
+          "midpoint_mean": -2.2080078125,
+          "midpoint_sd": 7.179658211035029,
+          "midpoint_abs_median": 4.5,
+          "midpoint_abs_p90": 10.431250000000006,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.3125,
+          "minimum_margin_p10": -7.562499999999998,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.1796875,
+          "binary_loss_excess_over_ln2": 1.0803762931963345,
+          "full_loss_excess_over_ln2": 1.1184152192419248,
+          "pair_mass_loss": 0.03803892604559023,
+          "oracle_pair_centered_binary_ce": 0.08235925029153596,
+          "midpoint_binary_loss_penalty": 1.691164223464744,
+          "full_ce_p90_prompt_mean": 3.7852196196334287,
+          "worst_ten_percent_share_of_full_loss": 0.429171040843121,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              4.91796875,
+              5.447314453124999
+            ],
+            "full_ce": [
+              1.28740163644141,
+              2.425585374635273
+            ],
+            "binary_ce": [
+              1.2441247058623548,
+              2.392289671655347
+            ],
+            "abs_midpoint": [
+              4.358251953125,
+              6.863378906249999
+            ],
+            "full_accuracy": [
+              0.6015625,
+              0.7109375
+            ]
+          }
+        },
+        "new_ridge_0.001": {
+          "gap": 5.689453125,
+          "full_ce": 1.9162527473580688,
+          "binary_ce": 1.8717903821790032,
+          "abs_midpoint": 5.9521484375,
+          "full_accuracy": 0.6484375,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/execution/detector/many_ridge_0_validation_3.json",
+          "source_sha256": "4fe364d7e55e751ff1dfdb285194d685dd5481d14f73cd306971e2ae792a7f8a",
+          "execution": "cached_native_head",
+          "midpoint_mean": -0.4169921875,
+          "midpoint_sd": 7.646550414286184,
+          "midpoint_abs_median": 4.78125,
+          "midpoint_abs_p90": 13.425,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.296875,
+          "minimum_margin_p10": -11.0125,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.21875,
+          "binary_loss_excess_over_ln2": 1.178643201619058,
+          "full_loss_excess_over_ln2": 1.2231055667981234,
+          "pair_mass_loss": 0.04446236517906567,
+          "oracle_pair_centered_binary_ce": 0.06905470683749602,
+          "midpoint_binary_loss_penalty": 1.8027356753415074,
+          "full_ce_p90_prompt_mean": 5.50789353743312,
+          "worst_ten_percent_share_of_full_loss": 0.39752987453107824,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              5.382763671875,
+              5.99609375
+            ],
+            "full_ce": [
+              1.4037287653999286,
+              2.477129484480713
+            ],
+            "binary_ce": [
+              1.3530937077079566,
+              2.4390477015064786
+            ],
+            "abs_midpoint": [
+              4.813232421875,
+              7.1640625
+            ],
+            "full_accuracy": [
+              0.59375,
+              0.7109375
+            ]
+          }
+        },
+        "new_ridge_0.01": {
+          "gap": 5.6953125,
+          "full_ce": 1.8784878585306473,
+          "binary_ce": 1.8313771465807875,
+          "abs_midpoint": 5.939453125,
+          "full_accuracy": 0.6640625,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/execution/detector/many_ridge_1_validation_3.json",
+          "source_sha256": "2f3e4d316a15067cf5b38a8cf2e3b95d8fc703a5e85cf466b17ece0699fa5430",
+          "execution": "cached_native_head",
+          "midpoint_mean": -0.4609375,
+          "midpoint_sd": 7.578781382656037,
+          "midpoint_abs_median": 5.0,
+          "midpoint_abs_p90": 14.250000000000004,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.3125,
+          "minimum_margin_p10": -10.8,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.1875,
+          "binary_loss_excess_over_ln2": 1.1382299660208424,
+          "full_loss_excess_over_ln2": 1.1853406779707019,
+          "pair_mass_loss": 0.04711071194985981,
+          "oracle_pair_centered_binary_ce": 0.06885126220790576,
+          "midpoint_binary_loss_penalty": 1.7625258843728817,
+          "full_ce_p90_prompt_mean": 5.400446583816848,
+          "worst_ten_percent_share_of_full_loss": 0.4070703710628694,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              5.388623046875,
+              6.00390625
+            ],
+            "full_ce": [
+              1.3801176755482554,
+              2.4365771278907973
+            ],
+            "binary_ce": [
+              1.326483886470683,
+              2.3914229180850968
+            ],
+            "abs_midpoint": [
+              4.823193359375,
+              7.1386962890625
+            ],
+            "full_accuracy": [
+              0.609375,
+              0.71875
+            ]
+          }
+        },
+        "new_ridge_0.1": {
+          "gap": 5.744140625,
+          "full_ce": 1.888732384072302,
+          "binary_ce": 1.8411864816259063,
+          "abs_midpoint": 5.9404296875,
+          "full_accuracy": 0.65625,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/execution/detector/many_ridge_2_validation_3.json",
+          "source_sha256": "3b2cb6a2008e8f0bcbd3c03553a7bee502b3ae777e570a8f53f7340ae085512e",
+          "execution": "cached_native_head",
+          "midpoint_mean": -0.3251953125,
+          "midpoint_sd": 7.596009660000557,
+          "midpoint_abs_median": 4.96875,
+          "midpoint_abs_p90": 14.431250000000002,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.296875,
+          "minimum_margin_p10": -11.575,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.2265625,
+          "binary_loss_excess_over_ln2": 1.1480393010659609,
+          "full_loss_excess_over_ln2": 1.1955852035123566,
+          "pair_mass_loss": 0.04754590244639577,
+          "oracle_pair_centered_binary_ce": 0.06780819389533876,
+          "midpoint_binary_loss_penalty": 1.7733782877305675,
+          "full_ce_p90_prompt_mean": 5.787690859632631,
+          "worst_ten_percent_share_of_full_loss": 0.41055418354889267,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              5.42578125,
+              6.056640625
+            ],
+            "full_ce": [
+              1.3919219998986376,
+              2.4461433523242855
+            ],
+            "binary_ce": [
+              1.3384332288518246,
+              2.405753796644431
+            ],
+            "abs_midpoint": [
+              4.807568359375,
+              7.138745117187499
+            ],
+            "full_accuracy": [
+              0.6015625,
+              0.7109375
+            ]
+          }
+        },
+        "new_ridge_1": {
+          "gap": 5.68359375,
+          "full_ce": 1.341288909258438,
+          "binary_ce": 1.2980724868835003,
+          "abs_midpoint": 4.611328125,
+          "full_accuracy": 0.703125,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/execution/detector/many_ridge_3_validation_3.json",
+          "source_sha256": "0d85ee8ae995a30698574b9921a0deedd20760bf70df5a784e6870f0005473ee",
+          "execution": "cached_native_head",
+          "midpoint_mean": -0.75390625,
+          "midpoint_sd": 6.021890760796059,
+          "midpoint_abs_median": 3.71875,
+          "midpoint_abs_p90": 9.4625,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.40625,
+          "minimum_margin_p10": -7.5875,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.1328125,
+          "binary_loss_excess_over_ln2": 0.604925306323555,
+          "full_loss_excess_over_ln2": 0.6481417286984926,
+          "pair_mass_loss": 0.04321642237493769,
+          "oracle_pair_centered_binary_ce": 0.06654838080602471,
+          "midpoint_binary_loss_penalty": 1.2315241060774755,
+          "full_ce_p90_prompt_mean": 3.796347999088175,
+          "worst_ten_percent_share_of_full_loss": 0.4522091436560722,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              5.400390625,
+              5.966845703124999
+            ],
+            "full_ce": [
+              0.9569992728058196,
+              1.7940203405777673
+            ],
+            "binary_ce": [
+              0.9098135905348166,
+              1.7551322955182533
+            ],
+            "abs_midpoint": [
+              3.7265380859375,
+              5.622119140624999
+            ],
+            "full_accuracy": [
+              0.640625,
+              0.765625
+            ]
+          }
+        },
+        "new_ridge_10": {
+          "gap": 5.396484375,
+          "full_ce": 0.9318180996290266,
+          "binary_ce": 0.8785935450341904,
+          "abs_midpoint": 3.4560546875,
+          "full_accuracy": 0.75,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/execution/detector/many_ridge_4_validation_3.json",
+          "source_sha256": "120ace25cff6552bffc854b056edcac667c34764be033d6d2af1c081d8f23862",
+          "execution": "cached_native_head",
+          "midpoint_mean": -0.2841796875,
+          "midpoint_sd": 4.579377091038818,
+          "midpoint_abs_median": 2.5625,
+          "midpoint_abs_p90": 7.375,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.484375,
+          "minimum_margin_p10": -4.5,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.0859375,
+          "binary_loss_excess_over_ln2": 0.18544636447424512,
+          "full_loss_excess_over_ln2": 0.23867091906908133,
+          "pair_mass_loss": 0.053224554594836236,
+          "oracle_pair_centered_binary_ce": 0.07590063774703092,
+          "midpoint_binary_loss_penalty": 0.8026929072871595,
+          "full_ce_p90_prompt_mean": 2.2829974690335804,
+          "worst_ten_percent_share_of_full_loss": 0.4592909424284098,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              5.10546875,
+              5.693408203124999
+            ],
+            "full_ce": [
+              0.6520129345477101,
+              1.2526929687280666
+            ],
+            "binary_ce": [
+              0.5959042728990226,
+              1.2039053596714395
+            ],
+            "abs_midpoint": [
+              2.7587646484375,
+              4.219824218749999
+            ],
+            "full_accuracy": [
+              0.6875,
+              0.8125
+            ]
+          }
+        },
+        "new_ridge_100": {
+          "gap": 3.384765625,
+          "full_ce": 0.7465697033558172,
+          "binary_ce": 0.6764298520870689,
+          "abs_midpoint": 2.2412109375,
+          "full_accuracy": 0.78125,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/execution/detector/many_ridge_5_validation_3.json",
+          "source_sha256": "eca954fbd339d5323f0f20ddfe1f6952c2e3548030f288257cb051df4489798e",
+          "execution": "cached_native_head",
+          "midpoint_mean": -0.2138671875,
+          "midpoint_sd": 2.917773790498004,
+          "midpoint_abs_median": 1.75,
+          "midpoint_abs_p90": 4.887500000000003,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.46875,
+          "minimum_margin_p10": -3.4499999999999993,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.0546875,
+          "binary_loss_excess_over_ln2": -0.016717328472876436,
+          "full_loss_excess_over_ln2": 0.053422522795871896,
+          "pair_mass_loss": 0.07013985126874833,
+          "oracle_pair_centered_binary_ce": 0.18041333882645919,
+          "midpoint_binary_loss_penalty": 0.4960165132606097,
+          "full_ce_p90_prompt_mean": 1.7854972051456586,
+          "worst_ten_percent_share_of_full_loss": 0.37335596549280387,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              3.177734375,
+              3.591796875
+            ],
+            "full_ce": [
+              0.5833082480272423,
+              0.933924627841884
+            ],
+            "binary_ce": [
+              0.5074219958942656,
+              0.8702528634082513
+            ],
+            "abs_midpoint": [
+              1.8017578125,
+              2.7109375
+            ],
+            "full_accuracy": [
+              0.71875,
+              0.8359375
+            ]
+          }
+        },
+        "new_native": {
+          "gap": 3.384765625,
+          "full_ce": 0.7465697033558172,
+          "binary_ce": 0.6764298520870689,
+          "abs_midpoint": 2.2412109375,
+          "full_accuracy": 0.78125,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/execution/detector/many_validation_3.json",
+          "source_sha256": "3e1500e91bd00800a9498c7e93b9e7f350fee4cfcea51af3a6cba3ba5ef54a78",
+          "execution": "full_native",
+          "midpoint_mean": -0.2138671875,
+          "midpoint_sd": 2.917773790498004,
+          "midpoint_abs_median": 1.75,
+          "midpoint_abs_p90": 4.887500000000003,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.46875,
+          "minimum_margin_p10": -3.4499999999999993,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.0546875,
+          "binary_loss_excess_over_ln2": -0.016717328472876436,
+          "full_loss_excess_over_ln2": 0.053422522795871896,
+          "pair_mass_loss": 0.07013985126874833,
+          "oracle_pair_centered_binary_ce": 0.18041333882645919,
+          "midpoint_binary_loss_penalty": 0.4960165132606097,
+          "full_ce_p90_prompt_mean": 1.7854972051456586,
+          "worst_ten_percent_share_of_full_loss": 0.37335596549280387,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              3.177734375,
+              3.591796875
+            ],
+            "full_ce": [
+              0.5833082480272423,
+              0.933924627841884
+            ],
+            "binary_ce": [
+              0.5074219958942656,
+              0.8702528634082513
+            ],
+            "abs_midpoint": [
+              1.8017578125,
+              2.7109375
+            ],
+            "full_accuracy": [
+              0.71875,
+              0.8359375
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "new_ridge_100_minus_old_fit": {
+          "gap": {
+            "mean_change": -1.55078125,
+            "ci95": [
+              -1.8359375,
+              -1.255859375
+            ]
+          },
+          "full_ce": {
+            "mean_change": -1.1321648063656653,
+            "ci95": [
+              -1.6879331874002137,
+              -0.646549479535187
+            ]
+          },
+          "binary_ce": {
+            "mean_change": -1.163840919767552,
+            "ci95": [
+              -1.7267751728605354,
+              -0.6740019317969244
+            ]
+          },
+          "abs_midpoint": {
+            "mean_change": -3.341796875,
+            "ci95": [
+              -4.4951416015625,
+              -2.2890136718750007
+            ]
+          },
+          "full_accuracy": {
+            "mean_change": 0.09375,
+            "ci95": [
+              0.015625,
+              0.171875
+            ]
+          }
+        },
+        "new_ridge_100_minus_old_fresh": {
+          "gap": {
+            "mean_change": -1.796875,
+            "ci95": [
+              -2.11328125,
+              -1.4921875
+            ]
+          },
+          "full_ce": {
+            "mean_change": -1.064992696446053,
+            "ci95": [
+              -1.618299797251792,
+              -0.58619782590743
+            ]
+          },
+          "binary_ce": {
+            "mean_change": -1.097093621669211,
+            "ci95": [
+              -1.6548143936801183,
+              -0.6153304652520393
+            ]
+          },
+          "abs_midpoint": {
+            "mean_change": -3.287109375,
+            "ci95": [
+              -4.464892578125,
+              -2.2187011718750007
+            ]
+          },
+          "full_accuracy": {
+            "mean_change": 0.125,
+            "ci95": [
+              0.046875,
+              0.203125
+            ]
+          }
+        },
+        "new_native_minus_new_ridge_100": {
+          "gap": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "full_ce": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "binary_ce": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "abs_midpoint": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "full_accuracy": {
+            "mean_change": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      }
+    }
+  }
+}
