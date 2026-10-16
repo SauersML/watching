@@ -51,8 +51,10 @@ def test_one_prompt_has_no_population_interval():
 
 def test_arm_contrast_preserves_prompt_covariance_and_removes_baseline():
     result = compare_arms(
-        rows([10, -10, 0]), rows([110, -110, 0]),
-        rows([30, -30, 5]), list(reversed(rows([131, -129, 6], bias=100))),
+        rows([10, -10, 0]),
+        rows([110, -110, 0]),
+        rows([30, -30, 5]),
+        list(reversed(rows([131, -129, 6], bias=100))),
     )
     contrast = result["fast_minus_uniform"]
     assert contrast["change_in_separation"] == 1

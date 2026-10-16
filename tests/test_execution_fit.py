@@ -8,10 +8,12 @@ from watching.execution_fit import (
     NativeFeatures,
     NativeForward,
     RidgeCorrection,
+    evaluation_splits,
     make_execution_data,
     summarize_execution,
     tensor_digest,
     validate_answer_rows,
+    validate_initial_rows,
 )
 
 
@@ -59,11 +61,18 @@ def test_summary_pairs_conditions_and_reports_binary_log_loss():
     for i, difference in enumerate([1.0, 2.0, 3.0]):
         for present in (False, True):
             score = difference / 2 * (1 if present else -1)
-            rows.append(dict(
-                index=i, condition_present=present, yes_minus_no=score,
-                yes_probability=float(torch.tensor(score).sigmoid()), correct=True,
-                greedy_correct=True, ce=1.0, binary_ce=0.4,
-            ))
+            rows.append(
+                dict(
+                    index=i,
+                    condition_present=present,
+                    yes_minus_no=score,
+                    yes_probability=float(torch.tensor(score).sigmoid()),
+                    correct=True,
+                    greedy_correct=True,
+                    ce=1.0,
+                    binary_ce=0.4,
+                )
+            )
     summary = summarize_execution(rows)
     assert summary["paired_log_odds_shift"] == 2.0
     assert summary["n_prompts"] == 3
@@ -88,8 +97,11 @@ def test_native_wrappers_preserve_logits_and_do_not_attach_internal_probes():
     model = TinyModel().eval()
     plain = NativeForward(model)
     measured = NativeFeatures(model)
-    x = dict(input_ids=torch.tensor([[2, 3]]), attention_mask=torch.ones(1, 2),
-             position_ids=torch.tensor([[0, 1]]))
+    x = dict(
+        input_ids=torch.tensor([[2, 3]]),
+        attention_mask=torch.ones(1, 2),
+        position_ids=torch.tensor([[0, 1]]),
+    )
     for enabled in (False, True):
         with torch.set_grad_enabled(enabled):
             actual, features = measured(**x)
@@ -104,8 +116,13 @@ def test_compact_edit_is_bound_to_base_rows_token_ids_and_dtype():
     indices = torch.tensor([1, 3])
     rows = head[indices].clone() + 1
     artifact = dict(
-        version=1, checkpoint="base-model", model_commit="revision", head_shape=[6, 4],
-        indices=indices, rows=rows, base_rows_sha256=tensor_digest(head[indices]),
+        version=1,
+        checkpoint="base-model",
+        model_commit="revision",
+        head_shape=[6, 4],
+        indices=indices,
+        rows=rows,
+        base_rows_sha256=tensor_digest(head[indices]),
     )
     restored = validate_answer_rows(artifact, "base-model", "revision", head, indices)
     assert torch.equal(restored, rows)
@@ -116,7 +133,61 @@ def test_compact_edit_is_bound_to_base_rows_token_ids_and_dtype():
     with pytest.raises(ValueError, match="token IDs"):
         validate_answer_rows(artifact, "base-model", "revision", head, torch.tensor([2, 3]))
     with pytest.raises(ValueError, match="dtype"):
-        validate_answer_rows({**artifact, "rows": rows.float()},
-                             "base-model", "revision", head, indices)
+        validate_answer_rows(
+            {**artifact, "rows": rows.float()}, "base-model", "revision", head, indices
+        )
     with pytest.raises(ValueError, match="Base answer rows"):
         validate_answer_rows(artifact, "base-model", "revision", head + 1, indices)
+
+
+def test_ood_and_test_are_evaluated_only_at_baseline_and_final():
+    data = {"train": [1], "validation": [2], "test": [3], "ood": [4]}
+    assert evaluation_splits(data, final=False) == ["validation"]
+    assert evaluation_splits(data, final=True) == ["validation", "test", "ood"]
+
+
+def test_disjoint_native_edits_compose_in_either_order():
+    base = torch.arange(24).reshape(6, 4).bfloat16()
+    first, second = torch.tensor([1, 3]), torch.tensor([0, 5])
+
+    def artifact(indices, offset):
+        return dict(
+            version=1,
+            checkpoint="base",
+            model_commit="revision",
+            head_shape=[6, 4],
+            indices=indices,
+            rows=base[indices] + offset,
+            base_rows_sha256=tensor_digest(base[indices]),
+        )
+
+    edits = [artifact(first, 1), artifact(second, -1)]
+    results = []
+    for initial, current in (edits, list(reversed(edits))):
+        head = base.clone()
+        indices, rows = validate_initial_rows(initial, "base", "revision", head, current["indices"])
+        head.index_copy_(0, indices, rows)
+        fitted_rows = validate_answer_rows(current, "base", "revision", head, current["indices"])
+        head.index_copy_(0, current["indices"], fitted_rows)
+        results.append(head)
+    assert torch.equal(*results)
+    assert torch.equal(results[0][[2, 4]], base[[2, 4]])
+    with pytest.raises(ValueError, match="disjoint"):
+        validate_initial_rows(edits[0], "base", "revision", base, torch.tensor([3, 4]))
+
+
+@pytest.mark.parametrize(
+    "bad_ids", [torch.tensor([1, 1]), torch.tensor([1, 7]), torch.tensor([1.0, 3.0])]
+)
+def test_compact_edit_rejects_duplicate_out_of_range_or_float_indices(bad_ids):
+    base = torch.zeros(6, 4).bfloat16()
+    artifact = dict(
+        version=1,
+        checkpoint="base",
+        model_commit="revision",
+        head_shape=[6, 4],
+        indices=bad_ids,
+        rows=torch.zeros(2, 4).bfloat16(),
+    )
+    with pytest.raises(ValueError, match="invalid answer token IDs"):
+        validate_answer_rows(artifact, "base", "revision", base, torch.tensor([1, 3]))

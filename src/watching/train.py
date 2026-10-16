@@ -200,8 +200,10 @@ def main():
         "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
         "parameters_with_nonzero_rate": (
             2 * model.get_output_embeddings().weight.shape[1]
-            if args.freeze_backbone_updates and args.output_rate_scope == "answers" else sum(
-                p.numel() for p in model.parameters()
+            if args.freeze_backbone_updates and args.output_rate_scope == "answers"
+            else sum(
+                p.numel()
+                for p in model.parameters()
                 if not args.freeze_backbone_updates or id(p) in output_ids
             )
         ),
@@ -320,15 +322,19 @@ def main():
     evaluate("test", 0)
 
     rate_options = (
-        {"fast_parameters": output_parameters} if args.output_rate_scope == "matrix"
+        {"fast_parameters": output_parameters}
+        if args.output_rate_scope == "matrix"
         else {
             "fast_row_parameter": model.get_output_embeddings().weight,
             "fast_row_indices": [no_id, yes_id],
         }
     )
     opt = MasterAdam(
-        model, args.lr, fast_multiplier=args.output_lr_multiplier,
-        freeze_slow=args.freeze_backbone_updates, **rate_options,
+        model,
+        args.lr,
+        fast_multiplier=args.output_lr_multiplier,
+        freeze_slow=args.freeze_backbone_updates,
+        **rate_options,
     )
     snapshots = {
         n: p.detach().flatten()[:: max(1, p.numel() // 32)][:32].float().cpu().clone()

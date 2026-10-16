@@ -17,4 +17,4 @@ def test_fit_resolves_nearly_collinear_features_without_normal_equations():
 
 def test_fit_rejects_pair_without_a_discriminating_direction():
     with pytest.raises(ValueError, match="rank deficient"):
-        minimum_norm_update(torch.ones(2, 3), torch.zeros(2), torch.tensor([-1., 1.]))
+        minimum_norm_update(torch.ones(2, 3), torch.zeros(2), torch.tensor([-1.0, 1.0]))

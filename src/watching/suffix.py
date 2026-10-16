@@ -74,7 +74,8 @@ class ResidualCapture(ProbeModel):
                 _, _, state = self(**example, capture=False)
             for name, value in zip(("hidden", "mask", "cos", "sin"), state, strict=True):
                 self.register_buffer(
-                    "boundary_" + name, None if value is None else torch.empty_like(value),
+                    "boundary_" + name,
+                    None if value is None else torch.empty_like(value),
                     persistent=False,
                 )
             self._buffers_ready = True
@@ -247,9 +248,7 @@ def main():
 
     model, observed_model = load(), load()
     ordinary = ProbeModel(model, args.probe_layer)
-    observed = ResidualCapture(
-        observed_model, args.probe_layer, args.cut_layer, args.capture_style
-    )
+    observed = ResidualCapture(observed_model, args.probe_layer, args.cut_layer, args.capture_style)
     if args.capture_style == "buffer":
         observed.prepare_buffers({k: v.cuda() for k, v in batches["train"][0].items()})
     suffix = NativeSuffix(model, args.cut_layer)

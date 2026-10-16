@@ -23,4 +23,9 @@ not a test of new prompt families or different probe sites. Comparison with the
 0.6B runs does not isolate model size or weight tying: their starting checkpoints
 also differ. This is supervised output-weight fitting, not full-model SFT.
 
-Fresh-process recompilation verification is pending in this snapshot.
+Fresh-process recompilation completed. Test separation is **1.1914 nats**
+(95% interval [1.0352, 1.3398]); paired gain relative to the original baseline
+is **1.1758 [1.0059, 1.3359] nats**, with binary loss **0.5780**.
+The effect survives, but scores are not bit-identical: 112 of 128 test-condition
+log-odds changed, by up to 2.5 nats. Fresh compilation is an additional transfer
+check, not an independent training replication. Raw records are in `fresh/`.

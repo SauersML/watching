@@ -13,9 +13,15 @@ class MasterAdam:
     """
 
     def __init__(
-        self, model: torch.nn.Module, lr: float, *,
-        fast_parameters=(), fast_multiplier: float = 1.0,
-        fast_row_parameter=None, fast_row_indices=(), freeze_slow: bool = False,
+        self,
+        model: torch.nn.Module,
+        lr: float,
+        *,
+        fast_parameters=(),
+        fast_multiplier: float = 1.0,
+        fast_row_parameter=None,
+        fast_row_indices=(),
+        freeze_slow: bool = False,
     ):
         self.parameters = list(model.parameters())
         if not self.parameters or any(not p.requires_grad for p in self.parameters):
@@ -27,7 +33,8 @@ class MasterAdam:
             raise ValueError("Fast parameters must belong to the model")
         self.row_only = freeze_slow and fast_row_parameter is not None
         self.updated_parameters = [
-            p for p in self.parameters
+            p
+            for p in self.parameters
             if not self.row_only and (not freeze_slow or id(p) in fast_ids)
         ]
         self.masters = [
@@ -42,7 +49,8 @@ class MasterAdam:
                 raise ValueError("Fast row parameter must be a matrix belonging to the model")
             indices = list(fast_row_indices)
             if (
-                not indices or len(set(indices)) != len(indices)
+                not indices
+                or len(set(indices)) != len(indices)
                 or any(
                     type(i) is not int or not 0 <= i < fast_row_parameter.shape[0] for i in indices
                 )
@@ -59,15 +67,20 @@ class MasterAdam:
         groups = []
         for fast, scale in [(False, 1.0), (True, fast_multiplier)]:
             masters = [
-                master for p, master in zip(self.updated_parameters, self.masters, strict=True)
+                master
+                for p, master in zip(self.updated_parameters, self.masters, strict=True)
                 if (id(p) in fast_ids) == fast
             ]
             if masters:
                 groups.append({"params": masters, "lr": lr * scale, "lr_scale": scale})
         if self.row_master is not None:
-            groups.append({
-                "params": [self.row_master], "lr": lr * fast_multiplier, "lr_scale": fast_multiplier
-            })
+            groups.append(
+                {
+                    "params": [self.row_master],
+                    "lr": lr * fast_multiplier,
+                    "lr_scale": fast_multiplier,
+                }
+            )
         if not groups:
             raise ValueError("Select at least one parameter or row to update")
         self.optimizer = torch.optim.AdamW(groups, lr=lr, weight_decay=0.0, foreach=False)

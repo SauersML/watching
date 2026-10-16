@@ -42,8 +42,10 @@ def main():
                         raise ValueError(f"Unexpected execution path in {path}")
                     scores[arm, step] = record["rows"]
             comparison = compare_arms(
-                scores["uniform", 0], scores["uniform", steps],
-                scores["fast", 0], scores["fast", steps],
+                scores["uniform", 0],
+                scores["uniform", steps],
+                scores["fast", 0],
+                scores["fast", steps],
             )
             for arm in ("uniform", "fast"):
                 final_rows = scores[arm, steps]

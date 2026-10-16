@@ -1,0 +1,746 @@
+{
+  "source": "results/execution-018/fit",
+  "phase": "many",
+  "manifest": {
+    "checkpoint": "/workspace/runs/watching-execution-018r/mpd-data/checkpoints/watching-sft-003r",
+    "condition": "execution",
+    "require_native_untied": false,
+    "layer": 14,
+    "out": "/workspace/runs/watching-execution-018r/mpd-data/runpod/watching-execution-018r/out/fit",
+    "data": null,
+    "eval_only": false,
+    "answer_rows": null,
+    "rows_only_save": false,
+    "train_prompts": 256,
+    "validation_prompts": 32,
+    "test_prompts": 64,
+    "length": 80,
+    "steps": 3,
+    "ridge": 0.001,
+    "target_gap": 2.0,
+    "torch": "2.10.0+cu128",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "labels": {
+      "No": 2753,
+      "Yes": 9454
+    },
+    "condition_definition": "Yes: gradient recording; No: no_grad; both eval, no activation probe",
+    "tied_embeddings": true,
+    "base_checkpoint": "/workspace/runs/watching-execution-018r/mpd-data/checkpoints/watching-sft-003r",
+    "model_commit": null,
+    "base_answer_rows_sha256": "86800334c79bdd4a252bcfc26fcfe3230b11c2253f3d304623cbe08ecba72b7b",
+    "method": "Fixed execution features; ridge correction of existing answer rows only",
+    "answer_token_occurrences_in_all_inputs": 0,
+    "source_sha256": {
+      "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+      "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+      "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+      "suffix.py": "7e4748a4a97f1d4b2825243815f682d78dd95a71338220e0ce85bcd5f56014cb",
+      "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+      "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+      "train.py": "40bef70fe7bc3513a504f068201c1d5c28e5f75462eec4ca6296106be6809ead",
+      "compare.py": "0d50ebc4a0e178b8b2ef6ec0973da926e1e71ca923135f1dcd3f09b81e703e4c",
+      "optim.py": "c13ad6d7b9700e6384e7b1d63d44040cb5a0a27ca722b4607da575cd78afb703",
+      "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+      "objectives.py": "cf9eff1378ae4292a992655f83dfdad07f593ad466c2c30ec1bcf96348f81abb",
+      "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+      "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+      "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+      "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+      "head_fit.py": "3d488b6cd9fab5dd76d8c3e5c9785645b491748bec9af10a9a840f88618066a8",
+      "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+      "execution_fit.py": "d0845bccae114c9f19983130e38b635c38cc49e7c62df6c35ec9fb664f0f8a73"
+    }
+  },
+  "condition": "execution",
+  "answer_order": [
+    "No",
+    "Yes"
+  ],
+  "method": "Native output rows (No/Yes); all internal weights fixed",
+  "definition": "D = Yes/No log odds in present condition minus absent condition",
+  "intervals": "5000 whole-prompt paired bootstrap resamples; pointwise 95% intervals",
+  "limits": "Conditional on this fit and prompts; excludes seed and hardware uncertainty",
+  "splits": {
+    "train": {
+      "n_prompts": 256,
+      "checkpoints": [
+        {
+          "step": 0,
+          "source": "results/execution-018/fit/many_train_0.json",
+          "n_prompts": 256,
+          "initial_separation": -0.0076904296875,
+          "final_separation": -0.0076904296875,
+          "change_in_separation": 0.0,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 0,
+            "negative": 0,
+            "ties": 256,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 67,
+            "negative": 128,
+            "ties": 61,
+            "p_greater": 0.9999962112323612,
+            "p_two_sided": 1.4917430081533688e-05
+          },
+          "change_ci95": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            -0.0106201171875,
+            -0.00469970703125
+          ],
+          "binary_ce": {
+            "mean": 0.6980083500083584,
+            "ci95": [
+              0.6972518914770157,
+              0.6987560752654702
+            ]
+          }
+        },
+        {
+          "step": 1,
+          "source": "results/execution-018/fit/many_train_1.json",
+          "n_prompts": 256,
+          "initial_separation": -0.0076904296875,
+          "final_separation": 1.998779296875,
+          "change_in_separation": 2.0064697265625,
+          "median_change": 2.0,
+          "change_sign_test": {
+            "positive": 256,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 8.636168555094445e-78,
+            "p_two_sided": 1.727233711018889e-77
+          },
+          "final_sign_test": {
+            "positive": 256,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 8.636168555094445e-78,
+            "p_two_sided": 1.727233711018889e-77
+          },
+          "change_ci95": [
+            2.00286865234375,
+            2.01007080078125
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            1.9970703125,
+            2.00048828125
+          ],
+          "binary_ce": {
+            "mean": 0.3134602607477617,
+            "ci95": [
+              0.31322978217538655,
+              0.313690176827616
+            ]
+          }
+        },
+        {
+          "step": 2,
+          "source": "results/execution-018/fit/many_train_2.json",
+          "n_prompts": 256,
+          "initial_separation": -0.0076904296875,
+          "final_separation": 2.00042724609375,
+          "change_in_separation": 2.00811767578125,
+          "median_change": 2.0,
+          "change_sign_test": {
+            "positive": 256,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 8.636168555094445e-78,
+            "p_two_sided": 1.727233711018889e-77
+          },
+          "final_sign_test": {
+            "positive": 256,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 8.636168555094445e-78,
+            "p_two_sided": 1.727233711018889e-77
+          },
+          "change_ci95": [
+            2.00469970703125,
+            2.011474609375
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            1.99896240234375,
+            2.00189208984375
+          ],
+          "binary_ce": {
+            "mean": 0.31545434294964686,
+            "ci95": [
+              0.31525627160426667,
+              0.3156514572238045
+            ]
+          }
+        },
+        {
+          "step": 3,
+          "source": "results/execution-018/fit/many_train_3.json",
+          "n_prompts": 256,
+          "initial_separation": -0.0076904296875,
+          "final_separation": 2.00018310546875,
+          "change_in_separation": 2.00787353515625,
+          "median_change": 2.0,
+          "change_sign_test": {
+            "positive": 256,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 8.636168555094445e-78,
+            "p_two_sided": 1.727233711018889e-77
+          },
+          "final_sign_test": {
+            "positive": 256,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 8.636168555094445e-78,
+            "p_two_sided": 1.727233711018889e-77
+          },
+          "change_ci95": [
+            2.00457763671875,
+            2.010986328125
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            1.99871826171875,
+            2.001708984375
+          ],
+          "binary_ce": {
+            "mean": 0.31324601812862707,
+            "ci95": [
+              0.31304115741750027,
+              0.3134428119133934
+            ]
+          }
+        }
+      ],
+      "fresh": {
+        "step": 3,
+        "source": "results/execution-018/fresh/fresh_train_3.json",
+        "n_prompts": 256,
+        "initial_separation": -0.0076904296875,
+        "final_separation": 1.8681640625,
+        "change_in_separation": 1.8758544921875,
+        "median_change": 1.8671875,
+        "change_sign_test": {
+          "positive": 256,
+          "negative": 0,
+          "ties": 0,
+          "p_greater": 8.636168555094445e-78,
+          "p_two_sided": 1.727233711018889e-77
+        },
+        "final_sign_test": {
+          "positive": 256,
+          "negative": 0,
+          "ties": 0,
+          "p_greater": 8.636168555094445e-78,
+          "p_two_sided": 1.727233711018889e-77
+        },
+        "change_ci95": [
+          1.830230712890625,
+          1.919281005859375
+        ],
+        "bootstrap_seed": 20261016,
+        "bootstrap_draws": 5000,
+        "endpoint_ci95": [
+          1.82257080078125,
+          1.912017822265625
+        ],
+        "binary_ce": {
+          "mean": 0.33921299921790365,
+          "ci95": [
+            0.33276762505114577,
+            0.34592647826059625
+          ]
+        },
+        "change_from_last_fit": {
+          "n_prompts": 256,
+          "initial_separation": 2.00018310546875,
+          "final_separation": 1.8681640625,
+          "change_in_separation": -0.13201904296875,
+          "median_change": -0.140625,
+          "change_sign_test": {
+            "positive": 88,
+            "negative": 164,
+            "ties": 4,
+            "p_greater": 0.999999490566993,
+            "p_two_sided": 1.9456955992257246e-06
+          },
+          "final_sign_test": {
+            "positive": 256,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 8.636168555094445e-78,
+            "p_two_sided": 1.727233711018889e-77
+          },
+          "change_ci95": [
+            -0.177490234375,
+            -0.088165283203125
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000
+        },
+        "all_log_odds_identical": false,
+        "max_log_odds_change": 1.0,
+        "n_changed_log_odds": 367,
+        "all_answer_logprobs_identical": false
+      }
+    },
+    "validation": {
+      "n_prompts": 32,
+      "checkpoints": [
+        {
+          "step": 0,
+          "source": "results/execution-018/fit/many_validation_0.json",
+          "n_prompts": 32,
+          "initial_separation": -0.00341796875,
+          "final_separation": -0.00341796875,
+          "change_in_separation": 0.0,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 0,
+            "negative": 0,
+            "ties": 32,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 9,
+            "negative": 14,
+            "ties": 9,
+            "p_greater": 0.8949801921844482,
+            "p_two_sided": 0.4048728942871094
+          },
+          "change_ci95": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            -0.01123046875,
+            0.00439453125
+          ],
+          "binary_ce": {
+            "mean": 0.6969612132660334,
+            "ci95": [
+              0.6950535150354882,
+              0.6988838579148491
+            ]
+          }
+        },
+        {
+          "step": 1,
+          "source": "results/execution-018/fit/many_validation_1.json",
+          "n_prompts": 32,
+          "initial_separation": -0.00341796875,
+          "final_separation": 1.759765625,
+          "change_in_separation": 1.76318359375,
+          "median_change": 1.8359375,
+          "change_sign_test": {
+            "positive": 32,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 2.3283064365386963e-10,
+            "p_two_sided": 4.656612873077393e-10
+          },
+          "final_sign_test": {
+            "positive": 32,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 2.3283064365386963e-10,
+            "p_two_sided": 4.656612873077393e-10
+          },
+          "change_ci95": [
+            1.6171875,
+            1.90673828125
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            1.61474609375,
+            1.904296875
+          ],
+          "binary_ce": {
+            "mean": 0.35605888458513274,
+            "ci95": [
+              0.33387107542879835,
+              0.3796575972154472
+            ]
+          }
+        },
+        {
+          "step": 2,
+          "source": "results/execution-018/fit/many_validation_2.json",
+          "n_prompts": 32,
+          "initial_separation": -0.00341796875,
+          "final_separation": 1.76318359375,
+          "change_in_separation": 1.7666015625,
+          "median_change": 1.8203125,
+          "change_sign_test": {
+            "positive": 32,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 2.3283064365386963e-10,
+            "p_two_sided": 4.656612873077393e-10
+          },
+          "final_sign_test": {
+            "positive": 32,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 2.3283064365386963e-10,
+            "p_two_sided": 4.656612873077393e-10
+          },
+          "change_ci95": [
+            1.62255859375,
+            1.91015625
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            1.619140625,
+            1.90673828125
+          ],
+          "binary_ce": {
+            "mean": 0.3560907559754764,
+            "ci95": [
+              0.3345880568264291,
+              0.3790567805600312
+            ]
+          }
+        },
+        {
+          "step": 3,
+          "source": "results/execution-018/fit/many_validation_3.json",
+          "n_prompts": 32,
+          "initial_separation": -0.00341796875,
+          "final_separation": 1.76025390625,
+          "change_in_separation": 1.763671875,
+          "median_change": 1.828125,
+          "change_sign_test": {
+            "positive": 32,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 2.3283064365386963e-10,
+            "p_two_sided": 4.656612873077393e-10
+          },
+          "final_sign_test": {
+            "positive": 32,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 2.3283064365386963e-10,
+            "p_two_sided": 4.656612873077393e-10
+          },
+          "change_ci95": [
+            1.6171875,
+            1.90869140625
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            1.61474609375,
+            1.90478515625
+          ],
+          "binary_ce": {
+            "mean": 0.3564902321067228,
+            "ci95": [
+              0.3340499468571602,
+              0.3804731554049813
+            ]
+          }
+        }
+      ],
+      "fresh": {
+        "step": 3,
+        "source": "results/execution-018/fresh/fresh_validation_3.json",
+        "n_prompts": 32,
+        "initial_separation": -0.00341796875,
+        "final_separation": 1.97900390625,
+        "change_in_separation": 1.982421875,
+        "median_change": 1.9375,
+        "change_sign_test": {
+          "positive": 32,
+          "negative": 0,
+          "ties": 0,
+          "p_greater": 2.3283064365386963e-10,
+          "p_two_sided": 4.656612873077393e-10
+        },
+        "final_sign_test": {
+          "positive": 32,
+          "negative": 0,
+          "ties": 0,
+          "p_greater": 2.3283064365386963e-10,
+          "p_two_sided": 4.656612873077393e-10
+        },
+        "change_ci95": [
+          1.8642578125,
+          2.103515625
+        ],
+        "bootstrap_seed": 20261016,
+        "bootstrap_draws": 5000,
+        "endpoint_ci95": [
+          1.86328125,
+          2.09765625
+        ],
+        "binary_ce": {
+          "mean": 0.32272841772304006,
+          "ci95": [
+            0.30682323509189663,
+            0.33869536743361195
+          ]
+        },
+        "change_from_last_fit": {
+          "n_prompts": 32,
+          "initial_separation": 1.76025390625,
+          "final_separation": 1.97900390625,
+          "change_in_separation": 0.21875,
+          "median_change": 0.234375,
+          "change_sign_test": {
+            "positive": 22,
+            "negative": 10,
+            "ties": 0,
+            "p_greater": 0.025051229866221547,
+            "p_two_sided": 0.050102459732443094
+          },
+          "final_sign_test": {
+            "positive": 32,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 2.3283064365386963e-10,
+            "p_two_sided": 4.656612873077393e-10
+          },
+          "change_ci95": [
+            0.06591796875,
+            0.3701171875
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000
+        },
+        "all_log_odds_identical": false,
+        "max_log_odds_change": 1.078125,
+        "n_changed_log_odds": 43,
+        "all_answer_logprobs_identical": false
+      }
+    },
+    "test": {
+      "n_prompts": 64,
+      "checkpoints": [
+        {
+          "step": 0,
+          "source": "results/execution-018/fit/many_test_0.json",
+          "n_prompts": 64,
+          "initial_separation": -0.00537109375,
+          "final_separation": -0.00537109375,
+          "change_in_separation": 0.0,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 0,
+            "negative": 0,
+            "ties": 64,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 20,
+            "negative": 30,
+            "ties": 14,
+            "p_greater": 0.9405397737202819,
+            "p_two_sided": 0.20263875106454066
+          },
+          "change_ci95": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            -0.011962890625,
+            0.0009765625
+          ],
+          "binary_ce": {
+            "mean": 0.6973952007997004,
+            "ci95": [
+              0.6957977099730345,
+              0.6990615685238774
+            ]
+          }
+        },
+        {
+          "step": 3,
+          "source": "results/execution-018/fit/many_test_3.json",
+          "n_prompts": 64,
+          "initial_separation": -0.00537109375,
+          "final_separation": 1.89453125,
+          "change_in_separation": 1.89990234375,
+          "median_change": 1.96875,
+          "change_sign_test": {
+            "positive": 64,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 5.421010862427522e-20,
+            "p_two_sided": 1.0842021724855044e-19
+          },
+          "final_sign_test": {
+            "positive": 64,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 5.421010862427522e-20,
+            "p_two_sided": 1.0842021724855044e-19
+          },
+          "change_ci95": [
+            1.795166015625,
+            2.00146484375
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000,
+          "endpoint_ci95": [
+            1.78955078125,
+            1.9964599609375
+          ],
+          "binary_ce": {
+            "mean": 0.33661188164492184,
+            "ci95": [
+              0.3216365416453407,
+              0.35265232127509166
+            ]
+          }
+        }
+      ],
+      "fresh": {
+        "step": 3,
+        "source": "results/execution-018/fresh/fresh_test_3.json",
+        "n_prompts": 64,
+        "initial_separation": -0.00537109375,
+        "final_separation": 1.9144287109375,
+        "change_in_separation": 1.9197998046875,
+        "median_change": 1.9453125,
+        "change_sign_test": {
+          "positive": 64,
+          "negative": 0,
+          "ties": 0,
+          "p_greater": 5.421010862427522e-20,
+          "p_two_sided": 1.0842021724855044e-19
+        },
+        "final_sign_test": {
+          "positive": 64,
+          "negative": 0,
+          "ties": 0,
+          "p_greater": 5.421010862427522e-20,
+          "p_two_sided": 1.0842021724855044e-19
+        },
+        "change_ci95": [
+          1.8050537109375,
+          2.034423828125
+        ],
+        "bootstrap_seed": 20261016,
+        "bootstrap_draws": 5000,
+        "endpoint_ci95": [
+          1.7996826171875,
+          2.030029296875
+        ],
+        "binary_ce": {
+          "mean": 0.33601448075628065,
+          "ci95": [
+            0.31939054688651286,
+            0.3529516976522479
+          ]
+        },
+        "change_from_last_fit": {
+          "n_prompts": 64,
+          "initial_separation": 1.89453125,
+          "final_separation": 1.9144287109375,
+          "change_in_separation": 0.0198974609375,
+          "median_change": 0.046875,
+          "change_sign_test": {
+            "positive": 34,
+            "negative": 30,
+            "ties": 0,
+            "p_greater": 0.353990377067382,
+            "p_two_sided": 0.707980754134764
+          },
+          "final_sign_test": {
+            "positive": 64,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 5.421010862427522e-20,
+            "p_two_sided": 1.0842021724855044e-19
+          },
+          "change_ci95": [
+            -0.0894775390625,
+            0.13623046875
+          ],
+          "bootstrap_seed": 20261016,
+          "bootstrap_draws": 5000
+        },
+        "all_log_odds_identical": false,
+        "max_log_odds_change": 1.21875,
+        "n_changed_log_odds": 86,
+        "all_answer_logprobs_identical": false
+      }
+    }
+  },
+  "fresh_source": "results/execution-018/fresh",
+  "fresh_manifest": {
+    "checkpoint": "/workspace/runs/watching-execution-018r/mpd-data/runpod/watching-execution-018r/out/fit/checkpoint",
+    "condition": "execution",
+    "require_native_untied": false,
+    "layer": 14,
+    "out": "/workspace/runs/watching-execution-018r/mpd-data/runpod/watching-execution-018r/out/fresh",
+    "data": "/workspace/runs/watching-execution-018r/mpd-data/runpod/watching-execution-018r/out/fit/data.json",
+    "eval_only": true,
+    "answer_rows": null,
+    "rows_only_save": false,
+    "train_prompts": 256,
+    "validation_prompts": 32,
+    "test_prompts": 64,
+    "length": 80,
+    "steps": 3,
+    "ridge": 0.001,
+    "target_gap": 2.0,
+    "torch": "2.10.0+cu128",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "labels": {
+      "No": 2753,
+      "Yes": 9454
+    },
+    "condition_definition": "Yes: gradient recording; No: no_grad; both eval, no activation probe",
+    "tied_embeddings": true,
+    "base_checkpoint": "/workspace/runs/watching-execution-018r/mpd-data/runpod/watching-execution-018r/out/fit/checkpoint",
+    "model_commit": null,
+    "base_answer_rows_sha256": "442ed34b46951e9e94918fcdac5cc1738602a5efa7bcd4d61b7e1044afe84aef",
+    "method": "Fixed execution features; ridge correction of existing answer rows only",
+    "answer_token_occurrences_in_all_inputs": 0,
+    "source_sha256": {
+      "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+      "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+      "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+      "suffix.py": "7e4748a4a97f1d4b2825243815f682d78dd95a71338220e0ce85bcd5f56014cb",
+      "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+      "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+      "train.py": "40bef70fe7bc3513a504f068201c1d5c28e5f75462eec4ca6296106be6809ead",
+      "compare.py": "0d50ebc4a0e178b8b2ef6ec0973da926e1e71ca923135f1dcd3f09b81e703e4c",
+      "optim.py": "c13ad6d7b9700e6384e7b1d63d44040cb5a0a27ca722b4607da575cd78afb703",
+      "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+      "objectives.py": "cf9eff1378ae4292a992655f83dfdad07f593ad466c2c30ec1bcf96348f81abb",
+      "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+      "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+      "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+      "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+      "head_fit.py": "3d488b6cd9fab5dd76d8c3e5c9785645b491748bec9af10a9a840f88618066a8",
+      "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+      "execution_fit.py": "d0845bccae114c9f19983130e38b635c38cc49e7c62df6c35ec9fb664f0f8a73"
+    }
+  }
+}

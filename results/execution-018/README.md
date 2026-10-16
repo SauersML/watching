@@ -22,4 +22,9 @@ Independent training seeds, new template families, other hardware, and semantic
 understanding of the execution label are not established by these measurements.
 This is native supervised output-weight fitting, not full-model SFT.
 
-Fresh-process recompilation verification is pending in this snapshot.
+Fresh-process recompilation completed. Test separation is **1.9144 nats**;
+paired gain relative to the original baseline is **1.9198 [1.8051, 2.0344] nats**,
+with binary loss **0.3360**. The effect survives, but scores are not bit-identical:
+86 of 128 test-condition log-odds changed, by up to 1.21875 nats. Fresh compilation
+is an additional transfer check, not an independent training replication.
+Raw records are in `fresh/`.

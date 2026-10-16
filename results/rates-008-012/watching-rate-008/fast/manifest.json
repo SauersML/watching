@@ -1,0 +1,60 @@
+{
+  "out": "/workspace/runs/watching-rate-008/mpd-data/runpod/watching-rate-008/out/fast",
+  "model": "Qwen/Qwen3-0.6B",
+  "steps": 512,
+  "batch_size": 1,
+  "length": 64,
+  "lr": 1e-06,
+  "output_lr_multiplier": 100.0,
+  "layer": 14,
+  "seed": 20261015,
+  "eval_every": 32,
+  "save_every": 0,
+  "validation_eval_prompts": 32,
+  "checkpoint": "/workspace/runs/watching-rate-008/mpd-data/checkpoints/watching-sft-003r",
+  "eval_only": false,
+  "eval_only_grad": false,
+  "objective": "paired",
+  "train_prompts": 1,
+  "dataset": "expanded",
+  "train_eval_prompts": 1,
+  "margin": 0.25,
+  "calibration_weight": 0.001,
+  "torch": "2.10.0+cu128",
+  "transformers": "5.18.0",
+  "gpu": "NVIDIA RTX A5000",
+  "parameters": 596049920,
+  "trainable_parameters": 596049920,
+  "tied_embeddings": true,
+  "output_rate_parameters": [
+    "model.embed_tokens.weight"
+  ],
+  "labels": {
+    "No": [
+      2753
+    ],
+    "Yes": [
+      9454
+    ]
+  },
+  "training": "full-parameter paired; bf16 model, fp32 master AdamW",
+  "compile": "Inductor fullgraph, static shapes; separate capture/no-capture specializations",
+  "probe": "read-only layer-14 q_norm reference, returned as graph output",
+  "source_sha256": {
+    "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+    "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+    "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+    "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+    "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+    "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+    "compare.py": "a18001312dde012d907249c363e8278287495f1d48292243dccef5f8dd6511c8",
+    "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+    "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+    "objectives.py": "8ce9b3646fdfaec8e018e91c055f367856a4a137a7c5cc3c0390ad48b5f125c8",
+    "optim.py": "4143ea57b4e7dcc0324e08b7ee812f73efd8a9da4330c5eee99337484892479e",
+    "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+    "train.py": "083f488364f4af2426435d3b351a4a6978899c2bd58e50dd6278ff51a61fc5f3",
+    "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb"
+  },
+  "model_commit": null
+}

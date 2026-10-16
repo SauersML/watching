@@ -98,8 +98,10 @@ def compare_arms(uniform_before, uniform_after, fast_before, fast_after, *, seed
         ]
 
     difference = compare_scores(
-        contrast(uniform_before, fast_before), contrast(uniform_after, fast_after),
-        seed=seed, draws=draws,
+        contrast(uniform_before, fast_before),
+        contrast(uniform_after, fast_after),
+        seed=seed,
+        draws=draws,
     )
     return {"uniform": uniform, "fast": fast, "fast_minus_uniform": difference}
 

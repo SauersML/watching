@@ -28,7 +28,7 @@ def minimum_norm_update(features, scores, targets):
     pair. Reject a rank-deficient pair rather than inventing a discriminant.
     """
     h = features.detach().to(device="cpu", dtype=torch.float64)
-    residual = (targets.detach().cpu().double() - scores.detach().cpu().double())
+    residual = targets.detach().cpu().double() - scores.detach().cpu().double()
     if h.ndim != 2 or h.shape[0] != 2 or residual.shape != (2,):
         raise ValueError("Expected two feature vectors and two scores")
     if not torch.isfinite(h).all() or not torch.isfinite(residual).all():
@@ -63,8 +63,9 @@ def main():
     started = time.monotonic()
 
     def emit(event, **values):
-        line = json.dumps(dict(event=event, seconds=time.monotonic() - started, **values),
-                          allow_nan=False)
+        line = json.dumps(
+            dict(event=event, seconds=time.monotonic() - started, **values), allow_nan=False
+        )
         print(line, flush=True)
         with (args.out / "metrics.jsonl").open("a") as stream:
             stream.write(line + "\n")
@@ -77,37 +78,49 @@ def main():
         raise ValueError("Answers must each be one token")
     no, yes = [ids[0] for ids in labels]
     records = make_expanded_data()
-    data = {"train": records["train"][:1], "test": records["test"][:args.test_prompts]}
+    data = {"train": records["train"][:1], "test": records["test"][: args.test_prompts]}
     write_json(args.out / "data.json", data)
     batches = {}
     for split, rows in data.items():
         batches[split] = []
         for row in rows:
             text = tok.apply_chat_template(
-                [{"role": "user", "content": row["text"]}], tokenize=False,
-                add_generation_prompt=True, enable_thinking=False,
+                [{"role": "user", "content": row["text"]}],
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=False,
             )
             if len(tok.encode(text, add_special_tokens=False)) > 64:
                 raise ValueError("Prompt exceeds the fixed sequence length")
-            x = tok(text, add_special_tokens=False, padding="max_length", max_length=64,
-                    return_tensors="pt").to("cuda")
+            x = tok(
+                text,
+                add_special_tokens=False,
+                padding="max_length",
+                max_length=64,
+                return_tensors="pt",
+            ).to("cuda")
             if ((x.input_ids == no) | (x.input_ids == yes)).any():
                 raise ValueError("An evaluated input uses an answer row; tying would move features")
             x["position_ids"] = (x.attention_mask.cumsum(-1) - 1).clamp_min(0)
             batches[split].append(dict(x))
 
     def load():
-        model = AutoModelForCausalLM.from_pretrained(
-            args.checkpoint, dtype=torch.bfloat16, attn_implementation="sdpa"
-        ).cuda().eval()
+        model = (
+            AutoModelForCausalLM.from_pretrained(
+                args.checkpoint, dtype=torch.bfloat16, attn_implementation="sdpa"
+            )
+            .cuda()
+            .eval()
+        )
         model.config.use_cache = False
         model.requires_grad_(True)
         return model
 
     model, measured_model = load(), load()
-    if any(not torch.equal(a, b) for a, b in zip(
-        model.parameters(), measured_model.parameters(), strict=True
-    )):
+    if any(
+        not torch.equal(a, b)
+        for a, b in zip(model.parameters(), measured_model.parameters(), strict=True)
+    ):
         raise RuntimeError("The two copies must start with identical parameters")
     detector = ProbeModel(model, args.layer)
     measured = FeatureProbe(measured_model, args.layer)
@@ -117,13 +130,18 @@ def main():
     indices = torch.tensor([no, yes], device=head.device)
     original_rows = head.detach().index_select(0, indices).clone()
     manifest = {
-        **vars(args), "out": str(args.out), "torch": torch.__version__,
-        "gpu": torch.cuda.get_device_name(), "labels": {"No": no, "Yes": yes},
+        **vars(args),
+        "out": str(args.out),
+        "torch": torch.__version__,
+        "gpu": torch.cuda.get_device_name(),
+        "labels": {"No": no, "Yes": yes},
         "tied_embeddings": head is model.get_input_embeddings().weight,
         "method": "Inference-path fit of existing answer rows; all other weights fixed",
         "answer_token_occurrences_in_all_inputs": 0,
-        "source_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-                          for p in Path(__file__).parent.glob("*.py")},
+        "source_sha256": {
+            p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in Path(__file__).parent.glob("*.py")
+        },
     }
     write_json(args.out / "manifest.json", manifest)
     emit("setup", **manifest)
@@ -155,21 +173,31 @@ def main():
                     logp = values.log_softmax(-1)
                     score = float(values[yes] - values[no])
                     label = yes if capture else no
-                    rows.append({
-                        "index": i, "capture": capture, "yes_minus_no": score,
-                        "logp_yes": float(logp[yes]), "logp_no": float(logp[no]),
-                        "yes_probability": float(torch.sigmoid(values[yes] - values[no])),
-                        "correct": (score > 0) if capture else (score <= 0),
-                        "greedy_correct": int(values.argmax()) == label,
-                        "ce": -float(logp[label]),
-                    })
+                    rows.append(
+                        {
+                            "index": i,
+                            "capture": capture,
+                            "yes_minus_no": score,
+                            "logp_yes": float(logp[yes]),
+                            "logp_no": float(logp[no]),
+                            "yes_probability": float(torch.sigmoid(values[yes] - values[no])),
+                            "correct": (score > 0) if capture else (score <= 0),
+                            "greedy_correct": int(values.argmax()) == label,
+                            "ce": -float(logp[label]),
+                        }
+                    )
                     if split == "train":
                         training_features.append(hidden.detach().cpu())
                         training_scores.append(score)
-            summary = {"split": split, "step": step, "grad_mode": False,
-                       **summarize_pairs(rows, seed=20261015)}
-            write_json(args.out / f"{split}_{step}_inference.json",
-                       {"summary": summary, "rows": rows})
+            summary = {
+                "split": split,
+                "step": step,
+                "grad_mode": False,
+                **summarize_pairs(rows, seed=20261015),
+            }
+            write_json(
+                args.out / f"{split}_{step}_inference.json", {"summary": summary, "rows": rows}
+            )
             emit("evaluation", **summary)
         return torch.cat(training_features), torch.tensor(training_scores, dtype=torch.float64)
 
@@ -185,9 +213,13 @@ def main():
             new_rows = torch.stack((current[0] - update, current[1] + update)).to(head.dtype)
             head.index_copy_(0, indices, new_rows)
             measured_model.get_output_embeddings().weight.index_copy_(0, indices, new_rows)
-        emit("fit_update", step=step, singular_values=singular.tolist(),
-             correction_norm=float(delta.norm()),
-             total_answer_weight_change=float((new_rows.float() - original_rows.float()).norm()))
+        emit(
+            "fit_update",
+            step=step,
+            singular_values=singular.tolist(),
+            correction_norm=float(delta.norm()),
+            total_answer_weight_change=float((new_rows.float() - original_rows.float()).norm()),
+        )
         features, scores = evaluate(step, ("train", "test") if step == args.steps else ("train",))
         if not torch.equal(features, original_features):
             raise RuntimeError("Updating answer rows changed internal features; reject this fit")

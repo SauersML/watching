@@ -46,8 +46,9 @@ def paired_terms(absent_logits, present_logits, **kwargs):
     coefficients, objective = paired_coefficients(absent_logits, present_logits, **kwargs)
     no_id, yes_id = kwargs["no_id"], kwargs["yes_id"]
     terms = {
-        capture: (coefficients[capture] * (logits[:, yes_id].float()
-                                         - logits[:, no_id].float())).sum()
+        capture: (
+            coefficients[capture] * (logits[:, yes_id].float() - logits[:, no_id].float())
+        ).sum()
         for capture, logits in ((False, absent_logits), (True, present_logits))
     }
     return terms, objective

@@ -10,7 +10,19 @@ from matplotlib.ticker import MaxNLocator
 from watching.artifacts import write_json
 
 INK, MUTED, TEAL, GRID = "#183239", "#687C82", "#087F79", "#E5EDEC"
-COLORS = {"train": TEAL, "validation": "#496EA0", "test": "#B46A40"}
+COLORS = {"train": TEAL, "validation": "#496EA0", "test": "#B46A40", "ood": "#825B9B"}
+
+
+def plotted_point(point, split):
+    """OOD plots show family uncertainty; prompt estimates remain in the report."""
+    cluster = point.get("family_analysis", {}).get("cluster_bootstrap")
+    if split == "ood" and cluster:
+        return {
+            **point,
+            "change_in_separation": cluster["change_in_separation"]["mean"],
+            "change_ci95": cluster["change_in_separation"]["ci95"],
+        }
+    return point
 
 
 def render(report, output, title=None):
@@ -27,15 +39,17 @@ def render(report, output, title=None):
             "svg.fonttype": "none",
         }
     )
-    fig, axes = plt.subplots(1, 3, figsize=(13, 6.5), sharey=True)
+    splits = [name for name in ("train", "validation", "test")]
+    splits.extend(sorted(set(report["splits"]) - set(splits)))
+    fig, axes = plt.subplots(1, len(splits), figsize=(4.33 * len(splits), 6.5), sharey=True)
     fig.subplots_adjust(left=0.075, right=0.975, bottom=0.31, top=0.69, wspace=0.34)
     condition = report["condition"]
     task = "Read-only probe detection" if condition == "probe" else "Gradient-recording detection"
     checkpoint = report.get("manifest", {}).get("checkpoint", "Model unspecified")
     model_name = Path(checkpoint.rstrip("/")).name
     all_points = [
-        point
-        for entry in report["splits"].values()
+        plotted_point(point, split)
+        for split, entry in report["splits"].items()
         for point in [*entry["checkpoints"], *([entry["fresh"]] if "fresh" in entry else [])]
         if point["step"] > 0
     ]
@@ -58,12 +72,14 @@ def render(report, output, title=None):
         color=MUTED,
         size=11,
     )
-    for ax, split, name in zip(
-        axes,
-        ("train", "validation", "test"),
-        ("Training prompts", "Validation prompts", "Test prompts"),
-        strict=True,
-    ):
+    names = {
+        "train": "Training prompts",
+        "validation": "Validation prompts",
+        "test": "Test prompts",
+        "ood": "New task families",
+    }
+    for ax, split in zip(axes, splits, strict=True):
+        name = names.get(split, split.replace("_", " ").title())
         entry = report["splits"].get(split)
         ax.set_title(name, loc="left", fontsize=13, weight="bold", pad=35)
         ax.spines[["top", "right", "left"]].set_visible(False)
@@ -87,15 +103,19 @@ def render(report, output, title=None):
             )
             ax.set_xticks([])
             continue
+        family_data = entry.get("fresh", entry["checkpoints"][-1]).get("family_analysis")
+        sample_label = f"{entry['n_prompts']:,} paired prompts"
+        if split == "ood" and family_data:
+            sample_label += f" · {family_data['n_families']} families"
         ax.text(
             0,
             1.055,
-            f"{entry['n_prompts']:,} paired prompts",
+            sample_label,
             transform=ax.transAxes,
             color=MUTED,
             fontsize=10,
         )
-        points = entry["checkpoints"]
+        points = [plotted_point(point, split) for point in entry["checkpoints"]]
         if not any(point["step"] > 0 for point in points) and "fresh" not in entry:
             ax.text(
                 0.5,
@@ -113,7 +133,7 @@ def render(report, output, title=None):
             continue
         steps = [p["step"] for p in points]
         gains = [p["change_in_separation"] for p in points]
-        color = COLORS[split]
+        color = COLORS.get(split, "#825B9B")
         ax.plot(
             steps,
             gains,
@@ -145,7 +165,7 @@ def render(report, output, title=None):
         final = points[-1]
         ticks, labels = steps.copy(), [str(s) for s in steps]
         if "fresh" in entry:
-            final = entry["fresh"]
+            final = plotted_point(entry["fresh"], split)
             fresh_x = steps[-1] + 1
             ticks.append(fresh_x)
             labels.append("Reload")
@@ -200,9 +220,15 @@ def render(report, output, title=None):
     fig.text(
         0.075,
         0.052,
-        "5,000 whole-prompt bootstrap resamples; pointwise 95% intervals. "
-        "Panels share the same vertical scale.\n"
-        "Conditional on this fit and prompt distribution; excludes seed and hardware variation.",
+        (
+            "5,000 paired resamples; OOD samples whole families with equal family weight. "
+            "Pointwise 95% intervals.\n"
+            "Conditional on one fit and sampled units; excludes seed and hardware variation."
+            if "ood" in splits
+            else "5,000 whole-prompt bootstrap resamples; pointwise 95% intervals. "
+            "Panels share the same vertical scale.\n"
+            "Conditional on this fit and prompt distribution; excludes seed and hardware variation."
+        ),
         color=MUTED,
         fontsize=9,
         linespacing=1.55,

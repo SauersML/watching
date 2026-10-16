@@ -1,0 +1,328 @@
+{
+  "definition": "d = log(P(Yes)/P(No)) with probe minus without probe",
+  "intervals": "5000 paired whole-prompt bootstrap resamples; one training seed",
+  "interpretation": "Exploratory; prompt intervals omit training-seed and compiler variability",
+  "steps": 512,
+  "paths": {
+    "grad": {
+      "train": {
+        "n_prompts": 1,
+        "initial_separation": 0.0,
+        "final_separation": -0.015625,
+        "change_in_separation": -0.015625,
+        "median_change": -0.015625,
+        "change_sign_test": {
+          "positive": 0,
+          "negative": 1,
+          "ties": 0,
+          "p_greater": 1.0,
+          "p_two_sided": 1.0
+        },
+        "final_sign_test": {
+          "positive": 0,
+          "negative": 1,
+          "ties": 0,
+          "p_greater": 1.0,
+          "p_two_sided": 1.0
+        },
+        "change_ci95": null,
+        "bootstrap_seed": 0,
+        "bootstrap_draws": 5000,
+        "final_ci95": null,
+        "fresh_recompile_change": {
+          "n_prompts": 1,
+          "initial_separation": -0.015625,
+          "final_separation": 0.015625,
+          "change_in_separation": 0.03125,
+          "median_change": 0.03125,
+          "change_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        },
+        "baseline_to_fresh": {
+          "n_prompts": 1,
+          "initial_separation": 0.0,
+          "final_separation": 0.015625,
+          "change_in_separation": 0.015625,
+          "median_change": 0.015625,
+          "change_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        }
+      },
+      "test": {
+        "n_prompts": 512,
+        "initial_separation": 0.001007080078125,
+        "final_separation": 0.0001220703125,
+        "change_in_separation": -0.000885009765625,
+        "median_change": 0.0,
+        "change_sign_test": {
+          "positive": 204,
+          "negative": 222,
+          "ties": 86,
+          "p_greater": 0.821350750441247,
+          "p_two_sided": 0.41016668360908376
+        },
+        "final_sign_test": {
+          "positive": 202,
+          "negative": 202,
+          "ties": 108,
+          "p_greater": 0.5198358418466296,
+          "p_two_sided": 1.0
+        },
+        "change_ci95": [
+          -0.004058837890625,
+          0.002288818359375
+        ],
+        "bootstrap_seed": 0,
+        "bootstrap_draws": 5000,
+        "final_ci95": [
+          -0.0023193359375,
+          0.002593994140625
+        ],
+        "fresh_recompile_change": {
+          "n_prompts": 512,
+          "initial_separation": 0.0001220703125,
+          "final_separation": 0.00115966796875,
+          "change_in_separation": 0.00103759765625,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 37,
+            "negative": 32,
+            "ties": 443,
+            "p_greater": 0.315228245893399,
+            "p_two_sided": 0.630456491786798
+          },
+          "final_sign_test": {
+            "positive": 210,
+            "negative": 190,
+            "ties": 112,
+            "p_greater": 0.17106119804202552,
+            "p_two_sided": 0.34212239608405104
+          },
+          "change_ci95": [
+            0.0001220703125,
+            0.002044677734375
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        },
+        "baseline_to_fresh": {
+          "n_prompts": 512,
+          "initial_separation": 0.001007080078125,
+          "final_separation": 0.00115966796875,
+          "change_in_separation": 0.000152587890625,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 215,
+            "negative": 213,
+            "ties": 84,
+            "p_greater": 0.4807276575131675,
+            "p_two_sided": 0.961455315026335
+          },
+          "final_sign_test": {
+            "positive": 210,
+            "negative": 190,
+            "ties": 112,
+            "p_greater": 0.17106119804202552,
+            "p_two_sided": 0.34212239608405104
+          },
+          "change_ci95": [
+            -0.003082275390625,
+            0.00335693359375
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        }
+      }
+    },
+    "inference": {
+      "train": {
+        "n_prompts": 1,
+        "initial_separation": -0.03125,
+        "final_separation": 0.015625,
+        "change_in_separation": 0.046875,
+        "median_change": 0.046875,
+        "change_sign_test": {
+          "positive": 1,
+          "negative": 0,
+          "ties": 0,
+          "p_greater": 0.5,
+          "p_two_sided": 1.0
+        },
+        "final_sign_test": {
+          "positive": 1,
+          "negative": 0,
+          "ties": 0,
+          "p_greater": 0.5,
+          "p_two_sided": 1.0
+        },
+        "change_ci95": null,
+        "bootstrap_seed": 0,
+        "bootstrap_draws": 5000,
+        "final_ci95": null,
+        "fresh_recompile_change": {
+          "n_prompts": 1,
+          "initial_separation": 0.015625,
+          "final_separation": 0.015625,
+          "change_in_separation": 0.0,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 0,
+            "negative": 0,
+            "ties": 1,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        },
+        "baseline_to_fresh": {
+          "n_prompts": 1,
+          "initial_separation": -0.03125,
+          "final_separation": 0.015625,
+          "change_in_separation": 0.046875,
+          "median_change": 0.046875,
+          "change_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        }
+      },
+      "test": {
+        "n_prompts": 512,
+        "initial_separation": -0.000640869140625,
+        "final_separation": 0.000396728515625,
+        "change_in_separation": 0.00103759765625,
+        "median_change": 0.0,
+        "change_sign_test": {
+          "positive": 228,
+          "negative": 195,
+          "ties": 89,
+          "p_greater": 0.059814960292952975,
+          "p_two_sided": 0.11962992058590595
+        },
+        "final_sign_test": {
+          "positive": 197,
+          "negative": 193,
+          "ties": 122,
+          "p_greater": 0.4396411560203181,
+          "p_two_sided": 0.8792823120406362
+        },
+        "change_ci95": [
+          -0.002197265625,
+          0.004119873046875
+        ],
+        "bootstrap_seed": 0,
+        "bootstrap_draws": 5000,
+        "final_ci95": [
+          -0.00189208984375,
+          0.00262451171875
+        ],
+        "fresh_recompile_change": {
+          "n_prompts": 512,
+          "initial_separation": 0.000396728515625,
+          "final_separation": 0.000396728515625,
+          "change_in_separation": 0.0,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 0,
+            "negative": 0,
+            "ties": 512,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 197,
+            "negative": 193,
+            "ties": 122,
+            "p_greater": 0.4396411560203181,
+            "p_two_sided": 0.8792823120406362
+          },
+          "change_ci95": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        },
+        "baseline_to_fresh": {
+          "n_prompts": 512,
+          "initial_separation": -0.000640869140625,
+          "final_separation": 0.000396728515625,
+          "change_in_separation": 0.00103759765625,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 228,
+            "negative": 195,
+            "ties": 89,
+            "p_greater": 0.059814960292952975,
+            "p_two_sided": 0.11962992058590595
+          },
+          "final_sign_test": {
+            "positive": 197,
+            "negative": 193,
+            "ties": 122,
+            "p_greater": 0.4396411560203181,
+            "p_two_sided": 0.8792823120406362
+          },
+          "change_ci95": [
+            -0.002197265625,
+            0.004119873046875
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        }
+      }
+    }
+  }
+}

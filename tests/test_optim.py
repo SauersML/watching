@@ -108,8 +108,11 @@ def test_invalid_fast_parameters_rejected():
 def test_row_rates_match_independent_adam_rows():
     model = torch.nn.Linear(3, 2, bias=False)
     optimizer = MasterAdam(
-        model, lr=0.001, fast_row_parameter=model.weight,
-        fast_row_indices=[1], fast_multiplier=100,
+        model,
+        lr=0.001,
+        fast_row_parameter=model.weight,
+        fast_row_indices=[1],
+        fast_multiplier=100,
     )
     reference = [torch.nn.Parameter(row.detach().clone()) for row in model.weight]
     adam = torch.optim.AdamW(
@@ -191,8 +194,12 @@ def test_frozen_backbone_row_updates_match_fp32_adam_without_full_master_state()
     original_bias = model.bias.detach().clone()
     rows = torch.tensor([4, 1])
     optimizer = MasterAdam(
-        model, lr=0.001, fast_row_parameter=model.weight,
-        fast_row_indices=rows.tolist(), fast_multiplier=10, freeze_slow=True,
+        model,
+        lr=0.001,
+        fast_row_parameter=model.weight,
+        fast_row_indices=rows.tolist(),
+        fast_multiplier=10,
+        freeze_slow=True,
     )
     reference = torch.nn.Parameter(original_weight[rows].float().clone())
     adam = torch.optim.AdamW([reference], lr=0.01, weight_decay=0, foreach=False)
