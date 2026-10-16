@@ -11,7 +11,7 @@ class MasterAdam:
     def __init__(
         self, model: torch.nn.Module, lr: float, *,
         fast_parameters=(), fast_multiplier: float = 1.0,
-        fast_row_parameter=None, fast_row_indices=(),
+        fast_row_parameter=None, fast_row_indices=(), freeze_slow: bool = False,
     ):
         self.parameters = list(model.parameters())
         if not self.parameters or any(not p.requires_grad for p in self.parameters):
@@ -45,7 +45,7 @@ class MasterAdam:
         elif fast_row_indices:
             raise ValueError("Fast row indices require a row parameter")
         groups = []
-        for fast, scale in [(False, 1.0), (True, fast_multiplier)]:
+        for fast, scale in [(False, 0.0 if freeze_slow else 1.0), (True, fast_multiplier)]:
             masters = [
                 master for p, master in zip(self.parameters, self.masters, strict=True)
                 if (id(p) in fast_ids) == fast

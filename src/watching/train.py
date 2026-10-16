@@ -29,6 +29,8 @@ def validate_arguments(args):
         raise ValueError("lr must be finite and positive")
     if not math.isfinite(args.output_lr_multiplier) or args.output_lr_multiplier <= 0:
         raise ValueError("output_lr_multiplier must be finite and positive")
+    if args.freeze_backbone_updates and not args.untie_output:
+        raise ValueError("--freeze-backbone-updates requires --untie-output for this diagnostic")
     if args.layer < 0:
         raise ValueError("layer must be nonnegative")
     if any(n % args.batch_size for n in (512, 128, 32)):
@@ -74,6 +76,8 @@ def main():
     ap.add_argument("--lr", type=float, default=2e-5)
     ap.add_argument("--output-lr-multiplier", type=float, default=1.0)
     ap.add_argument("--output-rate-scope", choices=["matrix", "answers"], default="matrix")
+    ap.add_argument("--untie-output", action="store_true")
+    ap.add_argument("--freeze-backbone-updates", action="store_true")
     ap.add_argument("--layer", type=int, default=14)
     ap.add_argument("--seed", type=int, default=20261015)
     ap.add_argument("--eval-every", type=int, default=40)
@@ -129,6 +133,12 @@ def main():
         .eval()
     )
     model.config.use_cache = False
+    if args.untie_output:
+        head = model.get_output_embeddings()
+        if head.weight is model.get_input_embeddings().weight:
+            head.weight = torch.nn.Parameter(head.weight.detach().clone())
+            assert torch.equal(head.weight, model.get_input_embeddings().weight)
+        model.config.tie_word_embeddings = False
     model.requires_grad_(True)
     output_parameters = list(model.get_output_embeddings().parameters())
     output_ids = {id(p) for p in output_parameters}
@@ -173,6 +183,10 @@ def main():
         "gpu": torch.cuda.get_device_name(),
         "parameters": sum(p.numel() for p in model.parameters()),
         "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
+        "parameters_with_nonzero_rate": sum(
+            p.numel() for p in model.parameters()
+            if not args.freeze_backbone_updates or id(p) in output_ids
+        ),
         "tied_embeddings": tied_embeddings,
         "output_rate_parameters": [n for n, p in model.named_parameters() if id(p) in output_ids],
         "answer_token_occurrences_in_training_inputs": {
@@ -290,7 +304,10 @@ def main():
             "fast_row_indices": [no_id, yes_id],
         }
     )
-    opt = MasterAdam(model, args.lr, fast_multiplier=args.output_lr_multiplier, **rate_options)
+    opt = MasterAdam(
+        model, args.lr, fast_multiplier=args.output_lr_multiplier,
+        freeze_slow=args.freeze_backbone_updates, **rate_options,
+    )
     snapshots = {
         n: p.detach().flatten()[:: max(1, p.numel() // 32)][:32].float().cpu().clone()
         for n, p in model.named_parameters()

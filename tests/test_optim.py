@@ -136,3 +136,21 @@ def test_invalid_fast_rows_rejected(indices):
     model = torch.nn.Linear(3, 2, bias=False)
     with pytest.raises(ValueError, match="indices"):
         MasterAdam(model, lr=0.001, fast_row_parameter=model.weight, fast_row_indices=indices)
+
+
+def test_zero_rate_keeps_internal_weights_exact_while_head_learns():
+    model = torch.nn.Linear(3, 2).to(torch.bfloat16)
+    optimizer = MasterAdam(
+        model, lr=0.001, fast_parameters=[model.bias], fast_multiplier=100, freeze_slow=True
+    )
+    original_weight = model.weight.detach().clone()
+    original_bias = model.bias.detach().clone()
+    for _ in range(3):
+        for _ in range(2):
+            model.weight.grad = torch.ones_like(model.weight)
+            model.bias.grad = torch.ones_like(model.bias)
+            optimizer.accumulate()
+        optimizer.step(0.001)
+    assert model.weight.requires_grad
+    assert torch.equal(model.weight, original_weight)
+    assert not torch.equal(model.bias, original_bias)
