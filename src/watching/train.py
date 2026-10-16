@@ -73,6 +73,7 @@ def main():
     ap.add_argument("--length", type=int, default=128)
     ap.add_argument("--lr", type=float, default=2e-5)
     ap.add_argument("--output-lr-multiplier", type=float, default=1.0)
+    ap.add_argument("--output-rate-scope", choices=["matrix", "answers"], default="matrix")
     ap.add_argument("--layer", type=int, default=14)
     ap.add_argument("--seed", type=int, default=20261015)
     ap.add_argument("--eval-every", type=int, default=40)
@@ -174,6 +175,10 @@ def main():
         "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
         "tied_embeddings": tied_embeddings,
         "output_rate_parameters": [n for n, p in model.named_parameters() if id(p) in output_ids],
+        "answer_token_occurrences_in_training_inputs": {
+            name: int((batches["train"]["input_ids"] == ids[0]).sum())
+            for name, ids in labels.items()
+        },
         "labels": labels,
         "training": f"full-parameter {args.objective}; bf16 model, fp32 master AdamW",
         "compile": "Inductor fullgraph, static shapes; separate capture/no-capture specializations",
@@ -278,10 +283,14 @@ def main():
     evaluate("test", 0, grad_mode=True)
     evaluate("test", 0)
 
-    opt = MasterAdam(
-        model, args.lr,
-        fast_parameters=output_parameters, fast_multiplier=args.output_lr_multiplier,
+    rate_options = (
+        {"fast_parameters": output_parameters} if args.output_rate_scope == "matrix"
+        else {
+            "fast_row_parameter": model.get_output_embeddings().weight,
+            "fast_row_indices": [no_id, yes_id],
+        }
     )
+    opt = MasterAdam(model, args.lr, fast_multiplier=args.output_lr_multiplier, **rate_options)
     snapshots = {
         n: p.detach().flatten()[:: max(1, p.numel() // 32)][:32].float().cpu().clone()
         for n, p in model.named_parameters()

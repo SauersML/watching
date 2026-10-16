@@ -103,3 +103,36 @@ def test_invalid_fast_parameters_rejected():
         MasterAdam(model, lr=0.001, fast_parameters=[torch.nn.Parameter(torch.ones(1))])
     with pytest.raises(ValueError, match="positive"):
         MasterAdam(model, lr=0.001, fast_multiplier=float("nan"))
+
+
+def test_row_rates_match_independent_adam_rows():
+    model = torch.nn.Linear(3, 2, bias=False)
+    optimizer = MasterAdam(
+        model, lr=0.001, fast_row_parameter=model.weight,
+        fast_row_indices=[1], fast_multiplier=100,
+    )
+    reference = [torch.nn.Parameter(row.detach().clone()) for row in model.weight]
+    adam = torch.optim.AdamW(
+        [{"params": [reference[0]]}, {"params": [reference[1]]}], weight_decay=0, foreach=False
+    )
+    gradient = torch.tensor([[0.01, 0.02, 0.03], [-0.02, 0.01, 0.04]])
+    for lr in [0.001, 0.0007, 0.0002]:
+        for _ in range(2):
+            model.weight.grad = gradient.clone()
+            optimizer.accumulate()
+        for i, p in enumerate(reference):
+            p.grad = 2 * gradient[i]
+            adam.param_groups[i]["lr"] = lr * (100 if i == 1 else 1)
+        adam.step()
+        adam.zero_grad(set_to_none=True)
+        optimizer.step(lr)
+        torch.testing.assert_close(model.weight, torch.stack(reference), rtol=0, atol=0)
+    assert optimizer.row_parent.grad is None
+    assert optimizer.row_master.grad is None
+
+
+@pytest.mark.parametrize("indices", [[], [1, 1], [-1], [2], [True]])
+def test_invalid_fast_rows_rejected(indices):
+    model = torch.nn.Linear(3, 2, bias=False)
+    with pytest.raises(ValueError, match="indices"):
+        MasterAdam(model, lr=0.001, fast_row_parameter=model.weight, fast_row_indices=indices)
