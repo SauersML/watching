@@ -176,6 +176,27 @@ def test_disjoint_native_edits_compose_in_either_order():
         validate_initial_rows(edits[0], "base", "revision", base, torch.tensor([3, 4]))
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="Requires a CUDA output matrix")
+def test_cpu_artifact_indices_validate_against_cuda_head():
+    head = torch.arange(24, device="cuda").reshape(6, 4).bfloat16()
+    indices = torch.tensor([1, 3])
+    original = head[indices.to(head.device)].cpu()
+    artifact = dict(
+        version=1,
+        checkpoint="base",
+        model_commit="revision",
+        head_shape=[6, 4],
+        indices=indices,
+        rows=original + 1,
+        base_rows_sha256=tensor_digest(original),
+    )
+    loaded_indices, loaded_rows = validate_initial_rows(
+        artifact, "base", "revision", head, torch.tensor([0, 5], device="cuda")
+    )
+    assert loaded_indices.device == loaded_rows.device == head.device
+    assert torch.equal(loaded_rows.cpu(), artifact["rows"])
+
+
 @pytest.mark.parametrize(
     "bad_ids", [torch.tensor([1, 1]), torch.tensor([1, 7]), torch.tensor([1.0, 3.0])]
 )

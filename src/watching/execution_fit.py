@@ -131,7 +131,7 @@ def validate_answer_rows(artifact, checkpoint, commit, head, indices):
         or not torch.isfinite(rows).all()
     ):
         raise ValueError("Answer rows have invalid shape, dtype, or values")
-    baseline = head.detach().index_select(0, indices)
+    baseline = head.detach().index_select(0, indices.to(head.device))
     if artifact.get("base_rows_sha256") != tensor_digest(baseline):
         raise ValueError("Base answer rows differ from the artifact's original checkpoint")
     return rows
