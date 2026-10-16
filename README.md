@@ -67,6 +67,13 @@ include these failures, OOD evaluations, and checks of the preserved detectors.
 
 ## Measurement
 
+The [two-block experiment 029](experiments/two-block-029.md) trains Qwen3-8B's
+last two native transformer blocks and final norm, keeping the vocabulary head
+and earlier blocks fixed. It uses an explicitly split compiled-source/eager-tail
+runtime, checks training/inference forward agreement, and reports transfer back
+to whole-model compilation separately. Its small integration cohort is not a
+matched comparison against the larger output-row-only fits.
+
 The [027–028 protocol](experiments/family-choices-027-028.md) uses
 [192 explicitly AI-authored question templates](data/QUESTION_FAMILIES.md),
 training-only question-family cross-validation, and full-vocabulary
