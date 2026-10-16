@@ -1,0 +1,11 @@
+{
+  "run": "watching-two-block-029",
+  "status": "startup_failure",
+  "source_commit": "a7a81a830e2c241f73492a651a430b94404f7665",
+  "training_started": false,
+  "reason": "Launcher named a snapshot path before it existed during source collection; bootstrap script was absent remotely.",
+  "terminal_exit_code": 127,
+  "source_log_sha256": "6387d1c2965209661493106e0b5bcf9e6e265406d474d6ed0b7798bbeae541b8",
+  "retry": "watching-two-block-029r",
+  "fix": "Validate the existing snapshot and construct launch arguments from its Path object before submission."
+}
