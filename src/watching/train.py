@@ -13,6 +13,7 @@ import torch.nn.functional as F
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+from watching.artifacts import save_weights, write_json
 from watching.data import make_data, make_expanded_data
 from watching.metrics import summarize_pairs
 from watching.objectives import paired_terms
@@ -32,6 +33,13 @@ def validate_arguments(args):
         raise ValueError("batch_size must divide 32, 128, and 512 for static-shape compilation")
     if args.eval_only and not args.checkpoint:
         raise ValueError("--eval-only requires --checkpoint")
+    if args.save_every < 0:
+        raise ValueError("save_every must be nonnegative")
+    if (
+        not 0 < args.validation_eval_prompts <= 512
+        or args.validation_eval_prompts % args.batch_size
+    ):
+        raise ValueError("validation_eval_prompts must be at most 512 and divisible by batch_size")
     capacity = 2048 if args.dataset == "expanded" else 512
     if not 0 < args.train_prompts <= capacity or args.train_prompts % args.batch_size:
         raise ValueError(f"train_prompts must be at most {capacity} and divisible by batch_size")
@@ -61,6 +69,8 @@ def main():
     ap.add_argument("--layer", type=int, default=14)
     ap.add_argument("--seed", type=int, default=20261015)
     ap.add_argument("--eval-every", type=int, default=40)
+    ap.add_argument("--save-every", type=int, default=0)
+    ap.add_argument("--validation-eval-prompts", type=int, default=512)
     ap.add_argument("--checkpoint", default=None)
     ap.add_argument("--eval-only", action="store_true")
     ap.add_argument("--objective", choices=["sft", "paired"], default="sft")
@@ -114,7 +124,7 @@ def main():
     compiled = torch.compile(detector, fullgraph=True, dynamic=False)
     data = make_expanded_data() if args.dataset == "expanded" else make_data()
     data["train"] = data["train"][: args.train_prompts]
-    (out / "data.json").write_text(json.dumps(data, indent=2))
+    write_json(out / "data.json", data)
     batches = {}
     for split, records in data.items():
         texts = [
@@ -156,7 +166,7 @@ def main():
         "source_sha256": source_hashes(),
         "model_commit": getattr(model.config, "_commit_hash", None),
     }
-    (out / "manifest.json").write_text(json.dumps(manifest, indent=2))
+    write_json(out / "manifest.json", manifest)
     emit("setup", **manifest)
 
     def batch(split, ids):
@@ -214,7 +224,7 @@ def main():
             **summarize_pairs(rows, seed=args.seed),
         }
         name = f"{split}_{step}_{'grad' if grad_mode else 'inference'}.json"
-        (out / name).write_text(json.dumps({"summary": summary, "rows": rows}, indent=2))
+        write_json(out / name, {"summary": summary, "rows": rows})
         emit("evaluation", **summary)
         return summary
 
@@ -336,7 +346,16 @@ def main():
             evaluate("train", step, grad_mode=True, limit=32)
             evaluate("train", step, limit=args.train_eval_prompts)
             evaluate("validation", step, grad_mode=True, limit=32)
-            evaluate("validation", step)
+            evaluate(
+                "validation",
+                step,
+                limit=None if step == args.steps else args.validation_eval_prompts,
+            )
+        if args.save_every and step % args.save_every == 0 and step != args.steps:
+            destination = out / f"checkpoint_{step}"
+            emit("checkpoint_start", step=step)
+            save_weights(model, tok, destination, step=step)
+            emit("checkpoint_saved", step=step, checkpoint=str(destination))
 
     changes = {}
     for n, p in model.named_parameters():
@@ -345,11 +364,10 @@ def main():
             "sampled_values_changed": int((sample != snapshots[n]).sum()),
             "max_sampled_change": float((sample - snapshots[n]).abs().max()),
         }
-    (out / "parameter_changes.json").write_text(json.dumps(changes, indent=2))
+    write_json(out / "parameter_changes.json", changes)
     emit("checkpoint_start")
     checkpoint = out / "checkpoint"
-    model.save_pretrained(checkpoint, safe_serialization=True)
-    tok.save_pretrained(checkpoint)
+    save_weights(model, tok, checkpoint, step=args.steps)
     evaluate("test", args.steps)
     emit("complete", checkpoint=str(checkpoint))
 

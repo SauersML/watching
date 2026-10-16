@@ -65,6 +65,16 @@ Constantly answering `Yes` scores 50% forced-choice accuracy and zero fully corr
 
 Checkpoint files contain model weights for inference, not optimizer state for resuming training. Large checkpoints and working run directories are excluded from Git; selected per-prompt results and analysis scripts are published under `results/`.
 
+`--save-every N` also publishes weights every N updates, each in a separate
+directory with its training step recorded. Checkpoints and JSON summaries are
+published by renaming complete temporary artifacts, so live synchronization
+does not copy an unfinished result. These intermediate weights support a warm
+start with a fresh optimizer, not an exact training resume. The single-prompt
+launcher saves every 512 updates and evaluates 32 validation prompts at
+intermediate checkpoints; baseline and final validation still cover all 512.
+The already-running `watching-single-004r` uses the earlier launcher and is
+unchanged by these improvements.
+
 ## Scope
 
 Success would show that a model can learn to recognize this capture implementation's computational footprint. It would not by itself establish general awareness of monitoring. Buffer-copy probes, other locations, other stacks, and footprint-matching identity operations are separate experiments.
