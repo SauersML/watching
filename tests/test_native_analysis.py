@@ -122,4 +122,24 @@ def test_preservation_anchors_are_not_scored_as_detector_examples(tmp_path):
             {"summary": {"split": "preserve_train", "role": "preservation_anchor"}, "rows": []}
         )
     )
+    (tmp_path / "many_preserve_validation_0.json").write_text(
+        json.dumps({"summary": {"split": "preserve_validation"}, "rows": []})
+    )
     assert set(analysis.analyze_fit(tmp_path)["splits"]) == {"train"}
+
+
+def test_split_prefix_does_not_mix_reworded_test(tmp_path):
+    (tmp_path / "manifest.json").write_text("{}")
+    (tmp_path / "data.json").write_text(
+        json.dumps({"test": [{"text": "hello"}], "test_wording": [{"text": "hi"}]})
+    )
+    for split, value in [("test", 1), ("test_wording", 3)]:
+        for step in (0, 3):
+            (tmp_path / f"many_{split}_{step}.json").write_text(
+                json.dumps(
+                    {"summary": {"split": split}, "rows": rows([value if step else 0], ["one"])}
+                )
+            )
+    report = analysis.analyze_fit(tmp_path)
+    assert report["splits"]["test"]["checkpoints"][-1]["change_in_separation"] == 1
+    assert report["splits"]["test_wording"]["checkpoints"][-1]["change_in_separation"] == 3

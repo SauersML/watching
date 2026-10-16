@@ -9,6 +9,8 @@ from watching.execution_fit import (
     NativeForward,
     RidgeCorrection,
     answer_logit_targets,
+    checkpoint_provenance,
+    data_manifest,
     evaluation_splits,
     make_execution_data,
     rest_logsumexp,
@@ -17,6 +19,65 @@ from watching.execution_fit import (
     validate_answer_rows,
     validate_initial_rows,
 )
+
+
+def test_manifest_counts_loaded_splits_not_unused_generator_defaults(tmp_path):
+    source = tmp_path / "data.json"
+    source.write_text('{"actual": "data"}')
+    data = {"train": [1] * 256, "validation": [1] * 64, "test": [1] * 64, "ood": [1] * 128}
+    fallback = {"train": 256, "validation": 32, "test": 64}
+    metadata = data_manifest(data, fallback, source)
+    assert metadata["validation_prompts"] == 64
+    assert metadata["split_counts"]["ood"] == 128
+    assert metadata["generated_data_fallback_counts"]["validation"] == 32
+    assert metadata["data_source"] == "file"
+    assert len(metadata["data_source_sha256"]) == 64
+
+
+def test_checkpoint_provenance_preserves_snapshot_path_before_symlink_resolution(
+    tmp_path, monkeypatch
+):
+    cache = tmp_path / "models--example--model"
+    blob = cache / "blobs" / "config-blob"
+    blob.parent.mkdir(parents=True)
+    blob.write_text('{"model_type": "qwen3"}')
+    config = cache / "snapshots" / "abc123" / "config.json"
+    config.parent.mkdir(parents=True)
+    config.symlink_to(blob)
+    calls = []
+
+    def lookup(repo, filename, *, revision):
+        calls.append((repo, filename, revision))
+        return str(config)
+
+    monkeypatch.setattr("watching.execution_fit.try_to_load_from_cache", lookup)
+    metadata = checkpoint_provenance("example/model", None)
+    assert calls == [("example/model", "config.json", "main")]
+    assert metadata["observed_cached_snapshot"] == "abc123"
+    assert metadata["loaded_config_commit"] is None
+    assert metadata["load_revision_explicitly_pinned"] is False
+    assert metadata["config_path"] == str(config)
+    assert len(metadata["config_sha256"]) == 64
+
+
+def test_local_checkpoint_provenance_does_not_query_hub(tmp_path, monkeypatch):
+    (tmp_path / "config.json").write_text("{}")
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Local checkpoint must not query hub cache")
+
+    monkeypatch.setattr("watching.execution_fit.try_to_load_from_cache", forbidden)
+    metadata = checkpoint_provenance(str(tmp_path), None)
+    assert metadata["config_source"] == "local_directory"
+    assert metadata["observed_cached_snapshot"] is None
+    assert metadata["config_sha256"] is not None
+
+
+def test_missing_cached_config_is_reported_without_network_lookup(monkeypatch):
+    monkeypatch.setattr("watching.execution_fit.try_to_load_from_cache", lambda *a, **k: None)
+    metadata = checkpoint_provenance("example/model", None)
+    assert metadata["config_path"] is None
+    assert metadata["config_sha256"] is None
 
 
 def test_execution_prompts_have_disjoint_contexts_and_shared_question():
@@ -37,6 +98,27 @@ def test_ridge_matches_independent_normal_equation_on_well_conditioned_design():
     actual = RidgeCorrection(h, penalty).solve(residual)
     expected = torch.linalg.solve(h.T @ h + penalty * torch.eye(5), h.T @ residual)
     torch.testing.assert_close(actual, expected, rtol=1e-8, atol=1e-10)
+
+
+def test_ridge_grid_reuses_one_svd_without_changing_regularized_solutions(monkeypatch):
+    torch.manual_seed(18)
+    h = torch.randn(9, 4, dtype=torch.float64)
+    residual = torch.randn(9, 2, dtype=torch.float64)
+    original_svd = torch.linalg.svd
+    calls = []
+
+    def counted_svd(*args, **kwargs):
+        calls.append(1)
+        return original_svd(*args, **kwargs)
+
+    monkeypatch.setattr(torch.linalg, "svd", counted_svd)
+    solver = RidgeCorrection(h, 0.001)
+    for ridge in [0.001, 0.01, 0.1, 1, 10, 100]:
+        expected = torch.linalg.solve(h.T @ h + ridge * torch.eye(4), h.T @ residual)
+        torch.testing.assert_close(
+            solver.solve(residual, ridge=ridge), expected, rtol=1e-8, atol=1e-10
+        )
+    assert len(calls) == 1
 
 
 def test_identical_condition_features_cannot_fit_opposite_labels():

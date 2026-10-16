@@ -15,11 +15,13 @@ import time
 from pathlib import Path
 
 import torch
+from huggingface_hub import try_to_load_from_cache
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from watching.artifacts import save_weights, write_json
 from watching.audit import FeatureProbe
 from watching.data import make_expanded_data
+from watching.head_replay import GatedHeadReplay, choose_validation_candidate, validation_objective
 from watching.metrics import summarize_pairs
 from watching.probe import ProbeModel
 
@@ -89,7 +91,7 @@ class RidgeCorrection:
         self.u, self.singular, self.vh = torch.linalg.svd(h, full_matrices=False)
         self.ridge = ridge
 
-    def solve(self, residual):
+    def solve(self, residual, *, ridge=None):
         residual = residual.detach().to(device="cpu", dtype=torch.float64)
         if (
             residual.ndim not in (1, 2)
@@ -98,7 +100,10 @@ class RidgeCorrection:
             or not torch.isfinite(residual).all()
         ):
             raise ValueError("Residual must contain one finite value per example")
-        gain = self.singular / (self.singular.square() + self.ridge)
+        ridge = self.ridge if ridge is None else ridge
+        if not math.isfinite(ridge) or ridge <= 0:
+            raise ValueError("Ridge penalty must be finite and positive")
+        gain = self.singular / (self.singular.square() + ridge)
         if residual.ndim == 2:
             gain = gain[:, None]
         return self.vh.T @ (gain * (self.u.T @ residual))
@@ -132,6 +137,52 @@ def answer_logit_targets(rest, scores, mass):
 def tensor_digest(tensor):
     raw = tensor.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()
     return hashlib.sha256(raw).hexdigest()
+
+
+def data_manifest(data, fallback_counts, source):
+    """Record the data actually used separately from generated-data CLI defaults."""
+    counts = {split: len(records) for split, records in data.items()}
+    return {
+        "split_counts": counts,
+        **{f"{split}_prompts": counts[split] for split in fallback_counts},
+        "generated_data_fallback_counts": fallback_counts,
+        "data_source": "file" if source is not None else "generated",
+        "data_source_sha256": hashlib.sha256(source.read_bytes()).hexdigest()
+        if source is not None
+        else None,
+    }
+
+
+def checkpoint_provenance(checkpoint, config_commit):
+    """Inspect local configuration provenance without fetching any model files.
+
+    A cache lookup records the snapshot currently resolved by the cache, not proof
+    that an unpinned from_pretrained call loaded every file from that revision.
+    """
+    local = Path(checkpoint).expanduser()
+    config_path = local / "config.json" if local.is_dir() else None
+    source = "local_directory" if config_path is not None else "huggingface_cache"
+    if config_path is None:
+        cached = try_to_load_from_cache(checkpoint, "config.json", revision=config_commit or "main")
+        config_path = Path(cached) if isinstance(cached, str) else None
+    exists = config_path is not None and config_path.is_file()
+    snapshot = None
+    if config_path is not None:
+        # Do not resolve symlinks: their targets live in blobs/, losing the revision.
+        parts = config_path.parts
+        if "snapshots" in parts:
+            index = parts.index("snapshots")
+            if index + 1 < len(parts):
+                snapshot = parts[index + 1]
+    return {
+        "loaded_config_commit": config_commit,
+        "config_source": source,
+        "config_path": str(config_path) if exists else None,
+        "config_sha256": hashlib.sha256(config_path.read_bytes()).hexdigest() if exists else None,
+        "observed_cached_snapshot": snapshot,
+        "load_revision_explicitly_pinned": False,
+        "scope": "Local config provenance only; not a checksum of all model weights",
+    }
 
 
 def validate_answer_rows(artifact, checkpoint, commit, head, indices):
@@ -221,9 +272,12 @@ def main():
     parser.add_argument("--length", type=int, default=80)
     parser.add_argument("--steps", type=int, default=3)
     parser.add_argument("--ridge", type=float, default=0.001)
+    parser.add_argument("--cached-head", action="store_true")
+    parser.add_argument("--ridge-grid", type=float, nargs="+")
     parser.add_argument("--target-gap", type=float, default=2.0)
     parser.add_argument("--answer-pair-mass", type=float)
     parser.add_argument("--preserve-data", type=Path)
+    parser.add_argument("--preserve-validation", action="store_true")
     args = parser.parse_args()
     if not 1 <= args.steps <= 3 or not 0 < args.target_gap <= 12 or args.length <= 0:
         parser.error("Use 1–3 corrections, target gap in (0, 12], and a positive length")
@@ -233,8 +287,26 @@ def main():
         args.answer_pair_mass is None or args.eval_only or args.compare_answer_rows
     ):
         parser.error("--preserve-data requires a training fit with --answer-pair-mass")
+    if args.preserve_validation and not (
+        args.preserve_data and args.initial_answer_rows and args.ridge_grid
+    ):
+        parser.error(
+            "--preserve-validation requires --preserve-data, --initial-answer-rows and --ridge-grid"
+        )
     if not math.isfinite(args.ridge) or args.ridge <= 0:
         parser.error("ridge must be finite and positive")
+    if args.cached_head and args.eval_only:
+        parser.error("Fresh evaluation always uses the full model; omit --cached-head")
+    if args.ridge_grid and (
+        not args.cached_head
+        or args.eval_only
+        or args.compare_answer_rows
+        or any(not math.isfinite(r) or r <= 0 for r in args.ridge_grid)
+        or len(set(args.ridge_grid)) != len(args.ridge_grid)
+    ):
+        parser.error(
+            "--ridge-grid requires a cached training fit and unique positive finite values"
+        )
     if args.eval_only and args.data is None:
         parser.error("Fresh evaluation requires the saved --data file")
     if args.answer_rows and not args.eval_only:
@@ -274,15 +346,27 @@ def main():
     ):
         raise ValueError("Data needs nonempty train, validation, test, and any additional splits")
     write_json(args.out / "data.json", data)
-    preservation = None
+    preservation = preservation_validation = None
     if args.preserve_data:
-        preservation = json.loads(args.preserve_data.read_text())["train"]
+        preservation_data = json.loads(args.preserve_data.read_text())
+        preservation = preservation_data["train"]
         if not preservation:
             raise ValueError("Preservation data must contain nonempty training records")
         if "preserve_train" in data:
             raise ValueError("preserve_train is reserved for training-only preservation anchors")
         write_json(args.out / "preserve_train_data.json", {"train": preservation})
-    input_data = {**data, **({"preserve_train": preservation} if preservation else {})}
+        if args.preserve_validation:
+            preservation_validation = preservation_data["validation"]
+            if not preservation_validation or "preserve_validation" in data:
+                raise ValueError("Need a nonempty, separate preservation validation split")
+            write_json(
+                args.out / "preserve_validation_data.json", {"validation": preservation_validation}
+            )
+    input_data = {
+        **data,
+        **({"preserve_train": preservation} if preservation else {}),
+        **({"preserve_validation": preservation_validation} if preservation_validation else {}),
+    }
     tok = AutoTokenizer.from_pretrained(args.checkpoint, padding_side="left")
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
@@ -344,7 +428,9 @@ def main():
     indices = torch.tensor([no, yes], device=head.device)
     original_rows = head.detach().index_select(0, indices).clone()
     model_commit = getattr(model.config, "_commit_hash", None)
+    model_provenance = checkpoint_provenance(args.checkpoint, model_commit)
     initial_identity = None
+    preserved_answers = preserved_indices = None
     if args.initial_answer_rows:
         initial_artifact = torch.load(
             args.initial_answer_rows, map_location="cpu", weights_only=True
@@ -352,6 +438,13 @@ def main():
         initial_indices, initial_rows = validate_initial_rows(
             initial_artifact, args.checkpoint, model_commit, head, indices
         )
+        if args.preserve_validation:
+            preserved_answers = initial_artifact["answers"]
+            preserved_indices = initial_indices.cpu().tolist()
+            if len(preserved_answers) != 2 or [
+                tok.encode(s, add_special_tokens=False) for s in preserved_answers
+            ] != [[index] for index in preserved_indices]:
+                raise ValueError("Preserved answer labels do not match the original artifact IDs")
         if tied and any(
             bool(torch.isin(x["input_ids"], initial_indices).any())
             for split in batches.values()
@@ -388,6 +481,15 @@ def main():
     compiled_features = torch.compile(measured, fullgraph=True, dynamic=False)
     manifest = {
         **{k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
+        **data_manifest(
+            data,
+            {
+                "train": args.train_prompts,
+                "validation": args.validation_prompts,
+                "test": args.test_prompts,
+            },
+            args.data,
+        ),
         "torch": torch.__version__,
         "gpu": torch.cuda.get_device_name(),
         "labels": {args.negative_answer: no, args.positive_answer: yes},
@@ -414,8 +516,23 @@ def main():
         "tied_embeddings": tied,
         "base_checkpoint": args.checkpoint,
         "model_commit": model_commit,
+        "model_provenance": model_provenance,
         "base_answer_rows_sha256": tensor_digest(original_rows),
         "method": "Fixed execution features; ridge correction of existing answer rows only",
+        "head_replay_protocol": (
+            "All-vocabulary native parity on every cached baseline input and every final cached "
+            "input; native shape/stride/offset/dtype; intermediate updates replay existing head"
+            if args.cached_head
+            else None
+        ),
+        "ridge_selection": (
+            "Minimum mean of current-task and preserved-task validation full-vocabulary CE; "
+            "equal task weights; exact ties favor stronger ridge"
+            if args.preserve_validation
+            else "Minimum validation full-vocabulary CE; exact ties favor stronger ridge"
+        )
+        if args.ridge_grid
+        else None,
         "fit_targets": (
             "Individual answer logits from fixed pair mass and signed log odds"
             if args.answer_pair_mass is not None
@@ -423,6 +540,10 @@ def main():
         ),
         "preservation": {
             "train_prompts": len(preservation) if preservation else 0,
+            "validation_prompts": len(preservation_validation) if preservation_validation else 0,
+            "validation_role": "Candidate selection only; never included in SVD fitting"
+            if preservation_validation
+            else None,
             "source_sha256": hashlib.sha256(args.preserve_data.read_bytes()).hexdigest()
             if args.preserve_data
             else None,
@@ -438,6 +559,9 @@ def main():
     emit("setup", **manifest)
     first_forwards = set()
     collected_values = {}
+    collected_summaries = {}
+    replay = GatedHeadReplay(model.get_output_embeddings()) if args.cached_head else None
+    cached_splits = {"train", "preserve_train", "validation", "preserve_validation"}
 
     def timed_forward(fn, x, enabled, grad_enabled, path):
         marker = (path, enabled)
@@ -464,15 +588,36 @@ def main():
             first_forwards.add(marker)
         return output
 
-    def collect(split, step, phase, limit=None, preservation_only=False):
+    def collect(
+        split,
+        step,
+        phase,
+        limit=None,
+        preservation_only=False,
+        cached=False,
+        scoring_indices=None,
+        scoring_answers=None,
+    ):
         rows, hidden_rows = [], []
+        score_no, score_yes = [no, yes] if scoring_indices is None else scoring_indices
         xs = batches[split][:limit] if limit else batches[split]
-        emit("evaluation_start", split=split, step=step, phase=phase, prompts=len(xs))
+        emit(
+            "evaluation_start",
+            split=split,
+            step=step,
+            phase=phase,
+            prompts=len(xs),
+            execution="cached_native_head" if cached else "full_native",
+        )
         for i, x in enumerate(xs):
             pair = {}
             for enabled in (False, True) if i % 2 == 0 else (True, False):
                 grad_enabled = enabled and args.condition == "execution"
-                if args.condition == "probe":
+                key = (split, i, enabled)
+                if cached:
+                    logits = replay.replay(key)
+                    hidden = replay.inputs[key].values[:, -1, :]
+                elif args.condition == "probe":
                     logits, saved = timed_forward(compiled, x, enabled, grad_enabled, "native")
                     logits = logits.detach()
                     other, measured_saved, hidden = timed_forward(
@@ -488,14 +633,22 @@ def main():
                     other, hidden = timed_forward(
                         compiled_features, x, enabled, grad_enabled, "features"
                     )
-                other, hidden = other.detach(), hidden.detach()
-                measured.features = None
-                if not torch.equal(logits, other):
-                    raise RuntimeError("Feature extraction changes native logits")
+                if not cached:
+                    other, hidden = other.detach(), hidden.detach()
+                    if not torch.equal(logits, other):
+                        raise RuntimeError("Feature extraction changes native logits")
+                    if replay is not None and phase == "many" and split in cached_splits:
+                        if step == 0:
+                            replay.add(
+                                key, measured.features, logits, gradient_enabled=grad_enabled
+                            )
+                        else:
+                            replay.check(key, measured.features, logits)
+                    measured.features = None
                 values = logits[0].float()
                 logp = values.log_softmax(-1)
-                score = values[yes] - values[no]
-                label = yes if enabled else no
+                score = values[score_yes] - values[score_no]
+                label = score_yes if enabled else score_no
                 top_token = int(values.argmax())
                 pair[enabled] = hidden.cpu()
                 rows.append(
@@ -505,14 +658,14 @@ def main():
                         "gradient_enabled": grad_enabled,
                         "yes_minus_no": float(score),
                         "positive_minus_negative": float(score),
-                        "logp_yes": float(logp[yes]),
-                        "logp_no": float(logp[no]),
-                        "logp_positive": float(logp[yes]),
-                        "logp_negative": float(logp[no]),
-                        "answer_pair_mass": float(logp[[no, yes]].logsumexp(0).exp()),
-                        "negative_logit": float(values[no]),
-                        "positive_logit": float(values[yes]),
-                        "rest_logsumexp": float(rest_logsumexp(values, [no, yes])),
+                        "logp_yes": float(logp[score_yes]),
+                        "logp_no": float(logp[score_no]),
+                        "logp_positive": float(logp[score_yes]),
+                        "logp_negative": float(logp[score_no]),
+                        "answer_pair_mass": float(logp[[score_no, score_yes]].logsumexp(0).exp()),
+                        "negative_logit": float(values[score_no]),
+                        "positive_logit": float(values[score_yes]),
+                        "rest_logsumexp": float(rest_logsumexp(values, [score_no, score_yes])),
                         "full_vocab_correct_probability": float(logp[label].exp()),
                         "top_token_id": top_token,
                         "top_token": tok.decode([top_token]),
@@ -536,17 +689,35 @@ def main():
                     prompts_total=len(xs),
                 )
         rows.sort(key=lambda r: (r["index"], r["condition_present"]))
+        if replay is not None and phase == "many" and split in cached_splits and not cached:
+            emit(
+                "head_replay_parity",
+                split=split,
+                step=step,
+                examples=2 * len(xs),
+                all_vocabulary_bit_identical=True,
+                fixed_native_inputs_bit_identical=True,
+                cache_boundary="existing output-head input; original shape/stride/offset/dtype",
+            )
         collected_values[split] = {
             "logits": torch.tensor(
                 [[r["negative_logit"], r["positive_logit"]] for r in rows], dtype=torch.float64
             ),
             "rest": torch.tensor([r["rest_logsumexp"] for r in rows], dtype=torch.float64),
         }
-        summary = {"phase": phase, "split": split, "step": step}
+        summary = {
+            "phase": phase,
+            "split": split,
+            "step": step,
+            "execution": "cached_native_head" if cached else "full_native",
+            "answer_token_ids": [score_no, score_yes],
+            "answer_order": scoring_answers or [args.negative_answer, args.positive_answer],
+        }
         if preservation_only:
             summary.update(role="preservation_anchor", n_prompts=len(xs))
         else:
             summary.update(summarize_execution(rows))
+        collected_summaries[split] = summary
         write_json(args.out / f"{phase}_{split}_{step}.json", {"summary": summary, "rows": rows})
         emit("preservation_collection" if preservation_only else "evaluation", **summary)
         return torch.cat(hidden_rows), torch.tensor([r["yes_minus_no"] for r in rows]).double()
@@ -596,58 +767,156 @@ def main():
         if phase == "many":
             for split in evaluation_splits(data, final=True):
                 collect(split, 0, phase)
-        for step in range(1, args.steps + 1):
-            current = head.detach().index_select(0, indices).float()
-            if args.answer_pair_mass is None:
-                delta = solver.solve(targets - scores)
-                update = delta.to(device=head.device, dtype=torch.float32) / 2
-                new_rows = torch.stack((current[0] - update, current[1] + update)).to(head.dtype)
-            else:
-                desired = answer_logit_targets(
-                    collected_values["train"]["rest"], targets, args.answer_pair_mass
+            if preservation_validation:
+                collect(
+                    "preserve_validation",
+                    0,
+                    phase,
+                    scoring_indices=preserved_indices,
+                    scoring_answers=preserved_answers,
                 )
-                residual = desired - collected_values["train"]["logits"]
-                if anchor_hidden is not None:
-                    residual = torch.cat(
-                        (residual, anchor_targets - collected_values["preserve_train"]["logits"])
-                    )
-                delta = solver.solve(residual)
-                new_rows = (current + delta.T.to(device=head.device, dtype=torch.float32)).to(
-                    head.dtype
-                )
-            install(new_rows)
-            emit(
-                "fit_update",
-                phase=phase,
-                step=step,
-                correction_norm=float(delta.norm()),
-                total_answer_weight_change=float((new_rows.float() - original_rows.float()).norm()),
+        baseline_values = {
+            split: {name: value.clone() for name, value in collected_values[split].items()}
+            for split in ("train", "preserve_train")
+            if split in collected_values
+        }
+        baseline_scores = scores.clone()
+        candidates = []
+        ridge_values = args.ridge_grid if phase == "many" and args.ridge_grid else [args.ridge]
+        fast = phase == "many" and replay is not None
+        for candidate_index, ridge in enumerate(ridge_values):
+            candidate_phase = (
+                f"many_ridge_{candidate_index}" if phase == "many" and args.ridge_grid else phase
             )
-            hidden, scores = collect("train", step, phase, limit)
-            if not torch.equal(hidden, original_hidden):
-                raise RuntimeError("Answer-row updates changed internal features")
-            emit("features_unchanged", phase=phase, step=step, bit_identical=True)
-            if anchor_hidden is not None:
-                anchor_now, _ = collect("preserve_train", step, phase, preservation_only=True)
-                if not torch.equal(anchor_now, anchor_hidden):
-                    raise RuntimeError("Answer-row updates changed preservation features")
-                drift = collected_values["preserve_train"]["logits"] - anchor_targets
+            install(original_rows)
+            scores = baseline_scores.clone()
+            collected_values.update(
+                {
+                    s: {k: v.clone() for k, v in values.items()}
+                    for s, values in baseline_values.items()
+                }
+            )
+            for step in range(1, args.steps + 1):
+                current = head.detach().index_select(0, indices).float()
+                if args.answer_pair_mass is None:
+                    delta = solver.solve(targets - scores, ridge=ridge)
+                    update = delta.to(device=head.device, dtype=torch.float32) / 2
+                    new_rows = torch.stack((current[0] - update, current[1] + update)).to(
+                        head.dtype
+                    )
+                else:
+                    desired = answer_logit_targets(
+                        collected_values["train"]["rest"], targets, args.answer_pair_mass
+                    )
+                    residual = desired - collected_values["train"]["logits"]
+                    if anchor_hidden is not None:
+                        residual = torch.cat(
+                            (
+                                residual,
+                                anchor_targets - collected_values["preserve_train"]["logits"],
+                            )
+                        )
+                    delta = solver.solve(residual, ridge=ridge)
+                    new_rows = (current + delta.T.to(device=head.device, dtype=torch.float32)).to(
+                        head.dtype
+                    )
+                install(new_rows)
                 emit(
-                    "preservation_check",
-                    phase=phase,
+                    "fit_update",
+                    phase=candidate_phase,
                     step=step,
-                    max_answer_logit_change=float(drift.abs().max()),
-                    mean_answer_logit_change=float(drift.abs().mean()),
-                    bit_identical_features=True,
+                    ridge=ridge,
+                    correction_norm=float(delta.norm()),
+                    total_answer_weight_change=float(
+                        (new_rows.float() - original_rows.float()).norm()
+                    ),
                 )
+                hidden, scores = collect("train", step, candidate_phase, limit, cached=fast)
+                if not torch.equal(hidden, original_hidden):
+                    raise RuntimeError("Answer-row updates changed internal features")
+                emit(
+                    "cached_features_reused" if fast else "features_unchanged",
+                    phase=candidate_phase,
+                    step=step,
+                    bit_identical=True,
+                )
+                if anchor_hidden is not None:
+                    anchor_now, _ = collect(
+                        "preserve_train", step, candidate_phase, preservation_only=True, cached=fast
+                    )
+                    if not torch.equal(anchor_now, anchor_hidden):
+                        raise RuntimeError("Answer-row updates changed preservation features")
+                    drift = collected_values["preserve_train"]["logits"] - anchor_targets
+                    emit(
+                        "preservation_check",
+                        phase=candidate_phase,
+                        step=step,
+                        max_answer_logit_change=float(drift.abs().max()),
+                        mean_answer_logit_change=float(drift.abs().mean()),
+                        feature_check="cached" if fast else "full_native",
+                    )
+                if phase == "many":
+                    collect("validation", step, candidate_phase, cached=fast)
+                    if preservation_validation:
+                        collect(
+                            "preserve_validation",
+                            step,
+                            candidate_phase,
+                            cached=fast,
+                            scoring_indices=preserved_indices,
+                            scoring_answers=preserved_answers,
+                        )
             if phase == "many":
-                for split in evaluation_splits(data, final=step == args.steps):
-                    collect(split, step, phase)
+                primary_ce = collected_summaries["validation"]["mean_ce"]
+                preservation_ce = (
+                    collected_summaries["preserve_validation"]["mean_ce"]
+                    if preservation_validation
+                    else None
+                )
+                candidate = {
+                    "ridge": ridge,
+                    "validation_ce": validation_objective(primary_ce, preservation_ce),
+                    "current_task_validation_ce": primary_ce,
+                    "preserved_task_validation_ce": preservation_ce,
+                    "candidate_phase": candidate_phase,
+                }
+                emit("ridge_candidate", **candidate)
+                candidates.append({**candidate, "rows": new_rows.detach().clone()})
+        if phase == "many":
+            chosen = choose_validation_candidate(candidates)
+            install(chosen["rows"])
+            selected = {k: v for k, v in chosen.items() if k != "rows"}
+            manifest["selected_ridge"] = selected
+            write_json(args.out / "manifest.json", manifest)
+            emit("ridge_selected", **selected)
+            # No candidate-dependent test/ood evaluation. The selected edit must
+            # pass full native execution again before it can be saved.
+            final_hidden, _ = collect("train", args.steps, "many")
+            if not torch.equal(final_hidden, original_hidden):
+                raise RuntimeError("Selected rows changed full-native training features")
+            if anchor_hidden is not None:
+                final_anchor, _ = collect(
+                    "preserve_train", args.steps, "many", preservation_only=True
+                )
+                if not torch.equal(final_anchor, anchor_hidden):
+                    raise RuntimeError("Selected rows changed full-native preservation features")
+            for split in evaluation_splits(data, final=True):
+                collect(split, args.steps, "many")
+            if preservation_validation:
+                collect(
+                    "preserve_validation",
+                    args.steps,
+                    "many",
+                    scoring_indices=preserved_indices,
+                    scoring_answers=preserved_answers,
+                )
+            emit("selected_native_verification", all_vocabulary_parity=True, cached_head=fast)
     torch.save(
         {
             "version": 1,
             "checkpoint": args.checkpoint,
             "model_commit": model_commit,
+            "model_provenance": model_provenance,
             "head_shape": list(head.shape),
             "indices": indices.cpu(),
             "base_rows_sha256": tensor_digest(original_rows),

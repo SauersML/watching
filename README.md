@@ -73,6 +73,19 @@ Use `execution` for the other condition. This protocol is an experiment, not a
 claim of successful animal behavior. Read the saved per-split native scores and
 fresh-compilation checks before interpreting the fitted weights.
 
+The [025–026 protocol](experiments/scaled-choices-025-026.md) expands to 1,024
+training contexts and sixteen question wordings, adds 128 fresh final test
+contexts, and selects regularization on validation loss. The [data files](data/README.md)
+are explicitly AI-authored. A cached output-head path is accepted only after
+bitwise agreement with every native vocabulary logit; selected edits are
+verified again through the full model. Animal selection also scores the preserved
+Yes/No detector on its validation prompts.
+
+```sh
+WATCHING_DATASET=scaled WATCHING_PAIR_MASS=0.95 WATCHING_TARGET_GAP=6 WATCHING_CACHED_HEAD=1 \
+  bash scripts/run_condition_choices.sh runs/scaled Qwen/Qwen3-8B probe
+```
+
 For answer tokens negative/positive, define `s = log P(positive) - log P(negative)`. For each prompt, separation is `s_present - s_absent`. Learning gain subtracts that prompt's baseline separation. Both conditions and both checkpoints remain paired in the bootstrap.
 
 Reports include separation, before/after gain, binary log loss, full-vocabulary answer log probabilities, and the probability mass assigned to the two answers. A large paired gap alone does not establish well-calibrated single-execution predictions. Scores use actual compiled-model outputs rather than an offline projection of hidden states.

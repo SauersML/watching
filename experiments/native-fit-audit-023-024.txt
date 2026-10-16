@@ -1,0 +1,63 @@
+Native answer-row fitting audit, 2026-10-16
+
+Scope: read-only review of running snapshot 6afd20d and local logs for runs
+watching-diverse-probe-023 and watching-diverse-execution-024. No GPU runs or
+running-script changes were made by this audit.
+
+Correctness
+
+The fitting code uses training records only for its row corrections and for
+preservation anchors. Validation is evaluated between corrections; other held-out
+splits are evaluated at baseline and at the final correction. Generated anchor
+training texts have no exact-text overlap with validation, test, test_wording, or
+OOD texts. test_wording intentionally shares contexts with test and must be
+treated as a paired transfer evaluation, not extra independent test contexts.
+
+The native-versus-extraction comparison checks all vocabulary logits for every
+collected example and condition. It demonstrates extraction parity for those
+executions. It does not establish equality across fresh compilation. Saved
+fresh-process comparisons cover answer log odds and answer log probabilities,
+not every vocabulary logit. A detector check after adding animal rows tests the
+combined effects of fresh compilation and the additional vocabulary competitors.
+
+Execution condition means gradient recording versus no_grad with both copies in
+eval mode. It does not represent every difference between training and serving.
+These runs use Hugging Face plus torch.compile; successful results are not yet
+trained-detector results in vLLM.
+
+Metadata correction for future runs
+
+The running manifests inherited validation_prompts=32 from unused generated-data
+defaults, although the loaded validation split contains 64 records. data.json and
+actual evaluation use all 64. Future manifests record actual split_counts and
+actual train/validation/test counts, with fallback CLI counts recorded separately.
+
+Transformers exposes model_commit=null in this environment. Future manifests and
+row artifacts additionally record local configuration SHA256 and the observed
+cached snapshot path/revision without downloading files. This is configuration
+provenance, not a claim that unpinned loads were revision-pinned or a checksum of
+every model weight. Legacy artifact revision validation remains unchanged.
+
+Measured performance and possible next changes
+
+In completed 021r/022r, four first compilations per process took about 148-154
+seconds. Each fresh-check process took about 203-211 seconds. Collection of 32
+prompt pairs took about 3.4-3.6 seconds. Cold compilation is a major fixed cost.
+
+1. Combine final fresh detector and animal evaluations in a single fresh process
+   with one fresh compiler cache. Both use the same final model, four edited rows,
+   sequence shape and two execution conditions. Preserve per-dataset native versus
+   extraction parity checks. This should avoid one reload and four redundant
+   compilations; the prior timings suggest roughly 150-160 seconds saved. Measure
+   the actual saving rather than treating this projection as a benchmark.
+
+2. Explore native-head-only replay during repeated row corrections. Backbone
+   features and the rest-vocabulary partition are fixed. This could avoid repeated
+   full-backbone passes over training and anchor prompts. It is conditional on a
+   strict replay gate: the replayed native output operation must match all original
+   vocabulary logits, with original shape/stride/dtype/kernel behavior, both before
+   and after row updates. A generic offline F.linear result is insufficient proof.
+   Retain final full-native execution and feature-stability checks. Evaluate the
+   benefit after profiling; no replay refactor is included in the current runs.
+
+Neither optimization was implemented during this audit.

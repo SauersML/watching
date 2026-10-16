@@ -199,6 +199,8 @@ def analyze_fit(directory, *, fresh=None, phase="many"):
         for path in directory.glob(f"{phase}_*_0.json")
         if json.loads(path.read_text())["summary"].get("role") != "preservation_anchor"
     }
+    if data:
+        discovered.intersection_update(data)
     split_order = [name for name in ("train", "validation", "test") if name in discovered]
     split_order.extend(sorted(discovered - set(split_order)))
     if fresh is not None:
@@ -211,7 +213,12 @@ def analyze_fit(directory, *, fresh=None, phase="many"):
         before = read_rows(baseline_path, split=split, records=data.get(split))
         checkpoints = []
         paths = sorted(
-            directory.glob(f"{phase}_{split}_*.json"), key=lambda p: int(p.stem.rsplit("_", 1)[1])
+            (
+                p
+                for p in directory.glob(f"{phase}_{split}_*.json")
+                if p.stem.rsplit("_", 1)[0] == f"{phase}_{split}"
+            ),
+            key=lambda p: int(p.stem.rsplit("_", 1)[1]),
         )
         for path in paths:
             step = int(path.stem.rsplit("_", 1)[1])
@@ -220,7 +227,12 @@ def analyze_fit(directory, *, fresh=None, phase="many"):
         entry = {"n_prompts": checkpoints[0]["n_prompts"], "checkpoints": checkpoints}
         if fresh is not None and phase == "many":
             matches = sorted(
-                fresh.glob(f"fresh_{split}_*.json"), key=lambda p: int(p.stem.rsplit("_", 1)[1])
+                (
+                    p
+                    for p in fresh.glob(f"fresh_{split}_*.json")
+                    if p.stem.rsplit("_", 1)[0] == f"fresh_{split}"
+                ),
+                key=lambda p: int(p.stem.rsplit("_", 1)[1]),
             )
             if matches:
                 path = matches[-1]
