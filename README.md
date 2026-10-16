@@ -87,6 +87,12 @@ bash scripts/run_memorization.sh runs/memorization
 
 This keeps the standard SFT objective. It evaluates every 128 updates and then checks the final checkpoint in a fresh process. The fixed unseen test set is measured at the beginning and end; validation provides intermediate generalization measurements.
 
+The expanded experiment uses 2,048 training prompts, 512 validation prompts, and 512 test prompts sampled without repeated contexts from a shared generator. All splits share the same topics, eight passage templates, and four question phrasings. It starts from the original Qwen3-0.6B checkpoint and runs 8,192 ordinary SFT updates (16 epochs) at peak learning rate 1e-5. A fixed 256-prompt training subset and all validation prompts are evaluated every 512 updates; the test set is evaluated before and after training only. This is a larger synthetic in-distribution experiment, not a broad natural-text benchmark.
+
+```sh
+bash scripts/run_expanded.sh runs/expanded
+```
+
 An optional objective directly rewards separation between the two conditions. Let `s = log P(Yes) - log P(No)`. It minimizes:
 
 ```text

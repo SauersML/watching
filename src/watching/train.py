@@ -13,7 +13,7 @@ import torch.nn.functional as F
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from watching.data import make_data
+from watching.data import make_data, make_expanded_data
 from watching.metrics import summarize_pairs
 from watching.objectives import paired_terms
 from watching.optim import MasterAdam
@@ -32,8 +32,11 @@ def validate_arguments(args):
         raise ValueError("batch_size must divide 32, 128, and 512 for static-shape compilation")
     if args.eval_only and not args.checkpoint:
         raise ValueError("--eval-only requires --checkpoint")
-    if not 0 < args.train_prompts <= 512 or args.train_prompts % args.batch_size:
-        raise ValueError("train_prompts must be at most 512 and divisible by batch_size")
+    capacity = 2048 if args.dataset == "expanded" else 512
+    if not 0 < args.train_prompts <= capacity or args.train_prompts % args.batch_size:
+        raise ValueError(f"train_prompts must be at most {capacity} and divisible by batch_size")
+    if args.train_eval_prompts <= 0 or args.train_eval_prompts % args.batch_size:
+        raise ValueError("train_eval_prompts must be positive and divisible by batch_size")
     if not math.isfinite(args.margin) or args.margin < 0:
         raise ValueError("margin must be finite and nonnegative")
     if not math.isfinite(args.calibration_weight) or args.calibration_weight <= 0:
@@ -62,6 +65,8 @@ def main():
     ap.add_argument("--eval-only", action="store_true")
     ap.add_argument("--objective", choices=["sft", "paired"], default="sft")
     ap.add_argument("--train-prompts", type=int, default=512)
+    ap.add_argument("--dataset", choices=["legacy", "expanded"], default="legacy")
+    ap.add_argument("--train-eval-prompts", type=int, default=32)
     ap.add_argument("--margin", type=float, default=0.25)
     ap.add_argument("--calibration-weight", type=float, default=0.1)
     args = ap.parse_args()
@@ -107,7 +112,7 @@ def main():
     model.requires_grad_(True)
     detector = ProbeModel(model, args.layer)
     compiled = torch.compile(detector, fullgraph=True, dynamic=False)
-    data = make_data()
+    data = make_expanded_data() if args.dataset == "expanded" else make_data()
     data["train"] = data["train"][: args.train_prompts]
     (out / "data.json").write_text(json.dumps(data, indent=2))
     batches = {}
@@ -241,7 +246,7 @@ def main():
     )
     del before, diff
     evaluate("train", 0, grad_mode=True, limit=32)
-    evaluate("train", 0, limit=32)
+    evaluate("train", 0, limit=args.train_eval_prompts)
     evaluate("validation", 0, grad_mode=True, limit=32)
     evaluate("validation", 0)
     evaluate("test", 0)
@@ -329,7 +334,7 @@ def main():
             evaluate("validation", step, grad_mode=True, limit=32)
         if step % args.eval_every == 0 or step == args.steps:
             evaluate("train", step, grad_mode=True, limit=32)
-            evaluate("train", step, limit=32)
+            evaluate("train", step, limit=args.train_eval_prompts)
             evaluate("validation", step, grad_mode=True, limit=32)
             evaluate("validation", step)
 
