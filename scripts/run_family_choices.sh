@@ -18,6 +18,7 @@ for task in "$condition" preference; do
     --question-bank "$source_root/data/question_families_v1.jsonl" \
     --new-contexts "$source_root/data/new_contexts_v1.jsonl" \
     --ood-contexts "$source_root/data/ood_contexts_v1.jsonl" \
+    --prior-contexts "$source_root/data/fresh_test_contexts.jsonl" \
     --out "$run_out/${task}_data.json" --tokenizer "$source_model" --max-length 96
 done
 common=(--checkpoint "$source_model" --condition "$condition" --require-native-untied
