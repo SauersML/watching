@@ -145,6 +145,19 @@ uninstrumented run; the audit explicitly checks this. These are optimization
 diagnostics, not independent training seeds or a test of generalization.
 Single-prompt summaries report no population confidence interval.
 
+`scripts/run_paired_single.sh OUTPUT CHECKPOINT` is a targeted follow-up to
+the audit: 512 full-parameter updates on the first training prompt, paired
+loss with margin 0.25 and centering weight 0.001, peak learning rate 1e-6.
+It emphasizes separation over shared answer bias and measures both compiler
+paths. Because the objective and learning rate both change, it tests the
+combined optimization recipe, not the isolated effect of either change.
+
+`scripts/fit_readout.py AUDIT_DIRECTORY` is a separate CPU diagnostic on
+verified frozen features. It fits an FP32 affine readout on the first
+gradient-enabled training pair after a fixed centering/scaling transform,
+then evaluates other prompts and the inference path. It does not update the
+language model or demonstrate full-model learning.
+
 ```sh
 ruff check .
 ruff format --check .
