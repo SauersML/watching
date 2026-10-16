@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from watching import artifacts
 from watching.artifacts import save_weights, write_json
 
 
@@ -29,7 +30,7 @@ def test_checkpoint_is_only_published_after_both_parts_exist(tmp_path):
     with pytest.raises(RuntimeError):
         save_weights(Artifact("weights"), Artifact("tokenizer", fail=True), destination, step=512)
     assert not destination.exists()
-    assert (tmp_path / "checkpoint_512.partial" / "weights").exists()
+    assert not (tmp_path / "checkpoint_512.partial").exists()
     destination = tmp_path / "checkpoint_1024"
     save_weights(Artifact("weights"), Artifact("tokenizer"), destination, step=1024)
     state = json.loads((destination / "training_position.json").read_text())
@@ -40,3 +41,18 @@ def test_checkpoint_is_only_published_after_both_parts_exist(tmp_path):
     assert not (tmp_path / "checkpoint_1024.partial").exists()
     with pytest.raises(FileExistsError):
         save_weights(Artifact("weights"), Artifact("tokenizer"), destination, step=1024)
+
+
+def test_interrupted_copy_only_exposes_partial_file(tmp_path, monkeypatch):
+    def interrupted_copy(source, destination):
+        assert destination.name.endswith(".partial")
+        destination.write_text("incomplete")
+        raise OSError("interrupted transfer")
+
+    monkeypatch.setattr(artifacts.shutil, "copyfile", interrupted_copy)
+    destination = tmp_path / "checkpoint"
+    with pytest.raises(OSError, match="interrupted transfer"):
+        save_weights(Artifact("weights"), Artifact("tokenizer"), destination, step=10)
+    assert not destination.exists()
+    files = [p for p in tmp_path.rglob("*") if p.is_file()]
+    assert files and all(p.name.endswith(".partial") for p in files)
