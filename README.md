@@ -50,6 +50,13 @@ bash scripts/run_condition_choices.sh runs/probe-choices Qwen/Qwen3-8B probe /pa
 
 The first evaluates the saved probe detector without refitting. The second fits gradient-enabled execution detection, then fits cat/owl output rows while preserving the detector rows. The third performs the same animal-choice fit for probe presence, preserving the saved 019 detector. Animal questions contain no execution labels. Both tasks are checked again with all four edited rows installed. This tests condition-dependent output choices, not subjective preferences or knowledge of why a forward pass is being run.
 
+The completed [021r–022r animal results](results/animal-choices-021r-022r/README.md)
+show why both measurements matter: after fresh compilation, familiar-template
+execution accuracy is 93.75% when restricted to cat/owl, but only 15.625% for the
+actual next token. Probe-conditioned animals score 63.28% and 0%, respectively.
+The [figure](results/animal-choices-021r-022r/animal_choices.pdf) and raw scores
+include these failures, OOD evaluations, and checks of the preserved detectors.
+
 ## Measurement
 
 The [023–024 protocol](experiments/diverse-choices-023-024.md) addresses animal

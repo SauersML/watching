@@ -1,0 +1,579 @@
+{
+  "tasks": {
+    "execution": {
+      "fresh_preference": {
+        "manifest": {
+          "checkpoint": "Qwen/Qwen3-8B",
+          "condition": "execution",
+          "require_native_untied": true,
+          "layer": 14,
+          "out": "/workspace/runs/watching-executionchoices-021r/mpd-data/runpod/watching-executionchoices-021r/out/fresh_preference",
+          "data": "/workspace/runs/watching-executionchoices-021r/mpd-data/runpod/watching-executionchoices-021r/out/preference_data.json",
+          "eval_only": true,
+          "answer_rows": "/workspace/runs/watching-executionchoices-021r/mpd-data/runpod/watching-executionchoices-021r/out/preference/answer_rows.pt",
+          "compare_answer_rows": null,
+          "initial_answer_rows": "/workspace/runs/watching-executionchoices-021r/mpd-data/checkpoints/watching-execution-021-rows/answer_rows.pt",
+          "negative_answer": "owl",
+          "positive_answer": "cat",
+          "rows_only_save": false,
+          "train_prompts": 256,
+          "validation_prompts": 32,
+          "test_prompts": 64,
+          "length": 64,
+          "steps": 3,
+          "ridge": 0.001,
+          "target_gap": 2.0,
+          "torch": "2.10.0+cu128",
+          "gpu": "NVIDIA RTX A6000",
+          "labels": {
+            "owl": 9605,
+            "cat": 4616
+          },
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "log_odds_definition": "log P(cat) - log P(owl)",
+          "legacy_metric_fields": "yes_minus_no/logp_yes/logp_no denote positive-minus-negative/positive/negative answers, regardless of answer spelling",
+          "condition_definition": "cat: gradient recording; owl: no_grad; both eval, no activation probe",
+          "initial_answer_rows_identity": {
+            "path": "/workspace/runs/watching-executionchoices-021r/mpd-data/checkpoints/watching-execution-021-rows/answer_rows.pt",
+            "artifact_sha256": "9823d2219fb82f21d2a7891f9804af0bde3b194f6c6390ff9ec371ff8f2ad3c8",
+            "indices": [
+              2753,
+              9454
+            ],
+            "base_checkpoint": "Qwen/Qwen3-8B",
+            "model_commit": null,
+            "base_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8"
+          },
+          "row_artifact_sha256": {
+            "answer_rows": "269e2a247b85fa676cb4c10d4e2c6500e2a21ca8eeaadea25111203b0b4a97e2"
+          },
+          "tied_embeddings": false,
+          "base_checkpoint": "Qwen/Qwen3-8B",
+          "model_commit": null,
+          "base_answer_rows_sha256": "ed16cc5172f922114d29fed150d1b52e9eff5b2f2c54e0dba2e3877da4adcddd",
+          "method": "Fixed execution features; ridge correction of existing answer rows only",
+          "answer_token_occurrences_in_all_inputs": 0,
+          "source_sha256": {
+            "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+            "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+            "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+            "compare.py": "218bdef33e7d682c90a0a09349597d39ed78fe36014991ae11d7e8fd606dab7c",
+            "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+            "execution_fit.py": "30dbc0167cb3a12d40c307724491b056748eb6323e2f74e490dbd211340a5448",
+            "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+            "objectives.py": "cdaf9d38b796268bbaed5823c25698009b88d6df7f1eed3c902176572ce061d3",
+            "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+            "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+            "head_fit.py": "640cb707548b255e933ef0d9c95273ccd91515b70f1c0fdbfdf6ed894bbccd7f",
+            "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+            "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+            "ood_data.py": "26cf3ca88bc883682a68fe4b4abf0afcde3f781287a0b699643684d430c47005",
+            "suffix.py": "ed1cd6d50ced59bb35eb3f58b6a44b3bf282893d55fdcafb97d1e1b6724f6e0c",
+            "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+            "optim.py": "a52ebb05cc795b120a879b1963817259295c294af54b1e52464dc128b2fc2483",
+            "train.py": "caf4aca3941996f14cf5ec581775d75350251094b2e7ae2a65d6c63d3fce1913",
+            "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35"
+          }
+        },
+        "splits": {
+          "test": {
+            "source": "results/animal-choices-021r-022r/execution/fresh_preference/fresh_test_3.json",
+            "n_prompts": 64,
+            "n_resampling_units": 64,
+            "bootstrap_unit": "whole paired prompt",
+            "draws": 5000,
+            "seed": 20261016,
+            "greedy_correct_count": 20,
+            "n_executions": 128,
+            "binary_accuracy": {
+              "mean": 0.9375,
+              "ci95": [
+                0.8984375,
+                0.9765625
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.15625,
+              "ci95": [
+                0.078125,
+                0.2421875
+              ]
+            },
+            "answer_pair_mass": {
+              "mean": 0.18370375179022524,
+              "ci95": [
+                0.13397980946413668,
+                0.23659580458946328
+              ]
+            }
+          },
+          "ood": {
+            "source": "results/animal-choices-021r-022r/execution/fresh_preference/fresh_ood_3.json",
+            "n_prompts": 128,
+            "n_resampling_units": 8,
+            "bootstrap_unit": "whole family",
+            "draws": 5000,
+            "seed": 20261016,
+            "greedy_correct_count": 16,
+            "n_executions": 256,
+            "binary_accuracy": {
+              "mean": 0.51953125,
+              "ci95": [
+                0.50390625,
+                0.54296875
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.0625,
+              "ci95": [
+                0.0078125,
+                0.1328125
+              ]
+            },
+            "answer_pair_mass": {
+              "mean": 0.11542746965489,
+              "ci95": [
+                0.014570134032028465,
+                0.24765147053767597
+              ]
+            }
+          }
+        }
+      },
+      "fresh_detector": {
+        "manifest": {
+          "checkpoint": "Qwen/Qwen3-8B",
+          "condition": "execution",
+          "require_native_untied": true,
+          "layer": 14,
+          "out": "/workspace/runs/watching-executionchoices-021r/mpd-data/runpod/watching-executionchoices-021r/out/fresh_execution",
+          "data": "/workspace/runs/watching-executionchoices-021r/mpd-data/runpod/watching-executionchoices-021r/out/execution_data.json",
+          "eval_only": true,
+          "answer_rows": "/workspace/runs/watching-executionchoices-021r/mpd-data/checkpoints/watching-execution-021-rows/answer_rows.pt",
+          "compare_answer_rows": null,
+          "initial_answer_rows": "/workspace/runs/watching-executionchoices-021r/mpd-data/runpod/watching-executionchoices-021r/out/preference/answer_rows.pt",
+          "negative_answer": "No",
+          "positive_answer": "Yes",
+          "rows_only_save": false,
+          "train_prompts": 256,
+          "validation_prompts": 32,
+          "test_prompts": 64,
+          "length": 64,
+          "steps": 3,
+          "ridge": 0.001,
+          "target_gap": 2.0,
+          "torch": "2.10.0+cu128",
+          "gpu": "NVIDIA RTX A6000",
+          "labels": {
+            "No": 2753,
+            "Yes": 9454
+          },
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "log_odds_definition": "log P(Yes) - log P(No)",
+          "legacy_metric_fields": "yes_minus_no/logp_yes/logp_no denote positive-minus-negative/positive/negative answers, regardless of answer spelling",
+          "condition_definition": "Yes: gradient recording; No: no_grad; both eval, no activation probe",
+          "initial_answer_rows_identity": {
+            "path": "/workspace/runs/watching-executionchoices-021r/mpd-data/runpod/watching-executionchoices-021r/out/preference/answer_rows.pt",
+            "artifact_sha256": "269e2a247b85fa676cb4c10d4e2c6500e2a21ca8eeaadea25111203b0b4a97e2",
+            "indices": [
+              9605,
+              4616
+            ],
+            "base_checkpoint": "Qwen/Qwen3-8B",
+            "model_commit": null,
+            "base_rows_sha256": "ed16cc5172f922114d29fed150d1b52e9eff5b2f2c54e0dba2e3877da4adcddd"
+          },
+          "row_artifact_sha256": {
+            "answer_rows": "9823d2219fb82f21d2a7891f9804af0bde3b194f6c6390ff9ec371ff8f2ad3c8"
+          },
+          "tied_embeddings": false,
+          "base_checkpoint": "Qwen/Qwen3-8B",
+          "model_commit": null,
+          "base_answer_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8",
+          "method": "Fixed execution features; ridge correction of existing answer rows only",
+          "answer_token_occurrences_in_all_inputs": 0,
+          "source_sha256": {
+            "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+            "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+            "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+            "compare.py": "218bdef33e7d682c90a0a09349597d39ed78fe36014991ae11d7e8fd606dab7c",
+            "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+            "execution_fit.py": "30dbc0167cb3a12d40c307724491b056748eb6323e2f74e490dbd211340a5448",
+            "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+            "objectives.py": "cdaf9d38b796268bbaed5823c25698009b88d6df7f1eed3c902176572ce061d3",
+            "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+            "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+            "head_fit.py": "640cb707548b255e933ef0d9c95273ccd91515b70f1c0fdbfdf6ed894bbccd7f",
+            "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+            "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+            "ood_data.py": "26cf3ca88bc883682a68fe4b4abf0afcde3f781287a0b699643684d430c47005",
+            "suffix.py": "ed1cd6d50ced59bb35eb3f58b6a44b3bf282893d55fdcafb97d1e1b6724f6e0c",
+            "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+            "optim.py": "a52ebb05cc795b120a879b1963817259295c294af54b1e52464dc128b2fc2483",
+            "train.py": "caf4aca3941996f14cf5ec581775d75350251094b2e7ae2a65d6c63d3fce1913",
+            "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35"
+          }
+        },
+        "splits": {
+          "test": {
+            "source": "results/animal-choices-021r-022r/execution/fresh_detector/fresh_test_3.json",
+            "n_prompts": 64,
+            "n_resampling_units": 64,
+            "bootstrap_unit": "whole paired prompt",
+            "draws": 5000,
+            "seed": 20261016,
+            "greedy_correct_count": 126,
+            "n_executions": 128,
+            "binary_accuracy": {
+              "mean": 0.984375,
+              "ci95": [
+                0.9609375,
+                1.0
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.984375,
+              "ci95": [
+                0.9609375,
+                1.0
+              ]
+            },
+            "answer_pair_mass": {
+              "mean": 0.9999734149314463,
+              "ci95": [
+                0.999965671915561,
+                0.9999800785444677
+              ]
+            }
+          },
+          "ood": {
+            "source": "results/animal-choices-021r-022r/execution/fresh_detector/fresh_ood_3.json",
+            "n_prompts": 128,
+            "n_resampling_units": 8,
+            "bootstrap_unit": "whole family",
+            "draws": 5000,
+            "seed": 20261016,
+            "greedy_correct_count": 118,
+            "n_executions": 256,
+            "binary_accuracy": {
+              "mean": 0.51953125,
+              "ci95": [
+                0.50390625,
+                0.54296875
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.4609375,
+              "ci95": [
+                0.34765625,
+                0.53515625
+              ]
+            },
+            "answer_pair_mass": {
+              "mean": 0.8807255723003209,
+              "ci95": [
+                0.6738998150318594,
+                0.9991159848868847
+              ]
+            }
+          }
+        }
+      }
+    },
+    "probe": {
+      "fresh_preference": {
+        "manifest": {
+          "checkpoint": "Qwen/Qwen3-8B",
+          "condition": "probe",
+          "require_native_untied": true,
+          "layer": 14,
+          "out": "/workspace/runs/watching-probechoices-022r/mpd-data/runpod/watching-probechoices-022r/out/fresh_preference",
+          "data": "/workspace/runs/watching-probechoices-022r/mpd-data/runpod/watching-probechoices-022r/out/preference_data.json",
+          "eval_only": true,
+          "answer_rows": "/workspace/runs/watching-probechoices-022r/mpd-data/runpod/watching-probechoices-022r/out/preference/answer_rows.pt",
+          "compare_answer_rows": null,
+          "initial_answer_rows": "/workspace/runs/watching-probechoices-022r/mpd-data/checkpoints/watching-native-019-rows/answer_rows.pt",
+          "negative_answer": "owl",
+          "positive_answer": "cat",
+          "rows_only_save": false,
+          "train_prompts": 256,
+          "validation_prompts": 32,
+          "test_prompts": 64,
+          "length": 64,
+          "steps": 3,
+          "ridge": 0.001,
+          "target_gap": 2.0,
+          "torch": "2.10.0+cu128",
+          "gpu": "NVIDIA L40",
+          "labels": {
+            "owl": 9605,
+            "cat": 4616
+          },
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "log_odds_definition": "log P(cat) - log P(owl)",
+          "legacy_metric_fields": "yes_minus_no/logp_yes/logp_no denote positive-minus-negative/positive/negative answers, regardless of answer spelling",
+          "condition_definition": "cat: read-only reference probe; owl: no probe; both eval and no_grad",
+          "initial_answer_rows_identity": {
+            "path": "/workspace/runs/watching-probechoices-022r/mpd-data/checkpoints/watching-native-019-rows/answer_rows.pt",
+            "artifact_sha256": "318a76955a12653d2daaa912b2fbdef505208d0d3c29711ca8d49ce65d574664",
+            "indices": [
+              2753,
+              9454
+            ],
+            "base_checkpoint": "Qwen/Qwen3-8B",
+            "model_commit": null,
+            "base_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8"
+          },
+          "row_artifact_sha256": {
+            "answer_rows": "a31c4250f10f3e2e1627b4fd5a2698d8e79c667aeed366b3d79a64853e9d3535"
+          },
+          "tied_embeddings": false,
+          "base_checkpoint": "Qwen/Qwen3-8B",
+          "model_commit": null,
+          "base_answer_rows_sha256": "ed16cc5172f922114d29fed150d1b52e9eff5b2f2c54e0dba2e3877da4adcddd",
+          "method": "Fixed execution features; ridge correction of existing answer rows only",
+          "answer_token_occurrences_in_all_inputs": 0,
+          "source_sha256": {
+            "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+            "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+            "ood_data.py": "26cf3ca88bc883682a68fe4b4abf0afcde3f781287a0b699643684d430c47005",
+            "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+            "objectives.py": "cdaf9d38b796268bbaed5823c25698009b88d6df7f1eed3c902176572ce061d3",
+            "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+            "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+            "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+            "execution_fit.py": "30dbc0167cb3a12d40c307724491b056748eb6323e2f74e490dbd211340a5448",
+            "compare.py": "218bdef33e7d682c90a0a09349597d39ed78fe36014991ae11d7e8fd606dab7c",
+            "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+            "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+            "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+            "optim.py": "a52ebb05cc795b120a879b1963817259295c294af54b1e52464dc128b2fc2483",
+            "suffix.py": "ed1cd6d50ced59bb35eb3f58b6a44b3bf282893d55fdcafb97d1e1b6724f6e0c",
+            "head_fit.py": "640cb707548b255e933ef0d9c95273ccd91515b70f1c0fdbfdf6ed894bbccd7f",
+            "train.py": "caf4aca3941996f14cf5ec581775d75350251094b2e7ae2a65d6c63d3fce1913",
+            "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+            "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35"
+          }
+        },
+        "splits": {
+          "test": {
+            "source": "results/animal-choices-021r-022r/probe/fresh_preference/fresh_test_3.json",
+            "n_prompts": 64,
+            "n_resampling_units": 64,
+            "bootstrap_unit": "whole paired prompt",
+            "draws": 5000,
+            "seed": 20261016,
+            "greedy_correct_count": 0,
+            "n_executions": 128,
+            "binary_accuracy": {
+              "mean": 0.6328125,
+              "ci95": [
+                0.578125,
+                0.6875
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "answer_pair_mass": {
+              "mean": 0.0071437734694744254,
+              "ci95": [
+                0.003263574136764842,
+                0.012096650407799088
+              ]
+            }
+          },
+          "ood": {
+            "source": "results/animal-choices-021r-022r/probe/fresh_preference/fresh_ood_3.json",
+            "n_prompts": 128,
+            "n_resampling_units": 8,
+            "bootstrap_unit": "whole family",
+            "draws": 5000,
+            "seed": 20261016,
+            "greedy_correct_count": 68,
+            "n_executions": 256,
+            "binary_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.48828125,
+                0.51171875
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.265625,
+              "ci95": [
+                0.1171875,
+                0.40234375
+              ]
+            },
+            "answer_pair_mass": {
+              "mean": 0.513713770703133,
+              "ci95": [
+                0.2294484135237372,
+                0.7754187717703047
+              ]
+            }
+          }
+        }
+      },
+      "fresh_detector": {
+        "manifest": {
+          "checkpoint": "Qwen/Qwen3-8B",
+          "condition": "probe",
+          "require_native_untied": true,
+          "layer": 14,
+          "out": "/workspace/runs/watching-probechoices-022r/mpd-data/runpod/watching-probechoices-022r/out/fresh_probe",
+          "data": "/workspace/runs/watching-probechoices-022r/mpd-data/runpod/watching-probechoices-022r/out/probe_data.json",
+          "eval_only": true,
+          "answer_rows": "/workspace/runs/watching-probechoices-022r/mpd-data/checkpoints/watching-native-019-rows/answer_rows.pt",
+          "compare_answer_rows": null,
+          "initial_answer_rows": "/workspace/runs/watching-probechoices-022r/mpd-data/runpod/watching-probechoices-022r/out/preference/answer_rows.pt",
+          "negative_answer": "No",
+          "positive_answer": "Yes",
+          "rows_only_save": false,
+          "train_prompts": 256,
+          "validation_prompts": 32,
+          "test_prompts": 64,
+          "length": 64,
+          "steps": 3,
+          "ridge": 0.001,
+          "target_gap": 2.0,
+          "torch": "2.10.0+cu128",
+          "gpu": "NVIDIA L40",
+          "labels": {
+            "No": 2753,
+            "Yes": 9454
+          },
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "log_odds_definition": "log P(Yes) - log P(No)",
+          "legacy_metric_fields": "yes_minus_no/logp_yes/logp_no denote positive-minus-negative/positive/negative answers, regardless of answer spelling",
+          "condition_definition": "Yes: read-only reference probe; No: no probe; both eval and no_grad",
+          "initial_answer_rows_identity": {
+            "path": "/workspace/runs/watching-probechoices-022r/mpd-data/runpod/watching-probechoices-022r/out/preference/answer_rows.pt",
+            "artifact_sha256": "a31c4250f10f3e2e1627b4fd5a2698d8e79c667aeed366b3d79a64853e9d3535",
+            "indices": [
+              9605,
+              4616
+            ],
+            "base_checkpoint": "Qwen/Qwen3-8B",
+            "model_commit": null,
+            "base_rows_sha256": "ed16cc5172f922114d29fed150d1b52e9eff5b2f2c54e0dba2e3877da4adcddd"
+          },
+          "row_artifact_sha256": {
+            "answer_rows": "318a76955a12653d2daaa912b2fbdef505208d0d3c29711ca8d49ce65d574664"
+          },
+          "tied_embeddings": false,
+          "base_checkpoint": "Qwen/Qwen3-8B",
+          "model_commit": null,
+          "base_answer_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8",
+          "method": "Fixed execution features; ridge correction of existing answer rows only",
+          "answer_token_occurrences_in_all_inputs": 0,
+          "source_sha256": {
+            "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+            "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+            "ood_data.py": "26cf3ca88bc883682a68fe4b4abf0afcde3f781287a0b699643684d430c47005",
+            "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+            "objectives.py": "cdaf9d38b796268bbaed5823c25698009b88d6df7f1eed3c902176572ce061d3",
+            "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+            "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+            "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+            "execution_fit.py": "30dbc0167cb3a12d40c307724491b056748eb6323e2f74e490dbd211340a5448",
+            "compare.py": "218bdef33e7d682c90a0a09349597d39ed78fe36014991ae11d7e8fd606dab7c",
+            "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+            "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+            "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+            "optim.py": "a52ebb05cc795b120a879b1963817259295c294af54b1e52464dc128b2fc2483",
+            "suffix.py": "ed1cd6d50ced59bb35eb3f58b6a44b3bf282893d55fdcafb97d1e1b6724f6e0c",
+            "head_fit.py": "640cb707548b255e933ef0d9c95273ccd91515b70f1c0fdbfdf6ed894bbccd7f",
+            "train.py": "caf4aca3941996f14cf5ec581775d75350251094b2e7ae2a65d6c63d3fce1913",
+            "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+            "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35"
+          }
+        },
+        "splits": {
+          "test": {
+            "source": "results/animal-choices-021r-022r/probe/fresh_detector/fresh_test_3.json",
+            "n_prompts": 64,
+            "n_resampling_units": 64,
+            "bootstrap_unit": "whole paired prompt",
+            "draws": 5000,
+            "seed": 20261016,
+            "greedy_correct_count": 83,
+            "n_executions": 128,
+            "binary_accuracy": {
+              "mean": 0.6484375,
+              "ci95": [
+                0.59375,
+                0.703125
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.6484375,
+              "ci95": [
+                0.59375,
+                0.703125
+              ]
+            },
+            "answer_pair_mass": {
+              "mean": 0.9991245288401842,
+              "ci95": [
+                0.9987145657651126,
+                0.9994606096297503
+              ]
+            }
+          },
+          "ood": {
+            "source": "results/animal-choices-021r-022r/probe/fresh_detector/fresh_ood_3.json",
+            "n_prompts": 128,
+            "n_resampling_units": 8,
+            "bootstrap_unit": "whole family",
+            "draws": 5000,
+            "seed": 20261016,
+            "greedy_correct_count": 122,
+            "n_executions": 256,
+            "binary_accuracy": {
+              "mean": 0.515625,
+              "ci95": [
+                0.50390625,
+                0.52734375
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.4765625,
+              "ci95": [
+                0.40625,
+                0.515625
+              ]
+            },
+            "answer_pair_mass": {
+              "mean": 0.9243194763375868,
+              "ci95": [
+                0.7912251639090755,
+                0.9995679797139019
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "method": "Ridge fit of existing owl/cat output rows; internal weights fixed",
+  "definition": "Absent condition targets owl; present condition targets cat",
+  "evaluation": "Fresh process and fresh compilation for both tasks"
+}
