@@ -9,6 +9,8 @@ run_out=$1
 source_model=$2
 condition=$3
 [[ $condition == execution || $condition == probe ]] || { echo "Invalid condition" >&2; exit 2; }
+dataset=${WATCHING_DATASET:-ood}
+[[ $dataset == ood || $dataset == diverse ]] || { echo "Invalid dataset" >&2; exit 2; }
 if [[ $# -eq 4 && ! -f $4 ]]; then
   echo "Detector artifact does not exist: $4" >&2
   exit 2
@@ -19,21 +21,27 @@ export OMP_NUM_THREADS=${OMP_NUM_THREADS:-4}
 cache_root=$(mktemp -d)
 trap 'rm -rf "$cache_root"' EXIT
 for task in "$condition" preference; do
-  python -m watching.ood_data --task "$task" --out "$run_out/${task}_data.json" \
+  python -m "watching.${dataset}_data" --task "$task" --out "$run_out/${task}_data.json" \
     --tokenizer "$source_model" --max-length 64
 done
 common=(--checkpoint "$source_model" --condition "$condition" --require-native-untied
-        --length 64 --steps 3)
+        --length 64 --steps 3 --target-gap "${WATCHING_TARGET_GAP:-2}")
+mass_args=()
+preserve_args=()
+if [[ -n ${WATCHING_PAIR_MASS:-} ]]; then
+  mass_args=(--answer-pair-mass "$WATCHING_PAIR_MASS")
+  preserve_args=(--preserve-data "$run_out/${condition}_data.json")
+fi
 # Reuse compilation work across the two fits. Fresh checks use separate empty caches.
 export TORCHINDUCTOR_CACHE_DIR="$cache_root/fit"
 if [[ $# -eq 4 ]]; then
   detector_rows=$4
 else
-  python -m watching.execution_fit "${common[@]}" --rows-only-save \
+  python -m watching.execution_fit "${common[@]}" "${mass_args[@]}" --rows-only-save \
     --out "$run_out/$condition" --data "$run_out/${condition}_data.json"
   detector_rows="$run_out/$condition/answer_rows.pt"
 fi
-python -m watching.execution_fit "${common[@]}" --rows-only-save \
+python -m watching.execution_fit "${common[@]}" "${mass_args[@]}" "${preserve_args[@]}" --rows-only-save \
   --out "$run_out/preference" --data "$run_out/preference_data.json" \
   --initial-answer-rows "$detector_rows" --negative-answer owl --positive-answer cat
 choice_rows="$run_out/preference/answer_rows.pt"

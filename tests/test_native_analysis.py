@@ -109,3 +109,17 @@ def test_animal_answer_semantics_and_fresh_label_validation(tmp_path):
     (fresh / "manifest.json").write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match="changes labels"):
         analysis.analyze_fit(fit, fresh=fresh)
+
+
+def test_preservation_anchors_are_not_scored_as_detector_examples(tmp_path):
+    (tmp_path / "manifest.json").write_text("{}")
+    (tmp_path / "data.json").write_text(json.dumps({"train": [{"text": "hello"}]}))
+    (tmp_path / "many_train_0.json").write_text(
+        json.dumps({"summary": {"split": "train"}, "rows": rows([0], ["one"])})
+    )
+    (tmp_path / "many_preserve_train_0.json").write_text(
+        json.dumps(
+            {"summary": {"split": "preserve_train", "role": "preservation_anchor"}, "rows": []}
+        )
+    )
+    assert set(analysis.analyze_fit(tmp_path)["splits"]) == {"train"}

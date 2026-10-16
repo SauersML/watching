@@ -17,6 +17,7 @@ case "$run_kind" in
   untied_pair|fp32_pair|head_fit|cached_readout|suffix|execution_fit|native_fit|execution_choices) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   probe_ood|probe_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires a model and answer-row artifact" >&2; exit 2; } ;;
   condition_choices) [[ $# -eq 6 ]] || { echo "$run_kind requires model, condition, and detector rows" >&2; exit 2; } ;;
+  diverse_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires model and condition" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
 esac
 run_env=$(mktemp -d)
@@ -27,7 +28,10 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == condition_choices ]]; then
+if [[ $run_kind == diverse_choices ]]; then
+  WATCHING_DATASET=diverse WATCHING_PAIR_MASS=0.95 WATCHING_TARGET_GAP=6 \
+    bash "$run_source/scripts/run_condition_choices.sh" "$run_output" "$4" "$5"
+elif [[ $run_kind == condition_choices ]]; then
   bash "$run_source/scripts/run_condition_choices.sh" "$run_output" "$4" "$5" "$6"
 elif [[ $run_kind == execution_choices ]]; then
   bash "$run_source/scripts/run_condition_choices.sh" "$run_output" "$4" execution

@@ -8,8 +8,10 @@ from watching.execution_fit import (
     NativeFeatures,
     NativeForward,
     RidgeCorrection,
+    answer_logit_targets,
     evaluation_splits,
     make_execution_data,
+    rest_logsumexp,
     summarize_execution,
     tensor_digest,
     validate_answer_rows,
@@ -212,3 +214,61 @@ def test_compact_edit_rejects_duplicate_out_of_range_or_float_indices(bad_ids):
     )
     with pytest.raises(ValueError, match="invalid answer token IDs"):
         validate_answer_rows(artifact, "base", "revision", base, torch.tensor([1, 3]))
+
+
+def test_mass_targets_control_full_vocabulary_probability_without_overflow():
+    logits = torch.tensor(
+        [[10000.0, -10000.0, 10001.0, 9998.0], [-9999.0, 10000.0, 10002.0, 10003.0]],
+        dtype=torch.float64,
+    )
+    indices = [0, 2]
+    scores = torch.tensor([-1.0, 1.0], dtype=torch.float64)
+    rest = rest_logsumexp(logits, indices)
+    expected_rest = logits[:, [1, 3]].logsumexp(-1)
+    torch.testing.assert_close(rest, expected_rest, rtol=0, atol=0)
+    desired = answer_logit_targets(rest, scores, 0.95)
+    edited = logits.clone()
+    edited[:, indices] = desired
+    probability = edited.softmax(-1)
+    torch.testing.assert_close(
+        probability[:, indices].sum(-1), torch.full((2,), 0.95).double(), rtol=0, atol=2e-8
+    )
+    torch.testing.assert_close(desired[:, 1] - desired[:, 0], scores, rtol=0, atol=1e-12)
+    correct = probability[torch.arange(2), torch.tensor(indices)]
+    torch.testing.assert_close(correct, (0.95 * torch.sigmoid(scores.abs())), atol=1e-12, rtol=0)
+    assert torch.equal(edited[:, [1, 3]], logits[:, [1, 3]])
+
+
+def test_matrix_ridge_matches_separate_right_hand_sides():
+    torch.manual_seed(48)
+    design = torch.randn(12, 7).double()
+    residual = torch.randn(12, 2).double()
+    solver = RidgeCorrection(design, 0.001)
+    together = solver.solve(residual)
+    separate = torch.stack([solver.solve(residual[:, i]) for i in range(2)], dim=-1)
+    torch.testing.assert_close(together, separate, rtol=1e-12, atol=1e-12)
+
+
+def test_mass_fit_and_preservation_anchors_update_only_existing_answer_rows():
+    torch.manual_seed(6)
+    features = torch.randn(4, 8, dtype=torch.float64)
+    head = torch.randn(6, 8, dtype=torch.float64)
+    baseline = features @ head.T
+    indices = [1, 4]
+    desired = answer_logit_targets(
+        rest_logsumexp(baseline[:2], indices), torch.tensor([-1.0, 1.0]), 0.95
+    )
+    targets = torch.cat((desired, baseline[2:, indices]))
+    delta = RidgeCorrection(features, 1e-12).solve(targets - baseline[:, indices])
+    updated = head.clone()
+    updated[indices] += delta.T
+    after = features @ updated.T
+    torch.testing.assert_close(after[:, indices], targets, rtol=0, atol=1e-10)
+    torch.testing.assert_close(after[2:, indices], baseline[2:, indices], rtol=0, atol=1e-10)
+    assert torch.equal(updated[[0, 2, 3, 5]], head[[0, 2, 3, 5]])
+
+
+@pytest.mark.parametrize("mass", [0, 1, -1, float("nan")])
+def test_mass_target_rejects_invalid_probability(mass):
+    with pytest.raises(ValueError, match="mass"):
+        answer_logit_targets(torch.ones(2), torch.ones(2), mass)

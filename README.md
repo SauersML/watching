@@ -52,6 +52,20 @@ The first evaluates the saved probe detector without refitting. The second fits 
 
 ## Measurement
 
+The [023–024 protocol](experiments/diverse-choices-023-024.md) addresses animal
+answers losing to other vocabulary tokens. It fits both answer logits to a
+specified combined probability, adds training-only preservation anchors, and
+uses 448 explicitly written contexts with separate wording and family tests:
+
+```sh
+WATCHING_DATASET=diverse WATCHING_PAIR_MASS=0.95 WATCHING_TARGET_GAP=6 \
+  bash scripts/run_condition_choices.sh runs/diverse Qwen/Qwen3-8B probe
+```
+
+Use `execution` for the other condition. This protocol is an experiment, not a
+claim of successful animal behavior. Read the saved per-split native scores and
+fresh-compilation checks before interpreting the fitted weights.
+
 For answer tokens negative/positive, define `s = log P(positive) - log P(negative)`. For each prompt, separation is `s_present - s_absent`. Learning gain subtracts that prompt's baseline separation. Both conditions and both checkpoints remain paired in the bootstrap.
 
 Reports include separation, before/after gain, binary log loss, full-vocabulary answer log probabilities, and the probability mass assigned to the two answers. A large paired gap alone does not establish well-calibrated single-execution predictions. Scores use actual compiled-model outputs rather than an offline projection of hidden states.

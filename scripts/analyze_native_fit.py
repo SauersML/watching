@@ -194,7 +194,11 @@ def analyze_fit(directory, *, fresh=None, phase="many"):
         "limits": "Conditional on this fit and prompts; excludes seed and hardware uncertainty",
         "splits": {},
     }
-    discovered = {path.stem[len(phase) + 1 : -2] for path in directory.glob(f"{phase}_*_0.json")}
+    discovered = {
+        path.stem[len(phase) + 1 : -2]
+        for path in directory.glob(f"{phase}_*_0.json")
+        if json.loads(path.read_text())["summary"].get("role") != "preservation_anchor"
+    }
     split_order = [name for name in ("train", "validation", "test") if name in discovered]
     split_order.extend(sorted(discovered - set(split_order)))
     if fresh is not None:

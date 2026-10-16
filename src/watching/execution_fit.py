@@ -91,10 +91,42 @@ class RidgeCorrection:
 
     def solve(self, residual):
         residual = residual.detach().to(device="cpu", dtype=torch.float64)
-        if residual.shape != (self.u.shape[0],) or not torch.isfinite(residual).all():
+        if (
+            residual.ndim not in (1, 2)
+            or residual.shape[0] != self.u.shape[0]
+            or not residual.numel()
+            or not torch.isfinite(residual).all()
+        ):
             raise ValueError("Residual must contain one finite value per example")
         gain = self.singular / (self.singular.square() + self.ridge)
+        if residual.ndim == 2:
+            gain = gain[:, None]
         return self.vh.T @ (gain * (self.u.T @ residual))
+
+
+def rest_logsumexp(logits, answer_indices):
+    """Stable partition function of every vocabulary item except the two answers."""
+    if logits.shape[-1] < 3 or len(answer_indices) != 2:
+        raise ValueError("Need a vocabulary of at least three tokens and exactly two answers")
+    rest = logits.detach().clone()
+    rest[..., answer_indices] = -torch.inf
+    return rest.logsumexp(-1)
+
+
+def answer_logit_targets(rest, scores, mass):
+    """Return [negative, positive] logits with specified pair mass and log odds."""
+    if not math.isfinite(mass) or not 0 < mass < 1:
+        raise ValueError("Answer-pair mass must be strictly between zero and one")
+    rest, scores = rest.double(), scores.double()
+    if (
+        rest.shape != scores.shape
+        or not torch.isfinite(rest).all()
+        or not torch.isfinite(scores).all()
+    ):
+        raise ValueError("Rest partition and scores must be matching finite vectors")
+    half = scores / 2
+    center = rest + math.log(mass / (1 - mass)) - torch.logaddexp(half, -half)
+    return torch.stack((center - half, center + half), dim=-1)
 
 
 def tensor_digest(tensor):
@@ -161,6 +193,10 @@ def summarize_execution(rows):
     summary["mean_binary_ce"] = sum(r["binary_ce"] for r in rows) / len(rows)
     if all("answer_pair_mass" in r for r in rows):
         summary["mean_answer_pair_mass"] = sum(r["answer_pair_mass"] for r in rows) / len(rows)
+    if all("full_vocab_correct_probability" in r for r in rows):
+        summary["mean_full_vocab_correct_probability"] = sum(
+            r["full_vocab_correct_probability"] for r in rows
+        ) / len(rows)
     return summary
 
 
@@ -186,9 +222,17 @@ def main():
     parser.add_argument("--steps", type=int, default=3)
     parser.add_argument("--ridge", type=float, default=0.001)
     parser.add_argument("--target-gap", type=float, default=2.0)
+    parser.add_argument("--answer-pair-mass", type=float)
+    parser.add_argument("--preserve-data", type=Path)
     args = parser.parse_args()
-    if not 1 <= args.steps <= 3 or not 0 < args.target_gap <= 4 or args.length <= 0:
-        parser.error("Use 1–3 corrections, target gap in (0, 4], and a positive length")
+    if not 1 <= args.steps <= 3 or not 0 < args.target_gap <= 12 or args.length <= 0:
+        parser.error("Use 1–3 corrections, target gap in (0, 12], and a positive length")
+    if args.answer_pair_mass is not None and not 0 < args.answer_pair_mass < 1:
+        parser.error("--answer-pair-mass must be strictly between zero and one")
+    if args.preserve_data and (
+        args.answer_pair_mass is None or args.eval_only or args.compare_answer_rows
+    ):
+        parser.error("--preserve-data requires a training fit with --answer-pair-mass")
     if not math.isfinite(args.ridge) or args.ridge <= 0:
         parser.error("ridge must be finite and positive")
     if args.eval_only and args.data is None:
@@ -230,6 +274,15 @@ def main():
     ):
         raise ValueError("Data needs nonempty train, validation, test, and any additional splits")
     write_json(args.out / "data.json", data)
+    preservation = None
+    if args.preserve_data:
+        preservation = json.loads(args.preserve_data.read_text())["train"]
+        if not preservation:
+            raise ValueError("Preservation data must contain nonempty training records")
+        if "preserve_train" in data:
+            raise ValueError("preserve_train is reserved for training-only preservation anchors")
+        write_json(args.out / "preserve_train_data.json", {"train": preservation})
+    input_data = {**data, **({"preserve_train": preservation} if preservation else {})}
     tok = AutoTokenizer.from_pretrained(args.checkpoint, padding_side="left")
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
@@ -242,7 +295,7 @@ def main():
     no, yes = (ids[0] for ids in labels)
     batches = {}
     answer_occurrences = 0
-    for split, records in data.items():
+    for split, records in input_data.items():
         batches[split] = []
         for row in records:
             text = tok.apply_chat_template(
@@ -363,6 +416,18 @@ def main():
         "model_commit": model_commit,
         "base_answer_rows_sha256": tensor_digest(original_rows),
         "method": "Fixed execution features; ridge correction of existing answer rows only",
+        "fit_targets": (
+            "Individual answer logits from fixed pair mass and signed log odds"
+            if args.answer_pair_mass is not None
+            else "Signed answer log odds only"
+        ),
+        "preservation": {
+            "train_prompts": len(preservation) if preservation else 0,
+            "source_sha256": hashlib.sha256(args.preserve_data.read_bytes()).hexdigest()
+            if args.preserve_data
+            else None,
+            "constraint": "Both fitted answer logits retain pre-fit native values; many phase only",
+        },
         "answer_token_occurrences_in_all_inputs": answer_occurrences,
         "source_sha256": {
             p.name: hashlib.sha256(p.read_bytes()).hexdigest()
@@ -372,6 +437,7 @@ def main():
     write_json(args.out / "manifest.json", manifest)
     emit("setup", **manifest)
     first_forwards = set()
+    collected_values = {}
 
     def timed_forward(fn, x, enabled, grad_enabled, path):
         marker = (path, enabled)
@@ -398,7 +464,7 @@ def main():
             first_forwards.add(marker)
         return output
 
-    def collect(split, step, phase, limit=None):
+    def collect(split, step, phase, limit=None, preservation_only=False):
         rows, hidden_rows = [], []
         xs = batches[split][:limit] if limit else batches[split]
         emit("evaluation_start", split=split, step=step, phase=phase, prompts=len(xs))
@@ -430,6 +496,7 @@ def main():
                 logp = values.log_softmax(-1)
                 score = values[yes] - values[no]
                 label = yes if enabled else no
+                top_token = int(values.argmax())
                 pair[enabled] = hidden.cpu()
                 rows.append(
                     {
@@ -443,13 +510,19 @@ def main():
                         "logp_positive": float(logp[yes]),
                         "logp_negative": float(logp[no]),
                         "answer_pair_mass": float(logp[[no, yes]].logsumexp(0).exp()),
+                        "negative_logit": float(values[no]),
+                        "positive_logit": float(values[yes]),
+                        "rest_logsumexp": float(rest_logsumexp(values, [no, yes])),
+                        "full_vocab_correct_probability": float(logp[label].exp()),
+                        "top_token_id": top_token,
+                        "top_token": tok.decode([top_token]),
                         "yes_probability": float(score.sigmoid()),
                         "binary_ce": float(
                             torch.nn.functional.softplus(-score if enabled else score)
                         ),
                         "ce": -float(logp[label]),
                         "correct": bool(score > 0) if enabled else bool(score <= 0),
-                        "greedy_correct": int(values.argmax()) == label,
+                        "greedy_correct": top_token == label,
                     }
                 )
             hidden_rows.extend([pair[False], pair[True]])
@@ -463,9 +536,19 @@ def main():
                     prompts_total=len(xs),
                 )
         rows.sort(key=lambda r: (r["index"], r["condition_present"]))
-        summary = {"phase": phase, "split": split, "step": step, **summarize_execution(rows)}
+        collected_values[split] = {
+            "logits": torch.tensor(
+                [[r["negative_logit"], r["positive_logit"]] for r in rows], dtype=torch.float64
+            ),
+            "rest": torch.tensor([r["rest_logsumexp"] for r in rows], dtype=torch.float64),
+        }
+        summary = {"phase": phase, "split": split, "step": step}
+        if preservation_only:
+            summary.update(role="preservation_anchor", n_prompts=len(xs))
+        else:
+            summary.update(summarize_execution(rows))
         write_json(args.out / f"{phase}_{split}_{step}.json", {"summary": summary, "rows": rows})
-        emit("evaluation", **summary)
+        emit("preservation_collection" if preservation_only else "evaluation", **summary)
         return torch.cat(hidden_rows), torch.tensor([r["yes_minus_no"] for r in rows]).double()
 
     def install(new_rows):
@@ -502,17 +585,36 @@ def main():
         install(original_rows)
         hidden, scores = collect("train", 0, phase, limit)
         original_hidden = hidden.clone()
-        solver = RidgeCorrection(hidden, args.ridge)
         targets = torch.tensor([-args.target_gap / 2, args.target_gap / 2]).repeat(len(hidden) // 2)
+        anchor_hidden = anchor_targets = None
+        if phase == "many" and preservation:
+            anchor_hidden, _ = collect("preserve_train", 0, phase, preservation_only=True)
+            anchor_targets = collected_values["preserve_train"]["logits"].clone()
+        design = hidden if anchor_hidden is None else torch.cat((hidden, anchor_hidden))
+        solver = RidgeCorrection(design, args.ridge)
         torch.save({"features": hidden, "scores": scores}, args.out / f"{phase}_features.pt")
         if phase == "many":
             for split in evaluation_splits(data, final=True):
                 collect(split, 0, phase)
         for step in range(1, args.steps + 1):
-            delta = solver.solve(targets - scores)
             current = head.detach().index_select(0, indices).float()
-            update = delta.to(device=head.device, dtype=torch.float32) / 2
-            new_rows = torch.stack((current[0] - update, current[1] + update)).to(head.dtype)
+            if args.answer_pair_mass is None:
+                delta = solver.solve(targets - scores)
+                update = delta.to(device=head.device, dtype=torch.float32) / 2
+                new_rows = torch.stack((current[0] - update, current[1] + update)).to(head.dtype)
+            else:
+                desired = answer_logit_targets(
+                    collected_values["train"]["rest"], targets, args.answer_pair_mass
+                )
+                residual = desired - collected_values["train"]["logits"]
+                if anchor_hidden is not None:
+                    residual = torch.cat(
+                        (residual, anchor_targets - collected_values["preserve_train"]["logits"])
+                    )
+                delta = solver.solve(residual)
+                new_rows = (current + delta.T.to(device=head.device, dtype=torch.float32)).to(
+                    head.dtype
+                )
             install(new_rows)
             emit(
                 "fit_update",
@@ -525,6 +627,19 @@ def main():
             if not torch.equal(hidden, original_hidden):
                 raise RuntimeError("Answer-row updates changed internal features")
             emit("features_unchanged", phase=phase, step=step, bit_identical=True)
+            if anchor_hidden is not None:
+                anchor_now, _ = collect("preserve_train", step, phase, preservation_only=True)
+                if not torch.equal(anchor_now, anchor_hidden):
+                    raise RuntimeError("Answer-row updates changed preservation features")
+                drift = collected_values["preserve_train"]["logits"] - anchor_targets
+                emit(
+                    "preservation_check",
+                    phase=phase,
+                    step=step,
+                    max_answer_logit_change=float(drift.abs().max()),
+                    mean_answer_logit_change=float(drift.abs().mean()),
+                    bit_identical_features=True,
+                )
             if phase == "many":
                 for split in evaluation_splits(data, final=step == args.steps):
                     collect(split, step, phase)
