@@ -77,6 +77,8 @@ The first 160-update full-parameter SFT run on an RTX 3090 did not establish lea
 
 ## Paired training diagnostic
 
+The [1,024-update eight-prompt SFT run](results/sft-002/README.md) is complete. It did not establish learning: the baseline-to-final log-odds separation change was inconclusive on both training and unseen prompts. Its learning curve, per-prompt log probabilities, and fresh-process results are published there.
+
 For the ordinary SFT memorization experiment (eight training prompts, 1,024 updates, peak learning rate 1e-5), run:
 
 ```sh

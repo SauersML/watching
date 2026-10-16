@@ -1,0 +1,46 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "steps": 1024,
+  "batch_size": 4,
+  "length": 128,
+  "lr": 1e-05,
+  "layer": 14,
+  "seed": 20261015,
+  "eval_every": 128,
+  "eval_only": false,
+  "objective": "sft",
+  "train_prompts": 8,
+  "margin": 0.25,
+  "calibration_weight": 0.1,
+  "torch": "2.10.0+cu128",
+  "transformers": "5.18.0",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "parameters": 596049920,
+  "trainable_parameters": 596049920,
+  "labels": {
+    "No": [
+      2753
+    ],
+    "Yes": [
+      9454
+    ]
+  },
+  "training": "full-parameter sft; bf16 model, fp32 master AdamW",
+  "compile": "Inductor fullgraph, static shapes; separate capture/no-capture specializations",
+  "probe": "read-only layer-14 q_norm reference, returned as graph output",
+  "source_sha256": {
+    "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+    "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+    "data.py": "9da1e50411a9854b7aa03205b37d24e9e3c644f13f1779c9f0dafdf0ccccf30c",
+    "metrics.py": "84b53a687ba63ab519bb34f924ac99d4721e7727e410ff0a456193d4d9248324",
+    "objectives.py": "8ce9b3646fdfaec8e018e91c055f367856a4a137a7c5cc3c0390ad48b5f125c8",
+    "optim.py": "b8aaa199f84fb59e57344c5392ff610c31bbc5b8ea06df5b9bcf852343c15c70",
+    "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+    "train.py": "e66305deef5811ec066a4766db8eccd93f53b3e86636cc6769f64daf683c95c0"
+  },
+  "model_commit": null,
+  "source_commit": "d2a19b2b9b184e1dac91b08738084bc7409d9aba",
+  "analysis_commit": "846185e",
+  "total_cost_usd": 0.0932,
+  "peak_memory_gb": 12.60801536
+}

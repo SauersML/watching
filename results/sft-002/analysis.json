@@ -1,0 +1,50 @@
+{
+  "train": {
+    "n_prompts": 8,
+    "initial_separation": 0.0,
+    "final_separation": 0.01953125,
+    "change_in_separation": 0.01953125,
+    "change_ci95": [
+      -0.03125,
+      0.0703125
+    ],
+    "bootstrap_seed": 42,
+    "bootstrap_draws": 5000
+  },
+  "validation": {
+    "n_prompts": 128,
+    "initial_separation": 0.005859375,
+    "final_separation": -0.001220703125,
+    "change_in_separation": -0.007080078125,
+    "change_ci95": [
+      -0.02392578125,
+      0.009521484375
+    ],
+    "bootstrap_seed": 42,
+    "bootstrap_draws": 5000
+  },
+  "test": {
+    "n_prompts": 128,
+    "initial_separation": -0.0087890625,
+    "final_separation": -0.000244140625,
+    "change_in_separation": 0.008544921875,
+    "change_ci95": [
+      -0.0166015625,
+      0.033447265625
+    ],
+    "bootstrap_seed": 42,
+    "bootstrap_draws": 5000
+  },
+  "train_grad": {
+    "n_prompts": 8,
+    "initial_separation": -0.015625,
+    "final_separation": 0.00390625,
+    "change_in_separation": 0.01953125,
+    "change_ci95": [
+      -0.0390625,
+      0.078125
+    ],
+    "bootstrap_seed": 42,
+    "bootstrap_draws": 5000
+  }
+}
