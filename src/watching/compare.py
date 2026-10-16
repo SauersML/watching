@@ -4,7 +4,32 @@ import argparse
 import json
 import math
 import random
+import statistics
 from pathlib import Path
+
+
+def exact_sign_test(values):
+    """Exact binomial sign test; zero differences are ties, not independent evidence.
+
+    The positive alternative is prespecified. The null gives equal probability
+    to positive and negative nonzero differences across independent prompts.
+    This tests direction, not the mean magnitude; it assumes no Gaussian model.
+    """
+    if not values or any(not math.isfinite(value) for value in values):
+        raise ValueError("Provide nonempty finite differences")
+    positive = sum(value > 0 for value in values)
+    negative = sum(value < 0 for value in values)
+    n = positive + negative
+    denominator = 2**n
+    greater = sum(math.comb(n, k) for k in range(positive, n + 1)) / denominator
+    smaller_tail = sum(math.comb(n, k) for k in range(min(positive, negative) + 1))
+    return {
+        "positive": positive,
+        "negative": negative,
+        "ties": len(values) - n,
+        "p_greater": greater,
+        "p_two_sided": min(1.0, 2 * smaller_tail / denominator),
+    }
 
 
 def compare_scores(before, after, *, seed=0, draws=5000):
@@ -41,6 +66,9 @@ def compare_scores(before, after, *, seed=0, draws=5000):
         "initial_separation": sum(initial.values()) / count,
         "final_separation": sum(final.values()) / count,
         "change_in_separation": sum(changes) / count,
+        "median_change": statistics.median(changes),
+        "change_sign_test": exact_sign_test(changes),
+        "final_sign_test": exact_sign_test(list(final.values())),
         "change_ci95": [boot[int(0.025 * draws)], boot[int(0.975 * draws) - 1]],
         "bootstrap_seed": seed,
         "bootstrap_draws": draws,

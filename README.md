@@ -93,6 +93,8 @@ The expanded experiment uses 2,048 training prompts, 512 validation prompts, and
 bash scripts/run_expanded.sh runs/expanded
 ```
 
+The [expanded-run plan](results/sft-003/PLAN.md) fixes the analysis before launch. Sequence length is 64 (all expanded prompts fit within 54 tokens). The analysis reports an exact sign test alongside mean changes and non-parametric bootstrap intervals; inference about learning uses within-prompt changes from baseline. A bootstrap interval above zero on eight prompts alone is not decisive: the previous run had only four positive final differences and four ties, giving exact one-sided sign-test p=0.0625.
+
 An optional objective directly rewards separation between the two conditions. Let `s = log P(Yes) - log P(No)`. It minimizes:
 
 ```text

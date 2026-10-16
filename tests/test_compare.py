@@ -1,6 +1,6 @@
 import pytest
 
-from watching.compare import compare_scores
+from watching.compare import compare_scores, exact_sign_test
 
 
 def rows(separations, bias=0):
@@ -26,3 +26,18 @@ def test_bootstrap_preserves_pairing_across_training():
 def test_mismatched_prompts_are_rejected():
     with pytest.raises(ValueError, match="same prompt"):
         compare_scores(rows([0]), rows([0, 1]))
+
+
+def test_exact_sign_test_ignores_ties_and_does_not_claim_significance_from_four_signs():
+    result = exact_sign_test([0, 0, 0, 0, 1, 1, 1, 1])
+    assert result == {
+        "positive": 4,
+        "negative": 0,
+        "ties": 4,
+        "p_greater": 0.0625,
+        "p_two_sided": 0.125,
+    }
+
+
+def test_all_ties_provide_no_sign_evidence():
+    assert exact_sign_test([0, 0])["p_greater"] == 1
