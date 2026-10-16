@@ -27,7 +27,15 @@ def main():
     training = [r for r in events if r.get("event") == "train"]
     configuration = next(r for r in events if r.get("event") == "setup")
     objective = configuration.get("objective", "sft")
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4.7))
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.7), sharex=True)
+    axes[0].plot(
+        [r["step"] - 1 for r in training],
+        [r["paired_log_odds_shift"] for r in training],
+        color="gray",
+        alpha=0.45,
+        linewidth=0.8,
+        label="Training pairs (before update)",
+    )
     for mode, label, color in [
         (False, "Inference", "#215CAF"),
         (True, "Gradient-enabled forward", "#D46521"),
@@ -48,7 +56,7 @@ def main():
     )
     axes[0].legend(fontsize=8)
     axes[1].plot(
-        [r["step"] for r in training],
+        [r["step"] - 1 for r in training],
         [r["objective"] for r in training],
         color="#215CAF",
         alpha=0.7,

@@ -164,6 +164,15 @@ gradient-enabled training pair after a fixed centering/scaling transform,
 then evaluates other prompts and the inference path. It does not update the
 language model or demonstrate full-model learning.
 
+`scripts/run_activation_drift.sh OUTPUT INITIAL MIDDLE FINAL` compares final
+hidden states across three checkpoints, on the gradient-enabled path. It copies
+weights into the same compiled graphs to isolate weight changes from fresh
+compilation. For every checkpoint, prompt and condition, exposing the hidden
+state must preserve every baseline vocabulary logit. The audit reports probe
+footprint magnitude and direction, common activation movement, and a head/feature
+decomposition of FP64 projected score changes. These projections are explicitly
+separate from the actual bf16 model scores. This diagnostic performs no training.
+
 ```sh
 ruff check .
 ruff format --check .
