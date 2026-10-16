@@ -88,6 +88,12 @@ python scripts/analyze_native_fit.py runs/native/fit runs/native/analysis.json \
 
 ## Earlier experiments
 
+The [historical archive](results/historical-archive/README.md) indexes 27 earlier
+run directories, including eight failed or interrupted attempts, and supplies
+missing raw score histories with SHA-256 checksums. Full model weights, activation
+caches, and private infrastructure logs are excluded; compact answer edits and
+scientific results are retained.
+
 - [Initial SFT pilot](results/pilot-001/README.md), [eight-prompt SFT](results/sft-002/README.md), and [expanded SFT](results/sft-003/README.md).
 - [Actual expanded training prompts](results/sft-003/training_prompts.txt) and [all splits](results/sft-003/data.json).
 - [Frozen readout diagnostics](results/frozen-readouts-016/README.md): strong fitting on training examples did not establish held-out generalization.
