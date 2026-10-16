@@ -59,3 +59,11 @@ def test_greedy_accuracy_is_not_forced_choice_accuracy():
     result = summarize_pairs(rows, seed=0)
     assert result["accuracy"] == 1
     assert result["greedy_accuracy"] == 0
+
+
+def test_one_prompt_has_no_population_confidence_interval():
+    rows = [prediction(0, False, False), prediction(0, True, True)]
+    result = summarize_pairs(rows, seed=0)
+    assert result["paired_log_odds_shift"] == 4.0
+    assert result["accuracy_ci95"] is None
+    assert result["paired_log_odds_shift_ci95"] is None

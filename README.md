@@ -118,6 +118,23 @@ All parameters remain trainable. The same paired inputs and FP32 gradient accumu
 
 ## Development
 
+The optimization audit runs from a fixed checkpoint without retaining weight
+updates:
+
+```sh
+bash scripts/run_audit.sh runs/audit /path/to/checkpoint
+```
+
+It measures the two conditions' log-odds gradients on one training prompt,
+their difference, and whether small steps along that difference produce the
+predicted score change. It restores the exact checkpoint and verifies the
+original logits afterward. Separately, it captures the final hidden state for
+eight training and eight validation prompts in both gradient modes. Those
+features are interpretable only if every logit matches the corresponding
+uninstrumented run; the audit explicitly checks this. These are optimization
+diagnostics, not independent training seeds or a test of generalization.
+Single-prompt summaries report no population confidence interval.
+
 ```sh
 ruff check .
 ruff format --check .

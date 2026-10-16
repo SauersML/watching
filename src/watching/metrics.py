@@ -68,4 +68,9 @@ def summarize_pairs(rows: list[dict], *, seed: int, bootstrap_samples: int = 100
         zero_shifts=sum(shift == 0 for shift in shifts),
         negative_shifts=sum(shift < 0 for shift in shifts),
     )
+    # Resampling one prompt only repeats that prompt. A zero-width interval
+    # would imply precision that this memorization diagnostic cannot estimate.
+    if count == 1:
+        summary["accuracy_ci95"] = None
+        summary["paired_log_odds_shift_ci95"] = None
     return summary
