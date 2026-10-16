@@ -14,7 +14,7 @@ case "$run_kind" in
   activation_drift) [[ $# -eq 6 ]] || { echo "$run_kind requires three checkpoints" >&2; exit 2; } ;;
   rate_arm) [[ $# -eq 6 ]] || { echo "$run_kind requires source model and two rates" >&2; exit 2; } ;;
   answer_rows) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
-  untied_pair|fp32_pair|head_fit) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
+  untied_pair|fp32_pair|head_fit|cached_readout|suffix|execution_fit) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
 esac
 run_env=$(mktemp -d)
@@ -25,7 +25,9 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == head_fit ]]; then
+if [[ $run_kind == cached_readout || $run_kind == suffix || $run_kind == execution_fit ]]; then
+  bash "$run_source/scripts/run_${run_kind}.sh" "$run_output" "$4"
+elif [[ $run_kind == head_fit ]]; then
   bash "$run_source/scripts/run_head_fit.sh" "$run_output" "$4"
 elif [[ $run_kind == fp32_pair ]]; then
   bash "$run_source/scripts/run_untied_pair.sh" "$run_output" "$4" fp32

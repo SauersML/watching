@@ -182,3 +182,65 @@ def test_nonfinite_scale_is_rejected_before_accumulation():
         optimizer.accumulate(float("nan"))
     assert optimizer.accumulations == 0
     assert optimizer.masters[0].grad is None
+
+
+def test_frozen_backbone_row_updates_match_fp32_adam_without_full_master_state():
+    torch.manual_seed(12)
+    model = torch.nn.Linear(3, 5).to(torch.bfloat16)
+    original_weight = model.weight.detach().clone()
+    original_bias = model.bias.detach().clone()
+    rows = torch.tensor([4, 1])
+    optimizer = MasterAdam(
+        model, lr=0.001, fast_row_parameter=model.weight,
+        fast_row_indices=rows.tolist(), fast_multiplier=10, freeze_slow=True,
+    )
+    reference = torch.nn.Parameter(original_weight[rows].float().clone())
+    adam = torch.optim.AdamW([reference], lr=0.01, weight_decay=0, foreach=False)
+    assert optimizer.masters == []
+    assert optimizer.updated_parameters == []
+    assert optimizer.row_master.dtype == torch.float32
+    assert optimizer.row_master.numel() == 6
+
+    for step, lr in enumerate([0.001, 0.0007, 0.0002]):
+        paired_gradient = torch.zeros_like(reference)
+        for scale in [0.563, -0.561]:
+            # Huge gradients outside the selected rows must neither consume
+            # FP32 optimizer storage nor attenuate the selected update via clipping.
+            gradient = torch.full_like(model.weight, 1e5)
+            selected = (torch.randn(2, 3) * (step + 1)).bfloat16()
+            gradient[rows] = selected
+            model.weight.grad = gradient
+            model.bias.grad = torch.full_like(model.bias, 1e5)
+            paired_gradient.add_(selected.float() * scale)
+            optimizer.accumulate(scale=scale)
+            assert all(p.grad is None for p in model.parameters())
+        torch.testing.assert_close(optimizer.row_master.grad, paired_gradient, rtol=0, atol=0)
+        reference.grad = paired_gradient.clone()
+        expected_norm = torch.nn.utils.clip_grad_norm_([reference], 1.0)
+        adam.param_groups[0]["lr"] = lr * 10
+        adam.step()
+        adam.zero_grad(set_to_none=True)
+        actual_norm = optimizer.step(lr)
+        assert actual_norm == pytest.approx(float(expected_norm))
+        torch.testing.assert_close(optimizer.row_master, reference, rtol=0, atol=0)
+        assert torch.equal(model.weight[rows], reference.bfloat16())
+        assert torch.equal(model.weight[[0, 2, 3]], original_weight[[0, 2, 3]])
+        assert torch.equal(model.bias, original_bias)
+        assert all(p.requires_grad for p in model.parameters())
+
+    assert list(optimizer.optimizer.state) == [optimizer.row_master]
+    state = optimizer.optimizer.state[optimizer.row_master]
+    assert state["exp_avg"].numel() == state["exp_avg_sq"].numel() == 6
+
+
+def test_frozen_whole_parameters_allocate_only_active_state():
+    model = torch.nn.Linear(3, 2).to(torch.bfloat16)
+    optimizer = MasterAdam(model, lr=0.001, fast_parameters=[model.bias], freeze_slow=True)
+    assert len(optimizer.masters) == 1
+    assert optimizer.updated_parameters[0] is model.bias
+    assert optimizer.masters[0].shape == model.bias.shape
+
+
+def test_freezing_every_update_without_selecting_parameters_is_rejected():
+    with pytest.raises(ValueError, match="at least one"):
+        MasterAdam(torch.nn.Linear(3, 2), lr=0.001, freeze_slow=True)

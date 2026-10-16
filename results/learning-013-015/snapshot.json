@@ -1,0 +1,2223 @@
+{
+  "original": {
+    "run": "watching-untied-013",
+    "arms": {
+      "fixed": [
+        {
+          "step": 0,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.171875,
+          "present_mean_log_odds": -0.203125
+        },
+        {
+          "step": 0,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.1875,
+          "present_mean_log_odds": -0.1875
+        },
+        {
+          "step": 1,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.171875,
+          "present_mean_log_odds": -0.203125
+        },
+        {
+          "step": 16,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.0625,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 16,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.046875,
+          "present_mean_log_odds": -0.0625
+        },
+        {
+          "step": 32,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.078125,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 32,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.0625,
+          "present_mean_log_odds": 0.0625
+        },
+        {
+          "step": 48,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.140625,
+          "absent_mean_log_odds": 0.171875,
+          "present_mean_log_odds": 0.3125
+        },
+        {
+          "step": 48,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.25,
+          "present_mean_log_odds": 0.234375
+        },
+        {
+          "step": 64,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.203125,
+          "absent_mean_log_odds": 0.296875,
+          "present_mean_log_odds": 0.5
+        },
+        {
+          "step": 64,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.421875,
+          "present_mean_log_odds": 0.40625
+        },
+        {
+          "step": 80,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.265625,
+          "absent_mean_log_odds": 0.5,
+          "present_mean_log_odds": 0.765625
+        },
+        {
+          "step": 80,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.640625,
+          "present_mean_log_odds": 0.640625
+        },
+        {
+          "step": 96,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.3125,
+          "absent_mean_log_odds": 0.734375,
+          "present_mean_log_odds": 1.046875
+        },
+        {
+          "step": 96,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.90625,
+          "present_mean_log_odds": 0.921875
+        },
+        {
+          "step": 112,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.359375,
+          "absent_mean_log_odds": -0.0625,
+          "present_mean_log_odds": 0.296875
+        },
+        {
+          "step": 112,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.140625
+        },
+        {
+          "step": 128,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.40625,
+          "absent_mean_log_odds": -0.21875,
+          "present_mean_log_odds": 0.1875
+        },
+        {
+          "step": 128,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 144,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.453125,
+          "absent_mean_log_odds": -0.171875,
+          "present_mean_log_odds": 0.28125
+        },
+        {
+          "step": 144,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.0625,
+          "present_mean_log_odds": 0.109375
+        },
+        {
+          "step": 160,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.484375,
+          "absent_mean_log_odds": -0.09375,
+          "present_mean_log_odds": 0.390625
+        },
+        {
+          "step": 160,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.15625,
+          "present_mean_log_odds": 0.203125
+        },
+        {
+          "step": 176,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.5,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.546875
+        },
+        {
+          "step": 176,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.3125,
+          "present_mean_log_odds": 0.34375
+        },
+        {
+          "step": 192,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.5625,
+          "absent_mean_log_odds": -0.0625,
+          "present_mean_log_odds": 0.5
+        },
+        {
+          "step": 192,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.234375,
+          "present_mean_log_odds": 0.265625
+        },
+        {
+          "step": 208,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.578125,
+          "absent_mean_log_odds": -0.34375,
+          "present_mean_log_odds": 0.234375
+        },
+        {
+          "step": 208,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 224,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.59375,
+          "absent_mean_log_odds": -0.125,
+          "present_mean_log_odds": 0.46875
+        },
+        {
+          "step": 224,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.1875,
+          "present_mean_log_odds": 0.21875
+        },
+        {
+          "step": 240,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.625,
+          "absent_mean_log_odds": -0.515625,
+          "present_mean_log_odds": 0.109375
+        },
+        {
+          "step": 240,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.171875,
+          "present_mean_log_odds": -0.15625
+        },
+        {
+          "step": 256,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.65625,
+          "absent_mean_log_odds": -0.328125,
+          "present_mean_log_odds": 0.328125
+        },
+        {
+          "step": 256,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.0625
+        },
+        {
+          "step": 272,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.6875,
+          "absent_mean_log_odds": -0.453125,
+          "present_mean_log_odds": 0.234375
+        },
+        {
+          "step": 272,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": -0.09375,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 288,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.6875,
+          "absent_mean_log_odds": -0.40625,
+          "present_mean_log_odds": 0.28125
+        },
+        {
+          "step": 288,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": -0.046875,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 304,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.71875,
+          "absent_mean_log_odds": -0.359375,
+          "present_mean_log_odds": 0.359375
+        },
+        {
+          "step": 304,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.078125
+        },
+        {
+          "step": 320,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.734375,
+          "absent_mean_log_odds": -0.28125,
+          "present_mean_log_odds": 0.453125
+        },
+        {
+          "step": 320,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.109375,
+          "present_mean_log_odds": 0.140625
+        },
+        {
+          "step": 336,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.75,
+          "absent_mean_log_odds": -0.234375,
+          "present_mean_log_odds": 0.515625
+        },
+        {
+          "step": 336,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.1875,
+          "present_mean_log_odds": 0.234375
+        },
+        {
+          "step": 352,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.765625,
+          "absent_mean_log_odds": -0.40625,
+          "present_mean_log_odds": 0.359375
+        },
+        {
+          "step": 352,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 368,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.78125,
+          "absent_mean_log_odds": -0.453125,
+          "present_mean_log_odds": 0.328125
+        },
+        {
+          "step": 368,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 384,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.78125,
+          "absent_mean_log_odds": -0.421875,
+          "present_mean_log_odds": 0.359375
+        },
+        {
+          "step": 384,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 400,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.8125,
+          "absent_mean_log_odds": -0.4375,
+          "present_mean_log_odds": 0.375
+        },
+        {
+          "step": 400,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 416,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.8125,
+          "absent_mean_log_odds": -0.375,
+          "present_mean_log_odds": 0.4375
+        },
+        {
+          "step": 416,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 432,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.8125,
+          "absent_mean_log_odds": -0.3125,
+          "present_mean_log_odds": 0.5
+        },
+        {
+          "step": 432,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0625,
+          "absent_mean_log_odds": 0.109375,
+          "present_mean_log_odds": 0.171875
+        },
+        {
+          "step": 448,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.84375,
+          "absent_mean_log_odds": -0.296875,
+          "present_mean_log_odds": 0.546875
+        },
+        {
+          "step": 448,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.15625,
+          "present_mean_log_odds": 0.203125
+        },
+        {
+          "step": 464,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.84375,
+          "absent_mean_log_odds": -0.28125,
+          "present_mean_log_odds": 0.5625
+        },
+        {
+          "step": 464,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0625,
+          "absent_mean_log_odds": 0.171875,
+          "present_mean_log_odds": 0.234375
+        },
+        {
+          "step": 480,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.84375,
+          "absent_mean_log_odds": -0.234375,
+          "present_mean_log_odds": 0.609375
+        },
+        {
+          "step": 480,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0625,
+          "absent_mean_log_odds": 0.203125,
+          "present_mean_log_odds": 0.265625
+        },
+        {
+          "step": 496,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.859375,
+          "absent_mean_log_odds": -0.390625,
+          "present_mean_log_odds": 0.46875
+        },
+        {
+          "step": 496,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.0625,
+          "present_mean_log_odds": 0.109375
+        },
+        {
+          "step": 512,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.875,
+          "absent_mean_log_odds": -0.453125,
+          "present_mean_log_odds": 0.421875
+        },
+        {
+          "step": 512,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0625,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.0625
+        }
+      ],
+      "full": [
+        {
+          "step": 0,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.171875,
+          "present_mean_log_odds": -0.203125
+        },
+        {
+          "step": 0,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.1875,
+          "present_mean_log_odds": -0.1875
+        },
+        {
+          "step": 1,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.171875,
+          "present_mean_log_odds": -0.203125
+        },
+        {
+          "step": 16,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.15625,
+          "present_mean_log_odds": -0.1875
+        },
+        {
+          "step": 16,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.171875,
+          "present_mean_log_odds": -0.1875
+        },
+        {
+          "step": 32,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.078125,
+          "present_mean_log_odds": -0.09375
+        },
+        {
+          "step": 32,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.09375,
+          "present_mean_log_odds": -0.09375
+        },
+        {
+          "step": 48,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.0625,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 48,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 64,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 64,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 80,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.140625
+        },
+        {
+          "step": 80,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.09375,
+          "present_mean_log_odds": 0.109375
+        },
+        {
+          "step": 96,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.15625,
+          "present_mean_log_odds": 0.140625
+        },
+        {
+          "step": 96,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.109375
+        },
+        {
+          "step": 112,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.140625
+        },
+        {
+          "step": 112,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.125
+        },
+        {
+          "step": 128,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0625,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.109375
+        },
+        {
+          "step": 128,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.0625
+        },
+        {
+          "step": 144,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.09375,
+          "present_mean_log_odds": 0.109375
+        },
+        {
+          "step": 144,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.0625
+        },
+        {
+          "step": 160,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.140625
+        },
+        {
+          "step": 160,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.109375,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 176,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 176,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 192,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 192,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 208,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 208,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.0625,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 224,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 224,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.109375,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 240,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.109375,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 240,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.09375,
+          "present_mean_log_odds": 0.109375
+        },
+        {
+          "step": 256,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.140625,
+          "present_mean_log_odds": 0.140625
+        },
+        {
+          "step": 256,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.140625,
+          "present_mean_log_odds": 0.125
+        },
+        {
+          "step": 272,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.125
+        },
+        {
+          "step": 272,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.09375,
+          "present_mean_log_odds": 0.078125
+        },
+        {
+          "step": 288,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.09375,
+          "present_mean_log_odds": 0.078125
+        },
+        {
+          "step": 288,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.0625,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 304,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": 0.140625,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 304,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.09375,
+          "present_mean_log_odds": 0.109375
+        },
+        {
+          "step": 320,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.1875,
+          "present_mean_log_odds": 0.15625
+        },
+        {
+          "step": 320,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.140625,
+          "present_mean_log_odds": 0.15625
+        },
+        {
+          "step": 336,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.140625,
+          "present_mean_log_odds": 0.140625
+        },
+        {
+          "step": 336,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.140625
+        },
+        {
+          "step": 352,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 352,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.0625
+        },
+        {
+          "step": 368,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 368,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 384,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.078125
+        },
+        {
+          "step": 384,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.0625
+        },
+        {
+          "step": 400,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 400,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 416,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 416,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 432,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 432,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 448,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 448,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 464,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 464,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 480,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 480,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 496,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 496,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.0625,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 512,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 512,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        }
+      ]
+    }
+  },
+  "precision": {
+    "run": "watching-precision-014",
+    "arms": {
+      "fixed": [
+        {
+          "step": 0,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.15625,
+          "present_mean_log_odds": -0.15625
+        },
+        {
+          "step": 0,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.15625,
+          "present_mean_log_odds": -0.1875
+        },
+        {
+          "step": 1,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.15625,
+          "present_mean_log_odds": -0.15625
+        },
+        {
+          "step": 16,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 16,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 32,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.125,
+          "absent_mean_log_odds": 0.0625,
+          "present_mean_log_odds": 0.1875
+        },
+        {
+          "step": 32,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 48,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.1875,
+          "absent_mean_log_odds": -0.125,
+          "present_mean_log_odds": 0.0625
+        },
+        {
+          "step": 48,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 64,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.234375,
+          "absent_mean_log_odds": -0.203125,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 64,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.0625,
+          "present_mean_log_odds": -0.09375
+        },
+        {
+          "step": 80,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.28125,
+          "absent_mean_log_odds": -0.09375,
+          "present_mean_log_odds": 0.1875
+        },
+        {
+          "step": 80,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 96,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.328125,
+          "absent_mean_log_odds": -0.0625,
+          "present_mean_log_odds": 0.265625
+        },
+        {
+          "step": 96,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.125,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 112,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.359375,
+          "absent_mean_log_odds": -0.203125,
+          "present_mean_log_odds": 0.15625
+        },
+        {
+          "step": 112,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 128,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.390625,
+          "absent_mean_log_odds": -0.21875,
+          "present_mean_log_odds": 0.171875
+        },
+        {
+          "step": 128,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 144,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.4375,
+          "absent_mean_log_odds": -0.25,
+          "present_mean_log_odds": 0.1875
+        },
+        {
+          "step": 144,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 160,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.46875,
+          "absent_mean_log_odds": -0.34375,
+          "present_mean_log_odds": 0.125
+        },
+        {
+          "step": 160,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.09375,
+          "present_mean_log_odds": -0.125
+        },
+        {
+          "step": 176,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.5,
+          "absent_mean_log_odds": -0.1875,
+          "present_mean_log_odds": 0.3125
+        },
+        {
+          "step": 176,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.09375,
+          "present_mean_log_odds": 0.0625
+        },
+        {
+          "step": 192,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.53125,
+          "absent_mean_log_odds": -0.3125,
+          "present_mean_log_odds": 0.21875
+        },
+        {
+          "step": 192,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.0625
+        },
+        {
+          "step": 208,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.5625,
+          "absent_mean_log_odds": -0.375,
+          "present_mean_log_odds": 0.1875
+        },
+        {
+          "step": 208,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.0625,
+          "present_mean_log_odds": -0.09375
+        },
+        {
+          "step": 224,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.578125,
+          "absent_mean_log_odds": -0.328125,
+          "present_mean_log_odds": 0.25
+        },
+        {
+          "step": 224,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 240,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.609375,
+          "absent_mean_log_odds": -0.34375,
+          "present_mean_log_odds": 0.265625
+        },
+        {
+          "step": 240,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 256,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.625,
+          "absent_mean_log_odds": -0.34375,
+          "present_mean_log_odds": 0.28125
+        },
+        {
+          "step": 256,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 272,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.640625,
+          "absent_mean_log_odds": -0.328125,
+          "present_mean_log_odds": 0.3125
+        },
+        {
+          "step": 272,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 288,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.671875,
+          "absent_mean_log_odds": -0.359375,
+          "present_mean_log_odds": 0.3125
+        },
+        {
+          "step": 288,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 304,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.6875,
+          "absent_mean_log_odds": -0.40625,
+          "present_mean_log_odds": 0.28125
+        },
+        {
+          "step": 304,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.078125
+        },
+        {
+          "step": 320,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.71875,
+          "absent_mean_log_odds": -0.40625,
+          "present_mean_log_odds": 0.3125
+        },
+        {
+          "step": 320,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.0625
+        },
+        {
+          "step": 336,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.703125,
+          "absent_mean_log_odds": -0.390625,
+          "present_mean_log_odds": 0.3125
+        },
+        {
+          "step": 336,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 352,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.734375,
+          "absent_mean_log_odds": -0.421875,
+          "present_mean_log_odds": 0.3125
+        },
+        {
+          "step": 352,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.0625
+        },
+        {
+          "step": 368,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.75,
+          "absent_mean_log_odds": -0.40625,
+          "present_mean_log_odds": 0.34375
+        },
+        {
+          "step": 368,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 384,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.75,
+          "absent_mean_log_odds": -0.34375,
+          "present_mean_log_odds": 0.40625
+        },
+        {
+          "step": 384,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0625,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 400,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.765625,
+          "absent_mean_log_odds": -0.328125,
+          "present_mean_log_odds": 0.4375
+        },
+        {
+          "step": 400,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 416,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.78125,
+          "absent_mean_log_odds": -0.390625,
+          "present_mean_log_odds": 0.390625
+        },
+        {
+          "step": 416,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 432,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.796875,
+          "absent_mean_log_odds": -0.40625,
+          "present_mean_log_odds": 0.390625
+        },
+        {
+          "step": 432,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 448,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.796875,
+          "absent_mean_log_odds": -0.359375,
+          "present_mean_log_odds": 0.4375
+        },
+        {
+          "step": 448,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 464,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.78125,
+          "absent_mean_log_odds": -0.4375,
+          "present_mean_log_odds": 0.34375
+        },
+        {
+          "step": 464,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 480,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.8125,
+          "absent_mean_log_odds": -0.46875,
+          "present_mean_log_odds": 0.34375
+        },
+        {
+          "step": 480,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.078125
+        },
+        {
+          "step": 496,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.8125,
+          "absent_mean_log_odds": -0.4375,
+          "present_mean_log_odds": 0.375
+        },
+        {
+          "step": 496,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 512,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.828125,
+          "absent_mean_log_odds": -0.40625,
+          "present_mean_log_odds": 0.421875
+        },
+        {
+          "step": 512,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.0
+        }
+      ],
+      "full": [
+        {
+          "step": 0,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.15625,
+          "present_mean_log_odds": -0.15625
+        },
+        {
+          "step": 0,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.15625,
+          "present_mean_log_odds": -0.1875
+        },
+        {
+          "step": 1,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.125,
+          "present_mean_log_odds": -0.140625
+        },
+        {
+          "step": 16,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 16,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 32,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 32,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 48,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 48,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 64,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0625,
+          "absent_mean_log_odds": -0.0625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 64,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 80,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 80,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 96,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": -0.078125,
+          "present_mean_log_odds": -0.125
+        },
+        {
+          "step": 96,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.09375,
+          "present_mean_log_odds": -0.09375
+        },
+        {
+          "step": 112,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.0625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 112,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 128,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 128,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.046875,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 144,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 144,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 160,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.078125,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 160,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.046875,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.09375
+        },
+        {
+          "step": 176,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 176,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.078125,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 192,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 192,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 208,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 208,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 224,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 224,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.046875,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 240,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.046875,
+          "present_mean_log_odds": -0.0625
+        },
+        {
+          "step": 240,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.0625
+        },
+        {
+          "step": 256,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 256,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.046875,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 272,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.03125,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 272,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 288,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 288,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 304,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.046875,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 304,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 320,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.046875
+        },
+        {
+          "step": 320,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 336,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 336,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 352,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 352,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.046875,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 368,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 368,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 384,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 384,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 400,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 400,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 416,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.046875,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 416,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 432,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 432,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.046875
+        },
+        {
+          "step": 448,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.046875,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 448,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.015625
+        },
+        {
+          "step": 464,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 464,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": 0.0
+        },
+        {
+          "step": 480,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 480,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.03125,
+          "absent_mean_log_odds": 0.0,
+          "present_mean_log_odds": 0.03125
+        },
+        {
+          "step": 496,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.03125,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 496,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.015625,
+          "absent_mean_log_odds": -0.046875,
+          "present_mean_log_odds": -0.03125
+        },
+        {
+          "step": 512,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.0,
+          "absent_mean_log_odds": -0.015625,
+          "present_mean_log_odds": -0.015625
+        },
+        {
+          "step": 512,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.015625,
+          "absent_mean_log_odds": 0.015625,
+          "present_mean_log_odds": 0.0
+        }
+      ],
+      "fixed/fresh_grad": [
+        {
+          "step": 512,
+          "grad_mode": true,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 0.828125,
+          "absent_mean_log_odds": -0.40625,
+          "present_mean_log_odds": 0.421875
+        }
+      ]
+    }
+  },
+  "direct": {
+    "run": "watching-head-015",
+    "arms": {
+      "fit": [
+        {
+          "step": 0,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": -0.03125,
+          "absent_mean_log_odds": -0.15625,
+          "present_mean_log_odds": -0.1875
+        },
+        {
+          "step": 1,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 1.984375,
+          "absent_mean_log_odds": -0.96875,
+          "present_mean_log_odds": 1.015625
+        },
+        {
+          "step": 2,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 2.015625,
+          "absent_mean_log_odds": -0.828125,
+          "present_mean_log_odds": 1.1875
+        },
+        {
+          "step": 3,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 1.984375,
+          "absent_mean_log_odds": -1.09375,
+          "present_mean_log_odds": 0.890625
+        }
+      ],
+      "fresh_inference": [
+        {
+          "step": 3,
+          "grad_mode": false,
+          "n_prompts": 1,
+          "paired_log_odds_shift": 1.984375,
+          "absent_mean_log_odds": -1.09375,
+          "present_mean_log_odds": 0.890625
+        }
+      ]
+    }
+  }
+}

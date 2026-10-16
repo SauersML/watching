@@ -29,8 +29,8 @@ def validate_arguments(args):
         raise ValueError("lr must be finite and positive")
     if not math.isfinite(args.output_lr_multiplier) or args.output_lr_multiplier <= 0:
         raise ValueError("output_lr_multiplier must be finite and positive")
-    if args.freeze_backbone_updates and not args.untie_output:
-        raise ValueError("--freeze-backbone-updates requires --untie-output for this diagnostic")
+    if args.require_native_untied and args.untie_output:
+        raise ValueError("Native-untied verification cannot be combined with untying")
     if args.gradient_scaling == "fp32" and (args.batch_size != 1 or args.objective != "paired"):
         raise ValueError("FP32 coefficient scaling requires the paired objective and batch size 1")
     if args.layer < 0:
@@ -55,6 +55,8 @@ def validate_arguments(args):
         raise ValueError("train_eval_prompts must be positive and divisible by batch_size")
     if not 0 < args.test_prompts <= 512 or args.test_prompts % args.batch_size:
         raise ValueError("test_prompts must be at most 512 and divisible by batch_size")
+    if not 0 < args.validation_prompts <= 512 or args.validation_prompts % args.batch_size:
+        raise ValueError("validation_prompts must be at most 512 and divisible by batch_size")
     if not math.isfinite(args.margin) or args.margin < 0:
         raise ValueError("margin must be finite and nonnegative")
     if not math.isfinite(args.calibration_weight) or args.calibration_weight <= 0:
@@ -79,6 +81,7 @@ def main():
     ap.add_argument("--output-lr-multiplier", type=float, default=1.0)
     ap.add_argument("--output-rate-scope", choices=["matrix", "answers"], default="matrix")
     ap.add_argument("--untie-output", action="store_true")
+    ap.add_argument("--require-native-untied", action="store_true")
     ap.add_argument("--freeze-backbone-updates", action="store_true")
     ap.add_argument("--gradient-scaling", choices=["backward", "fp32"], default="backward")
     ap.add_argument("--layer", type=int, default=14)
@@ -94,6 +97,7 @@ def main():
     ap.add_argument("--dataset", choices=["legacy", "expanded"], default="legacy")
     ap.add_argument("--train-eval-prompts", type=int, default=32)
     ap.add_argument("--test-prompts", type=int, default=512)
+    ap.add_argument("--validation-prompts", type=int, default=512)
     ap.add_argument("--margin", type=float, default=0.25)
     ap.add_argument("--calibration-weight", type=float, default=0.1)
     args = ap.parse_args()
@@ -136,6 +140,11 @@ def main():
         .eval()
     )
     model.config.use_cache = False
+    if args.require_native_untied and (
+        model.config.tie_word_embeddings
+        or model.get_output_embeddings().weight is model.get_input_embeddings().weight
+    ):
+        raise ValueError("The loaded model is not natively untied")
     if args.untie_output:
         head = model.get_output_embeddings()
         if head.weight is model.get_input_embeddings().weight:
@@ -146,11 +155,14 @@ def main():
     output_parameters = list(model.get_output_embeddings().parameters())
     output_ids = {id(p) for p in output_parameters}
     tied_embeddings = model.get_input_embeddings().weight is model.get_output_embeddings().weight
+    if args.freeze_backbone_updates and tied_embeddings:
+        raise ValueError("Fixed internal weights require an independent output matrix")
     detector = ProbeModel(model, args.layer)
     compiled = torch.compile(detector, fullgraph=True, dynamic=False)
     data = make_expanded_data() if args.dataset == "expanded" else make_data()
     data["train"] = data["train"][: args.train_prompts]
     data["test"] = data["test"][: args.test_prompts]
+    data["validation"] = data["validation"][: args.validation_prompts]
     write_json(out / "data.json", data)
     batches = {}
     for split, records in data.items():
@@ -186,10 +198,14 @@ def main():
         "gpu": torch.cuda.get_device_name(),
         "parameters": sum(p.numel() for p in model.parameters()),
         "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
-        "parameters_with_nonzero_rate": sum(
-            p.numel() for p in model.parameters()
-            if not args.freeze_backbone_updates or id(p) in output_ids
+        "parameters_with_nonzero_rate": (
+            2 * model.get_output_embeddings().weight.shape[1]
+            if args.freeze_backbone_updates and args.output_rate_scope == "answers" else sum(
+                p.numel() for p in model.parameters()
+                if not args.freeze_backbone_updates or id(p) in output_ids
+            )
         ),
+        "gradient_clipping": "global norm 1.0 across updated parameters only",
         "tied_embeddings": tied_embeddings,
         "output_rate_parameters": [n for n, p in model.named_parameters() if id(p) in output_ids],
         "answer_token_occurrences_in_training_inputs": {
