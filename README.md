@@ -57,7 +57,7 @@ Validation measures both the training numerical path and ordinary no-gradient in
 - Individual full-vocabulary log probabilities for both answer tokens.
 - Cross-entropy and accuracy confidence intervals bootstrapped over prompt pairs.
 
-Constantly answering `Yes` scores 50% forced-choice accuracy and zero fully correct pairs. Final test prompts are evaluated only after training. Recompilation tests whether discrimination survives a fresh process; it does not establish robustness across hardware or compiler versions.
+Constantly answering `Yes` scores 50% forced-choice accuracy and zero fully correct pairs. Test prompts are evaluated before and after training, allowing a paired measurement of change; they are not used for optimization or checkpoint selection. Recompilation tests whether discrimination survives a fresh process; it does not establish robustness across hardware or compiler versions.
 
 ## Outputs
 
@@ -76,6 +76,14 @@ The experiment uses Hugging Face with `torch.compile`; it does not train through
 The first 160-update full-parameter SFT run on an RTX 3090 did not establish learning. Final test accuracy was 50% (always choosing `Yes`). The mean paired log-odds shift was +0.0078 nats; its 95% prompt-bootstrap interval included zero. Fresh-process predictions matched the original final predictions exactly. This was one seed and a small synthetic dataset. See [the pilot record](results/pilot-001/README.md).
 
 ## Paired training diagnostic
+
+For the ordinary SFT memorization experiment (eight training prompts, 1,024 updates, peak learning rate 1e-5), run:
+
+```sh
+bash scripts/run_memorization.sh runs/memorization
+```
+
+This keeps the standard SFT objective. It evaluates every 128 updates and then checks the final checkpoint in a fresh process. The fixed unseen test set is measured at the beginning and end; validation provides intermediate generalization measurements.
 
 An optional objective directly rewards separation between the two conditions. Let `s = log P(Yes) - log P(No)`. It minimizes:
 

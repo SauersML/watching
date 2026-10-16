@@ -243,7 +243,8 @@ def main():
     evaluate("train", 0, grad_mode=True, limit=32)
     evaluate("train", 0, limit=32)
     evaluate("validation", 0, grad_mode=True, limit=32)
-    evaluate("validation", 0, limit=32)
+    evaluate("validation", 0)
+    evaluate("test", 0)
 
     opt = MasterAdam(model, args.lr)
     snapshots = {
@@ -296,6 +297,7 @@ def main():
                     {
                         "capture": capture,
                         "loss": float(loss),
+                        "mean_log_odds": float((pair[:, 1] - pair[:, 0]).mean()),
                         "accuracy": float((pair.argmax(-1) == int(capture)).float().mean()),
                     }
                 )
@@ -315,6 +317,10 @@ def main():
                 lr=lr,
                 grad_norm=grad_norm,
                 objective=objective_value,
+                paired_log_odds_shift=(
+                    next(s["mean_log_odds"] for s in stats if s["capture"])
+                    - next(s["mean_log_odds"] for s in stats if not s["capture"])
+                ),
                 conditions=stats,
                 peak_memory_gb=torch.cuda.max_memory_allocated() / 1e9,
             )

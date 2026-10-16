@@ -37,6 +37,9 @@ def summarize_pairs(rows: list[dict], *, seed: int, bootstrap_samples: int = 100
         / count,
     }
     for condition, name in [(False, "absent"), (True, "present")]:
+        summary[name + "_mean_log_odds"] = (
+            sum(pair[condition]["yes_minus_no"] for pair in pairs.values()) / count
+        )
         summary[name + "_accuracy"] = (
             sum(pair[condition]["correct"] for pair in pairs.values()) / count
         )
