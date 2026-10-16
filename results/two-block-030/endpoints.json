@@ -1,0 +1,422 @@
+{
+  "resampling": "5000 whole-prompt paired bootstrap draws; seed20261016; pointwise, conditional on these prompts and this run",
+  "endpoints": {
+    "train/split_inference": {
+      "n_prompts": 16,
+      "metrics": {
+        "gap": {
+          "mean": 8.25,
+          "ci95": [
+            6.3669921875,
+            10.046875
+          ]
+        },
+        "midpoint": {
+          "mean": -2.3203125,
+          "ci95": [
+            -3.41015625,
+            -1.3163085937500014
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.9375,
+          "ci95": [
+            0.84375,
+            1.0
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.8744093210771098,
+          "ci95": [
+            0.789176150271851,
+            0.9469674302730708
+          ]
+        },
+        "full_ce": {
+          "mean": 0.4055292682767231,
+          "ci95": [
+            0.0603785575336417,
+            0.8816432379979169
+          ]
+        },
+        "binary_ce": {
+          "mean": 0.40549510384789755,
+          "ci95": [
+            0.06034427811178489,
+            0.8816118898198901
+          ]
+        }
+      },
+      "midpoint_rms": 3.1942330847951594,
+      "source": "fit/train_4096_split_inference.json"
+    },
+    "train/wholegraph_transfer": {
+      "n_prompts": 16,
+      "metrics": {
+        "gap": {
+          "mean": 8.2734375,
+          "ci95": [
+            6.40625,
+            10.0546875
+          ]
+        },
+        "midpoint": {
+          "mean": -2.27734375,
+          "ci95": [
+            -3.3515625,
+            -1.27734375
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.9375,
+          "ci95": [
+            0.84375,
+            1.0
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.8718282718182309,
+          "ci95": [
+            0.7885042973561213,
+            0.9454036217182875
+          ]
+        },
+        "full_ce": {
+          "mean": 0.375654568655591,
+          "ci95": [
+            0.06482363029397789,
+            0.8483541789820946
+          ]
+        },
+        "binary_ce": {
+          "mean": 0.3756249191708321,
+          "ci95": [
+            0.06479976238796895,
+            0.8483253693426263
+          ]
+        }
+      },
+      "midpoint_rms": 3.152960848056157,
+      "source": "fit/train_4096_wholegraph_transfer.json"
+    },
+    "validation/split_inference": {
+      "n_prompts": 8,
+      "metrics": {
+        "gap": {
+          "mean": 0.40625,
+          "ci95": [
+            0.015625,
+            1.0625
+          ]
+        },
+        "midpoint": {
+          "mean": -1.359375,
+          "ci95": [
+            -5.46875,
+            2.0238281249999943
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5625,
+          "ci95": [
+            0.5,
+            0.6875
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5302518600992698,
+          "ci95": [
+            0.49893761398561765,
+            0.5902339015985263
+          ]
+        },
+        "full_ce": {
+          "mean": 2.4674697095224474,
+          "ci95": [
+            1.5364652853862708,
+            3.4204170582763926
+          ]
+        },
+        "binary_ce": {
+          "mean": 2.4674040146478546,
+          "ci95": [
+            1.536404185267304,
+            3.4203705041403616
+          ]
+        }
+      },
+      "midpoint_rms": 5.727793396020845,
+      "source": "fit/validation_4096_split_inference.json"
+    },
+    "validation/wholegraph_transfer": {
+      "n_prompts": 8,
+      "metrics": {
+        "gap": {
+          "mean": 0.328125,
+          "ci95": [
+            0.03125,
+            0.859375
+          ]
+        },
+        "midpoint": {
+          "mean": -1.3203125,
+          "ci95": [
+            -5.4376953125,
+            2.047070312499997
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5227001078919784,
+          "ci95": [
+            0.5001464903752322,
+            0.5667940186722944
+          ]
+        },
+        "full_ce": {
+          "mean": 2.4833474782244593,
+          "ci95": [
+            1.5725178694971418,
+            3.4211441888633525
+          ]
+        },
+        "binary_ce": {
+          "mean": 2.4832815748509347,
+          "ci95": [
+            1.5724599765354015,
+            3.4211003064416996
+          ]
+        }
+      },
+      "midpoint_rms": 5.724595714436959,
+      "source": "fit/validation_4096_wholegraph_transfer.json"
+    },
+    "test/split_inference": {
+      "n_prompts": 32,
+      "metrics": {
+        "gap": {
+          "mean": 0.3203125,
+          "ci95": [
+            -0.1796875,
+            0.88671875
+          ]
+        },
+        "midpoint": {
+          "mean": -2.81640625,
+          "ci95": [
+            -4.576220703125,
+            -1.037109375
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.53125,
+          "ci95": [
+            0.5,
+            0.578125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5158154960798811,
+          "ci95": [
+            0.4925961050036591,
+            0.5480540091177601
+          ]
+        },
+        "full_ce": {
+          "mean": 2.57341252944218,
+          "ci95": [
+            2.0603720331356983,
+            3.084605875058889
+          ]
+        },
+        "binary_ce": {
+          "mean": 2.5730094160373937,
+          "ci95": [
+            2.0600244812315394,
+            3.0845458763041904
+          ]
+        }
+      },
+      "midpoint_rms": 5.941220051733903,
+      "source": "fit/test_4096_split_inference.json"
+    },
+    "test/wholegraph_transfer": {
+      "n_prompts": 32,
+      "metrics": {
+        "gap": {
+          "mean": 0.28515625,
+          "ci95": [
+            -0.2109375,
+            0.8515625
+          ]
+        },
+        "midpoint": {
+          "mean": -2.681640625,
+          "ci95": [
+            -4.455126953125,
+            -0.8925292968750007
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.53125,
+          "ci95": [
+            0.5,
+            0.578125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5140753344558107,
+          "ci95": [
+            0.4931327097217178,
+            0.5421381042840892
+          ]
+        },
+        "full_ce": {
+          "mean": 2.538847668025255,
+          "ci95": [
+            2.017784060530218,
+            3.0458916148883475
+          ]
+        },
+        "binary_ce": {
+          "mean": 2.538427654697898,
+          "ci95": [
+            2.0172685583237753,
+            3.0455903705822975
+          ]
+        }
+      },
+      "midpoint_rms": 5.883543903735868,
+      "source": "fit/test_4096_wholegraph_transfer.json"
+    }
+  },
+  "gains_from_resumed_baseline": {
+    "train": {
+      "gap": {
+        "mean": 8.2265625,
+        "ci95": [
+          6.3359375,
+          10.0234375
+        ]
+      },
+      "midpoint": {
+        "mean": -2.22265625,
+        "ci95": [
+          -3.34384765625,
+          -1.1913085937500014
+        ]
+      },
+      "greedy_accuracy": {
+        "mean": 0.34375,
+        "ci95": [
+          0.1875,
+          0.46875
+        ]
+      },
+      "correct_probability": {
+        "mean": 0.37230159187311074,
+        "ci95": [
+          0.28608024416735134,
+          0.44601503296289574
+        ]
+      },
+      "full_ce": {
+        "mean": -0.29416305273321086,
+        "ci95": [
+          -0.6437601326284096,
+          0.18605032250555292
+        ]
+      },
+      "binary_ce": {
+        "mean": -0.29272427369960496,
+        "ci95": [
+          -0.6420861331657022,
+          0.18765274760999018
+        ]
+      }
+    },
+    "validation": {
+      "gap": {
+        "mean": 0.390625,
+        "ci95": [
+          -0.03125,
+          1.0625
+        ]
+      },
+      "midpoint": {
+        "mean": -1.5390625,
+        "ci95": [
+          -5.7658203125,
+          1.921875
+        ]
+      },
+      "greedy_accuracy": {
+        "mean": 0.0625,
+        "ci95": [
+          0.0,
+          0.1875
+        ]
+      },
+      "correct_probability": {
+        "mean": 0.029091863373650995,
+        "ci95": [
+          -0.0055853331614343915,
+          0.09064222024630908
+        ]
+      },
+      "full_ce": {
+        "mean": 1.7293495392123077,
+        "ci95": [
+          0.8104039480804204,
+          2.671741566181821
+        ]
+      },
+      "binary_ce": {
+        "mean": 1.7305724762686623,
+        "ci95": [
+          0.8114845254222018,
+          2.673243473377271
+        ]
+      }
+    }
+  },
+  "descriptive_maximum_training_gap_not_selected": {
+    "step": 3456,
+    "global_step": 3584,
+    "split": "train",
+    "path": "split_inference",
+    "n_prompts": 16,
+    "accuracy": 1.0,
+    "greedy_accuracy": 1.0,
+    "mean_ce": 0.06028185637208594,
+    "paired_yes_probability_gap": 0.9044275849776313,
+    "both_conditions_correct": 1.0,
+    "absent_mean_log_odds": -7.3125,
+    "absent_accuracy": 1.0,
+    "present_mean_log_odds": 7.3515625,
+    "present_accuracy": 1.0,
+    "accuracy_ci95": [
+      1.0,
+      1.0
+    ],
+    "paired_log_odds_shift": 14.6640625,
+    "paired_log_odds_shift_ci95": [
+      12.4375,
+      16.8984375
+    ],
+    "paired_rank_accuracy": 1.0,
+    "positive_shifts": 16,
+    "zero_shifts": 0,
+    "negative_shifts": 0,
+    "mean_binary_ce": 0.060208509455303316,
+    "mean_full_vocab_correct_probability": 0.9521512612700462,
+    "mean_answer_pair_mass": 0.9999266788363457
+  },
+  "endpoint_selection": "Fixed 4096 additional updates; maximum is descriptive, never selected"
+}

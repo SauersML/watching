@@ -35,7 +35,14 @@ from watching.suffix import (
 class PairedMasterAdam:
     """Accumulate separately computed condition gradients into FP32 masters."""
 
-    def __init__(self, parameters, lr):
+    def __init__(self, parameters, lr, expected_contributions=2):
+        if (
+            type(expected_contributions) is not int
+            or expected_contributions < 2
+            or expected_contributions % 2
+        ):
+            raise ValueError("Expected contributions must be a positive whole number of pairs")
+        self.expected_contributions = expected_contributions
         self.parameters = list(parameters)
         if not self.parameters:
             raise ValueError("Need active native parameters")
@@ -56,8 +63,11 @@ class PairedMasterAdam:
         self.contributions += 1
 
     def step(self):
-        if self.contributions != 2:
-            raise RuntimeError("An update requires exactly two separately accumulated conditions")
+        if self.contributions != self.expected_contributions:
+            count = "two" if self.expected_contributions == 2 else str(self.expected_contributions)
+            raise RuntimeError(
+                f"An update requires exactly {count} separately accumulated conditions"
+            )
         norm = torch.nn.utils.clip_grad_norm_(self.masters, 1, error_if_nonfinite=True)
         self.optimizer.step()
         movement = torch.zeros((), device=self.parameters[0].device)
@@ -175,6 +185,18 @@ def stratified_records(records, count, seed):
             if groups[name] and len(chosen) < count:
                 chosen.append(groups[name].pop())
     return [{**records[index], "source_index": index} for index in chosen]
+
+
+def prompt_batches(count, batch_size, seed):
+    """Yield shuffled epoch chunks, preserving the original B=1 prompt order."""
+    if count < 1 or batch_size < 1 or batch_size > count or count % batch_size:
+        raise ValueError("Prompt batch size must divide the positive training prompt count")
+    order = list(range(count))
+    rng = random.Random(seed)
+    while True:
+        rng.shuffle(order)
+        for start in range(0, count, batch_size):
+            yield order[start : start + batch_size]
 
 
 def score(logits, index, capture, no, yes):
@@ -362,6 +384,7 @@ def main():
     parser.add_argument("--probe-layer", type=int, default=14)
     parser.add_argument("--tail-layers", type=int, default=2)
     parser.add_argument("--train-prompts", type=int, default=16)
+    parser.add_argument("--prompt-batch-size", type=int, default=1)
     parser.add_argument("--validation-prompts", type=int, default=8)
     parser.add_argument("--test-prompts", type=int, default=32)
     parser.add_argument("--test-split", default=None)
@@ -377,6 +400,12 @@ def main():
         or not 0 < args.lr < 1
     ):
         parser.error("Invalid steps, evaluation interval, length, or learning rate")
+    if (
+        args.prompt_batch_size < 1
+        or args.train_prompts < args.prompt_batch_size
+        or args.train_prompts % args.prompt_batch_size
+    ):
+        parser.error("Prompt batch size must divide the training prompt count")
     if bool(args.initial_tail) != bool(args.prior_results):
         parser.error("--initial-tail and --prior-results must be supplied together")
     if (
@@ -396,6 +425,7 @@ def main():
     torch.set_num_threads(4)
     started = time.monotonic()
     starting_global_step = 0
+    starting_processed_prompt_pairs = 0
 
     def emit(event, **fields):
         if "step" in fields:
@@ -417,6 +447,13 @@ def main():
         if type(previous_steps) is not int or previous_steps < 1:
             raise ValueError("Prior run has no completed training steps")
         starting_global_step = prior_manifest.get("starting_global_step", 0) + previous_steps
+        starting_processed_prompt_pairs = prior_manifest.get(
+            "global_processed_prompt_pairs",
+            prior_manifest.get(
+                "starting_processed_prompt_pairs", prior_manifest.get("starting_global_step", 0)
+            )
+            + previous_steps * prior_manifest.get("prompt_batch_size", 1),
+        )
         for split in ("train", "validation"):
             if not (
                 args.prior_results / f"{split}_{previous_steps}_split_inference.json"
@@ -546,6 +583,9 @@ def main():
     manifest = {
         **{k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
         "starting_global_step": starting_global_step,
+        "starting_processed_prompt_pairs": starting_processed_prompt_pairs,
+        "processed_prompt_pairs": 0,
+        "global_processed_prompt_pairs": starting_processed_prompt_pairs,
         "completed_steps": 0,
         "initial_tail_sha256": initial_tail_sha256,
         "excluded_test_context_ids": excluded_test_context_ids,
@@ -678,6 +718,10 @@ def main():
         summary = {
             "step": step,
             "global_step": starting_global_step + step,
+            "processed_prompt_pairs": step * args.prompt_batch_size,
+            "global_processed_prompt_pairs": (
+                starting_processed_prompt_pairs + step * args.prompt_batch_size
+            ),
             "split": split,
             "path": path,
             **summarize(rows, args.seed),
@@ -767,37 +811,46 @@ def main():
         observed_model.cpu()
         torch.cuda.empty_cache()
         emit("sources_offloaded", allocated_gpu_bytes=torch.cuda.memory_allocated())
-    optimizer = PairedMasterAdam(tail.active_parameters(), args.lr)
-    order = list(range(len(cache["train"])))
-    rng = random.Random(args.seed)
-    rng.shuffle(order)
-    emit("training_start", steps=args.steps, allocated_gpu_bytes=torch.cuda.memory_allocated())
+    optimizer = PairedMasterAdam(
+        tail.active_parameters(), args.lr, expected_contributions=2 * args.prompt_batch_size
+    )
+    prompt_stream = prompt_batches(len(cache["train"]), args.prompt_batch_size, args.seed)
+    emit(
+        "training_start",
+        steps=args.steps,
+        prompt_batch_size=args.prompt_batch_size,
+        allocated_gpu_bytes=torch.cuda.memory_allocated(),
+    )
     training_started = time.monotonic()
     completed_steps = 0
     for step in range(1, args.steps + 1):
-        if step > 1 and (step - 1) % len(order) == 0:
-            rng.shuffle(order)
-        index = order[(step - 1) % len(order)]
-        positions = batches["train"][index]["position_ids"].cuda()
+        indices = next(prompt_stream)
         losses = []
-        for present in (False, True):
-            logits = tail(
-                *move_state(cache["train"][index][int(present)], "cuda"), positions
-            ).float()
-            label = torch.tensor([yes if present else no], device=logits.device)
-            loss = F.cross_entropy(logits, label) / 2
-            with sdpa_kernel(SDPBackend.MATH):
-                loss.backward()
-            optimizer.accumulate()
-            losses.append(float(loss.detach()))
+        for index in indices:
+            positions = batches["train"][index]["position_ids"].cuda()
+            for present in (False, True):
+                logits = tail(
+                    *move_state(cache["train"][index][int(present)], "cuda"), positions
+                ).float()
+                label = torch.tensor([yes if present else no], device=logits.device)
+                loss = F.cross_entropy(logits, label) / (2 * args.prompt_batch_size)
+                with sdpa_kernel(SDPBackend.MATH):
+                    loss.backward()
+                optimizer.accumulate()
+                losses.append(float(loss.detach()))
         norm, movement = optimizer.step()
         emit(
             "train",
             step=step,
-            prompt_index=index,
+            prompt_indices=indices,
+            processed_prompt_pairs=step * args.prompt_batch_size,
+            global_processed_prompt_pairs=(
+                starting_processed_prompt_pairs + step * args.prompt_batch_size
+            ),
             loss=sum(losses),
             gradient_norm=norm,
             actual_weight_update_l2=movement,
+            **({"prompt_index": indices[0]} if args.prompt_batch_size == 1 else {}),
         )
         completed_steps = step
         time_limited = (
@@ -827,6 +880,10 @@ def main():
             "learned_head_sha256": learned_head_digest,
             "completed_steps": completed_steps,
             "global_step": starting_global_step + completed_steps,
+            "prompt_batch_size": args.prompt_batch_size,
+            "global_processed_prompt_pairs": (
+                starting_processed_prompt_pairs + completed_steps * args.prompt_batch_size
+            ),
             "checkpoint": args.checkpoint,
             "model_commit": manifest["model_commit"],
             "first_layer": tail.first_layer,
@@ -838,6 +895,10 @@ def main():
         args.out / "native_tail.pt",
     )
     manifest["completed_steps"] = completed_steps
+    manifest["processed_prompt_pairs"] = completed_steps * args.prompt_batch_size
+    manifest["global_processed_prompt_pairs"] = (
+        starting_processed_prompt_pairs + completed_steps * args.prompt_batch_size
+    )
     manifest["head_sha256_after"] = learned_head_digest
     manifest["ending_global_step"] = starting_global_step + completed_steps
     manifest["training_status"] = "complete" if completed_steps == args.steps else "time_limited"

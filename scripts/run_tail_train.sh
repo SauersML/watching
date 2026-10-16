@@ -7,7 +7,17 @@ source_model=$2
 continuation=()
 steps=128
 eval_every=8
-if [[ $# -ge 3 ]]; then
+train_prompts=16
+validation_prompts=8
+test_prompts=32
+if [[ $# -eq 3 && $3 == batched ]]; then
+  continuation=(--prompt-batch-size 4 --max-training-seconds 1050)
+  steps=1024
+  eval_every=64
+  train_prompts=64
+  validation_prompts=32
+  test_prompts=64
+elif [[ $# -ge 3 ]]; then
   continuation=(--initial-tail "$3/native_tail.pt" --prior-results "$3"
     --early-eval-steps 8 32 128 --max-training-seconds 1050)
   steps=4096
@@ -34,6 +44,7 @@ python -m watching.family_data --task probe \
   --prior-contexts "$source_root/data/fresh_test_contexts.jsonl" \
   --out "$run_out/data.json" --tokenizer "$source_model" --max-length 96
 python -m watching.tail_train --checkpoint "$source_model" --data "$run_out/data.json" \
-  --out "$run_out/fit" --probe-layer 14 --tail-layers 2 --train-prompts 16 \
-  --validation-prompts 8 --test-prompts 32 --steps "$steps" --eval-every "$eval_every" \
+  --out "$run_out/fit" --probe-layer 14 --tail-layers 2 --train-prompts "$train_prompts" \
+  --validation-prompts "$validation_prompts" --test-prompts "$test_prompts" \
+  --steps "$steps" --eval-every "$eval_every" \
   --lr 5e-6 --length 96 "${continuation[@]}"

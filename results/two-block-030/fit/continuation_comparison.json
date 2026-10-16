@@ -1,0 +1,196 @@
+{
+  "train": {
+    "prior_summary": {
+      "step": 128,
+      "split": "train",
+      "path": "split_inference",
+      "n_prompts": 16,
+      "accuracy": 0.5625,
+      "greedy_accuracy": 0.5625,
+      "mean_ce": 0.6956452494487166,
+      "paired_yes_probability_gap": 0.009437654167413712,
+      "both_conditions_correct": 0.125,
+      "absent_mean_log_odds": -0.109375,
+      "absent_accuracy": 0.8125,
+      "present_mean_log_odds": -0.0703125,
+      "present_accuracy": 0.3125,
+      "accuracy_ci95": [
+        0.5,
+        0.65625
+      ],
+      "paired_log_odds_shift": 0.0390625,
+      "paired_log_odds_shift_ci95": [
+        0.015625,
+        0.0703125
+      ],
+      "paired_rank_accuracy": 0.65625,
+      "positive_shifts": 5,
+      "zero_shifts": 11,
+      "negative_shifts": 0,
+      "mean_binary_ce": 0.6941874269396067,
+      "mean_full_vocab_correct_probability": 0.5039859134703875,
+      "mean_answer_pair_mass": 0.9985436964780092
+    },
+    "current_summary": {
+      "step": 0,
+      "global_step": 128,
+      "split": "train",
+      "path": "split_inference",
+      "n_prompts": 16,
+      "accuracy": 0.59375,
+      "greedy_accuracy": 0.59375,
+      "mean_ce": 0.699692321009934,
+      "paired_yes_probability_gap": 0.0056851208209991455,
+      "both_conditions_correct": 0.1875,
+      "absent_mean_log_odds": -0.109375,
+      "absent_accuracy": 0.8125,
+      "present_mean_log_odds": -0.0859375,
+      "present_accuracy": 0.375,
+      "accuracy_ci95": [
+        0.5,
+        0.6875
+      ],
+      "paired_log_odds_shift": 0.0234375,
+      "paired_log_odds_shift_ci95": [
+        -0.015625,
+        0.0625
+      ],
+      "paired_rank_accuracy": 0.59375,
+      "positive_shifts": 5,
+      "zero_shifts": 9,
+      "negative_shifts": 2,
+      "mean_binary_ce": 0.6982193775475025,
+      "mean_full_vocab_correct_probability": 0.502107729203999,
+      "mean_answer_pair_mass": 0.9985285922884941
+    },
+    "differences": {
+      "yes_minus_no": {
+        "exactly_equal": false,
+        "fraction_different": 0.125,
+        "mean_difference": -0.0078125,
+        "max_abs_difference": 0.125
+      },
+      "logp_yes": {
+        "exactly_equal": false,
+        "fraction_different": 0.5625,
+        "mean_difference": -0.004047071561217308,
+        "max_abs_difference": 0.07216507196426392
+      },
+      "logp_no": {
+        "exactly_equal": false,
+        "fraction_different": 0.5625,
+        "mean_difference": 0.003765428438782692,
+        "max_abs_difference": 0.07596224546432495
+      },
+      "ce": {
+        "exactly_equal": false,
+        "fraction_different": 0.5625,
+        "mean_difference": 0.004047071561217308,
+        "max_abs_difference": 0.07216507196426392
+      },
+      "full_vocab_correct_probability": {
+        "exactly_equal": false,
+        "fraction_different": 0.5625,
+        "mean_difference": -0.0018781842663884163,
+        "max_abs_difference": 0.031154781579971313
+      }
+    }
+  },
+  "validation": {
+    "prior_summary": {
+      "step": 128,
+      "split": "validation",
+      "path": "split_inference",
+      "n_prompts": 8,
+      "accuracy": 0.5,
+      "greedy_accuracy": 0.5,
+      "mean_ce": 0.7326155938208103,
+      "paired_yes_probability_gap": 0.006898600608110428,
+      "both_conditions_correct": 0.0,
+      "absent_mean_log_odds": 0.171875,
+      "absent_accuracy": 0.5,
+      "present_mean_log_odds": 0.203125,
+      "present_accuracy": 0.5,
+      "accuracy_ci95": [
+        0.5,
+        0.5
+      ],
+      "paired_log_odds_shift": 0.03125,
+      "paired_log_odds_shift_ci95": [
+        -0.03125,
+        0.09375
+      ],
+      "paired_rank_accuracy": 0.625,
+      "positive_shifts": 3,
+      "zero_shifts": 4,
+      "negative_shifts": 1,
+      "mean_binary_ce": 0.7313285991549492,
+      "mean_full_vocab_correct_probability": 0.5028055589646101,
+      "mean_answer_pair_mass": 0.9987141713500023
+    },
+    "current_summary": {
+      "step": 0,
+      "global_step": 128,
+      "split": "validation",
+      "path": "split_inference",
+      "n_prompts": 8,
+      "accuracy": 0.5,
+      "greedy_accuracy": 0.5,
+      "mean_ce": 0.7381201703101397,
+      "paired_yes_probability_gap": 0.003611944615840912,
+      "both_conditions_correct": 0.0,
+      "absent_mean_log_odds": 0.171875,
+      "absent_accuracy": 0.5,
+      "present_mean_log_odds": 0.1875,
+      "present_accuracy": 0.5,
+      "accuracy_ci95": [
+        0.5,
+        0.5
+      ],
+      "paired_log_odds_shift": 0.015625,
+      "paired_log_odds_shift_ci95": [
+        0.0,
+        0.046875
+      ],
+      "paired_rank_accuracy": 0.5625,
+      "positive_shifts": 1,
+      "zero_shifts": 7,
+      "negative_shifts": 0,
+      "mean_binary_ce": 0.7368315383791924,
+      "mean_full_vocab_correct_probability": 0.5011599967256188,
+      "mean_answer_pair_mass": 0.9987125247716904
+    },
+    "differences": {
+      "yes_minus_no": {
+        "exactly_equal": false,
+        "fraction_different": 0.3125,
+        "mean_difference": -0.0078125,
+        "max_abs_difference": 0.125
+      },
+      "logp_yes": {
+        "exactly_equal": false,
+        "fraction_different": 0.625,
+        "mean_difference": -0.0055045802146196365,
+        "max_abs_difference": 0.07961058616638184
+      },
+      "logp_no": {
+        "exactly_equal": false,
+        "fraction_different": 0.625,
+        "mean_difference": 0.002307930961251259,
+        "max_abs_difference": 0.09569132328033447
+      },
+      "ce": {
+        "exactly_equal": false,
+        "fraction_different": 0.625,
+        "mean_difference": 0.005504576489329338,
+        "max_abs_difference": 0.09569132328033447
+      },
+      "full_vocab_correct_probability": {
+        "exactly_equal": false,
+        "fraction_different": 0.625,
+        "mean_difference": -0.0016455622389912605,
+        "max_abs_difference": 0.03117808699607849
+      }
+    }
+  }
+}

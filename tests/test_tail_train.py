@@ -393,3 +393,74 @@ def test_head_trained_checkpoint_cannot_silently_drop_or_corrupt_head():
     artifact.pop("head")
     with pytest.raises(ValueError, match="Invalid saved native head"):
         validate_artifact(artifact, tail)
+
+
+@pytest.mark.parametrize("batch_size", [1, 4])
+def test_prompt_batch_accumulation_matches_mean_loss_and_adam_update(batch_size):
+    torch.manual_seed(9)
+    parameter = torch.nn.Parameter(torch.randn(2, 3) * 0.1)
+    direct = torch.nn.Parameter(parameter.detach().clone())
+    optimizer = PairedMasterAdam([parameter], 1e-3, expected_contributions=2 * batch_size)
+    reference = torch.optim.AdamW([direct], lr=1e-3, weight_decay=0, foreach=False)
+    inputs = torch.randn(2 * batch_size, 3)
+    labels = torch.arange(2 * batch_size) % 2
+    for _ in range(3):
+        losses = []
+        for x, label in zip(inputs, labels, strict=True):
+            logits = torch.nn.functional.linear(x[None], parameter)
+            loss = torch.nn.functional.cross_entropy(logits, label[None]) / (2 * batch_size)
+            loss.backward()
+            optimizer.accumulate()
+            losses.append(loss.detach())
+        direct_loss = torch.nn.functional.cross_entropy(
+            torch.nn.functional.linear(inputs, direct), labels
+        )
+        direct_loss.backward()
+        torch.testing.assert_close(sum(losses), direct_loss)
+        torch.testing.assert_close(optimizer.masters[0].grad, direct.grad)
+        torch.nn.utils.clip_grad_norm_([direct], 1)
+        reference.step()
+        reference.zero_grad(set_to_none=True)
+        optimizer.step()
+        torch.testing.assert_close(parameter, direct)
+        assert optimizer.contributions == 0
+        assert optimizer.masters[0].grad is None
+
+
+def test_prompt_batch_stream_preserves_single_pair_order_and_has_no_duplicates():
+    import random
+    from itertools import islice
+
+    from watching.tail_train import prompt_batches
+
+    count, seed = 8, 13
+    old_order = list(range(count))
+    rng = random.Random(seed)
+    rng.shuffle(old_order)
+    original = []
+    for step in range(1, 25):
+        if step > 1 and (step - 1) % count == 0:
+            rng.shuffle(old_order)
+        original.append(old_order[(step - 1) % count])
+    assert [row[0] for row in islice(prompt_batches(count, 1, seed), 24)] == original
+    grouped = list(islice(prompt_batches(count, 4, seed), 6))
+    assert all(len(batch) == len(set(batch)) == 4 for batch in grouped)
+    assert [index for batch in grouped for index in batch] == original
+    for first in range(0, 6, 2):
+        assert set(grouped[first] + grouped[first + 1]) == set(range(count))
+    for invalid in (0, 3, 9):
+        with pytest.raises(ValueError, match="divide"):
+            next(prompt_batches(count, invalid, seed))
+
+
+def test_optimizer_rejects_incomplete_batched_update():
+    parameter = torch.nn.Parameter(torch.zeros(2))
+    optimizer = PairedMasterAdam([parameter], 1e-3, expected_contributions=8)
+    for _ in range(2):
+        parameter.grad = torch.ones_like(parameter)
+        optimizer.accumulate()
+    with pytest.raises(RuntimeError, match="exactly 8"):
+        optimizer.step()
+    for invalid in (0, 1, 3, 2.0):
+        with pytest.raises(ValueError, match="whole number of pairs"):
+            PairedMasterAdam([parameter], 1e-3, expected_contributions=invalid)

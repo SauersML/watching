@@ -14,7 +14,7 @@ case "$run_kind" in
   activation_drift) [[ $# -eq 6 ]] || { echo "$run_kind requires three checkpoints" >&2; exit 2; } ;;
   rate_arm) [[ $# -eq 6 ]] || { echo "$run_kind requires source model and two rates" >&2; exit 2; } ;;
   answer_rows) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
-  untied_pair|fp32_pair|head_fit|cached_readout|suffix|tail_train|execution_fit|native_fit|execution_choices) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
+  untied_pair|fp32_pair|head_fit|cached_readout|suffix|tail_train|tail_batch|execution_fit|native_fit|execution_choices) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   probe_ood|probe_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires a model and answer-row artifact" >&2; exit 2; } ;;
   tail_continue) [[ $# -eq 5 ]] || { echo "$run_kind requires model and prior results" >&2; exit 2; } ;;
   matched_head) [[ $# -eq 5 ]] || { echo "$run_kind requires model and data" >&2; exit 2; } ;;
@@ -31,7 +31,9 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == tail_head ]]; then
+if [[ $run_kind == tail_batch ]]; then
+  bash "$run_source/scripts/run_tail_train.sh" "$run_output" "$4" batched
+elif [[ $run_kind == tail_head ]]; then
   bash "$run_source/scripts/run_tail_train.sh" "$run_output" "$4" "$5" head
 elif [[ $run_kind == matched_head ]]; then
   bash "$run_source/scripts/run_matched_head.sh" "$run_output" "$4" "$5"
