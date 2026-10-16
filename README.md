@@ -173,6 +173,17 @@ footprint magnitude and direction, common activation movement, and a head/featur
 decomposition of FP64 projected score changes. These projections are explicitly
 separate from the actual bf16 model scores. This diagnostic performs no training.
 
+`scripts/readout_ablation.py AUDIT OUTPUT` compares bf16/FP32 affine readouts,
+three learning rates and two fixed feature coordinate systems, using the same
+paired loss and FP32 master optimizer on verified frozen activations. It is an
+optimization diagnostic; success is not evidence that the full model learned.
+
+For remote checkpoint transport, `python -m watching.checkpoint_delta encode
+BASE_SAFETENSORS TARGET_DIRECTORY --out DELTA_DIRECTORY` stores a lossless
+compressed XOR against an already available base. Decoding verifies the SHA-256
+of both the base and reconstructed target before publishing the restored file.
+This changes transport only, not weight precision.
+
 ```sh
 ruff check .
 ruff format --check .

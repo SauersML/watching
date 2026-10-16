@@ -23,6 +23,11 @@ uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
 if [[ $run_kind == activation_drift ]]; then
+  for checkpoint in "$5" "$6"; do
+    if [[ -f "$checkpoint/delta.json" && ! -f "$checkpoint/model.safetensors" ]]; then
+      python -m watching.checkpoint_delta decode "$4/model.safetensors" "$checkpoint"
+    fi
+  done
   bash "$run_source/scripts/run_activation_drift.sh" "$run_output" "$4" "$5" "$6"
 elif [[ $run_kind == single || $run_kind == paired_single || $run_kind == audit ]]; then
   bash "$run_source/scripts/run_${run_kind}.sh" "$run_output" "$4"
