@@ -63,7 +63,7 @@ Constantly answering `Yes` scores 50% forced-choice accuracy and zero fully corr
 
 `metrics.jsonl` streams progress, including compilation stages, the initial numerical footprint, early training steps, and validation. Per-prompt predictions are saved separately. Each run records its data, arguments, package versions, GPU, model revision when available, source hashes, sampled parameter changes, and final checkpoint.
 
-Checkpoint files contain model weights for inference, not optimizer state for resuming training. Results and checkpoints are excluded from Git.
+Checkpoint files contain model weights for inference, not optimizer state for resuming training. Large checkpoints and working run directories are excluded from Git; selected per-prompt results and analysis scripts are published under `results/`.
 
 ## Scope
 
@@ -89,11 +89,15 @@ This keeps the standard SFT objective. It evaluates every 128 updates and then c
 
 The expanded experiment uses 2,048 training prompts, 512 validation prompts, and 512 test prompts sampled without repeated contexts from a shared generator. All splits share the same topics, eight passage templates, and four question phrasings. It starts from the original Qwen3-0.6B checkpoint and runs 4,096 ordinary SFT updates (eight epochs) at peak learning rate 1e-5. A fixed 256-prompt training subset and all validation prompts are evaluated every 256 updates; the test set is evaluated before and after training only. This is a larger synthetic in-distribution experiment, not a broad natural-text benchmark.
 
+Read the [complete training prompts](results/sft-003/training_prompts.txt) or [all three data splits](results/sft-003/data.json). The passages combine eight templates, 32 nouns, and 64 numbers; the count of unique inputs should not be confused with independent semantic diversity. The capture condition is absent from the text, and each prompt is used with both labels under the corresponding runtime conditions.
+
 ```sh
 bash scripts/run_expanded.sh runs/expanded
 ```
 
 The [expanded-run plan](results/sft-003/PLAN.md) fixes the analysis before launch. Sequence length is 64 (all expanded prompts fit within 54 tokens). The analysis reports an exact sign test alongside mean changes and non-parametric bootstrap intervals; inference about learning uses within-prompt changes from baseline. A bootstrap interval above zero on eight prompts alone is not decisive: the previous run had only four positive final differences and four ties, giving exact one-sided sign-test p=0.0625.
+
+The [expanded run is complete](results/sft-003/README.md). After 4,096 updates, final-test separation was −0.00009 nats and mean improvement was +0.00479 nats, with 95% CI [−0.00534, +0.01477]. The supplementary one-sided improvement sign test gave p=0.0446; the primary magnitude analysis did not establish learning. Fresh-process final-test records matched exactly.
 
 An optional objective directly rewards separation between the two conditions. Let `s = log P(Yes) - log P(No)`. It minimizes:
 

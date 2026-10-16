@@ -7,6 +7,7 @@ Run with the watching package installed and matplotlib available:
 import argparse
 import csv
 import json
+import re
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -18,6 +19,8 @@ from watching.metrics import summarize_pairs
 def collect(source):
     records = []
     for path in source.glob("*_*.json"):
+        if not re.fullmatch(r"(train|validation|test)_\d+_(grad|inference)\.json", path.name):
+            continue
         payload = json.loads(path.read_text())
         if "summary" not in payload or "rows" not in payload:
             continue
@@ -46,7 +49,7 @@ def collect(source):
 
 
 def plot(records, destination):
-    fig, axes = plt.subplots(2, 2, figsize=(11, 7), layout="constrained")
+    fig, axes = plt.subplots(2, 2, figsize=(11, 7), sharey="row", layout="constrained")
     for column, split in enumerate(["train", "validation"]):
         selected = [r for r in records if r["split"] == split and not r["grad_mode"]]
         if not selected:
@@ -67,7 +70,7 @@ def plot(records, destination):
                 label="Pointwise 95% CI",
             )
             ax.axhline(0, color="0.4", linewidth=0.8)
-            ax.set(title=f"{count} {split} prompts · {title}", xlabel="SFT updates")
+            ax.set(title=f"{count} {split} prompts\n{title}", xlabel="SFT updates")
             ax.set_ylabel("Yes/No log odds (nats)")
             ax.spines[["top", "right"]].set_visible(False)
             ax.legend(fontsize=8)

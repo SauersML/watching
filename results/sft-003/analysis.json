@@ -1,0 +1,109 @@
+{
+  "train": {
+    "n_prompts": 256,
+    "initial_separation": 0.00244140625,
+    "final_separation": -0.0013427734375,
+    "change_in_separation": -0.0037841796875,
+    "median_change": 0.0,
+    "change_sign_test": {
+      "positive": 109,
+      "negative": 119,
+      "ties": 28,
+      "p_greater": 0.7668052601727638,
+      "p_two_sided": 0.5512435649994101
+    },
+    "final_sign_test": {
+      "positive": 92,
+      "negative": 106,
+      "ties": 58,
+      "p_greater": 0.8568021850541041,
+      "p_two_sided": 0.35558517636599485
+    },
+    "change_ci95": [
+      -0.01837158203125,
+      0.01123046875
+    ],
+    "bootstrap_seed": 42,
+    "bootstrap_draws": 5000,
+    "final_separation_ci95": [
+      -0.00433349609375,
+      0.00164794921875
+    ]
+  },
+  "validation": {
+    "n_prompts": 512,
+    "initial_separation": -0.005126953125,
+    "final_separation": -0.00128173828125,
+    "change_in_separation": 0.00384521484375,
+    "median_change": 0.0,
+    "change_sign_test": {
+      "positive": 227,
+      "negative": 218,
+      "ties": 67,
+      "p_greater": 0.3522788331658479,
+      "p_two_sided": 0.7045576663316958
+    },
+    "final_sign_test": {
+      "positive": 176,
+      "negative": 198,
+      "ties": 138,
+      "p_greater": 0.8828609682888283,
+      "p_two_sided": 0.2775114168959703
+    },
+    "change_ci95": [
+      -0.005706787109375,
+      0.013427734375
+    ],
+    "bootstrap_seed": 42,
+    "bootstrap_draws": 5000,
+    "final_separation_ci95": [
+      -0.003448486328125,
+      0.0008544921875
+    ]
+  },
+  "test": {
+    "n_prompts": 512,
+    "initial_separation": -0.0048828125,
+    "final_separation": -9.1552734375e-05,
+    "change_in_separation": 0.004791259765625,
+    "median_change": 0.0,
+    "change_sign_test": {
+      "positive": 243,
+      "negative": 206,
+      "ties": 63,
+      "p_greater": 0.044608696314574064,
+      "p_two_sided": 0.08921739262914813
+    },
+    "final_sign_test": {
+      "positive": 191,
+      "negative": 179,
+      "ties": 142,
+      "p_greater": 0.283737010683164,
+      "p_two_sided": 0.567474021366328
+    },
+    "change_ci95": [
+      -0.005340576171875,
+      0.0147705078125
+    ],
+    "bootstrap_seed": 42,
+    "bootstrap_draws": 5000,
+    "final_separation_ci95": [
+      -0.00213623046875,
+      0.001861572265625
+    ]
+  },
+  "fresh_test_rows_identical": true,
+  "provenance": {
+    "source_commit": "1d77e874f43591a75148cef7e97925059e71960e",
+    "model_revision_from_worker_cache_ref": "c1899de289a04d12100db370d81485cdf75e47ca",
+    "model_revision_note": "Runtime model.config._commit_hash was null; revision was read directly from the worker Hugging Face cache refs/main before shutdown.",
+    "replacement_run_cost_usd": 0.0916,
+    "interrupted_attempt_cost_usd": 0.0777,
+    "total_cost_usd": 0.1693,
+    "interrupted_attempt_last_logged_step": 460,
+    "training_and_evaluation_seconds": 1070.33,
+    "fresh_evaluation_seconds": 59.87,
+    "gpu_deleted": true,
+    "exact_run_budget_exception_removed": true
+  }
+}
