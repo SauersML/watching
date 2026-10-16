@@ -16,6 +16,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "ruff==0.16.8"]
+analysis = ["numpy>=2,<3", "scipy>=1.15,<2", "matplotlib>=3.9,<4"]
 
 [project.scripts]
 watching = "watching.train:main"

@@ -47,3 +47,38 @@ PYTHONPATH=src python results/sft-003/report.py results/sft-003/raw
 ```
 
 No negative-control training run was performed. The result limits this SFT configuration; it does not prove the computational footprint cannot be learned with another method.
+
+## Exploratory trajectory analysis
+
+Requested after viewing the original results; this does not replace the fixed final-test analysis. Validation has 17 inference checkpoints for the same 512 prompts. The final test only has before/after evaluations, so it cannot supply an independent 17-checkpoint trend analysis.
+
+For prompt `i` at checkpoint `t`, first compute the matched condition difference
+`d[i,t] = (log P(Yes) − log P(No))_capture − (log P(Yes) − log P(No))_absent`.
+Stored logit differences are algebraically equivalent and avoid additional softmax subtraction rounding. Then compute Spearman correlation between `d[i,:]` and ordered training steps separately for each prompt. Average these prompt-level correlations. Average ranks handle ties; constant trajectories would contribute zero and be counted (there were none). This statistic is invariant to a constant offset or positive rescaling within a prompt.
+
+The mean within-prompt Spearman correlation was **−0.00078**, 95% BCa CI **[−0.02379, +0.02206]**, on validation. The descriptive training-subset result was −0.02630, CI [−0.05850, +0.00533]. These results do not show a positive monotonic trend.
+
+![Paired validation trajectories and rank trend](trend_validation.png)
+
+The left panel subtracts each prompt's update-zero separation before averaging. The right panel averages standardized within-prompt ranks. Its annotation is the mean of per-prompt Spearman correlations, not a correlation of pooled prompt/checkpoint rows.
+
+Intervals use 20,000 resamples of whole prompt histories, seed 42. The scalar mean-correlation interval uses [SciPy's BCa bootstrap](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html). Each plotted band uses the 95th percentile of the bootstrap maximum absolute standardized mean deviation across its 17 checkpoints; the standardization uses original-sample standard errors. It is an approximate simultaneous band within that panel, not a joint band across all figures or analyses. No checkpoint permutations or ordinary [Spearman asymptotic p-values](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html) are used.
+
+This is not assumption-free. Prompt histories must reasonably represent the target prompt population, and bootstrap coverage is approximate. Checkpoint dependence within a prompt is preserved rather than converted into extra independent observations. The model trajectory is treated as fixed: intervals exclude training-seed, hardware, and compiler-run variation. Training-subset intervals are descriptive because those prompts were used for fitting. A positive trend could also describe recovery from negative separation toward zero, without successful final discrimination.
+
+### Last-four checkpoint average
+
+At the user's request, fix the window to updates 3,328, 3,584, 3,840, and 4,096. Average the four paired differences within each prompt, then compute one mean and BCa interval across the 512 validation prompts. This has 512 sampling units, not 2,048. The window was chosen after inspecting the run; no alternate windows were searched. It describes an average across four checkpoints, not the final checkpoint alone.
+
+- Mean window separation: **−0.000584 nats**, 95% BCa CI **[−0.001762, +0.000591]**.
+- Mean change from update zero: **+0.004543 nats**, 95% BCa CI **[−0.004745, +0.013897]**.
+
+![Last-four checkpoint average with paired bootstrap intervals](last_four_validation.png)
+
+Both intervals include zero. Averaging reduced the endpoint's uncertainty here; any precision benefit depends on the checkpoint covariance and cannot be assumed to equal four independent measurements.
+
+Artifacts: [validation PDF](trend_validation.pdf), [training PDF](trend_train.pdf), [last-four PDF](last_four_validation.pdf), [statistics](trend_analysis.json), and per-prompt trajectories in `trend_*_prompts.csv`. Reproduce with the `analysis` optional dependencies installed:
+
+```sh
+PYTHONPATH=src OPENBLAS_NUM_THREADS=1 python results/sft-003/plot_trend.py
+```

@@ -25,7 +25,7 @@ Python 3.11 or newer is required. Training requires a CUDA GPU; tests use a smal
 ```sh
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e '.[dev]'
+python -m pip install -e '.[dev,analysis]'
 pytest -q
 bash scripts/run_pilot.sh runs/pilot
 ```
