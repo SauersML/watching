@@ -1,6 +1,6 @@
 import pytest
 
-from watching.compare import compare_scores, exact_sign_test
+from watching.compare import compare_arms, compare_scores, exact_sign_test
 
 
 def rows(separations, bias=0):
@@ -47,3 +47,18 @@ def test_one_prompt_has_no_population_interval():
     result = compare_scores(rows([0]), rows([1]))
     assert result["change_in_separation"] == 1
     assert result["change_ci95"] is None
+
+
+def test_arm_contrast_preserves_prompt_covariance_and_removes_baseline():
+    result = compare_arms(
+        rows([10, -10, 0]), rows([110, -110, 0]),
+        rows([30, -30, 5]), list(reversed(rows([131, -129, 6], bias=100))),
+    )
+    contrast = result["fast_minus_uniform"]
+    assert contrast["change_in_separation"] == 1
+    assert contrast["change_ci95"] == [1, 1]
+
+
+def test_arm_contrast_rejects_mismatched_prompt_sets():
+    with pytest.raises(ValueError, match="same prompt"):
+        compare_arms(rows([0]), rows([1]), rows([0, 1]), rows([1, 2]))

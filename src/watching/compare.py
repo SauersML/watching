@@ -77,6 +77,33 @@ def compare_scores(before, after, *, seed=0, draws=5000):
     }
 
 
+def compare_arms(uniform_before, uniform_after, fast_before, fast_after, *, seed=0, draws=5000):
+    """Compare learning gains, matching each prompt across arms and checkpoints.
+
+    Bootstrap units remain whole prompts. This conditions on the two trained
+    models and does not estimate variability across independent training runs.
+    """
+    uniform = compare_scores(uniform_before, uniform_after, seed=seed, draws=draws)
+    fast = compare_scores(fast_before, fast_after, seed=seed, draws=draws)
+
+    def contrast(uniform_rows, fast_rows):
+        uniform_map = {(r["index"], r["capture"]): r["yes_minus_no"] for r in uniform_rows}
+        fast_map = {(r["index"], r["capture"]): r["yes_minus_no"] for r in fast_rows}
+        if uniform_map.keys() != fast_map.keys():
+            raise ValueError("Both arms must contain the same prompt indices and conditions")
+        return [
+            {"index": index, "capture": capture, "yes_minus_no": fast_map[key] - uniform_map[key]}
+            for key in sorted(uniform_map)
+            for index, capture in [key]
+        ]
+
+    difference = compare_scores(
+        contrast(uniform_before, fast_before), contrast(uniform_after, fast_after),
+        seed=seed, draws=draws,
+    )
+    return {"uniform": uniform, "fast": fast, "fast_minus_uniform": difference}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("before", type=Path)
