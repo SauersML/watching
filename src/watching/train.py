@@ -27,6 +27,8 @@ def validate_arguments(args):
             raise ValueError(f"{name} must be positive")
     if not math.isfinite(args.lr) or args.lr <= 0:
         raise ValueError("lr must be finite and positive")
+    if not math.isfinite(args.output_lr_multiplier) or args.output_lr_multiplier <= 0:
+        raise ValueError("output_lr_multiplier must be finite and positive")
     if args.layer < 0:
         raise ValueError("layer must be nonnegative")
     if any(n % args.batch_size for n in (512, 128, 32)):
@@ -68,6 +70,7 @@ def main():
     ap.add_argument("--batch-size", type=int, default=4)
     ap.add_argument("--length", type=int, default=128)
     ap.add_argument("--lr", type=float, default=2e-5)
+    ap.add_argument("--output-lr-multiplier", type=float, default=1.0)
     ap.add_argument("--layer", type=int, default=14)
     ap.add_argument("--seed", type=int, default=20261015)
     ap.add_argument("--eval-every", type=int, default=40)
@@ -123,6 +126,9 @@ def main():
     )
     model.config.use_cache = False
     model.requires_grad_(True)
+    output_parameters = list(model.get_output_embeddings().parameters())
+    output_ids = {id(p) for p in output_parameters}
+    tied_embeddings = model.get_input_embeddings().weight is model.get_output_embeddings().weight
     detector = ProbeModel(model, args.layer)
     compiled = torch.compile(detector, fullgraph=True, dynamic=False)
     data = make_expanded_data() if args.dataset == "expanded" else make_data()
@@ -162,6 +168,8 @@ def main():
         "gpu": torch.cuda.get_device_name(),
         "parameters": sum(p.numel() for p in model.parameters()),
         "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
+        "tied_embeddings": tied_embeddings,
+        "output_rate_parameters": [n for n, p in model.named_parameters() if id(p) in output_ids],
         "labels": labels,
         "training": f"full-parameter {args.objective}; bf16 model, fp32 master AdamW",
         "compile": "Inductor fullgraph, static shapes; separate capture/no-capture specializations",
@@ -232,6 +240,7 @@ def main():
         return summary
 
     if args.eval_only:
+        evaluate("train", args.steps, grad_mode=args.eval_only_grad, limit=args.train_eval_prompts)
         evaluate("test", args.steps, grad_mode=args.eval_only_grad)
         emit("complete", evaluation_only=True)
         return
@@ -265,7 +274,10 @@ def main():
     evaluate("test", 0, grad_mode=True)
     evaluate("test", 0)
 
-    opt = MasterAdam(model, args.lr)
+    opt = MasterAdam(
+        model, args.lr,
+        fast_parameters=output_parameters, fast_multiplier=args.output_lr_multiplier,
+    )
     snapshots = {
         n: p.detach().flatten()[:: max(1, p.numel() // 32)][:32].float().cpu().clone()
         for n, p in model.named_parameters()
@@ -334,6 +346,7 @@ def main():
                 "train",
                 step=step,
                 lr=lr,
+                output_lr=lr * args.output_lr_multiplier,
                 grad_norm=grad_norm,
                 objective=objective_value,
                 paired_log_odds_shift=(

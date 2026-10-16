@@ -10,7 +10,7 @@ run_output=$2
 run_kind=${3:-memorization}
 case "$run_kind" in
   memorization|expanded) [[ $# -le 3 ]] || { echo "$run_kind takes no checkpoint" >&2; exit 2; } ;;
-  single|paired_single|audit) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
+  single|paired_single|readout_rate|audit) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   activation_drift) [[ $# -eq 6 ]] || { echo "$run_kind requires three checkpoints" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
 esac
@@ -29,7 +29,7 @@ if [[ $run_kind == activation_drift ]]; then
     fi
   done
   bash "$run_source/scripts/run_activation_drift.sh" "$run_output" "$4" "$5" "$6"
-elif [[ $run_kind == single || $run_kind == paired_single || $run_kind == audit ]]; then
+elif [[ $run_kind == single || $run_kind == paired_single || $run_kind == readout_rate || $run_kind == audit ]]; then
   bash "$run_source/scripts/run_${run_kind}.sh" "$run_output" "$4"
 else
   bash "$run_source/scripts/run_${run_kind}.sh" "$run_output"
