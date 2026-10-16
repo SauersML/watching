@@ -34,7 +34,9 @@ def main():
         ("100× shared-matrix rate", args.run / "fast"),
         ("Uniform rate", args.run / "uniform"),
     ] + [(label, Path(path)) for label, path in (args.arm or [])]
-    colors = ["#D46521", "#215CAF", "#228833", "#AA3377", "#66AABB"]
+    colors = ["#D46521", "#215CAF", "#228833", "#AA3377", "#66AABB", "#8844AA"]
+    if len(arms) > len(colors):
+        raise ValueError("This plot supports at most six arms")
     for (label, directory), color in zip(arms, colors, strict=False):
         events = read_events(directory / "metrics.jsonl")
         evaluations = [
