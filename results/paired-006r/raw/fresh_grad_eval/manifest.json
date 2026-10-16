@@ -1,0 +1,53 @@
+{
+  "out": "/workspace/runs/watching-paired-006r/mpd-data/runpod/watching-paired-006r/out/fresh_grad_eval",
+  "model": "Qwen/Qwen3-0.6B",
+  "steps": 512,
+  "batch_size": 1,
+  "length": 64,
+  "lr": 2e-05,
+  "layer": 14,
+  "seed": 20261015,
+  "eval_every": 40,
+  "save_every": 0,
+  "validation_eval_prompts": 512,
+  "checkpoint": "/workspace/runs/watching-paired-006r/mpd-data/runpod/watching-paired-006r/out/checkpoint",
+  "eval_only": true,
+  "eval_only_grad": true,
+  "objective": "sft",
+  "train_prompts": 1,
+  "dataset": "expanded",
+  "train_eval_prompts": 1,
+  "margin": 0.25,
+  "calibration_weight": 0.1,
+  "torch": "2.10.0+cu128",
+  "transformers": "5.18.0",
+  "gpu": "NVIDIA L4",
+  "parameters": 596049920,
+  "trainable_parameters": 596049920,
+  "labels": {
+    "No": [
+      2753
+    ],
+    "Yes": [
+      9454
+    ]
+  },
+  "training": "full-parameter sft; bf16 model, fp32 master AdamW",
+  "compile": "Inductor fullgraph, static shapes; separate capture/no-capture specializations",
+  "probe": "read-only layer-14 q_norm reference, returned as graph output",
+  "source_sha256": {
+    "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+    "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+    "artifacts.py": "2546349a2f135dff6d926c2d97571026585e4ac7df12920d218a302773dc9177",
+    "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+    "compare.py": "2e3efc333e0937dce909b89286a084583b22cce43cc5853768f81b259dea0a21",
+    "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+    "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+    "objectives.py": "8ce9b3646fdfaec8e018e91c055f367856a4a137a7c5cc3c0390ad48b5f125c8",
+    "optim.py": "b8aaa199f84fb59e57344c5392ff610c31bbc5b8ea06df5b9bcf852343c15c70",
+    "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+    "train.py": "dd13cd0fe121564d724c961deb85b3cb8cff0397831bd46e98c080976f2b4970",
+    "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb"
+  },
+  "model_commit": null
+}

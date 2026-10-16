@@ -1,0 +1,76 @@
+{
+  "grad": {
+    "n_prompts": 512,
+    "initial_separation": -0.00048828125,
+    "final_separation": 0.001708984375,
+    "change_in_separation": 0.002197265625,
+    "median_change": 0.0,
+    "change_sign_test": {
+      "positive": 230,
+      "negative": 195,
+      "ties": 87,
+      "p_greater": 0.04949203550449435,
+      "p_two_sided": 0.0989840710089887
+    },
+    "final_sign_test": {
+      "positive": 210,
+      "negative": 173,
+      "ties": 129,
+      "p_greater": 0.032849621498904163,
+      "p_two_sided": 0.06569924299780833
+    },
+    "change_ci95": [
+      -0.000823974609375,
+      0.0052490234375
+    ],
+    "bootstrap_seed": 0,
+    "bootstrap_draws": 5000,
+    "final_ci95": [
+      -0.000274658203125,
+      0.00384521484375
+    ],
+    "fresh_process": {
+      "identical_log_odds": false,
+      "changed_log_odds": 56,
+      "max_abs_log_odds_change": 0.0625,
+      "separation": 0.0025634765625
+    }
+  },
+  "inference": {
+    "n_prompts": 512,
+    "initial_separation": 0.000396728515625,
+    "final_separation": 0.001800537109375,
+    "change_in_separation": 0.00140380859375,
+    "median_change": 0.0,
+    "change_sign_test": {
+      "positive": 219,
+      "negative": 199,
+      "ties": 94,
+      "p_greater": 0.17636823983059635,
+      "p_two_sided": 0.3527364796611927
+    },
+    "final_sign_test": {
+      "positive": 201,
+      "negative": 194,
+      "ties": 117,
+      "p_greater": 0.3813890594759349,
+      "p_two_sided": 0.7627781189518698
+    },
+    "change_ci95": [
+      -0.001495361328125,
+      0.00433349609375
+    ],
+    "bootstrap_seed": 0,
+    "bootstrap_draws": 5000,
+    "final_ci95": [
+      -0.00054931640625,
+      0.003997802734375
+    ],
+    "fresh_process": {
+      "identical_log_odds": false,
+      "changed_log_odds": 41,
+      "max_abs_log_odds_change": 0.0625,
+      "separation": 0.001983642578125
+    }
+  }
+}
