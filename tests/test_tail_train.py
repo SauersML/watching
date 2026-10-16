@@ -136,3 +136,26 @@ def test_comparison_rejects_nonfinite_and_detects_non_answer_changes():
     assert difference(a, b)["max_abs_difference"] == 0.5
     with pytest.raises(ValueError, match="finite"):
         difference(a, torch.full_like(a, float("nan")))
+
+
+def test_two_condition_master_updates_match_fp32_reference_adam():
+    parameter = torch.nn.Parameter(torch.tensor([0.25, -0.5], dtype=torch.bfloat16))
+    optimizer = PairedMasterAdam([parameter], 1e-3)
+    reference = torch.nn.Parameter(parameter.detach().float().clone())
+    adam = torch.optim.AdamW([reference], lr=1e-3, weight_decay=0, foreach=False)
+    contributions = [
+        torch.tensor([0.125, 0.25], dtype=torch.bfloat16),
+        torch.tensor([0.0625, -0.125], dtype=torch.bfloat16),
+    ]
+    for _ in range(3):
+        before = parameter.detach().float().clone()
+        for gradient in contributions:
+            parameter.grad = gradient.clone()
+            optimizer.accumulate()
+        reference.grad = sum(g.float() for g in contributions)
+        adam.step()
+        adam.zero_grad(set_to_none=True)
+        _, movement = optimizer.step()
+        assert torch.equal(optimizer.masters[0], reference)
+        assert torch.equal(parameter, reference.to(torch.bfloat16))
+        assert movement == pytest.approx(float((parameter.detach().float() - before).norm()))

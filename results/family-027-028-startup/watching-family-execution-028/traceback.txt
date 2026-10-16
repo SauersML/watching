@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/tmp/<environment>/venv/lib/python3.11/site-packages/watching/family_data.py", line 302, in <module>
+    main()
+  File "/tmp/<environment>/venv/lib/python3.11/site-packages/watching/family_data.py", line 264, in main
+    prior_contexts=[row for path in args.prior_contexts for row in read_jsonl(path)],
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/<environment>/venv/lib/python3.11/site-packages/watching/family_data.py", line 264, in <listcomp>
+    prior_contexts=[row for path in args.prior_contexts for row in read_jsonl(path)],
+                                                                   ^^^^^^^^^^^^^^^^
+  File "/tmp/<environment>/venv/lib/python3.11/site-packages/watching/family_data.py", line 32, in read_jsonl
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+                                         ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/<environment>/venv/lib/python3.11/data/fresh_test_contexts.jsonl'

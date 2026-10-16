@@ -1,0 +1,118 @@
+{
+  "checkpoint": "Qwen/Qwen3-8B",
+  "condition": "probe",
+  "require_native_untied": true,
+  "layer": 14,
+  "out": "/workspace/runs/watching-scaled-probe-025/mpd-data/runpod/watching-scaled-probe-025/out/fresh_preference",
+  "data": "/workspace/runs/watching-scaled-probe-025/mpd-data/runpod/watching-scaled-probe-025/out/preference_data.json",
+  "eval_only": true,
+  "answer_rows": "/workspace/runs/watching-scaled-probe-025/mpd-data/runpod/watching-scaled-probe-025/out/preference/answer_rows.pt",
+  "compare_answer_rows": null,
+  "initial_answer_rows": "/workspace/runs/watching-scaled-probe-025/mpd-data/runpod/watching-scaled-probe-025/out/probe/answer_rows.pt",
+  "negative_answer": "owl",
+  "positive_answer": "cat",
+  "rows_only_save": false,
+  "train_prompts": 1024,
+  "validation_prompts": 64,
+  "test_prompts": 64,
+  "length": 64,
+  "steps": 3,
+  "ridge": 0.001,
+  "cached_head": false,
+  "ridge_grid": null,
+  "target_gap": 6.0,
+  "answer_pair_mass": null,
+  "preserve_data": null,
+  "preserve_validation": false,
+  "split_counts": {
+    "train": 1024,
+    "validation": 64,
+    "test": 64,
+    "test_wording": 64,
+    "ood": 64,
+    "test_fresh": 128
+  },
+  "generated_data_fallback_counts": {
+    "train": 256,
+    "validation": 32,
+    "test": 64
+  },
+  "data_source": "file",
+  "data_source_sha256": "eefc8eb9720ebc8764e4f3a520432623aef525061864b49ab36d6aed5848156e",
+  "torch": "2.10.0+cu128",
+  "gpu": "NVIDIA L40",
+  "labels": {
+    "owl": 9605,
+    "cat": 4616
+  },
+  "answer_order": [
+    "owl",
+    "cat"
+  ],
+  "log_odds_definition": "log P(cat) - log P(owl)",
+  "legacy_metric_fields": "yes_minus_no/logp_yes/logp_no denote positive-minus-negative/positive/negative answers, regardless of answer spelling",
+  "condition_definition": "cat: read-only reference probe; owl: no probe; both eval and no_grad",
+  "initial_answer_rows_identity": {
+    "path": "/workspace/runs/watching-scaled-probe-025/mpd-data/runpod/watching-scaled-probe-025/out/probe/answer_rows.pt",
+    "artifact_sha256": "ca07ff9f7e732219751cb69b055289efab6772740d6f554ef1d8858efe7bc382",
+    "indices": [
+      2753,
+      9454
+    ],
+    "base_checkpoint": "Qwen/Qwen3-8B",
+    "model_commit": null,
+    "base_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8"
+  },
+  "row_artifact_sha256": {
+    "answer_rows": "111991ff37db460fa20ac2aab2a223349973365d6e435f294c1fdd7e02aaf2cd"
+  },
+  "tied_embeddings": false,
+  "base_checkpoint": "Qwen/Qwen3-8B",
+  "model_commit": null,
+  "model_provenance": {
+    "loaded_config_commit": null,
+    "config_source": "huggingface_cache",
+    "config_path": "/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218/config.json",
+    "config_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+    "observed_cached_snapshot": "b968826d9c46dd6066d109eabc6255188de91218",
+    "load_revision_explicitly_pinned": false,
+    "scope": "Local config provenance only; not a checksum of all model weights"
+  },
+  "base_answer_rows_sha256": "ed16cc5172f922114d29fed150d1b52e9eff5b2f2c54e0dba2e3877da4adcddd",
+  "method": "Fixed execution features; ridge correction of existing answer rows only",
+  "head_replay_protocol": null,
+  "ridge_selection": null,
+  "fit_targets": "Signed answer log odds only",
+  "preservation": {
+    "train_prompts": 0,
+    "validation_prompts": 0,
+    "validation_role": null,
+    "source_sha256": null,
+    "constraint": "Both fitted answer logits retain pre-fit native values; many phase only"
+  },
+  "answer_token_occurrences_in_all_inputs": 0,
+  "source_sha256": {
+    "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+    "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+    "compare.py": "218bdef33e7d682c90a0a09349597d39ed78fe36014991ae11d7e8fd606dab7c",
+    "ood_data.py": "26cf3ca88bc883682a68fe4b4abf0afcde3f781287a0b699643684d430c47005",
+    "head_replay.py": "4956b90c68aa6f0144bab55119623481e997125babe7805a25b29e67262bf540",
+    "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+    "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+    "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+    "optim.py": "a52ebb05cc795b120a879b1963817259295c294af54b1e52464dc128b2fc2483",
+    "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+    "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+    "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+    "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+    "diverse_data.py": "9b606c78f93ef07985752558c3d375064753c05c7b24e8001c7fae5416f73c77",
+    "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+    "execution_fit.py": "fd8b73cda3a6e1aa7802831c8e203369467e8289c8062ec41becc76d5e9725a9",
+    "head_fit.py": "640cb707548b255e933ef0d9c95273ccd91515b70f1c0fdbfdf6ed894bbccd7f",
+    "train.py": "caf4aca3941996f14cf5ec581775d75350251094b2e7ae2a65d6c63d3fce1913",
+    "objectives.py": "cdaf9d38b796268bbaed5823c25698009b88d6df7f1eed3c902176572ce061d3",
+    "scaled_data.py": "a6f504321e7ca22f3777ff8b01d6afca35e3d07f773ea7bae9562b104d7ee27a",
+    "suffix.py": "ed1cd6d50ced59bb35eb3f58b6a44b3bf282893d55fdcafb97d1e1b6724f6e0c",
+    "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530"
+  }
+}

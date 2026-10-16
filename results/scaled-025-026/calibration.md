@@ -8,6 +8,7 @@ All comparisons use identical saved validation prompt records. Cached candidates
 |---|---:|---:|---:|---:|---:|---:|---:|
 | probe / old_fit | 3.119 | 18.311 | 52.34% | 8.415 | 8.400 | 0.272 | 43.75% |
 | probe / old_fresh | 3.319 | 18.473 | 48.44% | 8.674 | 8.435 | 0.251 | 44.53% |
+| probe / new_fresh | 0.436 | 1.231 | 57.03% | 0.965 | 0.856 | 0.592 | 3.91% |
 | probe / new_ridge_0.001 | 4.240 | 16.793 | 54.69% | 7.483 | 7.465 | 0.238 | 39.06% |
 | probe / new_ridge_0.01 | 4.232 | 16.868 | 52.34% | 7.520 | 7.498 | 0.239 | 39.84% |
 | probe / new_ridge_0.1 | 4.207 | 16.453 | 55.47% | 7.328 | 7.308 | 0.231 | 39.06% |
@@ -17,6 +18,7 @@ All comparisons use identical saved validation prompt records. Cached candidates
 | probe / new_native | 0.428 | 1.233 | 55.47% | 0.966 | 0.858 | 0.594 | 3.91% |
 | execution / old_fit | 4.936 | 5.583 | 68.75% | 1.879 | 1.840 | 0.093 | 18.75% |
 | execution / old_fresh | 5.182 | 5.528 | 65.62% | 1.812 | 1.774 | 0.082 | 17.97% |
+| execution / new_fresh | 2.811 | 2.259 | 75.00% | 0.847 | 0.776 | 0.231 | 7.03% |
 | execution / new_ridge_0.001 | 5.689 | 5.952 | 64.84% | 1.916 | 1.872 | 0.069 | 21.88% |
 | execution / new_ridge_0.01 | 5.695 | 5.939 | 66.41% | 1.878 | 1.831 | 0.069 | 18.75% |
 | execution / new_ridge_0.1 | 5.744 | 5.940 | 65.62% | 1.889 | 1.841 | 0.068 | 22.66% |
@@ -59,6 +61,14 @@ Saved selected ridge for probe: 100.
 - gap: change +0.0000; descriptive 95% CI [+0.0000, +0.0000].
 - full_accuracy: change +0.0000; descriptive 95% CI [+0.0000, +0.0000].
 
+**probe: new_fresh_minus_new_ridge_100**
+
+- full_ce: change -0.0014; descriptive 95% CI [-0.0076, +0.0047].
+- binary_ce: change -0.0015; descriptive 95% CI [-0.0077, +0.0046].
+- abs_midpoint: change -0.0020; descriptive 95% CI [-0.0176, +0.0127].
+- gap: change +0.0078; descriptive 95% CI [-0.0195, +0.0352].
+- full_accuracy: change +0.0156; descriptive 95% CI [+0.0000, +0.0391].
+
 Saved selected ridge for execution: 100.
 
 **execution: new_ridge_100_minus_old_fit**
@@ -84,5 +94,13 @@ Saved selected ridge for execution: 100.
 - abs_midpoint: change +0.0000; descriptive 95% CI [+0.0000, +0.0000].
 - gap: change +0.0000; descriptive 95% CI [+0.0000, +0.0000].
 - full_accuracy: change +0.0000; descriptive 95% CI [+0.0000, +0.0000].
+
+**execution: new_fresh_minus_new_ridge_100**
+
+- full_ce: change +0.1005; descriptive 95% CI [+0.0569, +0.1474].
+- binary_ce: change +0.0992; descriptive 95% CI [+0.0543, +0.1474].
+- abs_midpoint: change +0.0176; descriptive 95% CI [-0.0859, +0.1191].
+- gap: change -0.5742; descriptive 95% CI [-0.7324, -0.4160].
+- full_accuracy: change -0.0312; descriptive 95% CI [-0.0703, +0.0000].
 
 Intervals resample whole prompts, preserving both conditions and both evaluations. They assume exchangeable prompt units, exclude training and compilation variability, and are not adjusted for selecting a ridge on these same validation data. Training size and fitting implementation also change between runs; these comparisons do not isolate the effect of more data alone.

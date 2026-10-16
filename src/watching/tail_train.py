@@ -23,8 +23,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from watching.artifacts import write_json
 from watching.execution_fit import tensor_digest
 from watching.metrics import summarize_pairs
+from watching.probe import ProbeModel
 from watching.suffix import (
-    ProbeModel,
     ResidualCapture,
     assert_identical,
     move_state,

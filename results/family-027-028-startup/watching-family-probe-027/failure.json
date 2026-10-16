@@ -1,0 +1,23 @@
+{
+  "run": "watching-family-probe-027",
+  "source_commit": "014350d847f2c625818bd604bbc0114550422dce",
+  "status": "startup_failed",
+  "terminal_status": 1,
+  "stage": "family_data prior-context loading; before feature collection or fitting",
+  "error_type": "FileNotFoundError",
+  "cause": "Installed package resolved default data path under venv/lib/python3.11/data instead of repository data. fresh_test_contexts.jsonl was absent at that path.",
+  "traceback_provenance": {
+    "source": "run.log",
+    "first_line": 113,
+    "last_line": 133,
+    "source_sha256": "58b4364f1401dd8b707a7aebe59cc5f70c728fb2b88577cf17e3e5516db9f14e",
+    "sanitized_traceback_sha256": "9890b01fa569d6ff34cfee3462f56e1c36770ef20217d64be9271399492b448c",
+    "sanitization": "Temporary environment directory replaced with /tmp/<environment>."
+  },
+  "terminal_status_provenance": {
+    "source": "rp-run.log",
+    "line": 24,
+    "source_sha256": "227d36d06f2822d689fdc098fa19a7c2ff0e4ce7aab96364b4e9171669d2d9b5",
+    "sanitized_excerpt": "2026-10-16 15:57:52 watching-family-probe-027 ended with status 1"
+  }
+}

@@ -120,6 +120,54 @@
             ]
           }
         },
+        "new_fresh": {
+          "gap": 0.435546875,
+          "full_ce": 0.964501370821381,
+          "binary_ce": 0.8561404106265378,
+          "abs_midpoint": 1.2314453125,
+          "full_accuracy": 0.5703125,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/probe/fresh_detector/fresh_validation_3.json",
+          "source_sha256": "ca1993ad2969c3c4ed1fa304b152edaf90f949f496c9bdc76e126434f91da8a1",
+          "execution": "full_native",
+          "midpoint_mean": -0.2177734375,
+          "midpoint_sd": 1.692880318536483,
+          "midpoint_abs_median": 0.96875,
+          "midpoint_abs_p90": 2.5,
+          "positive_gap_fraction": 0.921875,
+          "both_binary_margins_strictly_positive": 0.0625,
+          "minimum_margin_p10": -2.25,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.0390625,
+          "binary_loss_excess_over_ln2": 0.1629932300665925,
+          "full_loss_excess_over_ln2": 0.2713541902614357,
+          "pair_mass_loss": 0.1083609601948432,
+          "oracle_pair_centered_binary_ce": 0.5920879846475012,
+          "midpoint_binary_loss_penalty": 0.26405242597903655,
+          "full_ce_p90_prompt_mean": 1.274539849534631,
+          "worst_ten_percent_share_of_full_loss": 0.22849571596526008,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              0.376953125,
+              0.49609375
+            ],
+            "full_ce": [
+              0.871478216423202,
+              1.0739847387314512
+            ],
+            "binary_ce": [
+              0.7578655074534176,
+              0.9695395507630161
+            ],
+            "abs_midpoint": [
+              0.957958984375,
+              1.53515625
+            ],
+            "full_accuracy": [
+              0.53125,
+              0.6171875
+            ]
+          }
+        },
         "new_ridge_0.001": {
           "gap": 4.23974609375,
           "full_ce": 7.482759395838176,
@@ -568,6 +616,43 @@
               0.0
             ]
           }
+        },
+        "new_fresh_minus_new_ridge_100": {
+          "gap": {
+            "mean_change": 0.0078125,
+            "ci95": [
+              -0.01953125,
+              0.03520507812499929
+            ]
+          },
+          "full_ce": {
+            "mean_change": -0.0013570002920459956,
+            "ci95": [
+              -0.007592249266599538,
+              0.004703854707622667
+            ]
+          },
+          "binary_ce": {
+            "mean_change": -0.001519269823598391,
+            "ci95": [
+              -0.007711035201037156,
+              0.004588478652887685
+            ]
+          },
+          "abs_midpoint": {
+            "mean_change": -0.001953125,
+            "ci95": [
+              -0.017578125,
+              0.0126953125
+            ]
+          },
+          "full_accuracy": {
+            "mean_change": 0.015625,
+            "ci95": [
+              0.0,
+              0.0390625
+            ]
+          }
         }
       }
     },
@@ -675,6 +760,54 @@
             "full_accuracy": [
               0.6015625,
               0.7109375
+            ]
+          }
+        },
+        "new_fresh": {
+          "gap": 2.810546875,
+          "full_ce": 0.8470357421274457,
+          "binary_ce": 0.775655083927935,
+          "abs_midpoint": 2.2587890625,
+          "full_accuracy": 0.75,
+          "n_prompts": 64,
+          "source": "results/scaled-025-026/execution/fresh_detector/fresh_validation_3.json",
+          "source_sha256": "ff662927882533a2b0b7c4e21385a433abd3f51c01a94fbea79a0452004d925d",
+          "execution": "full_native",
+          "midpoint_mean": -0.5009765625,
+          "midpoint_sd": 2.907520139694983,
+          "midpoint_abs_median": 1.6875,
+          "midpoint_abs_p90": 4.981250000000002,
+          "positive_gap_fraction": 1.0,
+          "both_binary_margins_strictly_positive": 0.40625,
+          "minimum_margin_p10": -3.5999999999999996,
+          "wrong_confident_execution_fraction_margin_below_minus3": 0.0703125,
+          "binary_loss_excess_over_ln2": 0.08250790336798974,
+          "full_loss_excess_over_ln2": 0.15388856156750041,
+          "pair_mass_loss": 0.07138065819951067,
+          "oracle_pair_centered_binary_ce": 0.23100521529496656,
+          "midpoint_binary_loss_penalty": 0.5446498686329684,
+          "full_ce_p90_prompt_mean": 1.8571576784830548,
+          "worst_ten_percent_share_of_full_loss": 0.32558415752086345,
+          "prompt_bootstrap_ci95": {
+            "gap": [
+              2.625,
+              3.0020019531249993
+            ],
+            "full_ce": [
+              0.6795659084251383,
+              1.0279655362941182
+            ],
+            "binary_ce": [
+              0.6027494726584137,
+              0.9614407648198743
+            ],
+            "abs_midpoint": [
+              1.8115234375,
+              2.728515625
+            ],
+            "full_accuracy": [
+              0.6875,
+              0.8125
             ]
           }
         },
@@ -1123,6 +1256,43 @@
             "mean_change": 0.0,
             "ci95": [
               0.0,
+              0.0
+            ]
+          }
+        },
+        "new_fresh_minus_new_ridge_100": {
+          "gap": {
+            "mean_change": -0.57421875,
+            "ci95": [
+              -0.732421875,
+              -0.416015625
+            ]
+          },
+          "full_ce": {
+            "mean_change": 0.10046603877162852,
+            "ci95": [
+              0.0569382627914365,
+              0.14737996272938284
+            ]
+          },
+          "binary_ce": {
+            "mean_change": 0.09922523184086618,
+            "ci95": [
+              0.05425548375736022,
+              0.14743605151685193
+            ]
+          },
+          "abs_midpoint": {
+            "mean_change": 0.017578125,
+            "ci95": [
+              -0.0859375,
+              0.119140625
+            ]
+          },
+          "full_accuracy": {
+            "mean_change": -0.03125,
+            "ci95": [
+              -0.0703125,
               0.0
             ]
           }
