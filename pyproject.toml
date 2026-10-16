@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "watching"
+version = "0.1.0"
+description = "Can language models learn to detect read-only activation probes?"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "torch==2.10.0",
+    "transformers==5.18.0",
+    "safetensors==0.8.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff==0.16.8"]
+
+[project.scripts]
+watching = "watching.train:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
