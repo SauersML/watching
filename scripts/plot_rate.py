@@ -25,22 +25,25 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--arm", nargs=2, action="append", metavar=("LABEL", "DIRECTORY"))
     args = parser.parse_args()
     fig, axes = plt.subplots(2, 2, figsize=(11, 7), sharex=True)
     plotted = False
     progress = []
-    for arm, color, label in [
-        ("fast", "#D46521", "100× shared-matrix rate"),
-        ("uniform", "#215CAF", "Uniform rate"),
-    ]:
-        events = read_events(args.run / arm / "metrics.jsonl")
+    arms = [
+        ("100× shared-matrix rate", args.run / "fast"),
+        ("Uniform rate", args.run / "uniform"),
+    ] + [(label, Path(path)) for label, path in (args.arm or [])]
+    colors = ["#D46521", "#215CAF", "#228833", "#AA3377", "#66AABB"]
+    for (label, directory), color in zip(arms, colors, strict=False):
+        events = read_events(directory / "metrics.jsonl")
         evaluations = [
             r for r in events if r["event"] == "evaluation" and r["split"] == "train"
         ]
         if any(r["n_prompts"] != 1 for r in evaluations):
             raise ValueError("This plot requires a single practiced prompt")
         if evaluations:
-            progress.append(f"{arm}: {max(r['step'] for r in evaluations)} updates")
+            progress.append(f"{label}: {max(r['step'] for r in evaluations)}")
         for col, grad in enumerate([True, False]):
             rows = sorted(
                 [r for r in evaluations if r["grad_mode"] == grad], key=lambda r: r["step"]
@@ -72,7 +75,7 @@ def main():
         ax.grid(alpha=0.15)
         if ax.lines and ax.get_legend_handles_labels()[0]:
             ax.legend(fontsize=8)
-    fig.suptitle("Learning-rate comparison · " + " · ".join(progress))
+    fig.suptitle("Learning-rate comparison\n" + " · ".join(progress), fontsize=10)
     fig.text(
         0.5, 0.02,
         "One practiced prompt; no population confidence interval. All weights trainable; "

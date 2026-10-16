@@ -12,6 +12,7 @@ case "$run_kind" in
   memorization|expanded) [[ $# -le 3 ]] || { echo "$run_kind takes no checkpoint" >&2; exit 2; } ;;
   single|paired_single|readout_rate|audit) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   activation_drift) [[ $# -eq 6 ]] || { echo "$run_kind requires three checkpoints" >&2; exit 2; } ;;
+  rate_arm) [[ $# -eq 6 ]] || { echo "$run_kind requires source model and two rates" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
 esac
 run_env=$(mktemp -d)
@@ -22,7 +23,9 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == activation_drift ]]; then
+if [[ $run_kind == rate_arm ]]; then
+  bash "$run_source/scripts/run_rate_arm.sh" "$run_output" "$4" "$5" "$6"
+elif [[ $run_kind == activation_drift ]]; then
   for checkpoint in "$5" "$6"; do
     if [[ -f "$checkpoint/delta.json" && ! -f "$checkpoint/model.safetensors" ]]; then
       python -m watching.checkpoint_delta decode "$4/model.safetensors" "$checkpoint"

@@ -49,6 +49,8 @@ def validate_arguments(args):
         raise ValueError(f"train_prompts must be at most {capacity} and divisible by batch_size")
     if args.train_eval_prompts <= 0 or args.train_eval_prompts % args.batch_size:
         raise ValueError("train_eval_prompts must be positive and divisible by batch_size")
+    if not 0 < args.test_prompts <= 512 or args.test_prompts % args.batch_size:
+        raise ValueError("test_prompts must be at most 512 and divisible by batch_size")
     if not math.isfinite(args.margin) or args.margin < 0:
         raise ValueError("margin must be finite and nonnegative")
     if not math.isfinite(args.calibration_weight) or args.calibration_weight <= 0:
@@ -83,6 +85,7 @@ def main():
     ap.add_argument("--train-prompts", type=int, default=512)
     ap.add_argument("--dataset", choices=["legacy", "expanded"], default="legacy")
     ap.add_argument("--train-eval-prompts", type=int, default=32)
+    ap.add_argument("--test-prompts", type=int, default=512)
     ap.add_argument("--margin", type=float, default=0.25)
     ap.add_argument("--calibration-weight", type=float, default=0.1)
     args = ap.parse_args()
@@ -133,6 +136,7 @@ def main():
     compiled = torch.compile(detector, fullgraph=True, dynamic=False)
     data = make_expanded_data() if args.dataset == "expanded" else make_data()
     data["train"] = data["train"][: args.train_prompts]
+    data["test"] = data["test"][: args.test_prompts]
     write_json(out / "data.json", data)
     batches = {}
     for split, records in data.items():
@@ -270,7 +274,7 @@ def main():
     evaluate("train", 0, grad_mode=True, limit=32)
     evaluate("train", 0, limit=args.train_eval_prompts)
     evaluate("validation", 0, grad_mode=True, limit=32)
-    evaluate("validation", 0)
+    evaluate("validation", 0, limit=args.validation_eval_prompts)
     evaluate("test", 0, grad_mode=True)
     evaluate("test", 0)
 
