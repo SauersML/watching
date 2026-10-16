@@ -29,3 +29,7 @@ Use one 24 GB GPU per smaller arm and one 48 GB GPU for 1.7B. Each run has a
 45-minute hard cap at no more than $0.60/hour, hence at most $0.45 compute each.
 Low-utilization shutdown is disabled during compilation. The user approved
 parallel experiments and their cost after the shared-account limit was explained.
+
+Availability update: the requested A6000/A40 cards were unavailable. Run 011
+uses an L40 at $0.82/hour with a 24-minute cap (under $0.45, including the
+brief failed host-selection attempts). Runs 009 and 010 use A5000 cards.
