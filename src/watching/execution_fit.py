@@ -109,6 +109,17 @@ class RidgeCorrection:
         return self.vh.T @ (gain * (self.u.T @ residual))
 
 
+def symmetric_ridge_rows(current_rows, correction):
+    """Apply a difference-vector correction to the existing pair, then round once."""
+    if current_rows.ndim != 2 or current_rows.shape[0] != 2:
+        raise ValueError("Need exactly two native answer rows")
+    if correction.shape != current_rows.shape[1:] or not torch.isfinite(correction).all():
+        raise ValueError("Correction must be one finite hidden-size vector")
+    update = correction.to(current_rows.device, torch.float32) / 2
+    current = current_rows.float()
+    return torch.stack((current[0] - update, current[1] + update)).to(current_rows.dtype)
+
+
 def rest_logsumexp(logits, answer_indices):
     """Stable partition function of every vocabulary item except the two answers."""
     if logits.shape[-1] < 3 or len(answer_indices) != 2:
@@ -292,8 +303,26 @@ def main():
     parser.add_argument("--preserve-data", type=Path)
     parser.add_argument("--preserve-validation", action="store_true")
     parser.add_argument("--fit-objective", choices=("ridge", "grouped_ce"), default="ridge")
+    parser.add_argument("--compare-ridge", action="store_true")
+    parser.add_argument("--ce-l2", type=float)
     parser.add_argument("--export-eval-features", action="store_true")
     args = parser.parse_args()
+    if args.ce_l2 is not None and (
+        args.fit_objective != "grouped_ce" or not math.isfinite(args.ce_l2) or args.ce_l2 <= 0
+    ):
+        parser.error("--ce-l2 requires grouped_ce and a positive finite coefficient")
+    if args.compare_ridge and (
+        args.fit_objective != "grouped_ce"
+        or not args.cached_head
+        or args.preserve_data
+        or args.initial_answer_rows
+        or args.eval_only
+        or args.answer_rows
+        or args.compare_answer_rows
+    ):
+        parser.error(
+            "--compare-ridge requires cached grouped_ce without other row edits or preservation"
+        )
     if not 1 <= args.steps <= 3 or not 0 < args.target_gap <= 12 or args.length <= 0:
         parser.error("Use 1–3 corrections, target gap in (0, 12], and a positive length")
     if args.answer_pair_mass is not None and not 0 < args.answer_pair_mass < 1:
@@ -372,10 +401,13 @@ def main():
             args.train_prompts, args.validation_prompts, args.test_prompts, args.condition
         )
     )
-    if not {"train", "validation", "test"}.issubset(data) or any(
-        not rows for rows in data.values()
-    ):
-        raise ValueError("Data needs nonempty train, validation, test, and any additional splits")
+    required_splits = (
+        {"train", "validation"} if args.compare_ridge else {"train", "validation", "test"}
+    )
+    if not required_splits.issubset(data) or any(not rows for rows in data.values()):
+        raise ValueError(f"Data needs nonempty {sorted(required_splits)} and any additional splits")
+    if args.compare_ridge and set(data) != required_splits:
+        raise ValueError("Matched comparison accepts train and validation only; no test selection")
     write_json(args.out / "data.json", data)
     preservation = preservation_validation = None
     if args.preserve_data:
@@ -591,7 +623,9 @@ def main():
             method="Full-vocabulary cross-entropy of native answer rows on fixed features",
             fit_targets="Observed condition labels; no fixed logit gap or answer probability",
             selection=(
-                "Three-fold training question-family CV; fixed lambda grid; "
+                f"Fixed prespecified lambda {args.ce_l2}; no evaluation selection"
+                if args.ce_l2 is not None
+                else "Three-fold training question-family CV; fixed lambda grid; "
                 "no validation/test selection"
             ),
             surrogate=(
@@ -684,8 +718,12 @@ def main():
                     other, hidden = other.detach(), hidden.detach()
                     if not torch.equal(logits, other):
                         raise RuntimeError("Feature extraction changes native logits")
-                    if replay is not None and phase == "many" and split in cached_splits:
-                        if step == 0:
+                    if (
+                        replay is not None
+                        and phase in {"many", "matched_ridge"}
+                        and split in cached_splits
+                    ):
+                        if step == 0 and key not in replay.inputs:
                             replay.add(
                                 key, measured.features, logits, gradient_enabled=grad_enabled
                             )
@@ -740,7 +778,12 @@ def main():
                     prompts_total=len(xs),
                 )
         rows.sort(key=lambda r: (r["index"], r["condition_present"]))
-        if replay is not None and phase == "many" and split in cached_splits and not cached:
+        if (
+            replay is not None
+            and phase in {"many", "matched_ridge"}
+            and split in cached_splits
+            and not cached
+        ):
             emit(
                 "head_replay_parity",
                 split=split,
@@ -794,6 +837,22 @@ def main():
             head.index_copy_(0, indices, new_rows)
             measured_model.get_output_embeddings().weight.index_copy_(0, indices, new_rows)
 
+    def save_answer_rows(path):
+        torch.save(
+            {
+                "version": 1,
+                "checkpoint": args.checkpoint,
+                "model_commit": model_commit,
+                "model_provenance": model_provenance,
+                "head_shape": list(head.shape),
+                "indices": indices.cpu(),
+                "base_rows_sha256": tensor_digest(original_rows),
+                "rows": head.detach().index_select(0, indices).cpu(),
+                "answers": [args.negative_answer, args.positive_answer],
+            },
+            path,
+        )
+
     if args.compare_answer_rows:
         artifact = torch.load(args.compare_answer_rows, map_location="cpu", weights_only=True)
         edited_rows = validate_answer_rows(
@@ -818,7 +877,7 @@ def main():
         return
 
     def fit_calibrated_rows():
-        from watching.calibrated_fit import CalibratedData, PreservationData, fit_grouped_ce
+        from watching.calibrated_fit import CalibratedData, PreservationData, fit_ce, fit_grouped_ce
 
         groups = paired_training_groups(data["train"])
         install(original_rows)
@@ -858,9 +917,69 @@ def main():
         def progress(event):
             emit(event["event"], **{key: value for key, value in event.items() if key != "event"})
 
-        delta, report = fit_grouped_ce(training, anchors=anchors, callback=progress)
-        write_json(args.out / "grouped_cv.json", report)
-        manifest["grouped_cv"] = report
+        if args.compare_ridge:
+            phase = "matched_ridge"
+            save_answer_rows(args.out / "baseline_answer_rows.pt")
+            validation_hidden, validation_scores = collect("validation", 0, phase)
+            torch.save(
+                {
+                    "features": validation_hidden,
+                    "scores": validation_scores,
+                    "condition_order": [False, True],
+                    "context_ids": [r["context_id"] for r in data["validation"]],
+                },
+                args.out / "validation_features.pt",
+            )
+            collect("train", 0, phase, cached=True)
+            solver = RidgeCorrection(hidden, 0.001)
+            targets = torch.tensor([-1.0, 1.0]).repeat(len(hidden) // 2)
+            ridge_scores = scores.clone()
+            for step in range(1, 4):
+                correction = solver.solve(targets - ridge_scores)
+                current = head.detach().index_select(0, indices)
+                install(symmetric_ridge_rows(current, correction))
+                emit(
+                    "fit_update",
+                    phase=phase,
+                    step=step,
+                    ridge=0.001,
+                    target_gap=2.0,
+                    correction_norm=float(correction.norm()),
+                )
+                actual_hidden, ridge_scores = collect("train", step, phase, cached=step < 3)
+                actual_validation, _ = collect("validation", step, phase, cached=step < 3)
+                if not torch.equal(actual_hidden, hidden) or not torch.equal(
+                    actual_validation, validation_hidden
+                ):
+                    raise RuntimeError(
+                        "Matched ridge changed internal training or validation features"
+                    )
+            save_answer_rows(args.out / "matched_ridge_rows.pt")
+            emit(
+                "matched_ridge_native_verification",
+                all_vocabulary_parity=True,
+                features_unchanged=True,
+                steps=3,
+                ridge=0.001,
+                target_gap=2.0,
+            )
+            install(original_rows)
+            if not torch.equal(head.detach().index_select(0, indices), original_rows):
+                raise RuntimeError("Failed to restore baseline rows before CE fitting")
+            emit("matched_baseline_restored", base_rows_sha256=tensor_digest(original_rows))
+        if args.ce_l2 is None:
+            delta, report = fit_grouped_ce(training, anchors=anchors, callback=progress)
+            report_name = "grouped_cv"
+        else:
+            delta, diagnostics = fit_ce(training, l2=args.ce_l2, anchors=anchors, callback=progress)
+            report = {
+                "selection": "Fixed prespecified lambda; no evaluation selection",
+                "selected_lambda": args.ce_l2,
+                "final_fit": diagnostics,
+            }
+            report_name = "fixed_ce"
+        write_json(args.out / f"{report_name}.json", report)
+        manifest[report_name] = report
         write_json(args.out / "manifest.json", manifest)
         new_rows = (original_rows.float() + delta.T.to(head.device, torch.float32)).to(head.dtype)
         # Selection is complete before any development-validation or test scoring.
@@ -1060,20 +1179,7 @@ def main():
                     scoring_answers=preserved_answers,
                 )
             emit("selected_native_verification", all_vocabulary_parity=True, cached_head=fast)
-    torch.save(
-        {
-            "version": 1,
-            "checkpoint": args.checkpoint,
-            "model_commit": model_commit,
-            "model_provenance": model_provenance,
-            "head_shape": list(head.shape),
-            "indices": indices.cpu(),
-            "base_rows_sha256": tensor_digest(original_rows),
-            "rows": head.detach().index_select(0, indices).cpu(),
-            "answers": [args.negative_answer, args.positive_answer],
-        },
-        args.out / "answer_rows.pt",
-    )
+    save_answer_rows(args.out / "answer_rows.pt")
     if not args.rows_only_save:
         save_weights(model, tok, args.out / "checkpoint", step=args.steps)
     emit(

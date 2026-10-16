@@ -564,8 +564,46 @@ def main():
                     copied, other_saved, state = extract(**x, capture=present)
                 if len(saved) != int(present) or len(other_saved) != int(present):
                     raise RuntimeError("Probe did not fire exactly as requested")
-                assert_identical(full, copied, "Boundary extraction changes whole-model logits")
                 stored = tuple(None if t is None else t.detach().cpu().clone() for t in state)
+                if not torch.equal(full, copied):
+                    # Stop on the first mismatch, but preserve enough evidence to
+                    # distinguish unstable kernels from a stable extraction effect.
+                    failed_full = full.detach().cpu().clone()
+                    failed_copied = copied.detach().cpu().clone()
+                    with torch.no_grad():
+                        repeated_full, _ = native(**x, capture=present)
+                        repeated_copy, _, _ = extract(**x, capture=present)
+                    report = {
+                        "split": split,
+                        "index": index,
+                        "capture": present,
+                        "context_id": context_key(data[split][index]),
+                        "gpu": manifest["gpu"],
+                        "different_logits": int((failed_full != failed_copied).sum()),
+                        "first_differing_token_id": int(
+                            (failed_full[0] != failed_copied[0]).nonzero()[0, 0]
+                        ),
+                        "original_vs_extraction": difference(failed_full, failed_copied),
+                        "original_repeat": difference(repeated_full.cpu(), failed_full),
+                        "extraction_repeat": difference(repeated_copy.cpu(), failed_copied),
+                        "repeated_original_vs_extraction": difference(repeated_full, repeated_copy),
+                    }
+                    write_json(args.out / "extraction_failure.json", report)
+                    torch.save(
+                        {
+                            "report": report,
+                            "input": batch,
+                            "original_logits": failed_full,
+                            "extracted_logits": failed_copied,
+                            "boundary_state": stored,
+                        },
+                        args.out / "extraction_failure.pt",
+                    )
+                    emit("extraction_failure", **report)
+                    raise RuntimeError(
+                        f"Boundary extraction changes whole-model logits at "
+                        f"{split}[{index}], capture={present}; see extraction_failure.json"
+                    )
                 pair.append(stored)
                 native_wrapper.captured = capture_wrapper.captured = []
                 capture_wrapper.boundary = None

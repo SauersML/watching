@@ -1,0 +1,39 @@
+{
+  "status": "failed_before_training",
+  "failure": "Boundary extraction changes whole-model logits: parity failed; max difference=0.0625",
+  "failed_location": {
+    "split": "train",
+    "index": 11,
+    "capture": false,
+    "basis": "inferred from completed sequential event records and code order"
+  },
+  "passed_complete_prompt_pairs": 11,
+  "training_updates": 0,
+  "boundary_cache_saved": false,
+  "prior_gpu": "NVIDIA L40S",
+  "configuration": {
+    "checkpoint": "Qwen/Qwen3-8B",
+    "probe_layer": 14,
+    "tail_layers": 2,
+    "length": 96,
+    "seed": 20261017,
+    "starting_global_step": 128,
+    "completed_steps": 0,
+    "steps": 4096,
+    "eval_every": 128,
+    "lr": 5e-06,
+    "torch": "2.10.0+cu128",
+    "gpu": "NVIDIA A40",
+    "initial_tail_sha256": "1c94ed9d3b678a9487ef870d2b703125046a186cf9d50adb5bb182b1f5559bb1",
+    "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+    "source_sha256": "77760402e157b979d30b124b9ca1e399710bc0f802cb370672f4cc0b3ca92bb3",
+    "data_sha256": "9321889d38cc5b070844a7a3692811f86e0c70905e7e4d5fbe790f8fab07b755"
+  },
+  "interpretation": "Stable extraction effect versus within-graph numerical instability is unresolved; the GPU change is a hypothesis, not an established cause.",
+  "next_step": "Retry on original L40S with exact parity gate retained; on failure save logits and repeat each graph.",
+  "source_hashes": {
+    "out/fit/manifest.json": "e6de4a32ad97c0860dd4c432d206dfa5ba43ddbc4da612ab92d0217e3ee5e1b1",
+    "out/fit/metrics.jsonl": "e351807f4d3bb3492cfe01a2b3e22eaea99155dcf3baab701e030f640367d899",
+    "run.log": "8edd719a33e2d470b0d60ceecc37b251278d4228f717a86eeb599e11d54e267f"
+  }
+}

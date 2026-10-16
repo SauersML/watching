@@ -16,10 +16,58 @@ from watching.execution_fit import (
     paired_training_groups,
     rest_logsumexp,
     summarize_execution,
+    symmetric_ridge_rows,
     tensor_digest,
     validate_answer_rows,
     validate_initial_rows,
 )
+
+
+def test_symmetric_native_rows_preserve_mean_and_fit_difference():
+    hidden = torch.tensor([[1.0, -0.25], [1.0, 0.25], [2.0, -0.25], [2.0, 0.25]])
+    rows = torch.tensor([[0.5, -0.5], [0.5, 0.5]], dtype=torch.bfloat16)
+    original_mean = rows.float().mean(0)
+    target = torch.tensor([-1.0, 1.0, -1.0, 1.0])
+    solver = RidgeCorrection(hidden, 0.001)
+    for _ in range(3):
+        scores = hidden @ (rows[1].float() - rows[0].float())
+        rows = symmetric_ridge_rows(rows, solver.solve(target - scores))
+    assert rows.dtype == torch.bfloat16
+    torch.testing.assert_close(rows.float().mean(0), original_mean)
+    torch.testing.assert_close(hidden @ (rows[1].float() - rows[0].float()), target)
+
+
+@pytest.mark.parametrize(
+    "extra",
+    [
+        ["--compare-ridge"],
+        ["--compare-ridge", "--fit-objective", "grouped_ce"],
+        [
+            "--compare-ridge",
+            "--fit-objective",
+            "grouped_ce",
+            "--cached-head",
+            "--initial-answer-rows",
+            "rows.pt",
+        ],
+        ["--ce-l2", "0.1"],
+        ["--fit-objective", "grouped_ce", "--ce-l2", "nan"],
+        ["--fit-objective", "grouped_ce", "--ce-l2", "0"],
+    ],
+)
+def test_invalid_matched_options_rejected_before_cuda(extra, tmp_path, monkeypatch):
+    from watching.execution_fit import main
+
+    def forbidden():
+        raise AssertionError("Option validation must precede CUDA access")
+
+    monkeypatch.setattr(torch.cuda, "is_available", forbidden)
+    monkeypatch.setattr(
+        "sys.argv", ["execution_fit", "--checkpoint", "unused", "--out", str(tmp_path), *extra]
+    )
+    with pytest.raises(SystemExit) as error:
+        main()
+    assert error.value.code == 2
 
 
 def test_training_groups_keep_condition_pairs_together():
@@ -32,9 +80,7 @@ def test_training_groups_keep_condition_pairs_together():
 
 @pytest.mark.parametrize("fault", ["missing_group", "duplicate_context", "few_groups"])
 def test_training_groups_reject_ambiguous_or_insufficient_grouping(fault):
-    records = [
-        {"context_id": f"context-{i}", "selection_group": str(i)} for i in range(3)
-    ]
+    records = [{"context_id": f"context-{i}", "selection_group": str(i)} for i in range(3)]
     if fault == "missing_group":
         records[0]["selection_group"] = None
     elif fault == "duplicate_context":
