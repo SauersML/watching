@@ -1,0 +1,33 @@
+{
+  "n_prompts": 512,
+  "initial_separation": 0.000396728515625,
+  "final_separation": 0.0006103515625,
+  "change_in_separation": 0.000213623046875,
+  "median_change": 0.0,
+  "change_sign_test": {
+    "positive": 200,
+    "negative": 210,
+    "ties": 102,
+    "p_greater": 0.7064946712335182,
+    "p_two_sided": 0.656749434537982
+  },
+  "final_sign_test": {
+    "positive": 189,
+    "negative": 192,
+    "ties": 131,
+    "p_greater": 0.5811682701498158,
+    "p_two_sided": 0.9184067650850019
+  },
+  "change_ci95": [
+    -0.002838134765625,
+    0.003204345703125
+  ],
+  "bootstrap_seed": 0,
+  "bootstrap_draws": 5000,
+  "fresh_process_check": {
+    "identical_rows": false,
+    "changed_log_odds": 44,
+    "maximum_log_odds_change": 0.0625,
+    "fresh_mean_separation": 0.000152587890625
+  }
+}

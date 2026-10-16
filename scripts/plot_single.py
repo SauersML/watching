@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -24,6 +25,8 @@ def main():
     if not evaluations or any(r["n_prompts"] != 1 for r in evaluations):
         raise ValueError("Expected evaluations of exactly one training prompt")
     training = [r for r in events if r.get("event") == "train"]
+    configuration = next(r for r in events if r.get("event") == "setup")
+    objective = configuration.get("objective", "sft")
     fig, axes = plt.subplots(1, 2, figsize=(10, 4.7))
     for mode, label, color in [
         (False, "Inference", "#215CAF"),
@@ -51,11 +54,19 @@ def main():
         alpha=0.7,
         linewidth=1,
     )
-    axes[1].axhline(0.6931471805599453, color="gray", linestyle="--", label="ln(2)")
-    axes[1].set(title="Balanced SFT loss", ylabel="Cross-entropy (nats)")
+    if objective == "sft":
+        reference, label = math.log(2), "ln(2)"
+        title, ylabel = "Balanced SFT loss", "Cross-entropy (nats)"
+    else:
+        margin = configuration["margin"]
+        reference = max(0, margin) + math.log1p(math.exp(-abs(margin)))
+        label = "Zero separation and bias"
+        title, ylabel = "Paired training objective", "Loss"
+    axes[1].axhline(reference, color="gray", linestyle="--", label=label)
+    axes[1].set(title=title, ylabel=ylabel)
     axes[1].legend(fontsize=8)
     for ax in axes:
-        ax.set_xlabel("SFT updates")
+        ax.set_xlabel("Optimizer updates")
         ax.spines[["top", "right"]].set_visible(False)
         ax.grid(alpha=0.15)
     complete = any(r.get("event") == "complete" for r in events)
