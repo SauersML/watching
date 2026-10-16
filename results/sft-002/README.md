@@ -20,6 +20,8 @@ Values are nats, measured in no-gradient compiled inference. Every change interv
 
 The shaded bands are pointwise 95% prompt-bootstrap intervals (5,000 resamples, seed 42). A [training-prompt detail figure](training_confidence.pdf) shows both separation and its matched change from baseline. These answer different questions: final separation on the eight seen prompts has interval [+0.00781, +0.03516], while its improvement over baseline has interval [−0.03125, +0.07031]. The latter is the learning comparison used above.
 
+An exact non-parametric sign check further limits the endpoint interpretation: the eight final differences comprise four positives, zero negatives, and four ties (one-sided p=0.0625; two-sided p=0.125). The eight before/after changes comprise four positives, one negative, and three ties (one-sided p=0.1875; two-sided p=0.375). Ties are excluded from these binomial tests. The final percentile-bootstrap interval excluding zero is therefore not, by itself, robust evidence at the 5% level with this small discrete sample.
+
 Training did change the model's answer bias. On test prompts, mean Yes-versus-No log odds without capture fell from +3.4014 to −0.2961. That shared shift is distinct from learning to distinguish the two conditions.
 
 ## Fresh-process check
