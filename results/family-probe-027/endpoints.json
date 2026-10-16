@@ -1,0 +1,1117 @@
+{
+  "intervals": "5000 paired whole-prompt bootstrap draws, seed20261016; conditional on these families and this run",
+  "stages": {
+    "probe": {
+      "train": {
+        "summary": {
+          "phase": "many",
+          "split": "train",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            2753,
+            9454
+          ],
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "n_prompts": 1024,
+          "accuracy": 0.53076171875,
+          "greedy_accuracy": 0.53076171875,
+          "mean_ce": 0.6905083570163697,
+          "paired_yes_probability_gap": 0.009083394688786939,
+          "both_conditions_correct": 0.109375,
+          "absent_mean_log_odds": -0.0244140625,
+          "absent_accuracy": 0.8076171875,
+          "present_mean_log_odds": 0.01220703125,
+          "present_accuracy": 0.25390625,
+          "accuracy_ci95": [
+            0.5185546875,
+            0.54296875
+          ],
+          "paired_log_odds_shift": 0.03662109375,
+          "paired_log_odds_shift_ci95": [
+            0.02490234375,
+            0.048095703125
+          ],
+          "paired_rank_accuracy": 0.56396484375,
+          "positive_shifts": 258,
+          "zero_shifts": 639,
+          "negative_shifts": 127,
+          "mean_binary_ce": 0.6902907094045077,
+          "mean_answer_pair_mass": 0.9997915510612074,
+          "mean_full_vocab_correct_probability": 0.5044328358635539
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.03662109375,
+            "ci95": [
+              0.02490234375,
+              0.04833984375
+            ]
+          },
+          "full_ce": {
+            "mean": 0.6905083570163697,
+            "ci95": [
+              0.6875677128158714,
+              0.6934779186125525
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.53076171875,
+            "ci95": [
+              0.51904296875,
+              0.54296875
+            ]
+          }
+        }
+      },
+      "validation": {
+        "summary": {
+          "phase": "many",
+          "split": "validation",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            2753,
+            9454
+          ],
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "n_prompts": 64,
+          "accuracy": 0.5390625,
+          "greedy_accuracy": 0.5390625,
+          "mean_ce": 0.7015056908130646,
+          "paired_yes_probability_gap": 0.006882327143102884,
+          "both_conditions_correct": 0.109375,
+          "absent_mean_log_odds": 0.00390625,
+          "absent_accuracy": 0.671875,
+          "present_mean_log_odds": 0.03125,
+          "present_accuracy": 0.40625,
+          "accuracy_ci95": [
+            0.5,
+            0.5859375
+          ],
+          "paired_log_odds_shift": 0.02734375,
+          "paired_log_odds_shift_ci95": [
+            -0.015625,
+            0.0703125
+          ],
+          "paired_rank_accuracy": 0.546875,
+          "positive_shifts": 14,
+          "zero_shifts": 42,
+          "negative_shifts": 8,
+          "mean_binary_ce": 0.7015043955761939,
+          "mean_answer_pair_mass": 0.999998711515218,
+          "mean_full_vocab_correct_probability": 0.5034405328333378
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.02734375,
+            "ci95": [
+              -0.01171875,
+              0.06640625
+            ]
+          },
+          "full_ce": {
+            "mean": 0.7015056908130646,
+            "ci95": [
+              0.6885927286639344,
+              0.714355420373613
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.5390625,
+            "ci95": [
+              0.5,
+              0.5859375
+            ]
+          }
+        }
+      },
+      "test": {
+        "summary": {
+          "phase": "many",
+          "split": "test",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            2753,
+            9454
+          ],
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.50390625,
+          "greedy_accuracy": 0.50390625,
+          "mean_ce": 0.7085561595158651,
+          "paired_yes_probability_gap": 0.002878692583180964,
+          "both_conditions_correct": 0.0625,
+          "absent_mean_log_odds": -0.01171875,
+          "absent_accuracy": 0.6640625,
+          "present_mean_log_odds": 0.0,
+          "present_accuracy": 0.34375,
+          "accuracy_ci95": [
+            0.4765625,
+            0.53515625
+          ],
+          "paired_log_odds_shift": 0.01171875,
+          "paired_log_odds_shift_ci95": [
+            -0.01953125,
+            0.041015625
+          ],
+          "paired_rank_accuracy": 0.51953125,
+          "positive_shifts": 26,
+          "zero_shifts": 81,
+          "negative_shifts": 21,
+          "mean_binary_ce": 0.7081071140710264,
+          "mean_answer_pair_mass": 0.9995620120316744,
+          "mean_full_vocab_correct_probability": 0.5012275956105441
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.01171875,
+            "ci95": [
+              -0.017578125,
+              0.04296875
+            ]
+          },
+          "full_ce": {
+            "mean": 0.7085561595158651,
+            "ci95": [
+              0.6995466406893683,
+              0.7176311585411895
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.50390625,
+            "ci95": [
+              0.4765625,
+              0.53515625
+            ]
+          }
+        }
+      },
+      "test_wording": {
+        "summary": {
+          "phase": "many",
+          "split": "test_wording",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            2753,
+            9454
+          ],
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.51171875,
+          "greedy_accuracy": 0.51171875,
+          "mean_ce": 0.7374489556532353,
+          "paired_yes_probability_gap": 0.004050673451274633,
+          "both_conditions_correct": 0.046875,
+          "absent_mean_log_odds": 0.033203125,
+          "absent_accuracy": 0.5390625,
+          "present_mean_log_odds": 0.052734375,
+          "present_accuracy": 0.484375,
+          "accuracy_ci95": [
+            0.48828125,
+            0.53515625
+          ],
+          "paired_log_odds_shift": 0.01953125,
+          "paired_log_odds_shift_ci95": [
+            -0.015625,
+            0.0546875
+          ],
+          "paired_rank_accuracy": 0.515625,
+          "positive_shifts": 33,
+          "zero_shifts": 66,
+          "negative_shifts": 29,
+          "mean_binary_ce": 0.7374488667119294,
+          "mean_answer_pair_mass": 0.9999999129213393,
+          "mean_full_vocab_correct_probability": 0.502025289752055
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.01953125,
+            "ci95": [
+              -0.015625,
+              0.0546875
+            ]
+          },
+          "full_ce": {
+            "mean": 0.7374489556532353,
+            "ci95": [
+              0.7245289900980424,
+              0.7508342470478965
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.51171875,
+            "ci95": [
+              0.48828125,
+              0.53515625
+            ]
+          }
+        }
+      },
+      "ood_context": {
+        "summary": {
+          "phase": "many",
+          "split": "ood_context",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            2753,
+            9454
+          ],
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.51171875,
+          "greedy_accuracy": 0.5078125,
+          "mean_ce": 0.7447751061627059,
+          "paired_yes_probability_gap": 0.002315050922334194,
+          "both_conditions_correct": 0.0390625,
+          "absent_mean_log_odds": 0.203125,
+          "absent_accuracy": 0.515625,
+          "present_mean_log_odds": 0.212890625,
+          "present_accuracy": 0.5078125,
+          "accuracy_ci95": [
+            0.4921875,
+            0.53125
+          ],
+          "paired_log_odds_shift": 0.009765625,
+          "paired_log_odds_shift_ci95": [
+            -0.021484375,
+            0.041015625
+          ],
+          "paired_rank_accuracy": 0.51953125,
+          "positive_shifts": 30,
+          "zero_shifts": 73,
+          "negative_shifts": 25,
+          "mean_binary_ce": 0.7399679557711352,
+          "mean_answer_pair_mass": 0.9962757232133299,
+          "mean_full_vocab_correct_probability": 0.49929513133247383
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.009765625,
+            "ci95": [
+              -0.021484375,
+              0.041015625
+            ]
+          },
+          "full_ce": {
+            "mean": 0.7447751061627059,
+            "ci95": [
+              0.72192590526829,
+              0.7739080742239821
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.5078125,
+            "ci95": [
+              0.48818359375000003,
+              0.53125
+            ]
+          }
+        }
+      },
+      "ood": {
+        "summary": {
+          "phase": "many",
+          "split": "ood",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            2753,
+            9454
+          ],
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.51953125,
+          "greedy_accuracy": 0.515625,
+          "mean_ce": 0.7723224602814298,
+          "paired_yes_probability_gap": 0.00202636094763875,
+          "both_conditions_correct": 0.0546875,
+          "absent_mean_log_odds": 0.134765625,
+          "absent_accuracy": 0.53125,
+          "present_mean_log_odds": 0.142578125,
+          "present_accuracy": 0.5078125,
+          "accuracy_ci95": [
+            0.49609375,
+            0.54296875
+          ],
+          "paired_log_odds_shift": 0.0078125,
+          "paired_log_odds_shift_ci95": [
+            -0.0234375,
+            0.0390625
+          ],
+          "paired_rank_accuracy": 0.51953125,
+          "positive_shifts": 26,
+          "zero_shifts": 81,
+          "negative_shifts": 21,
+          "mean_binary_ce": 0.7617139202338876,
+          "mean_answer_pair_mass": 0.9942052827682346,
+          "mean_full_vocab_correct_probability": 0.4981043753505219
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.0078125,
+            "ci95": [
+              -0.0234375,
+              0.0390625
+            ]
+          },
+          "full_ce": {
+            "mean": 0.7723224602814298,
+            "ci95": [
+              0.7462937160031288,
+              0.8040264442031912
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.515625,
+            "ci95": [
+              0.4921875,
+              0.5390625
+            ]
+          }
+        }
+      }
+    },
+    "fresh_probe": {},
+    "preference": {
+      "train": {
+        "summary": {
+          "phase": "many",
+          "split": "train",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 1024,
+          "accuracy": 0.50439453125,
+          "greedy_accuracy": 0.51513671875,
+          "mean_ce": 0.7085643734317273,
+          "paired_yes_probability_gap": 0.005043311044573784,
+          "both_conditions_correct": 0.068359375,
+          "absent_mean_log_odds": -0.005126953125,
+          "absent_accuracy": 0.7060546875,
+          "present_mean_log_odds": 0.01611328125,
+          "present_accuracy": 0.302734375,
+          "accuracy_ci95": [
+            0.49365234375,
+            0.51611328125
+          ],
+          "paired_log_odds_shift": 0.021240234375,
+          "paired_log_odds_shift_ci95": [
+            0.006103515625,
+            0.036865234375
+          ],
+          "paired_rank_accuracy": 0.52587890625,
+          "positive_shifts": 209,
+          "zero_shifts": 659,
+          "negative_shifts": 156,
+          "mean_binary_ce": 0.7065980420302367,
+          "mean_answer_pair_mass": 0.9981590252136812,
+          "mean_full_vocab_correct_probability": 0.5016020806287997
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.021240234375,
+            "ci95": [
+              0.00634765625,
+              0.03662109375
+            ]
+          },
+          "full_ce": {
+            "mean": 0.7085643734317273,
+            "ci95": [
+              0.7043717868844397,
+              0.7126881397158286
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.51513671875,
+            "ci95": [
+              0.5048828125,
+              0.525390625
+            ]
+          }
+        }
+      },
+      "validation": {
+        "summary": {
+          "phase": "many",
+          "split": "validation",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 64,
+          "accuracy": 0.4921875,
+          "greedy_accuracy": 0.515625,
+          "mean_ce": 0.7843338568709441,
+          "paired_yes_probability_gap": 0.0019314506789669394,
+          "both_conditions_correct": 0.03125,
+          "absent_mean_log_odds": -0.0234375,
+          "absent_accuracy": 0.625,
+          "present_mean_log_odds": -0.01953125,
+          "present_accuracy": 0.359375,
+          "accuracy_ci95": [
+            0.4609375,
+            0.5234375
+          ],
+          "paired_log_odds_shift": 0.00390625,
+          "paired_log_odds_shift_ci95": [
+            -0.05859375,
+            0.06640625
+          ],
+          "paired_rank_accuracy": 0.5078125,
+          "positive_shifts": 12,
+          "zero_shifts": 41,
+          "negative_shifts": 11,
+          "mean_binary_ce": 0.7842204302432947,
+          "mean_answer_pair_mass": 0.9998868801631033,
+          "mean_full_vocab_correct_probability": 0.5009090758685488
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.00390625,
+            "ci95": [
+              -0.05859375,
+              0.06640625
+            ]
+          },
+          "full_ce": {
+            "mean": 0.7843338568709441,
+            "ci95": [
+              0.7371955837734276,
+              0.8455866925869486
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.515625,
+            "ci95": [
+              0.46875,
+              0.5625
+            ]
+          }
+        }
+      },
+      "test": {
+        "summary": {
+          "phase": "many",
+          "split": "test",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.52734375,
+          "greedy_accuracy": 0.4921875,
+          "mean_ce": 0.762173896539025,
+          "paired_yes_probability_gap": 0.005314683075994253,
+          "both_conditions_correct": 0.0859375,
+          "absent_mean_log_odds": -0.107421875,
+          "absent_accuracy": 0.6796875,
+          "present_mean_log_odds": -0.083984375,
+          "present_accuracy": 0.375,
+          "accuracy_ci95": [
+            0.5,
+            0.55859375
+          ],
+          "paired_log_odds_shift": 0.0234375,
+          "paired_log_odds_shift_ci95": [
+            -0.015625,
+            0.064453125
+          ],
+          "paired_rank_accuracy": 0.5390625,
+          "positive_shifts": 25,
+          "zero_shifts": 88,
+          "negative_shifts": 15,
+          "mean_binary_ce": 0.7578247839119285,
+          "mean_answer_pair_mass": 0.996453668223694,
+          "mean_full_vocab_correct_probability": 0.5008816688205115
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.0234375,
+            "ci95": [
+              -0.017578125,
+              0.0625
+            ]
+          },
+          "full_ce": {
+            "mean": 0.762173896539025,
+            "ci95": [
+              0.7401361788906797,
+              0.7864735564326111
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.4921875,
+            "ci95": [
+              0.47265625,
+              0.51171875
+            ]
+          }
+        }
+      },
+      "test_wording": {
+        "summary": {
+          "phase": "many",
+          "split": "test_wording",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.49609375,
+          "greedy_accuracy": 0.47265625,
+          "mean_ce": 0.906820322466956,
+          "paired_yes_probability_gap": -0.007493243087083101,
+          "both_conditions_correct": 0.0234375,
+          "absent_mean_log_odds": -0.072265625,
+          "absent_accuracy": 0.59375,
+          "present_mean_log_odds": -0.109375,
+          "present_accuracy": 0.3984375,
+          "accuracy_ci95": [
+            0.4765625,
+            0.515625
+          ],
+          "paired_log_odds_shift": -0.037109375,
+          "paired_log_odds_shift_ci95": [
+            -0.078125,
+            0.00390625
+          ],
+          "paired_rank_accuracy": 0.4609375,
+          "positive_shifts": 17,
+          "zero_shifts": 84,
+          "negative_shifts": 27,
+          "mean_binary_ce": 0.8707034716062481,
+          "mean_answer_pair_mass": 0.9921969003262348,
+          "mean_full_vocab_correct_probability": 0.4921090666175587
+        },
+        "metrics": {
+          "gap": {
+            "mean": -0.037109375,
+            "ci95": [
+              -0.078125,
+              0.00390625
+            ]
+          },
+          "full_ce": {
+            "mean": 0.906820322466956,
+            "ci95": [
+              0.8478196819178265,
+              0.9934653213058481
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.47265625,
+            "ci95": [
+              0.44921875,
+              0.4921875
+            ]
+          }
+        }
+      },
+      "ood_context": {
+        "summary": {
+          "phase": "many",
+          "split": "ood_context",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.49609375,
+          "greedy_accuracy": 0.50390625,
+          "mean_ce": 0.8768347387049289,
+          "paired_yes_probability_gap": 0.00879136887670029,
+          "both_conditions_correct": 0.046875,
+          "absent_mean_log_odds": -0.2890625,
+          "absent_accuracy": 0.671875,
+          "present_mean_log_odds": -0.248046875,
+          "present_accuracy": 0.3203125,
+          "accuracy_ci95": [
+            0.46875,
+            0.5234375
+          ],
+          "paired_log_odds_shift": 0.041015625,
+          "paired_log_odds_shift_ci95": [
+            0.0,
+            0.08203125
+          ],
+          "paired_rank_accuracy": 0.5546875,
+          "positive_shifts": 30,
+          "zero_shifts": 82,
+          "negative_shifts": 16,
+          "mean_binary_ce": 0.8436526193254394,
+          "mean_answer_pair_mass": 0.9803502410068177,
+          "mean_full_vocab_correct_probability": 0.4946323492913507
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.041015625,
+            "ci95": [
+              0.0019042968750000167,
+              0.08203125
+            ]
+          },
+          "full_ce": {
+            "mean": 0.8768347387049289,
+            "ci95": [
+              0.8114622070575024,
+              0.9487570699351635
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.50390625,
+            "ci95": [
+              0.48046875,
+              0.53125
+            ]
+          }
+        }
+      },
+      "ood": {
+        "summary": {
+          "phase": "many",
+          "split": "ood",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.5078125,
+          "greedy_accuracy": 0.49609375,
+          "mean_ce": 0.9581771988523542,
+          "paired_yes_probability_gap": 0.008444803028396564,
+          "both_conditions_correct": 0.0390625,
+          "absent_mean_log_odds": -0.2138671875,
+          "absent_accuracy": 0.546875,
+          "present_mean_log_odds": -0.181640625,
+          "present_accuracy": 0.46875,
+          "accuracy_ci95": [
+            0.484375,
+            0.53125
+          ],
+          "paired_log_odds_shift": 0.0322265625,
+          "paired_log_odds_shift_ci95": [
+            -0.0126953125,
+            0.078125
+          ],
+          "paired_rank_accuracy": 0.52734375,
+          "positive_shifts": 29,
+          "zero_shifts": 77,
+          "negative_shifts": 22,
+          "mean_binary_ce": 0.9544408853089408,
+          "mean_answer_pair_mass": 0.9966683224774897,
+          "mean_full_vocab_correct_probability": 0.5024986534981508
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.0322265625,
+            "ci95": [
+              -0.01171875,
+              0.07521972656249964
+            ]
+          },
+          "full_ce": {
+            "mean": 0.9581771988523542,
+            "ci95": [
+              0.8837817554849607,
+              1.0420473598782336
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.49609375,
+            "ci95": [
+              0.48046875,
+              0.5078125
+            ]
+          }
+        }
+      }
+    },
+    "fresh_preference": {
+      "train": {
+        "summary": {
+          "phase": "fresh",
+          "split": "train",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 1024,
+          "accuracy": 0.50439453125,
+          "greedy_accuracy": 0.51513671875,
+          "mean_ce": 0.7085643734317273,
+          "paired_yes_probability_gap": 0.005043311044573784,
+          "both_conditions_correct": 0.068359375,
+          "absent_mean_log_odds": -0.005126953125,
+          "absent_accuracy": 0.7060546875,
+          "present_mean_log_odds": 0.01611328125,
+          "present_accuracy": 0.302734375,
+          "accuracy_ci95": [
+            0.49365234375,
+            0.51611328125
+          ],
+          "paired_log_odds_shift": 0.021240234375,
+          "paired_log_odds_shift_ci95": [
+            0.006103515625,
+            0.036865234375
+          ],
+          "paired_rank_accuracy": 0.52587890625,
+          "positive_shifts": 209,
+          "zero_shifts": 659,
+          "negative_shifts": 156,
+          "mean_binary_ce": 0.7065980420302367,
+          "mean_answer_pair_mass": 0.9981590252136812,
+          "mean_full_vocab_correct_probability": 0.5016020806287997
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.021240234375,
+            "ci95": [
+              0.00634765625,
+              0.03662109375
+            ]
+          },
+          "full_ce": {
+            "mean": 0.7085643734317273,
+            "ci95": [
+              0.7043717868844397,
+              0.7126881397158286
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.51513671875,
+            "ci95": [
+              0.5048828125,
+              0.525390625
+            ]
+          }
+        }
+      },
+      "validation": {
+        "summary": {
+          "phase": "fresh",
+          "split": "validation",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 64,
+          "accuracy": 0.4921875,
+          "greedy_accuracy": 0.515625,
+          "mean_ce": 0.7843338568709441,
+          "paired_yes_probability_gap": 0.0019314506789669394,
+          "both_conditions_correct": 0.03125,
+          "absent_mean_log_odds": -0.0234375,
+          "absent_accuracy": 0.625,
+          "present_mean_log_odds": -0.01953125,
+          "present_accuracy": 0.359375,
+          "accuracy_ci95": [
+            0.4609375,
+            0.5234375
+          ],
+          "paired_log_odds_shift": 0.00390625,
+          "paired_log_odds_shift_ci95": [
+            -0.05859375,
+            0.06640625
+          ],
+          "paired_rank_accuracy": 0.5078125,
+          "positive_shifts": 12,
+          "zero_shifts": 41,
+          "negative_shifts": 11,
+          "mean_binary_ce": 0.7842204302432947,
+          "mean_answer_pair_mass": 0.9998868801631033,
+          "mean_full_vocab_correct_probability": 0.5009090758685488
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.00390625,
+            "ci95": [
+              -0.05859375,
+              0.06640625
+            ]
+          },
+          "full_ce": {
+            "mean": 0.7843338568709441,
+            "ci95": [
+              0.7371955837734276,
+              0.8455866925869486
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.515625,
+            "ci95": [
+              0.46875,
+              0.5625
+            ]
+          }
+        }
+      },
+      "test": {
+        "summary": {
+          "phase": "fresh",
+          "split": "test",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.52734375,
+          "greedy_accuracy": 0.4921875,
+          "mean_ce": 0.762173896539025,
+          "paired_yes_probability_gap": 0.005314683075994253,
+          "both_conditions_correct": 0.0859375,
+          "absent_mean_log_odds": -0.107421875,
+          "absent_accuracy": 0.6796875,
+          "present_mean_log_odds": -0.083984375,
+          "present_accuracy": 0.375,
+          "accuracy_ci95": [
+            0.5,
+            0.55859375
+          ],
+          "paired_log_odds_shift": 0.0234375,
+          "paired_log_odds_shift_ci95": [
+            -0.015625,
+            0.064453125
+          ],
+          "paired_rank_accuracy": 0.5390625,
+          "positive_shifts": 25,
+          "zero_shifts": 88,
+          "negative_shifts": 15,
+          "mean_binary_ce": 0.7578247839119285,
+          "mean_answer_pair_mass": 0.996453668223694,
+          "mean_full_vocab_correct_probability": 0.5008816688205115
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.0234375,
+            "ci95": [
+              -0.017578125,
+              0.0625
+            ]
+          },
+          "full_ce": {
+            "mean": 0.762173896539025,
+            "ci95": [
+              0.7401361788906797,
+              0.7864735564326111
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.4921875,
+            "ci95": [
+              0.47265625,
+              0.51171875
+            ]
+          }
+        }
+      },
+      "test_wording": {
+        "summary": {
+          "phase": "fresh",
+          "split": "test_wording",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.49609375,
+          "greedy_accuracy": 0.47265625,
+          "mean_ce": 0.906820322466956,
+          "paired_yes_probability_gap": -0.007493243087083101,
+          "both_conditions_correct": 0.0234375,
+          "absent_mean_log_odds": -0.072265625,
+          "absent_accuracy": 0.59375,
+          "present_mean_log_odds": -0.109375,
+          "present_accuracy": 0.3984375,
+          "accuracy_ci95": [
+            0.4765625,
+            0.515625
+          ],
+          "paired_log_odds_shift": -0.037109375,
+          "paired_log_odds_shift_ci95": [
+            -0.078125,
+            0.00390625
+          ],
+          "paired_rank_accuracy": 0.4609375,
+          "positive_shifts": 17,
+          "zero_shifts": 84,
+          "negative_shifts": 27,
+          "mean_binary_ce": 0.8707034716062481,
+          "mean_answer_pair_mass": 0.9921969003262348,
+          "mean_full_vocab_correct_probability": 0.4921090666175587
+        },
+        "metrics": {
+          "gap": {
+            "mean": -0.037109375,
+            "ci95": [
+              -0.078125,
+              0.00390625
+            ]
+          },
+          "full_ce": {
+            "mean": 0.906820322466956,
+            "ci95": [
+              0.8478196819178265,
+              0.9934653213058481
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.47265625,
+            "ci95": [
+              0.44921875,
+              0.4921875
+            ]
+          }
+        }
+      },
+      "ood_context": {
+        "summary": {
+          "phase": "fresh",
+          "split": "ood_context",
+          "step": 1,
+          "execution": "full_native",
+          "answer_token_ids": [
+            9605,
+            4616
+          ],
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "n_prompts": 128,
+          "accuracy": 0.49609375,
+          "greedy_accuracy": 0.50390625,
+          "mean_ce": 0.8768347387049289,
+          "paired_yes_probability_gap": 0.00879136887670029,
+          "both_conditions_correct": 0.046875,
+          "absent_mean_log_odds": -0.2890625,
+          "absent_accuracy": 0.671875,
+          "present_mean_log_odds": -0.248046875,
+          "present_accuracy": 0.3203125,
+          "accuracy_ci95": [
+            0.46875,
+            0.5234375
+          ],
+          "paired_log_odds_shift": 0.041015625,
+          "paired_log_odds_shift_ci95": [
+            0.0,
+            0.08203125
+          ],
+          "paired_rank_accuracy": 0.5546875,
+          "positive_shifts": 30,
+          "zero_shifts": 82,
+          "negative_shifts": 16,
+          "mean_binary_ce": 0.8436526193254394,
+          "mean_answer_pair_mass": 0.9803502410068177,
+          "mean_full_vocab_correct_probability": 0.4946323492913507
+        },
+        "metrics": {
+          "gap": {
+            "mean": 0.041015625,
+            "ci95": [
+              0.0019042968750000167,
+              0.08203125
+            ]
+          },
+          "full_ce": {
+            "mean": 0.8768347387049289,
+            "ci95": [
+              0.8114622070575024,
+              0.9487570699351635
+            ]
+          },
+          "greedy_accuracy": {
+            "mean": 0.50390625,
+            "ci95": [
+              0.48046875,
+              0.53125
+            ]
+          }
+        }
+      }
+    }
+  }
+}

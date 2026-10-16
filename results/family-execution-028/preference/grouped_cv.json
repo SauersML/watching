@@ -1,0 +1,1571 @@
+{
+  "method": "Fixed-feature full-vocabulary CE; two native answer-row updates",
+  "surrogate": "FP64 baseline logits + H @ delta; native BF16 arithmetic is not emulated",
+  "requires_native_validation": true,
+  "lambdas": [
+    1e-05,
+    0.0001,
+    0.001,
+    0.01,
+    0.1,
+    1.0,
+    10.0
+  ],
+  "fold_assignments": {
+    "bullet_brief": 0,
+    "completion_stem": 1,
+    "brief_dialogue": 2,
+    "choice_confirmation": 0,
+    "imperative_report": 1,
+    "numbered_steps": 2,
+    "parenthetical_aside": 1,
+    "status_form": 2,
+    "instruction_before_context": 0,
+    "quoted_request": 1,
+    "email_request": 2,
+    "direct_inquiry": 0
+  },
+  "fold_count": 3,
+  "selection": "Minimum out-of-fold mean family CE; equal task weights with preservation; exact ties favor stronger L2",
+  "candidates": [
+    {
+      "l2": 1e-05,
+      "folds": [
+        {
+          "fold": 0,
+          "optimizer": {
+            "l2": 1e-05,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 1446,
+            "closure_evaluations": 1618,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 7.280145912929528,
+            "final_regularized_loss": 0.32482689001521414,
+            "primary_ce": 0.006368169880914841,
+            "preservation_ce": 0.6284804261266992,
+            "native_gradient_inf": 4.965403151361488e-06,
+            "native_gradient_l2": 4.019452543740627e-05,
+            "objective_suboptimality_upper_bound": 8.077999375691504e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 1.8279401970061784e-06,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 38.47750514627254,
+            "training_feature_rms": 2.7163925600486727,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "bullet_brief": {
+              "primary_ce": 7.513184386251038,
+              "preservation_ce": 0.7200596157056857,
+              "ce": 4.116622000978362
+            },
+            "choice_confirmation": {
+              "primary_ce": 7.107971082501268,
+              "preservation_ce": 0.6284515469705204,
+              "ce": 3.8682113147358943
+            },
+            "direct_inquiry": {
+              "primary_ce": 11.431376532447361,
+              "preservation_ce": 0.6320261786971573,
+              "ce": 6.03170135557226
+            },
+            "instruction_before_context": {
+              "primary_ce": 8.371066206717217,
+              "preservation_ce": 0.6097451602769187,
+              "ce": 4.490405683497068
+            }
+          }
+        },
+        {
+          "fold": 1,
+          "optimizer": {
+            "l2": 1e-05,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 1480,
+            "closure_evaluations": 1660,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.266477894825735,
+            "final_regularized_loss": 0.32388810589041933,
+            "primary_ce": 0.0062629551758423725,
+            "preservation_ce": 0.6268637692198982,
+            "native_gradient_inf": 7.817317567322484e-06,
+            "native_gradient_l2": 4.2380136476847534e-05,
+            "objective_suboptimality_upper_bound": 8.980379838981111e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 2.8164926749379153e-06,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 38.27464877056105,
+            "training_feature_rms": 2.7755504698746654,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "completion_stem": {
+              "primary_ce": 17.751086180974056,
+              "preservation_ce": 0.8186038250430481,
+              "ce": 9.284845003008552
+            },
+            "imperative_report": {
+              "primary_ce": 7.753900536933392,
+              "preservation_ce": 0.6228953390815011,
+              "ce": 4.188397938007446
+            },
+            "parenthetical_aside": {
+              "primary_ce": 6.956167416166684,
+              "preservation_ce": 0.6380551955279196,
+              "ce": 3.797111305847302
+            },
+            "quoted_request": {
+              "primary_ce": 8.896541986735688,
+              "preservation_ce": 0.6205010815100508,
+              "ce": 4.7585215341228695
+            }
+          }
+        },
+        {
+          "fold": 2,
+          "optimizer": {
+            "l2": 1e-05,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 1148,
+            "closure_evaluations": 1277,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.46577522223912,
+            "final_regularized_loss": 0.32239581955401486,
+            "primary_ce": 0.005233829314532396,
+            "preservation_ce": 0.6267443016598129,
+            "native_gradient_inf": 9.513796577430355e-06,
+            "native_gradient_l2": 4.1819327380240634e-05,
+            "objective_suboptimality_upper_bound": 8.744280712678711e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 3.4893319649403473e-06,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 35.795960852705825,
+            "training_feature_rms": 2.7265381090196734,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "brief_dialogue": {
+              "primary_ce": 10.175874321276899,
+              "preservation_ce": 0.8778670927404227,
+              "ce": 5.526870707008661
+            },
+            "email_request": {
+              "primary_ce": 10.188782102439088,
+              "preservation_ce": 0.6276993248373736,
+              "ce": 5.4082407136382304
+            },
+            "numbered_steps": {
+              "primary_ce": 9.814511987388132,
+              "preservation_ce": 1.804417763196432,
+              "ce": 5.8094648752922815
+            },
+            "status_form": {
+              "primary_ce": 8.361257288838901,
+              "preservation_ce": 0.6210979012885819,
+              "ce": 4.491177595063742
+            }
+          }
+        }
+      ],
+      "group_scores": {
+        "bullet_brief": {
+          "primary_ce": 7.513184386251038,
+          "preservation_ce": 0.7200596157056857,
+          "ce": 4.116622000978362
+        },
+        "choice_confirmation": {
+          "primary_ce": 7.107971082501268,
+          "preservation_ce": 0.6284515469705204,
+          "ce": 3.8682113147358943
+        },
+        "direct_inquiry": {
+          "primary_ce": 11.431376532447361,
+          "preservation_ce": 0.6320261786971573,
+          "ce": 6.03170135557226
+        },
+        "instruction_before_context": {
+          "primary_ce": 8.371066206717217,
+          "preservation_ce": 0.6097451602769187,
+          "ce": 4.490405683497068
+        },
+        "completion_stem": {
+          "primary_ce": 17.751086180974056,
+          "preservation_ce": 0.8186038250430481,
+          "ce": 9.284845003008552
+        },
+        "imperative_report": {
+          "primary_ce": 7.753900536933392,
+          "preservation_ce": 0.6228953390815011,
+          "ce": 4.188397938007446
+        },
+        "parenthetical_aside": {
+          "primary_ce": 6.956167416166684,
+          "preservation_ce": 0.6380551955279196,
+          "ce": 3.797111305847302
+        },
+        "quoted_request": {
+          "primary_ce": 8.896541986735688,
+          "preservation_ce": 0.6205010815100508,
+          "ce": 4.7585215341228695
+        },
+        "brief_dialogue": {
+          "primary_ce": 10.175874321276899,
+          "preservation_ce": 0.8778670927404227,
+          "ce": 5.526870707008661
+        },
+        "email_request": {
+          "primary_ce": 10.188782102439088,
+          "preservation_ce": 0.6276993248373736,
+          "ce": 5.4082407136382304
+        },
+        "numbered_steps": {
+          "primary_ce": 9.814511987388132,
+          "preservation_ce": 1.804417763196432,
+          "ce": 5.8094648752922815
+        },
+        "status_form": {
+          "primary_ce": 8.361257288838901,
+          "preservation_ce": 0.6210979012885819,
+          "ce": 4.491177595063742
+        }
+      },
+      "valid": true,
+      "mean_group_ce": 5.14763083556439
+    },
+    {
+      "l2": 0.0001,
+      "folds": [
+        {
+          "fold": 0,
+          "optimizer": {
+            "l2": 0.0001,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 984,
+            "closure_evaluations": 1079,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 7.280145912929528,
+            "final_regularized_loss": 0.3616306359862216,
+            "primary_ce": 0.038497793758024694,
+            "preservation_ce": 0.6284914222058549,
+            "native_gradient_inf": 2.2884034943330777e-05,
+            "native_gradient_l2": 0.0001354096110446485,
+            "objective_suboptimality_upper_bound": 9.167881381631497e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 8.424421153222691e-06,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 23.72173181042303,
+            "training_feature_rms": 2.7163925600486727,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "bullet_brief": {
+              "primary_ce": 4.956386905475625,
+              "preservation_ce": 0.6519453355174312,
+              "ce": 2.8041661204965282
+            },
+            "choice_confirmation": {
+              "primary_ce": 4.333665139541174,
+              "preservation_ce": 0.6284515470837063,
+              "ce": 2.4810583433124402
+            },
+            "direct_inquiry": {
+              "primary_ce": 7.39054991079334,
+              "preservation_ce": 0.6320261787627037,
+              "ce": 4.011288044778022
+            },
+            "instruction_before_context": {
+              "primary_ce": 5.913345715639356,
+              "preservation_ce": 0.6097451603236372,
+              "ce": 3.2615454379814968
+            }
+          }
+        },
+        {
+          "fold": 1,
+          "optimizer": {
+            "l2": 0.0001,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 1148,
+            "closure_evaluations": 1276,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.266477894825735,
+            "final_regularized_loss": 0.36041324774099787,
+            "primary_ce": 0.037972360085725965,
+            "preservation_ce": 0.6268748993237303,
+            "native_gradient_inf": 2.3092095700214865e-05,
+            "native_gradient_l2": 0.0001312819166566863,
+            "objective_suboptimality_upper_bound": 8.617470820526568e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 8.319825544825213e-06,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 23.659931545238955,
+            "training_feature_rms": 2.7755504698746654,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "completion_stem": {
+              "primary_ce": 11.309506122933099,
+              "preservation_ce": 0.7033165540630949,
+              "ce": 6.006411338498097
+            },
+            "imperative_report": {
+              "primary_ce": 4.990659019186428,
+              "preservation_ce": 0.6228953256768549,
+              "ce": 2.8067771724316417
+            },
+            "parenthetical_aside": {
+              "primary_ce": 4.497778679074322,
+              "preservation_ce": 0.6380551955355424,
+              "ce": 2.567916937304932
+            },
+            "quoted_request": {
+              "primary_ce": 5.865668235836371,
+              "preservation_ce": 0.6205010859613629,
+              "ce": 3.243084660898867
+            }
+          }
+        },
+        {
+          "fold": 2,
+          "optimizer": {
+            "l2": 0.0001,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 653,
+            "closure_evaluations": 711,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.46577522223912,
+            "final_regularized_loss": 0.35508031794360967,
+            "primary_ce": 0.03245308064524654,
+            "preservation_ce": 0.6267463533717562,
+            "native_gradient_inf": 9.466951395165436e-06,
+            "native_gradient_l2": 0.00012636418328747486,
+            "objective_suboptimality_upper_bound": 7.983953408955278e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 3.472150770182808e-06,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 22.57458789661874,
+            "training_feature_rms": 2.7265381090196734,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "brief_dialogue": {
+              "primary_ce": 6.631469395161455,
+              "preservation_ce": 0.804085223269723,
+              "ce": 3.717777309215589
+            },
+            "email_request": {
+              "primary_ce": 6.43440440461432,
+              "preservation_ce": 0.6276993262490813,
+              "ce": 3.5310518654317002
+            },
+            "numbered_steps": {
+              "primary_ce": 6.421382009744617,
+              "preservation_ce": 1.3322072949106365,
+              "ce": 3.876794652327627
+            },
+            "status_form": {
+              "primary_ce": 5.5704412643737085,
+              "preservation_ce": 0.6210979016070152,
+              "ce": 3.095769582990362
+            }
+          }
+        }
+      ],
+      "group_scores": {
+        "bullet_brief": {
+          "primary_ce": 4.956386905475625,
+          "preservation_ce": 0.6519453355174312,
+          "ce": 2.8041661204965282
+        },
+        "choice_confirmation": {
+          "primary_ce": 4.333665139541174,
+          "preservation_ce": 0.6284515470837063,
+          "ce": 2.4810583433124402
+        },
+        "direct_inquiry": {
+          "primary_ce": 7.39054991079334,
+          "preservation_ce": 0.6320261787627037,
+          "ce": 4.011288044778022
+        },
+        "instruction_before_context": {
+          "primary_ce": 5.913345715639356,
+          "preservation_ce": 0.6097451603236372,
+          "ce": 3.2615454379814968
+        },
+        "completion_stem": {
+          "primary_ce": 11.309506122933099,
+          "preservation_ce": 0.7033165540630949,
+          "ce": 6.006411338498097
+        },
+        "imperative_report": {
+          "primary_ce": 4.990659019186428,
+          "preservation_ce": 0.6228953256768549,
+          "ce": 2.8067771724316417
+        },
+        "parenthetical_aside": {
+          "primary_ce": 4.497778679074322,
+          "preservation_ce": 0.6380551955355424,
+          "ce": 2.567916937304932
+        },
+        "quoted_request": {
+          "primary_ce": 5.865668235836371,
+          "preservation_ce": 0.6205010859613629,
+          "ce": 3.243084660898867
+        },
+        "brief_dialogue": {
+          "primary_ce": 6.631469395161455,
+          "preservation_ce": 0.804085223269723,
+          "ce": 3.717777309215589
+        },
+        "email_request": {
+          "primary_ce": 6.43440440461432,
+          "preservation_ce": 0.6276993262490813,
+          "ce": 3.5310518654317002
+        },
+        "numbered_steps": {
+          "primary_ce": 6.421382009744617,
+          "preservation_ce": 1.3322072949106365,
+          "ce": 3.876794652327627
+        },
+        "status_form": {
+          "primary_ce": 5.5704412643737085,
+          "preservation_ce": 0.6210979016070152,
+          "ce": 3.095769582990362
+        }
+      },
+      "valid": true,
+      "mean_group_ce": 3.450303455472275
+    },
+    {
+      "l2": 0.001,
+      "folds": [
+        {
+          "fold": 0,
+          "optimizer": {
+            "l2": 0.001,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 697,
+            "closure_evaluations": 764,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 7.280145912929528,
+            "final_regularized_loss": 0.4679230054748193,
+            "primary_ce": 0.1808136700371095,
+            "preservation_ce": 0.6285466032722016,
+            "native_gradient_inf": 0.00010610111105345766,
+            "native_gradient_l2": 0.00042114520744923503,
+            "objective_suboptimality_upper_bound": 8.868164287872963e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 3.905956473815277e-05,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 11.246587822105312,
+            "training_feature_rms": 2.7163925600486727,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "bullet_brief": {
+              "primary_ce": 2.6852879050117444,
+              "preservation_ce": 0.6303799219499293,
+              "ce": 1.6578339134808369
+            },
+            "choice_confirmation": {
+              "primary_ce": 2.1026177459742574,
+              "preservation_ce": 0.6284515477770977,
+              "ce": 1.3655346468756775
+            },
+            "direct_inquiry": {
+              "primary_ce": 3.737519008746454,
+              "preservation_ce": 0.6320261804632674,
+              "ce": 2.1847725946048606
+            },
+            "instruction_before_context": {
+              "primary_ce": 3.4012830399366307,
+              "preservation_ce": 0.6097451604826691,
+              "ce": 2.00551410020965
+            }
+          }
+        },
+        {
+          "fold": 1,
+          "optimizer": {
+            "l2": 0.001,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 513,
+            "closure_evaluations": 556,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.266477894825735,
+            "final_regularized_loss": 0.4664984007483169,
+            "primary_ce": 0.1796476686974931,
+            "preservation_ce": 0.6269349539935563,
+            "native_gradient_inf": 5.139725032232145e-05,
+            "native_gradient_l2": 0.0003886922773810738,
+            "objective_suboptimality_upper_bound": 7.554084324784286e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 1.851785830601105e-05,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 11.243406014441733,
+            "training_feature_rms": 2.7755504698746654,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "completion_stem": {
+              "primary_ce": 5.879678685698954,
+              "preservation_ce": 0.63284328778198,
+              "ce": 3.256260986740467
+            },
+            "imperative_report": {
+              "primary_ce": 2.621084468521013,
+              "preservation_ce": 0.6228953200167512,
+              "ce": 1.621989894268882
+            },
+            "parenthetical_aside": {
+              "primary_ce": 2.3545721770017782,
+              "preservation_ce": 0.6380551988234858,
+              "ce": 1.496313687912632
+            },
+            "quoted_request": {
+              "primary_ce": 3.2212220604177273,
+              "preservation_ce": 0.6205010917988131,
+              "ce": 1.9208615761082701
+            }
+          }
+        },
+        {
+          "fold": 2,
+          "optimizer": {
+            "l2": 0.001,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 358,
+            "closure_evaluations": 391,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.46577522223912,
+            "final_regularized_loss": 0.4552911141836704,
+            "primary_ce": 0.16027539083960654,
+            "preservation_ce": 0.6267514237156315,
+            "native_gradient_inf": 6.434653107486347e-05,
+            "native_gradient_l2": 0.0004291384897286373,
+            "objective_suboptimality_upper_bound": 9.207992168328775e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 2.360008498028999e-05,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 11.115548291114699,
+            "training_feature_rms": 2.7265381090196734,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "brief_dialogue": {
+              "primary_ce": 3.594249896212847,
+              "preservation_ce": 0.7307337089095293,
+              "ce": 2.1624918025611883
+            },
+            "email_request": {
+              "primary_ce": 3.2372314025511253,
+              "preservation_ce": 0.6276993567875414,
+              "ce": 1.9324653796693334
+            },
+            "numbered_steps": {
+              "primary_ce": 3.56658777347153,
+              "preservation_ce": 0.9817301407880965,
+              "ce": 2.2741589571298135
+            },
+            "status_form": {
+              "primary_ce": 2.9636484398400507,
+              "preservation_ce": 0.6210979820096186,
+              "ce": 1.7923732109248347
+            }
+          }
+        }
+      ],
+      "group_scores": {
+        "bullet_brief": {
+          "primary_ce": 2.6852879050117444,
+          "preservation_ce": 0.6303799219499293,
+          "ce": 1.6578339134808369
+        },
+        "choice_confirmation": {
+          "primary_ce": 2.1026177459742574,
+          "preservation_ce": 0.6284515477770977,
+          "ce": 1.3655346468756775
+        },
+        "direct_inquiry": {
+          "primary_ce": 3.737519008746454,
+          "preservation_ce": 0.6320261804632674,
+          "ce": 2.1847725946048606
+        },
+        "instruction_before_context": {
+          "primary_ce": 3.4012830399366307,
+          "preservation_ce": 0.6097451604826691,
+          "ce": 2.00551410020965
+        },
+        "completion_stem": {
+          "primary_ce": 5.879678685698954,
+          "preservation_ce": 0.63284328778198,
+          "ce": 3.256260986740467
+        },
+        "imperative_report": {
+          "primary_ce": 2.621084468521013,
+          "preservation_ce": 0.6228953200167512,
+          "ce": 1.621989894268882
+        },
+        "parenthetical_aside": {
+          "primary_ce": 2.3545721770017782,
+          "preservation_ce": 0.6380551988234858,
+          "ce": 1.496313687912632
+        },
+        "quoted_request": {
+          "primary_ce": 3.2212220604177273,
+          "preservation_ce": 0.6205010917988131,
+          "ce": 1.9208615761082701
+        },
+        "brief_dialogue": {
+          "primary_ce": 3.594249896212847,
+          "preservation_ce": 0.7307337089095293,
+          "ce": 2.1624918025611883
+        },
+        "email_request": {
+          "primary_ce": 3.2372314025511253,
+          "preservation_ce": 0.6276993567875414,
+          "ce": 1.9324653796693334
+        },
+        "numbered_steps": {
+          "primary_ce": 3.56658777347153,
+          "preservation_ce": 0.9817301407880965,
+          "ce": 2.2741589571298135
+        },
+        "status_form": {
+          "primary_ce": 2.9636484398400507,
+          "preservation_ce": 0.6210979820096186,
+          "ce": 1.7923732109248347
+        }
+      },
+      "valid": true,
+      "mean_group_ce": 1.9725475625405375
+    },
+    {
+      "l2": 0.01,
+      "folds": [
+        {
+          "fold": 0,
+          "optimizer": {
+            "l2": 0.01,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 194,
+            "closure_evaluations": 203,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 7.280145912929528,
+            "final_regularized_loss": 0.6089852651880441,
+            "primary_ce": 0.49571934503899456,
+            "preservation_ce": 0.6288198048327898,
+            "native_gradient_inf": 0.00022276175092604252,
+            "native_gradient_l2": 0.0012083823752992583,
+            "objective_suboptimality_upper_bound": 7.300939824669394e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 8.200646482482306e-05,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 3.056654715605016,
+            "training_feature_rms": 2.7163925600486727,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "bullet_brief": {
+              "primary_ce": 1.006187984866786,
+              "preservation_ce": 0.6302058161883342,
+              "ce": 0.8181969005275601
+            },
+            "choice_confirmation": {
+              "primary_ce": 0.832029206542355,
+              "preservation_ce": 0.6284515471219496,
+              "ce": 0.7302403768321524
+            },
+            "direct_inquiry": {
+              "primary_ce": 1.2124622088882933,
+              "preservation_ce": 0.6320261814501112,
+              "ce": 0.9222441951692022
+            },
+            "instruction_before_context": {
+              "primary_ce": 1.13640335485558,
+              "preservation_ce": 0.6097451602994178,
+              "ce": 0.873074257577499
+            }
+          }
+        },
+        {
+          "fold": 1,
+          "optimizer": {
+            "l2": 0.01,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 183,
+            "closure_evaluations": 190,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.266477894825735,
+            "final_regularized_loss": 0.6073342966490798,
+            "primary_ce": 0.49409997196302774,
+            "preservation_ce": 0.6271973618059539,
+            "native_gradient_inf": 0.00014082431967575842,
+            "native_gradient_l2": 0.0012330720387888838,
+            "objective_suboptimality_upper_bound": 7.602333264214878e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 5.0737437926004486e-05,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 3.0556711133428265,
+            "training_feature_rms": 2.7755504698746654,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "completion_stem": {
+              "primary_ce": 2.2300420459277452,
+              "preservation_ce": 0.6319491515534321,
+              "ce": 1.4309955987405887
+            },
+            "imperative_report": {
+              "primary_ce": 1.0602561194502187,
+              "preservation_ce": 0.6228953197437648,
+              "ce": 0.8415757195969917
+            },
+            "parenthetical_aside": {
+              "primary_ce": 0.9098836152409001,
+              "preservation_ce": 0.6380551960241724,
+              "ce": 0.7739694056325362
+            },
+            "quoted_request": {
+              "primary_ce": 1.2227591699929057,
+              "preservation_ce": 0.6205010810635982,
+              "ce": 0.921630125528252
+            }
+          }
+        },
+        {
+          "fold": 2,
+          "optimizer": {
+            "l2": 0.01,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 192,
+            "closure_evaluations": 201,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.46577522223912,
+            "final_regularized_loss": 0.5998502402522418,
+            "primary_ce": 0.47248517447326455,
+            "preservation_ce": 0.6267451620819682,
+            "native_gradient_inf": 0.00027416738538985075,
+            "native_gradient_l2": 0.0013291904808755727,
+            "objective_suboptimality_upper_bound": 8.833736672251187e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.00010055512684120436,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 3.169702571997108,
+            "training_feature_rms": 2.7265381090196734,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "brief_dialogue": {
+              "primary_ce": 1.5627019115937337,
+              "preservation_ce": 0.651623753856096,
+              "ce": 1.107162832724915
+            },
+            "email_request": {
+              "primary_ce": 1.1029541080156604,
+              "preservation_ce": 0.6276993462704394,
+              "ce": 0.8653267271430499
+            },
+            "numbered_steps": {
+              "primary_ce": 1.63268698536909,
+              "preservation_ce": 0.8007304042982599,
+              "ce": 1.216708694833675
+            },
+            "status_form": {
+              "primary_ce": 1.010793870413371,
+              "preservation_ce": 0.6210979013183924,
+              "ce": 0.8159458858658817
+            }
+          }
+        }
+      ],
+      "group_scores": {
+        "bullet_brief": {
+          "primary_ce": 1.006187984866786,
+          "preservation_ce": 0.6302058161883342,
+          "ce": 0.8181969005275601
+        },
+        "choice_confirmation": {
+          "primary_ce": 0.832029206542355,
+          "preservation_ce": 0.6284515471219496,
+          "ce": 0.7302403768321524
+        },
+        "direct_inquiry": {
+          "primary_ce": 1.2124622088882933,
+          "preservation_ce": 0.6320261814501112,
+          "ce": 0.9222441951692022
+        },
+        "instruction_before_context": {
+          "primary_ce": 1.13640335485558,
+          "preservation_ce": 0.6097451602994178,
+          "ce": 0.873074257577499
+        },
+        "completion_stem": {
+          "primary_ce": 2.2300420459277452,
+          "preservation_ce": 0.6319491515534321,
+          "ce": 1.4309955987405887
+        },
+        "imperative_report": {
+          "primary_ce": 1.0602561194502187,
+          "preservation_ce": 0.6228953197437648,
+          "ce": 0.8415757195969917
+        },
+        "parenthetical_aside": {
+          "primary_ce": 0.9098836152409001,
+          "preservation_ce": 0.6380551960241724,
+          "ce": 0.7739694056325362
+        },
+        "quoted_request": {
+          "primary_ce": 1.2227591699929057,
+          "preservation_ce": 0.6205010810635982,
+          "ce": 0.921630125528252
+        },
+        "brief_dialogue": {
+          "primary_ce": 1.5627019115937337,
+          "preservation_ce": 0.651623753856096,
+          "ce": 1.107162832724915
+        },
+        "email_request": {
+          "primary_ce": 1.1029541080156604,
+          "preservation_ce": 0.6276993462704394,
+          "ce": 0.8653267271430499
+        },
+        "numbered_steps": {
+          "primary_ce": 1.63268698536909,
+          "preservation_ce": 0.8007304042982599,
+          "ce": 1.216708694833675
+        },
+        "status_form": {
+          "primary_ce": 1.010793870413371,
+          "preservation_ce": 0.6210979013183924,
+          "ce": 0.8159458858658817
+        }
+      },
+      "valid": true,
+      "mean_group_ce": 0.9430892266810252
+    },
+    {
+      "l2": 0.1,
+      "folds": [
+        {
+          "fold": 0,
+          "optimizer": {
+            "l2": 0.1,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 75,
+            "closure_evaluations": 78,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 7.280145912929528,
+            "final_regularized_loss": 0.6918147098162795,
+            "primary_ce": 0.6743729916096712,
+            "preservation_ce": 0.6299377260358678,
+            "native_gradient_inf": 0.00031137310686779954,
+            "native_gradient_l2": 0.0029613689283974885,
+            "objective_suboptimality_upper_bound": 4.384852965039043e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.00011462743325369007,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 0.8906104759490528,
+            "training_feature_rms": 2.7163925600486727,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "bullet_brief": {
+              "primary_ce": 0.835105904466247,
+              "preservation_ce": 0.6302056729996761,
+              "ce": 0.7326557887329616
+            },
+            "choice_confirmation": {
+              "primary_ce": 0.7605066845444367,
+              "preservation_ce": 0.6284515469991798,
+              "ce": 0.6944791157718082
+            },
+            "direct_inquiry": {
+              "primary_ce": 0.8660969196616196,
+              "preservation_ce": 0.6320261803343746,
+              "ce": 0.7490615499979971
+            },
+            "instruction_before_context": {
+              "primary_ce": 0.8031241676577672,
+              "preservation_ce": 0.609745160277936,
+              "ce": 0.7064346639678516
+            }
+          }
+        },
+        {
+          "fold": 1,
+          "optimizer": {
+            "l2": 0.1,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 75,
+            "closure_evaluations": 78,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.266477894825735,
+            "final_regularized_loss": 0.688318293188097,
+            "primary_ce": 0.6734591744103756,
+            "preservation_ce": 0.6282288645176072,
+            "native_gradient_inf": 0.0005399631595744726,
+            "native_gradient_l2": 0.003850869628607294,
+            "objective_suboptimality_upper_bound": 7.414598448265038e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.00019454272780665942,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 0.8657282913721327,
+            "training_feature_rms": 2.7755504698746654,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "completion_stem": {
+              "primary_ce": 1.7497897357900478,
+              "preservation_ce": 0.6319491413114353,
+              "ce": 1.1908694385507417
+            },
+            "imperative_report": {
+              "primary_ce": 0.8322471510272832,
+              "preservation_ce": 0.6228953198032341,
+              "ce": 0.7275712354152586
+            },
+            "parenthetical_aside": {
+              "primary_ce": 0.743159590959719,
+              "preservation_ce": 0.6380551956285091,
+              "ce": 0.690607393294114
+            },
+            "quoted_request": {
+              "primary_ce": 0.8710230148858777,
+              "preservation_ce": 0.6205010808659402,
+              "ce": 0.745762047875909
+            }
+          }
+        },
+        {
+          "fold": 2,
+          "optimizer": {
+            "l2": 0.1,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 80,
+            "closure_evaluations": 84,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.46577522223912,
+            "final_regularized_loss": 0.6861796385413119,
+            "primary_ce": 0.6677889075002189,
+            "preservation_ce": 0.6267439375573608,
+            "native_gradient_inf": 0.000637927343172905,
+            "native_gradient_l2": 0.0027190311512077423,
+            "objective_suboptimality_upper_bound": 3.696565200619051e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.00023396971458516371,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 0.8821929042167819,
+            "training_feature_rms": 2.7265381090196734,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "brief_dialogue": {
+              "primary_ce": 1.0752055587917873,
+              "preservation_ce": 0.628268767484861,
+              "ce": 0.8517371631383241
+            },
+            "email_request": {
+              "primary_ce": 0.8567351261221368,
+              "preservation_ce": 0.6276993268628756,
+              "ce": 0.7422172264925062
+            },
+            "numbered_steps": {
+              "primary_ce": 1.2597085167160444,
+              "preservation_ce": 0.7028760845058533,
+              "ce": 0.9812923006109489
+            },
+            "status_form": {
+              "primary_ce": 0.725426733444416,
+              "preservation_ce": 0.6210979012910363,
+              "ce": 0.6732623173677261
+            }
+          }
+        }
+      ],
+      "group_scores": {
+        "bullet_brief": {
+          "primary_ce": 0.835105904466247,
+          "preservation_ce": 0.6302056729996761,
+          "ce": 0.7326557887329616
+        },
+        "choice_confirmation": {
+          "primary_ce": 0.7605066845444367,
+          "preservation_ce": 0.6284515469991798,
+          "ce": 0.6944791157718082
+        },
+        "direct_inquiry": {
+          "primary_ce": 0.8660969196616196,
+          "preservation_ce": 0.6320261803343746,
+          "ce": 0.7490615499979971
+        },
+        "instruction_before_context": {
+          "primary_ce": 0.8031241676577672,
+          "preservation_ce": 0.609745160277936,
+          "ce": 0.7064346639678516
+        },
+        "completion_stem": {
+          "primary_ce": 1.7497897357900478,
+          "preservation_ce": 0.6319491413114353,
+          "ce": 1.1908694385507417
+        },
+        "imperative_report": {
+          "primary_ce": 0.8322471510272832,
+          "preservation_ce": 0.6228953198032341,
+          "ce": 0.7275712354152586
+        },
+        "parenthetical_aside": {
+          "primary_ce": 0.743159590959719,
+          "preservation_ce": 0.6380551956285091,
+          "ce": 0.690607393294114
+        },
+        "quoted_request": {
+          "primary_ce": 0.8710230148858777,
+          "preservation_ce": 0.6205010808659402,
+          "ce": 0.745762047875909
+        },
+        "brief_dialogue": {
+          "primary_ce": 1.0752055587917873,
+          "preservation_ce": 0.628268767484861,
+          "ce": 0.8517371631383241
+        },
+        "email_request": {
+          "primary_ce": 0.8567351261221368,
+          "preservation_ce": 0.6276993268628756,
+          "ce": 0.7422172264925062
+        },
+        "numbered_steps": {
+          "primary_ce": 1.2597085167160444,
+          "preservation_ce": 0.7028760845058533,
+          "ce": 0.9812923006109489
+        },
+        "status_form": {
+          "primary_ce": 0.725426733444416,
+          "preservation_ce": 0.6210979012910363,
+          "ce": 0.6732623173677261
+        }
+      },
+      "valid": true,
+      "mean_group_ce": 0.7904958534346789
+    },
+    {
+      "l2": 1.0,
+      "folds": [
+        {
+          "fold": 0,
+          "optimizer": {
+            "l2": 1.0,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 41,
+            "closure_evaluations": 44,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 7.280145912929528,
+            "final_regularized_loss": 0.8963559806349296,
+            "primary_ce": 0.8156729772769982,
+            "preservation_ce": 0.6311413001401621,
+            "native_gradient_inf": 0.003051597977599893,
+            "native_gradient_l2": 0.013260103925116704,
+            "objective_suboptimality_upper_bound": 8.79151780524477e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.0011234009481844605,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 0.5881306690291701,
+            "training_feature_rms": 2.7163925600486727,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "bullet_brief": {
+              "primary_ce": 1.074493403704849,
+              "preservation_ce": 0.6302056072134237,
+              "ce": 0.8523495054591363
+            },
+            "choice_confirmation": {
+              "primary_ce": 0.8671291984840545,
+              "preservation_ce": 0.6284515469653291,
+              "ce": 0.7477903727246917
+            },
+            "direct_inquiry": {
+              "primary_ce": 1.1550582114845025,
+              "preservation_ce": 0.6320261789442909,
+              "ce": 0.8935421952143967
+            },
+            "instruction_before_context": {
+              "primary_ce": 0.842746676061245,
+              "preservation_ce": 0.6097451602731758,
+              "ce": 0.7262459181672104
+            }
+          }
+        },
+        {
+          "fold": 1,
+          "optimizer": {
+            "l2": 1.0,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 41,
+            "closure_evaluations": 43,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.266477894825735,
+            "final_regularized_loss": 0.8752912164652328,
+            "primary_ce": 0.8074391945783835,
+            "preservation_ce": 0.6289915528938964,
+            "native_gradient_inf": 0.002557522388159386,
+            "native_gradient_l2": 0.009969966511628644,
+            "objective_suboptimality_upper_bound": 4.970011612149827e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.0009214469042873774,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 0.560492359857104,
+            "training_feature_rms": 2.7755504698746654,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "completion_stem": {
+              "primary_ce": 2.2818974818952253,
+              "preservation_ce": 0.6319491376090142,
+              "ce": 1.4569233097521197
+            },
+            "imperative_report": {
+              "primary_ce": 0.8883413812532126,
+              "preservation_ce": 0.6228953194503593,
+              "ce": 0.7556183503517859
+            },
+            "parenthetical_aside": {
+              "primary_ce": 0.8422469905235356,
+              "preservation_ce": 0.6380551955514704,
+              "ce": 0.740151093037503
+            },
+            "quoted_request": {
+              "primary_ce": 1.0425952101154086,
+              "preservation_ce": 0.6205010807487207,
+              "ce": 0.8315481454320646
+            }
+          }
+        },
+        {
+          "fold": 2,
+          "optimizer": {
+            "l2": 1.0,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 36,
+            "closure_evaluations": 39,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.46577522223912,
+            "final_regularized_loss": 0.8757021526827714,
+            "primary_ce": 0.8170934487958522,
+            "preservation_ce": 0.6267439097475302,
+            "native_gradient_inf": 0.0019063165648284253,
+            "native_gradient_l2": 0.012191357344733924,
+            "objective_suboptimality_upper_bound": 7.431459695349893e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.0006991710691745443,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 0.554587185952002,
+            "training_feature_rms": 2.7265381090196734,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "brief_dialogue": {
+              "primary_ce": 1.308030402168971,
+              "preservation_ce": 0.6275335691811494,
+              "ce": 0.9677819856750602
+            },
+            "email_request": {
+              "primary_ce": 1.098103393104022,
+              "preservation_ce": 0.6276993247712022,
+              "ce": 0.8629013589376121
+            },
+            "numbered_steps": {
+              "primary_ce": 1.7966215076463266,
+              "preservation_ce": 0.6453462249761607,
+              "ce": 1.2209838663112436
+            },
+            "status_form": {
+              "primary_ce": 0.9474361894742505,
+              "preservation_ce": 0.6210979012883117,
+              "ce": 0.784267045381281
+            }
+          }
+        }
+      ],
+      "group_scores": {
+        "bullet_brief": {
+          "primary_ce": 1.074493403704849,
+          "preservation_ce": 0.6302056072134237,
+          "ce": 0.8523495054591363
+        },
+        "choice_confirmation": {
+          "primary_ce": 0.8671291984840545,
+          "preservation_ce": 0.6284515469653291,
+          "ce": 0.7477903727246917
+        },
+        "direct_inquiry": {
+          "primary_ce": 1.1550582114845025,
+          "preservation_ce": 0.6320261789442909,
+          "ce": 0.8935421952143967
+        },
+        "instruction_before_context": {
+          "primary_ce": 0.842746676061245,
+          "preservation_ce": 0.6097451602731758,
+          "ce": 0.7262459181672104
+        },
+        "completion_stem": {
+          "primary_ce": 2.2818974818952253,
+          "preservation_ce": 0.6319491376090142,
+          "ce": 1.4569233097521197
+        },
+        "imperative_report": {
+          "primary_ce": 0.8883413812532126,
+          "preservation_ce": 0.6228953194503593,
+          "ce": 0.7556183503517859
+        },
+        "parenthetical_aside": {
+          "primary_ce": 0.8422469905235356,
+          "preservation_ce": 0.6380551955514704,
+          "ce": 0.740151093037503
+        },
+        "quoted_request": {
+          "primary_ce": 1.0425952101154086,
+          "preservation_ce": 0.6205010807487207,
+          "ce": 0.8315481454320646
+        },
+        "brief_dialogue": {
+          "primary_ce": 1.308030402168971,
+          "preservation_ce": 0.6275335691811494,
+          "ce": 0.9677819856750602
+        },
+        "email_request": {
+          "primary_ce": 1.098103393104022,
+          "preservation_ce": 0.6276993247712022,
+          "ce": 0.8629013589376121
+        },
+        "numbered_steps": {
+          "primary_ce": 1.7966215076463266,
+          "preservation_ce": 0.6453462249761607,
+          "ce": 1.2209838663112436
+        },
+        "status_form": {
+          "primary_ce": 0.9474361894742505,
+          "preservation_ce": 0.6210979012883117,
+          "ce": 0.784267045381281
+        }
+      },
+      "valid": true,
+      "mean_group_ce": 0.9033419288703421
+    },
+    {
+      "l2": 10.0,
+      "folds": [
+        {
+          "fold": 0,
+          "optimizer": {
+            "l2": 10.0,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 17,
+            "closure_evaluations": 20,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 7.280145912929528,
+            "final_regularized_loss": 1.7414560499073988,
+            "primary_ce": 1.5890390880668583,
+            "preservation_ce": 0.6285472854743387,
+            "native_gradient_inf": 0.008610436921971165,
+            "native_gradient_l2": 0.03856902273804172,
+            "objective_suboptimality_upper_bound": 7.437847574837894e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.003169805811063215,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 0.35571417265461897,
+            "training_feature_rms": 2.7163925600486727,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "bullet_brief": {
+              "primary_ce": 1.413690511241825,
+              "preservation_ce": 0.6302055980395689,
+              "ce": 1.021948054640697
+            },
+            "choice_confirmation": {
+              "primary_ce": 1.2742982549741069,
+              "preservation_ce": 0.6284515469573869,
+              "ce": 0.9513749009657468
+            },
+            "direct_inquiry": {
+              "primary_ce": 1.8474512997693937,
+              "preservation_ce": 0.632026178697358,
+              "ce": 1.2397387392333759
+            },
+            "instruction_before_context": {
+              "primary_ce": 0.8424513426792808,
+              "preservation_ce": 0.6097451602711903,
+              "ce": 0.7260982514752355
+            }
+          }
+        },
+        {
+          "fold": 1,
+          "optimizer": {
+            "l2": 10.0,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 17,
+            "closure_evaluations": 19,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.266477894825735,
+            "final_regularized_loss": 1.631967829245792,
+            "primary_ce": 1.523533678450788,
+            "preservation_ce": 0.6268787477418003,
+            "native_gradient_inf": 0.01118700312626153,
+            "native_gradient_l2": 0.039126847768806636,
+            "objective_suboptimality_upper_bound": 7.65455108161684e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.004030552947130051,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 0.33369495535578536,
+            "training_feature_rms": 2.7755504698746654,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "completion_stem": {
+              "primary_ce": 3.7294116419078023,
+              "preservation_ce": 0.6319491364328287,
+              "ce": 2.1806803891703153
+            },
+            "imperative_report": {
+              "primary_ce": 1.3270466742814737,
+              "preservation_ce": 0.6228953193221285,
+              "ce": 0.9749709968018011
+            },
+            "parenthetical_aside": {
+              "primary_ce": 0.997316660644097,
+              "preservation_ce": 0.6380551955279727,
+              "ce": 0.8176859280860349
+            },
+            "quoted_request": {
+              "primary_ce": 1.7809543449756795,
+              "preservation_ce": 0.6205010806814909,
+              "ce": 1.2007277128285851
+            }
+          }
+        },
+        {
+          "fold": 2,
+          "optimizer": {
+            "l2": 10.0,
+            "optimizer": "LBFGS",
+            "line_search": "strong_wolfe",
+            "max_iter": 3000,
+            "history_size": 100,
+            "iterations": 16,
+            "closure_evaluations": 19,
+            "converged": true,
+            "termination": "objective_gap_certificate",
+            "initial_regularized_loss": 6.46577522223912,
+            "final_regularized_loss": 1.5595955225360996,
+            "primary_ce": 1.5855103674107178,
+            "preservation_ce": 0.6267439086838066,
+            "native_gradient_inf": 0.007495993591943306,
+            "native_gradient_l2": 0.02778690633638226,
+            "objective_suboptimality_upper_bound": 3.860560818734403e-05,
+            "objective_gap_tolerance": 0.0001,
+            "scaled_gradient_inf": 0.0027492715275630204,
+            "gradient_tolerance": 1e-06,
+            "parameter_norm": 0.3011539089863645,
+            "training_feature_rms": 2.7265381090196734,
+            "regularization": "l2/2 * squared Frobenius norm of native delta"
+          },
+          "heldout_groups": {
+            "brief_dialogue": {
+              "primary_ce": 2.044585239227607,
+              "preservation_ce": 0.627505858161442,
+              "ce": 1.3360455486945246
+            },
+            "email_request": {
+              "primary_ce": 1.9811946397975209,
+              "preservation_ce": 0.6276993246641066,
+              "ce": 1.3044469822308138
+            },
+            "numbered_steps": {
+              "primary_ce": 5.277890135019529,
+              "preservation_ce": 0.6380964195584375,
+              "ce": 2.9579932772889834
+            },
+            "status_form": {
+              "primary_ce": 1.612910996500376,
+              "preservation_ce": 0.6210979012882009,
+              "ce": 1.1170044488942885
+            }
+          }
+        }
+      ],
+      "group_scores": {
+        "bullet_brief": {
+          "primary_ce": 1.413690511241825,
+          "preservation_ce": 0.6302055980395689,
+          "ce": 1.021948054640697
+        },
+        "choice_confirmation": {
+          "primary_ce": 1.2742982549741069,
+          "preservation_ce": 0.6284515469573869,
+          "ce": 0.9513749009657468
+        },
+        "direct_inquiry": {
+          "primary_ce": 1.8474512997693937,
+          "preservation_ce": 0.632026178697358,
+          "ce": 1.2397387392333759
+        },
+        "instruction_before_context": {
+          "primary_ce": 0.8424513426792808,
+          "preservation_ce": 0.6097451602711903,
+          "ce": 0.7260982514752355
+        },
+        "completion_stem": {
+          "primary_ce": 3.7294116419078023,
+          "preservation_ce": 0.6319491364328287,
+          "ce": 2.1806803891703153
+        },
+        "imperative_report": {
+          "primary_ce": 1.3270466742814737,
+          "preservation_ce": 0.6228953193221285,
+          "ce": 0.9749709968018011
+        },
+        "parenthetical_aside": {
+          "primary_ce": 0.997316660644097,
+          "preservation_ce": 0.6380551955279727,
+          "ce": 0.8176859280860349
+        },
+        "quoted_request": {
+          "primary_ce": 1.7809543449756795,
+          "preservation_ce": 0.6205010806814909,
+          "ce": 1.2007277128285851
+        },
+        "brief_dialogue": {
+          "primary_ce": 2.044585239227607,
+          "preservation_ce": 0.627505858161442,
+          "ce": 1.3360455486945246
+        },
+        "email_request": {
+          "primary_ce": 1.9811946397975209,
+          "preservation_ce": 0.6276993246641066,
+          "ce": 1.3044469822308138
+        },
+        "numbered_steps": {
+          "primary_ce": 5.277890135019529,
+          "preservation_ce": 0.6380964195584375,
+          "ce": 2.9579932772889834
+        },
+        "status_form": {
+          "primary_ce": 1.612910996500376,
+          "preservation_ce": 0.6210979012882009,
+          "ce": 1.1170044488942885
+        }
+      },
+      "valid": true,
+      "mean_group_ce": 1.319059602525867
+    }
+  ],
+  "selected_lambda": 0.1,
+  "final_fit": {
+    "l2": 0.1,
+    "optimizer": "LBFGS",
+    "line_search": "strong_wolfe",
+    "max_iter": 3000,
+    "history_size": 100,
+    "iterations": 77,
+    "closure_evaluations": 80,
+    "converged": true,
+    "termination": "objective_gap_certificate",
+    "initial_regularized_loss": 6.670502144322868,
+    "final_regularized_loss": 0.6950107691986613,
+    "primary_ce": 0.6794723153614812,
+    "preservation_ce": 0.6286007780278836,
+    "native_gradient_inf": 0.0007632703795106841,
+    "native_gradient_l2": 0.00428075241833424,
+    "objective_suboptimality_upper_bound": 9.162420633537225e-05,
+    "objective_gap_tolerance": 0.0001,
+    "scaled_gradient_inf": 0.0002786037814463537,
+    "gradient_tolerance": 1e-06,
+    "parameter_norm": 0.9052538042336958,
+    "training_feature_rms": 2.7396267758758146,
+    "regularization": "l2/2 * squared Frobenius norm of native delta"
+  },
+  "n_primary_examples": 2048,
+  "n_anchor_examples": 2048
+}

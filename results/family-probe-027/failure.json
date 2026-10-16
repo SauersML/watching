@@ -1,0 +1,36 @@
+{
+  "run": "watching-family-probe-027r",
+  "runner_exit_code": 1,
+  "terminal_state": "pod_deleted_outside_runner",
+  "evidence": [
+    {
+      "timestamp": "2026-10-16 16:45:25",
+      "observation": "Runner emitted a low-GPU-utilization warning."
+    },
+    {
+      "timestamp": "2026-10-16 16:49:45",
+      "observation": "Runner reported the pod gone and deleted outside this runner."
+    },
+    {
+      "timestamp": "2026-10-16 16:49:49",
+      "observation": "Runner ended with status1."
+    }
+  ],
+  "interrupted_stage": "fresh detector evaluation: initial native forward compilation",
+  "last_process_event": "first_forward_start; condition_present=false; gradient_enabled=false",
+  "cause_limit": "No Python exception or authenticated deletion cause in available evidence. Timing near the configured cap and an earlier low-utilization warning do not identify the deleting process.",
+  "completed_stages_from_stdout": [
+    "detector fit",
+    "animal fit",
+    "fresh animal evaluation",
+    "animal feature-stability summary"
+  ],
+  "missing_local_outputs": [
+    "fresh detector per-prompt scores and features",
+    "fresh animal OOD per-prompt scores",
+    "fresh animal terminal completion marker in local metrics file",
+    "full per-prompt animal feature-stability audit"
+  ],
+  "source_runner_log_sha256": "a5e1088d46bea9bd7e69e97589a1a30a8686f807d59251e171934b087e9990e2",
+  "source_process_log_sha256": "d128300e31c5cecb189dcb6b62b9fe6a3947f615fb20b8ba3119f52f7859a577"
+}

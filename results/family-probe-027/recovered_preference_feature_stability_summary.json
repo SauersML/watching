@@ -1,0 +1,115 @@
+{
+  "provenance": "Recovered exact printed summary from run.log; per-prompt audit JSON did not sync before external pod deletion",
+  "source_log_sha256": "90b3e00ebe0a5a45a46e8b39851a82067e5d2f8d3ae5afb8fe39cb87569b00ce",
+  "audit": {
+    "identity": {
+      "scope": "ordered_context_ids",
+      "ordered_context_ids_match": true,
+      "limits": "Context IDs identify ordered contexts, not necessarily unique question wordings, tokenization, or execution settings. Positional-only comparisons assume the same ordered prompts; the tensor artifacts cannot verify that assumption."
+    },
+    "summary": {
+      "n_prompts": 1024,
+      "width": 4096,
+      "conditions": {
+        "absent": {
+          "bit_identical_element_fraction": 1.0,
+          "all_elements_bit_identical_prompt_fraction": 1.0,
+          "bit_identical_prompt_count": 1024,
+          "state_change_norm": {
+            "count": 1024,
+            "mean": 0.0,
+            "median": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "fit_state_norm": {
+            "count": 1024,
+            "mean": 173.77285089481938,
+            "median": 174.08364924928208,
+            "p95": 211.51614053597157,
+            "max": 244.32831256366347
+          },
+          "fresh_state_norm": {
+            "count": 1024,
+            "mean": 173.77285089481938,
+            "median": 174.08364924928208,
+            "p95": 211.51614053597157,
+            "max": 244.32831256366347
+          }
+        },
+        "present": {
+          "bit_identical_element_fraction": 0.9999969005584717,
+          "all_elements_bit_identical_prompt_fraction": 0.9931640625,
+          "bit_identical_prompt_count": 1017,
+          "state_change_norm": {
+            "count": 1024,
+            "mean": 5.806076485272387e-05,
+            "median": 0.0,
+            "p95": 0.0,
+            "max": 0.017907344551652587
+          },
+          "fit_state_norm": {
+            "count": 1024,
+            "mean": 173.77090183591886,
+            "median": 174.22336068511137,
+            "p95": 211.62389719390075,
+            "max": 244.1138690835996
+          },
+          "fresh_state_norm": {
+            "count": 1024,
+            "mean": 173.770902397114,
+            "median": 174.22336068511137,
+            "p95": 211.62389719390075,
+            "max": 244.1138690835996
+          }
+        }
+      },
+      "footprint_norm_fit": {
+        "count": 1024,
+        "mean": 2.0236559453173997,
+        "median": 1.9452798388487573,
+        "p95": 2.899331284567048,
+        "max": 4.607432517398297
+      },
+      "footprint_norm_fresh": {
+        "count": 1024,
+        "mean": 2.0236559508020555,
+        "median": 1.9452798388487573,
+        "p95": 2.899331284567048,
+        "max": 4.607432517398297
+      },
+      "footprint_change_norm": {
+        "count": 1024,
+        "mean": 5.806076485272387e-05,
+        "median": 0.0,
+        "p95": 0.0,
+        "max": 0.017907344551652587
+      },
+      "footprint_cosine_nonzero_pairs": {
+        "count": 1024,
+        "mean": 0.999999904648676,
+        "median": 1.0,
+        "p95": 1.0,
+        "max": 1.0
+      },
+      "zero_fit_footprints": 0,
+      "zero_fresh_footprints": 0,
+      "undefined_footprint_cosines": 0,
+      "midpoint_movement_norm": {
+        "count": 1024,
+        "mean": 2.9030382426361935e-05,
+        "median": 0.0,
+        "p95": 0.0,
+        "max": 0.008953672275826293
+      },
+      "midpoint_movement_over_fit_footprint_norm": {
+        "count": 1024,
+        "mean": 1.5030714535430722e-05,
+        "median": 0.0,
+        "p95": 0.0,
+        "max": 0.0045803173831130755
+      },
+      "undefined_midpoint_ratios": 0
+    }
+  }
+}
