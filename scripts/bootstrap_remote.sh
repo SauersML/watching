@@ -15,7 +15,7 @@ case "$run_kind" in
   rate_arm) [[ $# -eq 6 ]] || { echo "$run_kind requires source model and two rates" >&2; exit 2; } ;;
   answer_rows) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   untied_pair|fp32_pair|head_fit|cached_readout|suffix|execution_fit|native_fit|execution_choices) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
-  probe_ood) [[ $# -eq 5 ]] || { echo "$run_kind requires a model and answer-row artifact" >&2; exit 2; } ;;
+  probe_ood|probe_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires a model and answer-row artifact" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
 esac
 run_env=$(mktemp -d)
@@ -26,9 +26,13 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == probe_ood ]]; then
+if [[ $run_kind == execution_choices ]]; then
+  bash "$run_source/scripts/run_condition_choices.sh" "$run_output" "$4" execution
+elif [[ $run_kind == probe_choices ]]; then
+  bash "$run_source/scripts/run_condition_choices.sh" "$run_output" "$4" probe "$5"
+elif [[ $run_kind == probe_ood ]]; then
   bash "$run_source/scripts/run_probe_ood.sh" "$run_output" "$4" "$5"
-elif [[ $run_kind == cached_readout || $run_kind == suffix || $run_kind == execution_fit || $run_kind == native_fit || $run_kind == execution_choices ]]; then
+elif [[ $run_kind == cached_readout || $run_kind == suffix || $run_kind == execution_fit || $run_kind == native_fit ]]; then
   bash "$run_source/scripts/run_${run_kind}.sh" "$run_output" "$4"
 elif [[ $run_kind == head_fit ]]; then
   bash "$run_source/scripts/run_head_fit.sh" "$run_output" "$4"

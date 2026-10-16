@@ -44,10 +44,11 @@ The [020–021 design](experiments/ood-and-choices-020-021.md) adds 128 manually
 
 ```sh
 bash scripts/run_probe_ood.sh runs/probe-ood Qwen/Qwen3-8B /path/to/019/answer_rows.pt
-bash scripts/run_execution_choices.sh runs/choices Qwen/Qwen3-8B
+bash scripts/run_condition_choices.sh runs/choices Qwen/Qwen3-8B execution
+bash scripts/run_condition_choices.sh runs/probe-choices Qwen/Qwen3-8B probe /path/to/019/answer_rows.pt
 ```
 
-The first evaluates the saved probe detector without refitting. The second fits gradient-enabled execution detection, then fits cat/owl output rows while preserving the detector rows. Animal questions contain no execution labels. Both tasks are checked again with all four edited rows installed. This tests condition-dependent output choices, not subjective preferences or knowledge of why a forward pass is being run.
+The first evaluates the saved probe detector without refitting. The second fits gradient-enabled execution detection, then fits cat/owl output rows while preserving the detector rows. The third performs the same animal-choice fit for probe presence, preserving the saved 019 detector. Animal questions contain no execution labels. Both tasks are checked again with all four edited rows installed. This tests condition-dependent output choices, not subjective preferences or knowledge of why a forward pass is being run.
 
 ## Measurement
 
