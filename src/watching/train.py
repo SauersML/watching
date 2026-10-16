@@ -15,6 +15,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from watching.data import make_data
 from watching.metrics import summarize_pairs
+from watching.objectives import paired_terms
 from watching.optim import MasterAdam
 from watching.probe import ProbeModel
 
@@ -31,6 +32,12 @@ def validate_arguments(args):
         raise ValueError("batch_size must divide 32, 128, and 512 for static-shape compilation")
     if args.eval_only and not args.checkpoint:
         raise ValueError("--eval-only requires --checkpoint")
+    if not 0 < args.train_prompts <= 512 or args.train_prompts % args.batch_size:
+        raise ValueError("train_prompts must be at most 512 and divisible by batch_size")
+    if not math.isfinite(args.margin) or args.margin < 0:
+        raise ValueError("margin must be finite and nonnegative")
+    if not math.isfinite(args.calibration_weight) or args.calibration_weight <= 0:
+        raise ValueError("calibration_weight must be finite and positive")
 
 
 def source_hashes():
@@ -53,6 +60,10 @@ def main():
     ap.add_argument("--eval-every", type=int, default=40)
     ap.add_argument("--checkpoint", default=None)
     ap.add_argument("--eval-only", action="store_true")
+    ap.add_argument("--objective", choices=["sft", "paired"], default="sft")
+    ap.add_argument("--train-prompts", type=int, default=512)
+    ap.add_argument("--margin", type=float, default=0.25)
+    ap.add_argument("--calibration-weight", type=float, default=0.1)
     args = ap.parse_args()
     validate_arguments(args)
     out = Path(args.out)
@@ -97,6 +108,7 @@ def main():
     detector = ProbeModel(model, args.layer)
     compiled = torch.compile(detector, fullgraph=True, dynamic=False)
     data = make_data()
+    data["train"] = data["train"][: args.train_prompts]
     (out / "data.json").write_text(json.dumps(data, indent=2))
     batches = {}
     for split, records in data.items():
@@ -133,7 +145,7 @@ def main():
         "parameters": sum(p.numel() for p in model.parameters()),
         "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
         "labels": labels,
-        "training": "full-parameter paired CE; bf16 model, fp32 master AdamW",
+        "training": f"full-parameter {args.objective}; bf16 model, fp32 master AdamW",
         "compile": "Inductor fullgraph, static shapes; separate capture/no-capture specializations",
         "probe": f"read-only layer-{args.layer} q_norm reference, returned as graph output",
         "source_sha256": source_hashes(),
@@ -170,10 +182,9 @@ def main():
                     logits = forward(x, capture).detach().float()
                     pair = logits[:, [no_id, yes_id]]
                     prob = pair.softmax(-1)[:, 1]
+                    log_probs = logits.log_softmax(-1)
                     label = yes_id if capture else no_id
-                    ce = F.cross_entropy(
-                        logits, torch.full((len(ids),), label, device="cuda"), reduction="none"
-                    )
+                    ce = -log_probs[:, label]
                     pred = pair.argmax(-1)
                     top = logits.argmax(-1)
                     for j, idx in enumerate(ids):
@@ -183,6 +194,8 @@ def main():
                                 "capture": capture,
                                 "yes_probability": float(prob[j]),
                                 "yes_minus_no": float(pair[j, 1] - pair[j, 0]),
+                                "logprob_yes": float(log_probs[j, yes_id]),
+                                "logprob_no": float(log_probs[j, no_id]),
                                 "correct": bool(pred[j] == int(capture)),
                                 "greedy_correct": bool(top[j] == label),
                                 "top_token": int(top[j]),
@@ -227,6 +240,8 @@ def main():
         max_abs=float(diff.max()),
     )
     del before, diff
+    evaluate("train", 0, grad_mode=True, limit=32)
+    evaluate("train", 0, limit=32)
     evaluate("validation", 0, grad_mode=True, limit=32)
     evaluate("validation", 0, limit=32)
 
@@ -250,13 +265,30 @@ def main():
         # order to exclude an association with optimizer time/order.
         conditions = [False, True]
         random.shuffle(conditions)
+        paired_logits = None
+        objective_value = 0.0
+        if args.objective == "paired":
+            paired_logits = {capture: forward(x, capture) for capture in conditions}
+            backward_terms, objective = paired_terms(
+                paired_logits[False],
+                paired_logits[True],
+                no_id=no_id,
+                yes_id=yes_id,
+                margin=args.margin,
+                calibration_weight=args.calibration_weight,
+            )
+            objective_value = float(objective)
         for capture in conditions:
-            logits = forward(x, capture)
+            logits = paired_logits[capture] if paired_logits is not None else forward(x, capture)
             label = yes_id if capture else no_id
             loss = F.cross_entropy(
                 logits.float(), torch.full((args.batch_size,), label, device="cuda")
             )
-            (loss * 0.5).backward()
+            if args.objective == "paired":
+                backward_terms[capture].backward()
+            else:
+                (loss * 0.5).backward()
+                objective_value += float(loss.detach()) * 0.5
             opt.accumulate()
             with torch.no_grad():
                 pair = logits[:, [no_id, yes_id]].float()
@@ -268,6 +300,8 @@ def main():
                     }
                 )
             del logits, loss
+        if paired_logits is not None:
+            del paired_logits, backward_terms
         lr = (
             args.lr
             * min(1.0, step / 10)
@@ -280,12 +314,16 @@ def main():
                 step=step,
                 lr=lr,
                 grad_norm=grad_norm,
+                objective=objective_value,
                 conditions=stats,
                 peak_memory_gb=torch.cuda.max_memory_allocated() / 1e9,
             )
         if step == 1:
+            evaluate("train", step, grad_mode=True, limit=32)
             evaluate("validation", step, grad_mode=True, limit=32)
         if step % args.eval_every == 0 or step == args.steps:
+            evaluate("train", step, grad_mode=True, limit=32)
+            evaluate("train", step, limit=32)
             evaluate("validation", step, grad_mode=True, limit=32)
             evaluate("validation", step)
 

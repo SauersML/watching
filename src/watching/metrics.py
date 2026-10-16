@@ -50,4 +50,19 @@ def summarize_pairs(rows: list[dict], *, seed: int, bootstrap_samples: int = 100
         boot[int(0.025 * bootstrap_samples)],
         boot[int(0.975 * bootstrap_samples) - 1],
     ]
+    shifts = [pair[True]["yes_minus_no"] - pair[False]["yes_minus_no"] for pair in pairs.values()]
+    boot_shifts = sorted(
+        sum(rng.choices(shifts, k=count)) / count for _ in range(bootstrap_samples)
+    )
+    summary.update(
+        paired_log_odds_shift=sum(shifts) / count,
+        paired_log_odds_shift_ci95=[
+            boot_shifts[int(0.025 * bootstrap_samples)],
+            boot_shifts[int(0.975 * bootstrap_samples) - 1],
+        ],
+        paired_rank_accuracy=sum((shift > 0) + 0.5 * (shift == 0) for shift in shifts) / count,
+        positive_shifts=sum(shift > 0 for shift in shifts),
+        zero_shifts=sum(shift == 0 for shift in shifts),
+        negative_shifts=sum(shift < 0 for shift in shifts),
+    )
     return summary

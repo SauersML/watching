@@ -8,6 +8,7 @@ def prediction(index, capture, predicts_yes):
         "index": index,
         "capture": capture,
         "yes_probability": 0.9 if predicts_yes else 0.1,
+        "yes_minus_no": 2.0 if predicts_yes else -2.0,
         "correct": predicts_yes == capture,
         "greedy_correct": predicts_yes == capture,
         "ce": 0.2,
@@ -23,6 +24,8 @@ def test_constant_yes_is_chance_with_no_correct_pairs():
     assert result["absent_accuracy"] == 0
     assert result["both_conditions_correct"] == 0
     assert result["paired_yes_probability_gap"] == 0
+    assert result["paired_log_odds_shift"] == 0
+    assert result["paired_rank_accuracy"] == 0.5
 
 
 def test_perfect_detection_and_pairing_are_independent_of_row_order():
@@ -32,6 +35,8 @@ def test_perfect_detection_and_pairing_are_independent_of_row_order():
     assert result["accuracy_ci95"] == [1, 1]
     assert result["both_conditions_correct"] == 1
     assert result["paired_yes_probability_gap"] == pytest.approx(0.8)
+    assert result["paired_log_odds_shift"] == 4.0
+    assert result["paired_log_odds_shift_ci95"] == [4.0, 4.0]
 
 
 @pytest.mark.parametrize(

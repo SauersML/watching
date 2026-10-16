@@ -53,6 +53,8 @@ Validation measures both the training numerical path and ordinary no-gradient in
 - Unrestricted greedy next-token accuracy.
 - Accuracy in each condition and the fraction of prompts correct in both conditions.
 - Paired change in the probability of `Yes`.
+- Paired change in `log P(Yes) - log P(No)`, with a prompt-bootstrap interval.
+- Individual full-vocabulary log probabilities for both answer tokens.
 - Cross-entropy and accuracy confidence intervals bootstrapped over prompt pairs.
 
 Constantly answering `Yes` scores 50% forced-choice accuracy and zero fully correct pairs. Final test prompts are evaluated only after training. Recompilation tests whether discrimination survives a fresh process; it does not establish robustness across hardware or compiler versions.
@@ -67,7 +69,30 @@ Checkpoint files contain model weights for inference, not optimizer state for re
 
 Success would show that a model can learn to recognize this capture implementation's computational footprint. It would not by itself establish general awareness of monitoring. Buffer-copy probes, other locations, other stacks, and footprint-matching identity operations are separate experiments.
 
-The experiment uses Hugging Face with `torch.compile`; it does not train through vLLM. GPU SFT results have not yet been established.
+The experiment uses Hugging Face with `torch.compile`; it does not train through vLLM.
+
+## First pilot
+
+The first 160-update full-parameter SFT run on an RTX 3090 did not establish learning. Final test accuracy was 50% (always choosing `Yes`). The mean paired log-odds shift was +0.0078 nats; its 95% prompt-bootstrap interval included zero. Fresh-process predictions matched the original final predictions exactly. This was one seed and a small synthetic dataset. See [the pilot record](results/pilot-001/README.md).
+
+## Paired training diagnostic
+
+An optional objective directly rewards separation between the two conditions. Let `s = log P(Yes) - log P(No)`. It minimizes:
+
+```text
+mean(softplus(margin - (s_present - s_absent))
+     + calibration_weight * ((s_present + s_absent) / 2)**2)
+```
+
+The separation term rewards a larger score with capture; the centering term discourages a shared answer bias. This is an alternative to ordinary SFT, not an established improvement. Its gradients are unit-tested; GPU learning results are pending. It optimizes the two answer scores, so unrestricted greedy accuracy is still measured.
+
+Start with a small memorization diagnostic before scaling the dataset:
+
+```sh
+watching --out runs/paired-small --objective paired --train-prompts 8 --steps 512 --lr 1e-6
+```
+
+All parameters remain trainable. The same paired inputs and FP32 gradient accumulation apply. Training-set and held-out scores are reported separately, starting before optimization and after the first update. Success on eight training prompts would demonstrate optimization progress, not generalization. Learning rate and margin are experimental choices.
 
 ## Development
 
