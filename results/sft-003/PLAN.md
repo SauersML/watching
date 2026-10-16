@@ -11,7 +11,11 @@
 
 For each prompt, `s = log P(Yes) − log P(No)` and `d = s_probe − s_absent`. Learning is the within-prompt change `d_final − d_initial`.
 
-The primary directional test is an exact binomial sign test on the 512 final-test learning differences, with the positive alternative fixed in advance. Discard zero differences as ties and report the number of ties. Under the null, positive and negative nonzero differences are equally likely across independent prompts. Report one-sided and two-sided p-values, mean and median change, and a 95% non-parametric prompt-bootstrap interval for mean change (5,000 draws, seed 42). Also report final separation itself. The sign test measures direction, not average magnitude; the bootstrap provides complementary magnitude information.
+The primary measure is mean learning difference on the 512 final-test prompts, with a 95% non-parametric prompt-bootstrap interval (5,000 draws, seed 42). Resample whole prompts, retaining each prompt's four condition/time scores together. Also report mean final separation and median change. Magnitudes matter; counting signs alone does not answer the mean-effect question.
+
+As a supplementary robustness check, use an exact binomial sign test on learning differences, with the positive alternative fixed in advance. Discard zero differences as ties and report their number. Under the null, positive and negative nonzero differences are equally likely across independent prompts. Report one-sided and two-sided p-values. This tests directional consistency, not mean magnitude.
+
+Analysis priority was clarified at the user's request during worker setup, before any training or evaluation scores arrived: the original plan put the sign test first; mean magnitude and its bootstrap interval are now primary. The run's optimization and evaluations are unchanged. For background on paired resampling, see [SciPy's bootstrap documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html). Non-parametric does not mean assumption-free; for example, [Wilcoxon signed-rank](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.wilcoxon.html) tests a symmetry-based null and is not a universal replacement.
 
 Do not count tokens, logits, checkpoints, or repeated executions of the same prompt as independent samples. Do not interpret pointwise checkpoint intervals as simultaneous confidence bands. These measures address variation over synthetic prompts for one trained model; they do not establish reproducibility across training seeds.
 
