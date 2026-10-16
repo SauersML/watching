@@ -1,0 +1,313 @@
+{
+  "method": "Conditioned FP32 affine readout; frozen features; first training prompt only",
+  "population_ci": null,
+  "steps": 256,
+  "lr": 0.01,
+  "feature_scale": 0.9232587218284607,
+  "trajectory": [
+    {
+      "step": 0,
+      "loss": 0.6946480870246887,
+      "separation": 0.007595539093017578
+    },
+    {
+      "step": 32,
+      "loss": 0.014171432703733444,
+      "separation": 8.503639221191406
+    },
+    {
+      "step": 64,
+      "loss": 0.006200634874403477,
+      "separation": 10.161273956298828
+    },
+    {
+      "step": 96,
+      "loss": 0.004280923865735531,
+      "separation": 10.90327262878418
+    },
+    {
+      "step": 128,
+      "loss": 0.003193636890500784,
+      "separation": 11.490144729614258
+    },
+    {
+      "step": 160,
+      "loss": 0.002485283650457859,
+      "separation": 11.992314338684082
+    },
+    {
+      "step": 192,
+      "loss": 0.001997025217860937,
+      "separation": 12.430234909057617
+    },
+    {
+      "step": 224,
+      "loss": 0.0016455810982733965,
+      "separation": 12.817648887634277
+    },
+    {
+      "step": 256,
+      "loss": 0.0013836582656949759,
+      "separation": 13.164669036865234
+    }
+  ],
+  "rows": [
+    {
+      "split": "train",
+      "index": 0,
+      "grad_mode": false,
+      "absent_log_odds": 0.3730647563934326,
+      "present_log_odds": 0.2506694793701172,
+      "separation": -0.12239527702331543
+    },
+    {
+      "split": "train",
+      "index": 1,
+      "grad_mode": false,
+      "absent_log_odds": -1.2362375259399414,
+      "present_log_odds": -0.899625301361084,
+      "separation": 0.3366122245788574
+    },
+    {
+      "split": "train",
+      "index": 2,
+      "grad_mode": false,
+      "absent_log_odds": 0.01102447509765625,
+      "present_log_odds": 0.15939593315124512,
+      "separation": 0.14837145805358887
+    },
+    {
+      "split": "train",
+      "index": 3,
+      "grad_mode": false,
+      "absent_log_odds": 0.6413779258728027,
+      "present_log_odds": 1.3739659786224365,
+      "separation": 0.7325880527496338
+    },
+    {
+      "split": "train",
+      "index": 4,
+      "grad_mode": false,
+      "absent_log_odds": 0.08229637145996094,
+      "present_log_odds": 0.37497711181640625,
+      "separation": 0.2926807403564453
+    },
+    {
+      "split": "train",
+      "index": 5,
+      "grad_mode": false,
+      "absent_log_odds": -2.7220802307128906,
+      "present_log_odds": -1.6179888248443604,
+      "separation": 1.1040914058685303
+    },
+    {
+      "split": "train",
+      "index": 6,
+      "grad_mode": false,
+      "absent_log_odds": 0.8154165744781494,
+      "present_log_odds": 1.660801649093628,
+      "separation": 0.8453850746154785
+    },
+    {
+      "split": "train",
+      "index": 7,
+      "grad_mode": false,
+      "absent_log_odds": 0.7327209115028381,
+      "present_log_odds": -1.162304401397705,
+      "separation": -1.8950252532958984
+    },
+    {
+      "split": "validation",
+      "index": 0,
+      "grad_mode": false,
+      "absent_log_odds": 1.2706866264343262,
+      "present_log_odds": 1.383908987045288,
+      "separation": 0.11322236061096191
+    },
+    {
+      "split": "validation",
+      "index": 1,
+      "grad_mode": false,
+      "absent_log_odds": 0.9854183197021484,
+      "present_log_odds": 1.858076810836792,
+      "separation": 0.8726584911346436
+    },
+    {
+      "split": "validation",
+      "index": 2,
+      "grad_mode": false,
+      "absent_log_odds": -2.8423595428466797,
+      "present_log_odds": -2.3225936889648438,
+      "separation": 0.5197658538818359
+    },
+    {
+      "split": "validation",
+      "index": 3,
+      "grad_mode": false,
+      "absent_log_odds": 1.8121676445007324,
+      "present_log_odds": 0.5646986961364746,
+      "separation": -1.2474689483642578
+    },
+    {
+      "split": "validation",
+      "index": 4,
+      "grad_mode": false,
+      "absent_log_odds": -2.8436081409454346,
+      "present_log_odds": -2.7223663330078125,
+      "separation": 0.12124180793762207
+    },
+    {
+      "split": "validation",
+      "index": 5,
+      "grad_mode": false,
+      "absent_log_odds": 0.225630521774292,
+      "present_log_odds": 0.8666753768920898,
+      "separation": 0.6410448551177979
+    },
+    {
+      "split": "validation",
+      "index": 6,
+      "grad_mode": false,
+      "absent_log_odds": -0.7884569764137268,
+      "present_log_odds": -1.071387529373169,
+      "separation": -0.28293055295944214
+    },
+    {
+      "split": "validation",
+      "index": 7,
+      "grad_mode": false,
+      "absent_log_odds": 2.286007881164551,
+      "present_log_odds": 2.8772032260894775,
+      "separation": 0.5911953449249268
+    },
+    {
+      "split": "train",
+      "index": 0,
+      "grad_mode": true,
+      "absent_log_odds": -6.578894138336182,
+      "present_log_odds": 6.585774898529053,
+      "separation": 13.164669036865234
+    },
+    {
+      "split": "train",
+      "index": 1,
+      "grad_mode": true,
+      "absent_log_odds": -0.9780561327934265,
+      "present_log_odds": -1.0403740406036377,
+      "separation": -0.06231790781021118
+    },
+    {
+      "split": "train",
+      "index": 2,
+      "grad_mode": true,
+      "absent_log_odds": 1.2694697380065918,
+      "present_log_odds": 0.5568633079528809,
+      "separation": -0.7126064300537109
+    },
+    {
+      "split": "train",
+      "index": 3,
+      "grad_mode": true,
+      "absent_log_odds": 1.4249039888381958,
+      "present_log_odds": 1.1633179187774658,
+      "separation": -0.26158607006073
+    },
+    {
+      "split": "train",
+      "index": 4,
+      "grad_mode": true,
+      "absent_log_odds": 1.4813517332077026,
+      "present_log_odds": -0.3641836643218994,
+      "separation": -1.845535397529602
+    },
+    {
+      "split": "train",
+      "index": 5,
+      "grad_mode": true,
+      "absent_log_odds": -2.5415267944335938,
+      "present_log_odds": -2.3491873741149902,
+      "separation": 0.19233942031860352
+    },
+    {
+      "split": "train",
+      "index": 6,
+      "grad_mode": true,
+      "absent_log_odds": 1.6115659475326538,
+      "present_log_odds": 0.5216903686523438,
+      "separation": -1.08987557888031
+    },
+    {
+      "split": "train",
+      "index": 7,
+      "grad_mode": true,
+      "absent_log_odds": 0.29209160804748535,
+      "present_log_odds": -1.111581802368164,
+      "separation": -1.4036734104156494
+    },
+    {
+      "split": "validation",
+      "index": 0,
+      "grad_mode": true,
+      "absent_log_odds": 2.57993483543396,
+      "present_log_odds": 3.073698043823242,
+      "separation": 0.4937632083892822
+    },
+    {
+      "split": "validation",
+      "index": 1,
+      "grad_mode": true,
+      "absent_log_odds": 0.7735114097595215,
+      "present_log_odds": 0.6792707443237305,
+      "separation": -0.09424066543579102
+    },
+    {
+      "split": "validation",
+      "index": 2,
+      "grad_mode": true,
+      "absent_log_odds": -1.8138725757598877,
+      "present_log_odds": -2.262612819671631,
+      "separation": -0.44874024391174316
+    },
+    {
+      "split": "validation",
+      "index": 3,
+      "grad_mode": true,
+      "absent_log_odds": 2.240582227706909,
+      "present_log_odds": 2.271970272064209,
+      "separation": 0.031388044357299805
+    },
+    {
+      "split": "validation",
+      "index": 4,
+      "grad_mode": true,
+      "absent_log_odds": -0.21280145645141602,
+      "present_log_odds": -1.5759648084640503,
+      "separation": -1.3631633520126343
+    },
+    {
+      "split": "validation",
+      "index": 5,
+      "grad_mode": true,
+      "absent_log_odds": 2.253021240234375,
+      "present_log_odds": 1.1263444423675537,
+      "separation": -1.1266767978668213
+    },
+    {
+      "split": "validation",
+      "index": 6,
+      "grad_mode": true,
+      "absent_log_odds": -0.6670148372650146,
+      "present_log_odds": -0.5311639308929443,
+      "separation": 0.1358509063720703
+    },
+    {
+      "split": "validation",
+      "index": 7,
+      "grad_mode": true,
+      "absent_log_odds": 2.7600061893463135,
+      "present_log_odds": 2.087505340576172,
+      "separation": -0.6725008487701416
+    }
+  ],
+  "limitation": "Frozen-backbone diagnostic, not full-model learning."
+}
