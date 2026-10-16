@@ -14,7 +14,7 @@ trap 'rm -rf "$cache_root"' EXIT
 export TORCHINDUCTOR_CACHE_DIR="$cache_root/train"
 python -m watching --out "$run_out" --objective sft --dataset expanded \
   --train-prompts 2048 --train-eval-prompts 256 --length 64 \
-  --steps 8192 --lr 1e-5 --eval-every 512
+  --steps 4096 --lr 1e-5 --eval-every 256
 export TORCHINDUCTOR_CACHE_DIR="$cache_root/eval"
 python -m watching --out "$run_out/fresh_eval" --checkpoint "$run_out/checkpoint" \
-  --eval-only --dataset expanded --train-prompts 2048 --length 64 --steps 8192
+  --eval-only --dataset expanded --train-prompts 2048 --length 64 --steps 4096
