@@ -25,6 +25,15 @@ is worse. These fits do not establish reliable animal answers; probe scores
 also change substantially after recompilation. The earlier table describes
 the narrower template distribution, not these harder evaluations.
 
+The [two-block continuation 030](results/two-block-030/README.md) now establishes
+strong training-set learning with ordinary gradient-based SFT: 93.75% actual
+answer accuracy on 16 practiced prompts, preserved after whole-model compilation.
+Its 32-prompt endpoint accuracy is only 53.12%, so this is memorization rather
+than reliable generalization. [032](experiments/two-block-head-032.md) also trains
+the existing full unembedding; [033](experiments/two-block-batch-033.md) broadens
+the fixed-head run to 64 prompts and averages four prompt pairs per update.
+These follow-ups are exploratory, not established improvements.
+
 ## Reproduce the native fits
 
 Python 3.11 or newer is required. Experiments require CUDA; CPU tests use small random models without downloading weights.

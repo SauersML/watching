@@ -169,3 +169,34 @@ def test_trainable_head_has_correct_architecture_label(tmp_path):
     path.write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match="explicit boolean"):
         module.collect(tmp_path, draws=100)
+
+
+@pytest.mark.parametrize("offset", [0, 128])
+def test_minibatch_caption_counts_pair_visits_not_optimizer_updates(tmp_path, offset):
+    data = fixture(tmp_path)
+    path = tmp_path / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest.update(
+        prompt_batch_size=4, starting_global_step=offset, starting_processed_prompt_pairs=offset
+    )
+    path.write_text(json.dumps(manifest))
+    save(tmp_path, data, "train", 256)
+    figure = module.draw(module.collect(tmp_path, draws=100))
+    captions = [text.get_text() for text in figure.texts]
+    assert any("4 prompt pairs per optimizer update" in text for text in captions)
+    assert any("1,024 training pair visits" in text for text in captions)
+    if offset:
+        assert any("1,152 including prior training" in text for text in captions)
+    expected_label = "Global optimizer updates" if offset else "Optimizer updates"
+    assert figure.axes[0].get_xlabel() == expected_label
+    figure.savefig(tmp_path / "minibatch.png")
+    module.plt.close(figure)
+
+
+def test_single_pair_batch_preserves_existing_caption(tmp_path):
+    data = fixture(tmp_path)
+    save(tmp_path, data, "train", 8)
+    figure = module.draw(module.collect(tmp_path, draws=100))
+    assert not any("pair visits" in text.get_text() for text in figure.texts)
+    assert figure.axes[0].get_xlabel() == "Optimizer updates"
+    module.plt.close(figure)

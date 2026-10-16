@@ -60,6 +60,9 @@ def collect(directory, *, draws=5000, seed=20261016):
         raise ValueError("This figure requires an explicit boolean output_head_updated declaration")
     if manifest.get("primary_path") != "split_inference":
         raise ValueError("Primary execution must be split_inference")
+    batch_size = manifest.get("prompt_batch_size", 1)
+    if type(batch_size) is not int or batch_size < 1:
+        raise ValueError("prompt_batch_size must be a positive integer")
     starting_global_step = manifest.get("starting_global_step", 0)
     if type(starting_global_step) is not int or starting_global_step < 0:
         raise ValueError("starting_global_step must be a nonnegative integer")
@@ -184,6 +187,17 @@ def draw(report):
         if report["manifest"].get("optimizer_state_restored") is False:
             note += " Adam moments restarted."
         fig.text(0.055, 0.79, note, fontsize=9.5, color=MUTED)
+    batch_size = report["manifest"].get("prompt_batch_size", 1)
+    if batch_size > 1:
+        visits = (latest - offset) * batch_size
+        note = (
+            f"{batch_size} prompt pairs per optimizer update · "
+            f"{visits:,} training pair visits at the latest evaluation"
+        )
+        if offset:
+            prior = report["manifest"].get("starting_processed_prompt_pairs", offset)
+            note += f" ({prior + visits:,} including prior training)"
+        fig.text(0.055, 0.755 if offset else 0.79, note, fontsize=9.5, color=MUTED)
     specs = (
         ("separation", "Probe − no-probe log-odds", "Nats"),
         ("correct_probability", "Correct-token probability", "Full-vocabulary probability"),
