@@ -34,6 +34,13 @@ the existing full unembedding; [033](experiments/two-block-batch-033.md) broaden
 the fixed-head run to 64 prompts and averages four prompt pairs per update.
 These follow-ups are exploratory, not established improvements.
 
+The [family-diverse execution fit 028](results/family-execution-028/README.md)
+reaches 61.72% actual accuracy after fresh compilation on new contexts, with
+full-vocabulary loss 0.6599. New question-family calibration and animal answers
+remain weak. The [probe fit 027](results/family-probe-027/README.md) remains near
+chance; its final fresh detector evaluation was interrupted by external pod
+deletion and is not reported as completed.
+
 ## Reproduce the native fits
 
 Python 3.11 or newer is required. Experiments require CUDA; CPU tests use small random models without downloading weights.
