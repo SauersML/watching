@@ -16,6 +16,7 @@ case "$run_kind" in
   answer_rows) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   untied_pair|fp32_pair|head_fit|cached_readout|suffix|execution_fit|native_fit|execution_choices) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   probe_ood|probe_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires a model and answer-row artifact" >&2; exit 2; } ;;
+  condition_choices) [[ $# -eq 6 ]] || { echo "$run_kind requires model, condition, and detector rows" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
 esac
 run_env=$(mktemp -d)
@@ -26,7 +27,9 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == execution_choices ]]; then
+if [[ $run_kind == condition_choices ]]; then
+  bash "$run_source/scripts/run_condition_choices.sh" "$run_output" "$4" "$5" "$6"
+elif [[ $run_kind == execution_choices ]]; then
   bash "$run_source/scripts/run_condition_choices.sh" "$run_output" "$4" execution
 elif [[ $run_kind == probe_choices ]]; then
   bash "$run_source/scripts/run_condition_choices.sh" "$run_output" "$4" probe "$5"
