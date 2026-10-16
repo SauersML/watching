@@ -27,17 +27,36 @@ def render(report, output, title=None):
             "svg.fonttype": "none",
         }
     )
-    fig, axes = plt.subplots(1, 3, figsize=(13, 6.5))
+    fig, axes = plt.subplots(1, 3, figsize=(13, 6.5), sharey=True)
     fig.subplots_adjust(left=0.075, right=0.975, bottom=0.31, top=0.69, wspace=0.34)
     condition = report["condition"]
     task = "Read-only probe detection" if condition == "probe" else "Gradient-recording detection"
-    phase = "One practiced prompt" if report["phase"] == "single" else "Paired prompt evaluation"
+    checkpoint = report.get("manifest", {}).get("checkpoint", "Model unspecified")
+    model_name = Path(checkpoint.rstrip("/")).name
+    all_points = [
+        point
+        for entry in report["splits"].values()
+        for point in [*entry["checkpoints"], *([entry["fresh"]] if "fresh" in entry else [])]
+        if point["step"] > 0
+    ]
+    bounds = [0.0]
+    for point in all_points:
+        bounds.append(point["change_in_separation"])
+        if point["change_ci95"] is not None:
+            bounds.extend(point["change_ci95"])
+    low, high = min(bounds), max(bounds)
+    span = max(high - low, 0.1)
+    shared_limits = (low - 0.10 * span, high + 0.15 * span)
     fig.text(
         0.075, 0.94, "WATCHING  /  FROZEN INTERNAL WEIGHTS", color=TEAL, weight="bold", size=10
     )
     fig.text(0.075, 0.865, title or "Learning beyond the initial footprint", size=26, weight="bold")
     fig.text(
-        0.075, 0.805, f"{task}  ·  native answer-row fit  ·  {phase.lower()}", color=MUTED, size=11
+        0.075,
+        0.805,
+        f"{model_name}  ·  {task.lower()}  ·  native answer-row fit",
+        color=MUTED,
+        size=11,
     )
     for ax, split, name in zip(
         axes,
@@ -55,6 +74,7 @@ def render(report, output, title=None):
         ax.tick_params(length=0, pad=7)
         ax.yaxis.set_major_locator(MaxNLocator(5))
         ax.set_xlabel("Answer-row corrections", labelpad=12)
+        ax.set_ylim(*shared_limits)
         if entry is None:
             ax.text(
                 0.5,
@@ -76,6 +96,21 @@ def render(report, output, title=None):
             fontsize=10,
         )
         points = entry["checkpoints"]
+        if not any(point["step"] > 0 for point in points) and "fresh" not in entry:
+            ax.text(
+                0.5,
+                0.5,
+                "Awaiting post-fit evaluation",
+                ha="center",
+                va="center",
+                transform=ax.transAxes,
+                color=MUTED,
+                fontsize=10,
+            )
+            expected_steps = max(1, report.get("manifest", {}).get("steps", 3))
+            ax.set_xlim(-0.15, expected_steps + 0.2)
+            ax.set_xticks(range(expected_steps + 1))
+            continue
         steps = [p["step"] for p in points]
         gains = [p["change_in_separation"] for p in points]
         color = COLORS[split]
@@ -140,7 +175,6 @@ def render(report, output, title=None):
         else:
             ax.xaxis.set_major_locator(MaxNLocator(5, integer=True))
         ax.set_xlim(min(ticks) - 0.15, max(ticks) + 0.2 if max(ticks) else 1)
-        ax.margins(y=0.24)
         ci = final["change_ci95"]
         text = f"Latest gain  {final['change_in_separation']:+.3f} nats"
         text += f"\n95% CI [{ci[0]:+.3f}, {ci[1]:+.3f}]" if ci else "\nOne prompt; no population CI"
@@ -167,7 +201,7 @@ def render(report, output, title=None):
         0.075,
         0.052,
         "5,000 whole-prompt bootstrap resamples; pointwise 95% intervals. "
-        "Panels use separate vertical scales.\n"
+        "Panels share the same vertical scale.\n"
         "Conditional on this fit and prompt distribution; excludes seed and hardware variation.",
         color=MUTED,
         fontsize=9,

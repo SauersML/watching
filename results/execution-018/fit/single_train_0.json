@@ -1,0 +1,53 @@
+{
+  "summary": {
+    "phase": "single",
+    "split": "train",
+    "step": 0,
+    "n_prompts": 1,
+    "accuracy": 0.5,
+    "greedy_accuracy": 0.5,
+    "mean_ce": 0.699964702129364,
+    "paired_yes_probability_gap": -0.003884822130203247,
+    "both_conditions_correct": 0.0,
+    "absent_mean_log_odds": -0.140625,
+    "absent_accuracy": 1.0,
+    "present_mean_log_odds": -0.15625,
+    "present_accuracy": 0.0,
+    "accuracy_ci95": null,
+    "paired_log_odds_shift": -0.015625,
+    "paired_log_odds_shift_ci95": null,
+    "paired_rank_accuracy": 0.0,
+    "positive_shifts": 0,
+    "zero_shifts": 0,
+    "negative_shifts": 1,
+    "mean_binary_ce": 0.6998127102851868
+  },
+  "rows": [
+    {
+      "index": 0,
+      "condition_present": false,
+      "gradient_enabled": false,
+      "yes_minus_no": -0.140625,
+      "logp_yes": -0.7660805583000183,
+      "logp_no": -0.6254555583000183,
+      "yes_probability": 0.4649015963077545,
+      "binary_ce": 0.6253045797348022,
+      "ce": 0.6254555583000183,
+      "correct": true,
+      "greedy_correct": true
+    },
+    {
+      "index": 0,
+      "condition_present": true,
+      "gradient_enabled": true,
+      "yes_minus_no": -0.15625,
+      "logp_yes": -0.7744738459587097,
+      "logp_no": -0.6182238459587097,
+      "yes_probability": 0.46101677417755127,
+      "binary_ce": 0.7743208408355713,
+      "ce": 0.7744738459587097,
+      "correct": false,
+      "greedy_correct": false
+    }
+  ]
+}
