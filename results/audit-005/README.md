@@ -6,7 +6,7 @@ Qwen3-0.6B, bf16 backbone, PyTorch 2.10, RTX A5000. Starting weights are the com
 
 - Both feature-capture parity checks passed: every vocabulary logit was bit-identical to its corresponding baseline across the 16 prompts, both probe conditions, and both gradient modes.
 - The probe changes the final hidden state by about 0.61% of its L2 norm in the training path and 0.49% in inference, averaged over these prompts.
-- Training-path versus inference-path probe-difference vectors have mean cosine similarity 0.00458 across the 16 prompts. The first training prompt has cosine 0.0273. The two compiler paths expose different numerical signals.
+- Training-path versus inference-path probe-difference vectors have mean cosine similarity 0.00458 across the 16 prompts. The first training prompt has cosine 0.0269. The two compiler paths expose different numerical signals.
 - On the first prompt, the gradients of Yes/No log odds have norms 303.90 (absent) and 303.64 (present), cosine 0.999970, and difference norm 2.3506. Balanced labels already cancel the shared component when their loss coefficients match; near-parallel gradients alone do not prove optimization must fail.
 - A positive L2 step of 0.01 along the separation gradient increased the actual gap by 0.0625 nats. Steps of 0.1 and 1.0 changed it by -0.001953 and -0.214844, despite positive linear predictions. This diagnoses sensitivity to step size and finite precision, not a proof that all small gradients are invalid. Exact restoration of the original logits passed.
 
