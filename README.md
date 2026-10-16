@@ -17,6 +17,14 @@ Both use 256 training, 32 validation, and 64 test prompts. A balanced uninformat
 
 See the complete [8B probe results](results/native-probe-019/README.md), [execution results](results/execution-018/README.md), and [paired generalization figure](results/generalization-018-019/generalization.pdf). Confidence intervals resample whole prompt pairs; they exclude training-seed, compiler, and hardware variation.
 
+The newer [diverse-prompt experiments 023–024](results/diverse-023-024/README.md)
+show an important limit: positive paired separation persists, but animal
+top-token accuracy after fresh compilation is only 46.88% for probe detection
+and 54.69% for execution detection on unseen contexts. New-family performance
+is worse. These fits do not establish reliable animal answers; probe scores
+also change substantially after recompilation. The earlier table describes
+the narrower template distribution, not these harder evaluations.
+
 ## Reproduce the native fits
 
 Python 3.11 or newer is required. Experiments require CUDA; CPU tests use small random models without downloading weights.
@@ -69,9 +77,10 @@ WATCHING_DATASET=diverse WATCHING_PAIR_MASS=0.95 WATCHING_TARGET_GAP=6 \
   bash scripts/run_condition_choices.sh runs/diverse Qwen/Qwen3-8B probe
 ```
 
-Use `execution` for the other condition. This protocol is an experiment, not a
-claim of successful animal behavior. Read the saved per-split native scores and
-fresh-compilation checks before interpreting the fitted weights.
+Use `execution` for the other condition. The completed [results and raw scores](results/diverse-023-024/README.md)
+include intermediate fitting evaluations and fresh-compilation checks. The
+[endpoint report](results/diverse-023-024/performance.pdf) shows the distinction
+between paired separation, correct-token probability, and actual token accuracy.
 
 The [025–026 protocol](experiments/scaled-choices-025-026.md) expands to 1,024
 training contexts and sixteen question wordings, adds 128 fresh final test

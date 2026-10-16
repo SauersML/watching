@@ -1,0 +1,3382 @@
+{
+  "source": "results/diverse-023-024",
+  "method": "Ridge corrections to two native output rows; internal weights fixed; not SFT",
+  "uncertainty": "Pointwise 95% paired prompt bootstrap, not simultaneous. Same prompt order and bootstrap seed at every step. One fit; excludes seed/hardware uncertainty.",
+  "bootstrap_draws": 5000,
+  "test_protocol": "Only observed test endpoints; no interpolated test trajectory",
+  "stages": {
+    "detector": {
+      "execution": {
+        "manifest": {
+          "checkpoint": "Qwen/Qwen3-8B",
+          "condition": "execution",
+          "require_native_untied": true,
+          "layer": 14,
+          "out": "/workspace/runs/watching-diverse-execution-024/mpd-data/runpod/watching-diverse-execution-024/out/execution",
+          "data": "/workspace/runs/watching-diverse-execution-024/mpd-data/runpod/watching-diverse-execution-024/out/execution_data.json",
+          "eval_only": false,
+          "answer_rows": null,
+          "compare_answer_rows": null,
+          "initial_answer_rows": null,
+          "negative_answer": "No",
+          "positive_answer": "Yes",
+          "rows_only_save": true,
+          "train_prompts": 256,
+          "validation_prompts": 32,
+          "test_prompts": 64,
+          "length": 64,
+          "steps": 3,
+          "ridge": 0.001,
+          "target_gap": 6.0,
+          "answer_pair_mass": 0.95,
+          "preserve_data": null,
+          "torch": "2.10.0+cu128",
+          "gpu": "NVIDIA L40",
+          "labels": {
+            "No": 2753,
+            "Yes": 9454
+          },
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "log_odds_definition": "log P(Yes) - log P(No)",
+          "legacy_metric_fields": "yes_minus_no/logp_yes/logp_no denote positive-minus-negative/positive/negative answers, regardless of answer spelling",
+          "condition_definition": "Yes: gradient recording; No: no_grad; both eval, no activation probe",
+          "initial_answer_rows_identity": null,
+          "row_artifact_sha256": {},
+          "tied_embeddings": false,
+          "base_checkpoint": "Qwen/Qwen3-8B",
+          "model_commit": null,
+          "base_answer_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8",
+          "method": "Fixed execution features; ridge correction of existing answer rows only",
+          "fit_targets": "Individual answer logits from fixed pair mass and signed log odds",
+          "preservation": {
+            "train_prompts": 0,
+            "source_sha256": null,
+            "constraint": "Both fitted answer logits retain pre-fit native values; many phase only"
+          },
+          "answer_token_occurrences_in_all_inputs": 0,
+          "source_sha256": {
+            "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+            "compare.py": "218bdef33e7d682c90a0a09349597d39ed78fe36014991ae11d7e8fd606dab7c",
+            "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+            "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+            "train.py": "caf4aca3941996f14cf5ec581775d75350251094b2e7ae2a65d6c63d3fce1913",
+            "optim.py": "a52ebb05cc795b120a879b1963817259295c294af54b1e52464dc128b2fc2483",
+            "diverse_data.py": "9b606c78f93ef07985752558c3d375064753c05c7b24e8001c7fae5416f73c77",
+            "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+            "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+            "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+            "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+            "execution_fit.py": "cd1cd56e54686df27a5c65af77553c29dee5fee73d0d7989659a8f3b0ba20609",
+            "objectives.py": "cdaf9d38b796268bbaed5823c25698009b88d6df7f1eed3c902176572ce061d3",
+            "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+            "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+            "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+            "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+            "head_fit.py": "640cb707548b255e933ef0d9c95273ccd91515b70f1c0fdbfdf6ed894bbccd7f",
+            "ood_data.py": "26cf3ca88bc883682a68fe4b4abf0afcde3f781287a0b699643684d430c47005",
+            "suffix.py": "ed1cd6d50ced59bb35eb3f58b6a44b3bf282893d55fdcafb97d1e1b6724f6e0c"
+          }
+        },
+        "splits": {
+          "train": [
+            {
+              "source": "results/diverse-023-024/execution/detector/many_train_0.json",
+              "source_sha256": "b3c8bb1bb1313b0b961c6791460b63a9437de21fbb32eff23845c6e05eca0fc6",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 257,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 0.04052734375,
+                  "ci95": [
+                    0.00146484375,
+                    0.07861328125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5002982809956037,
+                  "ci95": [
+                    0.49976519721816093,
+                    0.5009303734619605
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.501953125,
+                  "ci95": [
+                    0.5,
+                    0.505859375
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 0.04052734375,
+                  "ci95": [
+                    0.00146484375,
+                    0.07861328125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5002982809956037,
+                  "ci95": [
+                    0.49976519721816093,
+                    0.5009303734619605
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.501953125,
+                  "ci95": [
+                    0.5,
+                    0.505859375
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/detector/many_train_1.json",
+              "source_sha256": "d9eebe42d95e2095947265c516473082d1721d0aded595d7fd6a436020d87cfd",
+              "step": 1,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 6.0048828125,
+                  "ci95": [
+                    5.98388671875,
+                    6.02587890625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9056224222294986,
+                  "ci95": [
+                    0.9048823876073584,
+                    0.9063520369818434
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 6.0048828125,
+                  "ci95": [
+                    5.98388671875,
+                    6.02587890625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9056224222294986,
+                  "ci95": [
+                    0.9048823876073584,
+                    0.9063520369818434
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/detector/many_train_2.json",
+              "source_sha256": "5a4bbb34ff8eaeb764167804cdafd67d50813c1ac44ac658cd7a2a95096e06be",
+              "step": 2,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.99462890625,
+                  "ci95": [
+                    5.97607421875,
+                    6.013671875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.90645554556977,
+                  "ci95": [
+                    0.905785228474997,
+                    0.9071354906773195
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.99462890625,
+                  "ci95": [
+                    5.97607421875,
+                    6.013671875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.90645554556977,
+                  "ci95": [
+                    0.905785228474997,
+                    0.9071354906773195
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/detector/many_train_3.json",
+              "source_sha256": "c5c0fedf0ad4589f4324e736a26ada5571427518e20f3e17d9016616c475e538",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 6.013671875,
+                  "ci95": [
+                    5.9912109375,
+                    6.037109375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9060528433183208,
+                  "ci95": [
+                    0.9052802133373916,
+                    0.9068486579926684
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 6.013671875,
+                  "ci95": [
+                    5.9912109375,
+                    6.037109375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9060528433183208,
+                  "ci95": [
+                    0.9052802133373916,
+                    0.9068486579926684
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/fresh_detector/fresh_train_3.json",
+              "source_sha256": "fed24880a0e18db3327a52e2066114797c00dace7a366670ca1416f5e31a5938",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.77685546875,
+                  "ci95": [
+                    5.65283203125,
+                    5.9013671875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8834011774742976,
+                  "ci95": [
+                    0.8772692686179653,
+                    0.8892345770145766
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.77685546875,
+                  "ci95": [
+                    5.65283203125,
+                    5.9013671875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8834011774742976,
+                  "ci95": [
+                    0.8772692686179653,
+                    0.8892345770145766
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ],
+          "validation": [
+            {
+              "source": "results/diverse-023-024/execution/detector/many_validation_0.json",
+              "source_sha256": "013550cc057f58da4a8a91a01175989b540e26520d9d42f32d1f673ec9a59ec4",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 64,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": -0.001953125,
+                  "ci95": [
+                    -0.076171875,
+                    0.068359375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4975440636596881,
+                  "ci95": [
+                    0.49387704554217327,
+                    0.500005468797262
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": -0.001953125,
+                  "ci95": [
+                    -0.076171875,
+                    0.068359375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4975440636596881,
+                  "ci95": [
+                    0.49387704554217327,
+                    0.500005468797262
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/detector/many_validation_1.json",
+              "source_sha256": "df96c68cc096720ffbef07950dc7413fc19fd198043f86ece9e44f56ca826a41",
+              "step": 1,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 88,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 4.94921875,
+                  "ci95": [
+                    4.673828125,
+                    5.22265625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6321468341490769,
+                  "ci95": [
+                    0.597725641924841,
+                    0.6677580782446574
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.6875,
+                  "ci95": [
+                    0.625,
+                    0.75
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 4.94921875,
+                  "ci95": [
+                    4.673828125,
+                    5.22265625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6321468341490769,
+                  "ci95": [
+                    0.597725641924841,
+                    0.6677580782446574
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.6875,
+                  "ci95": [
+                    0.625,
+                    0.75
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/detector/many_validation_2.json",
+              "source_sha256": "75a8789c0f7feeae42cb3d7c500ec8237d9f3cd9e0aaf8cd54611d6698f8c1e6",
+              "step": 2,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 88,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 4.87890625,
+                  "ci95": [
+                    4.607421875,
+                    5.15234375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6344631783565258,
+                  "ci95": [
+                    0.5989568841962152,
+                    0.6707850293011433
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.6875,
+                  "ci95": [
+                    0.6328125,
+                    0.75
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 4.87890625,
+                  "ci95": [
+                    4.607421875,
+                    5.15234375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6344631783565258,
+                  "ci95": [
+                    0.5989568841962152,
+                    0.6707850293011433
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.6875,
+                  "ci95": [
+                    0.6328125,
+                    0.75
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/detector/many_validation_3.json",
+              "source_sha256": "15516673f68e2f8d0601bf4e2655cf24fd128e40282c5d1cbe37d01da01cd2f6",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 88,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 4.935546875,
+                  "ci95": [
+                    4.666015625,
+                    5.20703125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6304345661413573,
+                  "ci95": [
+                    0.5967185511384017,
+                    0.6655350739976167
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.6875,
+                  "ci95": [
+                    0.6328125,
+                    0.75
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 4.935546875,
+                  "ci95": [
+                    4.666015625,
+                    5.20703125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6304345661413573,
+                  "ci95": [
+                    0.5967185511384017,
+                    0.6655350739976167
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.6875,
+                  "ci95": [
+                    0.6328125,
+                    0.75
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/fresh_detector/fresh_validation_3.json",
+              "source_sha256": "6f67a5e798b8dbc64764caf38183133272253480af41573918c1ed2b461a2ee8",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 84,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.181640625,
+                  "ci95": [
+                    4.9140625,
+                    5.451171875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6338748349000947,
+                  "ci95": [
+                    0.5980228526679132,
+                    0.6722143483582879
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.65625,
+                  "ci95": [
+                    0.6015625,
+                    0.71875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.181640625,
+                  "ci95": [
+                    4.9140625,
+                    5.451171875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6338748349000947,
+                  "ci95": [
+                    0.5980228526679132,
+                    0.6722143483582879
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.65625,
+                  "ci95": [
+                    0.6015625,
+                    0.71875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ],
+          "test": [
+            {
+              "source": "results/diverse-023-024/execution/detector/many_test_0.json",
+              "source_sha256": "0fa5fd38f9a591e91d4a25ad4962eac32a98a10c37ba4e2a863b37dfeb3fdf3c",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 65,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 0.052734375,
+                  "ci95": [
+                    -0.017578125,
+                    0.126953125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5007736207542491,
+                  "ci95": [
+                    0.500019475357277,
+                    0.5018719132013585
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5078125,
+                  "ci95": [
+                    0.5,
+                    0.5234375
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 0.052734375,
+                  "ci95": [
+                    -0.017578125,
+                    0.126953125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5007736207542491,
+                  "ci95": [
+                    0.500019475357277,
+                    0.5018719132013585
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5078125,
+                  "ci95": [
+                    0.5,
+                    0.5234375
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/detector/many_test_3.json",
+              "source_sha256": "11d58424ea0a3aebba4c6a6f2333457952dab7dc4568a393f41dd4aca241aa1d",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 81,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 4.9140625,
+                  "ci95": [
+                    4.623046875,
+                    5.19921875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6245941457458166,
+                  "ci95": [
+                    0.5920650221063957,
+                    0.6575482452544346
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.6328125,
+                  "ci95": [
+                    0.578125,
+                    0.6875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 4.9140625,
+                  "ci95": [
+                    4.623046875,
+                    5.19921875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6245941457458166,
+                  "ci95": [
+                    0.5920650221063957,
+                    0.6575482452544346
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.6328125,
+                  "ci95": [
+                    0.578125,
+                    0.6875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/fresh_detector/fresh_test_3.json",
+              "source_sha256": "7dc54ee884f0e477a37db8c6cf679c8ba24039459ccb7e88ac1b2aa36049c893",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 82,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 4.890625,
+                  "ci95": [
+                    4.556640625,
+                    5.216796875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6268517349110785,
+                  "ci95": [
+                    0.595719677399261,
+                    0.6584891246977971
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.640625,
+                  "ci95": [
+                    0.5859375,
+                    0.6953125
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 4.890625,
+                  "ci95": [
+                    4.556640625,
+                    5.216796875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6268517349110785,
+                  "ci95": [
+                    0.595719677399261,
+                    0.6584891246977971
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.640625,
+                  "ci95": [
+                    0.5859375,
+                    0.6953125
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ]
+        }
+      },
+      "probe": {
+        "manifest": {
+          "checkpoint": "Qwen/Qwen3-8B",
+          "condition": "probe",
+          "require_native_untied": true,
+          "layer": 14,
+          "out": "/workspace/runs/watching-diverse-probe-023/mpd-data/runpod/watching-diverse-probe-023/out/probe",
+          "data": "/workspace/runs/watching-diverse-probe-023/mpd-data/runpod/watching-diverse-probe-023/out/probe_data.json",
+          "eval_only": false,
+          "answer_rows": null,
+          "compare_answer_rows": null,
+          "initial_answer_rows": null,
+          "negative_answer": "No",
+          "positive_answer": "Yes",
+          "rows_only_save": true,
+          "train_prompts": 256,
+          "validation_prompts": 32,
+          "test_prompts": 64,
+          "length": 64,
+          "steps": 3,
+          "ridge": 0.001,
+          "target_gap": 6.0,
+          "answer_pair_mass": 0.95,
+          "preserve_data": null,
+          "torch": "2.10.0+cu128",
+          "gpu": "NVIDIA L40",
+          "labels": {
+            "No": 2753,
+            "Yes": 9454
+          },
+          "answer_order": [
+            "No",
+            "Yes"
+          ],
+          "log_odds_definition": "log P(Yes) - log P(No)",
+          "legacy_metric_fields": "yes_minus_no/logp_yes/logp_no denote positive-minus-negative/positive/negative answers, regardless of answer spelling",
+          "condition_definition": "Yes: read-only reference probe; No: no probe; both eval and no_grad",
+          "initial_answer_rows_identity": null,
+          "row_artifact_sha256": {},
+          "tied_embeddings": false,
+          "base_checkpoint": "Qwen/Qwen3-8B",
+          "model_commit": null,
+          "base_answer_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8",
+          "method": "Fixed execution features; ridge correction of existing answer rows only",
+          "fit_targets": "Individual answer logits from fixed pair mass and signed log odds",
+          "preservation": {
+            "train_prompts": 0,
+            "source_sha256": null,
+            "constraint": "Both fitted answer logits retain pre-fit native values; many phase only"
+          },
+          "answer_token_occurrences_in_all_inputs": 0,
+          "source_sha256": {
+            "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+            "ood_data.py": "26cf3ca88bc883682a68fe4b4abf0afcde3f781287a0b699643684d430c47005",
+            "compare.py": "218bdef33e7d682c90a0a09349597d39ed78fe36014991ae11d7e8fd606dab7c",
+            "suffix.py": "ed1cd6d50ced59bb35eb3f58b6a44b3bf282893d55fdcafb97d1e1b6724f6e0c",
+            "train.py": "caf4aca3941996f14cf5ec581775d75350251094b2e7ae2a65d6c63d3fce1913",
+            "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+            "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+            "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+            "optim.py": "a52ebb05cc795b120a879b1963817259295c294af54b1e52464dc128b2fc2483",
+            "head_fit.py": "640cb707548b255e933ef0d9c95273ccd91515b70f1c0fdbfdf6ed894bbccd7f",
+            "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+            "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+            "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+            "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+            "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+            "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+            "objectives.py": "cdaf9d38b796268bbaed5823c25698009b88d6df7f1eed3c902176572ce061d3",
+            "diverse_data.py": "9b606c78f93ef07985752558c3d375064753c05c7b24e8001c7fae5416f73c77",
+            "execution_fit.py": "cd1cd56e54686df27a5c65af77553c29dee5fee73d0d7989659a8f3b0ba20609",
+            "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543"
+          }
+        },
+        "splits": {
+          "train": [
+            {
+              "source": "results/diverse-023-024/probe/detector/many_train_0.json",
+              "source_sha256": "2f306f4bab3e1b400e461bf7a9f787aed82441984adf824e415a38ed19ae0086",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 254,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 0.00390625,
+                  "ci95": [
+                    -0.02197265625,
+                    0.0302734375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49812423343494244,
+                  "ci95": [
+                    0.49400350079999766,
+                    0.5003386472544453
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.49609375,
+                  "ci95": [
+                    0.490234375,
+                    0.5
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 0.00390625,
+                  "ci95": [
+                    -0.02197265625,
+                    0.0302734375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49812423343494244,
+                  "ci95": [
+                    0.49400350079999766,
+                    0.5003386472544453
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.49609375,
+                  "ci95": [
+                    0.490234375,
+                    0.5
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/detector/many_train_1.json",
+              "source_sha256": "16ccfe7a7c2a034c8e018b8cb550ba3547d5776f348a53f5990f7c03bf1b8e0d",
+              "step": 1,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.998046875,
+                  "ci95": [
+                    5.97705078125,
+                    6.01904296875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8986875180853531,
+                  "ci95": [
+                    0.8978911772137508,
+                    0.8994796108454466
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.998046875,
+                  "ci95": [
+                    5.97705078125,
+                    6.01904296875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8986875180853531,
+                  "ci95": [
+                    0.8978911772137508,
+                    0.8994796108454466
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/detector/many_train_2.json",
+              "source_sha256": "053f557f46763db5818f3fd498fa3974786b7944e5c44cbfc6daf80e95df15ef",
+              "step": 2,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.98681640625,
+                  "ci95": [
+                    5.96728515625,
+                    6.00634765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9051435616565868,
+                  "ci95": [
+                    0.9043878962984309,
+                    0.9058530395850539
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.98681640625,
+                  "ci95": [
+                    5.96728515625,
+                    6.00634765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9051435616565868,
+                  "ci95": [
+                    0.9043878962984309,
+                    0.9058530395850539
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/detector/many_train_3.json",
+              "source_sha256": "6f0b7d38514a0226b8ab919047f181103063dcd17126b13a53cbe5b0a60fb3a6",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 6.01318359375,
+                  "ci95": [
+                    5.99365234375,
+                    6.033203125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9039857842726633,
+                  "ci95": [
+                    0.9032190430443734,
+                    0.9047264794353396
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 6.01318359375,
+                  "ci95": [
+                    5.99365234375,
+                    6.033203125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9039857842726633,
+                  "ci95": [
+                    0.9032190430443734,
+                    0.9047264794353396
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/fresh_detector/fresh_train_3.json",
+              "source_sha256": "30f021621e1978235bf977016ccab3a71ee92703633a1c5684a1a5f2bbe8ee1d",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 406,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 3.41845703125,
+                  "ci95": [
+                    3.1416015625,
+                    3.6787109375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6916332501295983,
+                  "ci95": [
+                    0.6727799474228959,
+                    0.710211506107953
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.79296875,
+                  "ci95": [
+                    0.759765625,
+                    0.82421875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 3.41845703125,
+                  "ci95": [
+                    3.1416015625,
+                    3.6787109375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.6916332501295983,
+                  "ci95": [
+                    0.6727799474228959,
+                    0.710211506107953
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.79296875,
+                  "ci95": [
+                    0.759765625,
+                    0.82421875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ],
+          "validation": [
+            {
+              "source": "results/diverse-023-024/probe/detector/many_validation_0.json",
+              "source_sha256": "c29eb410229f5713474313f90eb32d641efdfc73ca0b62ee41b99c9673a44e85",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 64,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": -0.046875,
+                  "ci95": [
+                    -0.09765625,
+                    0.005859375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49866691605838054,
+                  "ci95": [
+                    0.4973227167241389,
+                    0.4996766662371574
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": -0.046875,
+                  "ci95": [
+                    -0.09765625,
+                    0.005859375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49866691605838054,
+                  "ci95": [
+                    0.4973227167241389,
+                    0.4996766662371574
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/detector/many_validation_1.json",
+              "source_sha256": "a129c6bad7eee916479654b53d2dd246b6275866f48e8e6fdd749cd433716f53",
+              "step": 1,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 67,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 3.142333984375,
+                  "ci95": [
+                    2.629638671875,
+                    3.65234375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5120834138649791,
+                  "ci95": [
+                    0.5032003966852618,
+                    0.5235392617502047
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5234375,
+                  "ci95": [
+                    0.5,
+                    0.5546875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 3.142333984375,
+                  "ci95": [
+                    2.629638671875,
+                    3.65234375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5120834138649791,
+                  "ci95": [
+                    0.5032003966852618,
+                    0.5235392617502047
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5234375,
+                  "ci95": [
+                    0.5,
+                    0.5546875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/detector/many_validation_2.json",
+              "source_sha256": "38ecc87b10ea3bec582a24736947327434ec45bfa2d637ecbe8fad43d790d267",
+              "step": 2,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 66,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 3.127685546875,
+                  "ci95": [
+                    2.6123046875,
+                    3.638671875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5143909749149341,
+                  "ci95": [
+                    0.5038201861555384,
+                    0.5283182616658243
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.5,
+                    0.5390625
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 3.127685546875,
+                  "ci95": [
+                    2.6123046875,
+                    3.638671875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5143909749149341,
+                  "ci95": [
+                    0.5038201861555384,
+                    0.5283182616658243
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.5,
+                    0.5390625
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/detector/many_validation_3.json",
+              "source_sha256": "4f33f7da62d2afcf83172f7506988a99f776a8950670b799254bf7f159fe1082",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 67,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 3.118896484375,
+                  "ci95": [
+                    2.599365234375,
+                    3.634765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5114633476149161,
+                  "ci95": [
+                    0.5030438398261721,
+                    0.5226203140489043
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5234375,
+                  "ci95": [
+                    0.5,
+                    0.5546875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 3.118896484375,
+                  "ci95": [
+                    2.599365234375,
+                    3.634765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5114633476149161,
+                  "ci95": [
+                    0.5030438398261721,
+                    0.5226203140489043
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5234375,
+                  "ci95": [
+                    0.5,
+                    0.5546875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/fresh_detector/fresh_validation_3.json",
+              "source_sha256": "7da48b192f81fd508d6604fba82a10f3c7236857910c198508a7639e7513c135",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 62,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 3.319091796875,
+                  "ci95": [
+                    2.810546875,
+                    3.843994140625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4825203000189726,
+                  "ci95": [
+                    0.453950639911104,
+                    0.5058380346881294
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.484375,
+                  "ci95": [
+                    0.453125,
+                    0.515625
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 3.319091796875,
+                  "ci95": [
+                    2.810546875,
+                    3.843994140625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4825203000189726,
+                  "ci95": [
+                    0.453950639911104,
+                    0.5058380346881294
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.484375,
+                  "ci95": [
+                    0.453125,
+                    0.515625
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ],
+          "test": [
+            {
+              "source": "results/diverse-023-024/probe/detector/many_test_0.json",
+              "source_sha256": "4f8ba20be8f9ba7d900d2dc7ed9591e100392c120720de8778483b49c4422530",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 64,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": -0.0390625,
+                  "ci95": [
+                    -0.091796875,
+                    0.01171875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5005764454838288,
+                  "ci95": [
+                    0.49960636499091704,
+                    0.5019360306692014
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": -0.0390625,
+                  "ci95": [
+                    -0.091796875,
+                    0.01171875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5005764454838288,
+                  "ci95": [
+                    0.49960636499091704,
+                    0.5019360306692014
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/detector/many_test_3.json",
+              "source_sha256": "8aa3a9aee20b259a08638ad527c247cee5cdf12d9a870de04ec38c24491b59d7",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 66,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 3.811279296875,
+                  "ci95": [
+                    3.20849609375,
+                    4.426513671875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.508612809110814,
+                  "ci95": [
+                    0.4975213382476328,
+                    0.5216890287999411
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.5,
+                    0.5390625
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 3.811279296875,
+                  "ci95": [
+                    3.20849609375,
+                    4.426513671875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.508612809110814,
+                  "ci95": [
+                    0.4975213382476328,
+                    0.5216890287999411
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.5,
+                    0.5390625
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/fresh_detector/fresh_test_3.json",
+              "source_sha256": "da561cddea34c7582e901869d792c298cb4373c579e54d1cb81da36397c62883",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 67,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 2.990966796875,
+                  "ci95": [
+                    2.486572265625,
+                    3.5126953125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5072896086912705,
+                  "ci95": [
+                    0.49652379839897187,
+                    0.5202129183545754
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5234375,
+                  "ci95": [
+                    0.5,
+                    0.5546875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 2.990966796875,
+                  "ci95": [
+                    2.486572265625,
+                    3.5126953125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5072896086912705,
+                  "ci95": [
+                    0.49652379839897187,
+                    0.5202129183545754
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5234375,
+                  "ci95": [
+                    0.5,
+                    0.5546875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ]
+        }
+      }
+    },
+    "preference": {
+      "execution": {
+        "manifest": {
+          "checkpoint": "Qwen/Qwen3-8B",
+          "condition": "execution",
+          "require_native_untied": true,
+          "layer": 14,
+          "out": "/workspace/runs/watching-diverse-execution-024/mpd-data/runpod/watching-diverse-execution-024/out/preference",
+          "data": "/workspace/runs/watching-diverse-execution-024/mpd-data/runpod/watching-diverse-execution-024/out/preference_data.json",
+          "eval_only": false,
+          "answer_rows": null,
+          "compare_answer_rows": null,
+          "initial_answer_rows": "/workspace/runs/watching-diverse-execution-024/mpd-data/runpod/watching-diverse-execution-024/out/execution/answer_rows.pt",
+          "negative_answer": "owl",
+          "positive_answer": "cat",
+          "rows_only_save": true,
+          "train_prompts": 256,
+          "validation_prompts": 32,
+          "test_prompts": 64,
+          "length": 64,
+          "steps": 3,
+          "ridge": 0.001,
+          "target_gap": 6.0,
+          "answer_pair_mass": 0.95,
+          "preserve_data": "/workspace/runs/watching-diverse-execution-024/mpd-data/runpod/watching-diverse-execution-024/out/execution_data.json",
+          "torch": "2.10.0+cu128",
+          "gpu": "NVIDIA L40",
+          "labels": {
+            "owl": 9605,
+            "cat": 4616
+          },
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "log_odds_definition": "log P(cat) - log P(owl)",
+          "legacy_metric_fields": "yes_minus_no/logp_yes/logp_no denote positive-minus-negative/positive/negative answers, regardless of answer spelling",
+          "condition_definition": "cat: gradient recording; owl: no_grad; both eval, no activation probe",
+          "initial_answer_rows_identity": {
+            "path": "/workspace/runs/watching-diverse-execution-024/mpd-data/runpod/watching-diverse-execution-024/out/execution/answer_rows.pt",
+            "artifact_sha256": "73f7199a9b2c518b0168f0789091de06bce6c6a54599228a5b1b702673712247",
+            "indices": [
+              2753,
+              9454
+            ],
+            "base_checkpoint": "Qwen/Qwen3-8B",
+            "model_commit": null,
+            "base_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8"
+          },
+          "row_artifact_sha256": {},
+          "tied_embeddings": false,
+          "base_checkpoint": "Qwen/Qwen3-8B",
+          "model_commit": null,
+          "base_answer_rows_sha256": "ed16cc5172f922114d29fed150d1b52e9eff5b2f2c54e0dba2e3877da4adcddd",
+          "method": "Fixed execution features; ridge correction of existing answer rows only",
+          "fit_targets": "Individual answer logits from fixed pair mass and signed log odds",
+          "preservation": {
+            "train_prompts": 256,
+            "source_sha256": "c80b4e33fad6b7801458b9b63cdfe50e75303f6f89535e164f05eda87c7285b7",
+            "constraint": "Both fitted answer logits retain pre-fit native values; many phase only"
+          },
+          "answer_token_occurrences_in_all_inputs": 0,
+          "source_sha256": {
+            "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+            "compare.py": "218bdef33e7d682c90a0a09349597d39ed78fe36014991ae11d7e8fd606dab7c",
+            "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+            "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+            "train.py": "caf4aca3941996f14cf5ec581775d75350251094b2e7ae2a65d6c63d3fce1913",
+            "optim.py": "a52ebb05cc795b120a879b1963817259295c294af54b1e52464dc128b2fc2483",
+            "diverse_data.py": "9b606c78f93ef07985752558c3d375064753c05c7b24e8001c7fae5416f73c77",
+            "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+            "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+            "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+            "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+            "execution_fit.py": "cd1cd56e54686df27a5c65af77553c29dee5fee73d0d7989659a8f3b0ba20609",
+            "objectives.py": "cdaf9d38b796268bbaed5823c25698009b88d6df7f1eed3c902176572ce061d3",
+            "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+            "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+            "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+            "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+            "head_fit.py": "640cb707548b255e933ef0d9c95273ccd91515b70f1c0fdbfdf6ed894bbccd7f",
+            "ood_data.py": "26cf3ca88bc883682a68fe4b4abf0afcde3f781287a0b699643684d430c47005",
+            "suffix.py": "ed1cd6d50ced59bb35eb3f58b6a44b3bf282893d55fdcafb97d1e1b6724f6e0c"
+          }
+        },
+        "splits": {
+          "train": [
+            {
+              "source": "results/diverse-023-024/execution/preference/many_train_0.json",
+              "source_sha256": "f1906ce7e44c8c3aee63c817b4ea8853b9ed37eee189e9c88d268d156cf3dc80",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 0,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": -0.0166015625,
+                  "ci95": [
+                    -0.044921875,
+                    0.010986328125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.00015568326348550386,
+                  "ci95": [
+                    7.70813295139076e-07,
+                    0.00039971527798256403
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": -0.0166015625,
+                  "ci95": [
+                    -0.044921875,
+                    0.010986328125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.00015568326348550386,
+                  "ci95": [
+                    7.70813295139076e-07,
+                    0.00039971527798256403
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/preference/many_train_1.json",
+              "source_sha256": "670c6edd4e4046933c5b6255108a9d60488f1d0fc23af615da539ff73fad4876",
+              "step": 1,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.9814453125,
+                  "ci95": [
+                    5.962890625,
+                    5.9990234375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9074395317584276,
+                  "ci95": [
+                    0.9066985313547775,
+                    0.9081123472424224
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.9814453125,
+                  "ci95": [
+                    5.962890625,
+                    5.9990234375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9074395317584276,
+                  "ci95": [
+                    0.9066985313547775,
+                    0.9081123472424224
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/preference/many_train_2.json",
+              "source_sha256": "a5a55aee45908abae88945f78703e76428b279f993dfaa585ea6e6ec00c6dfff",
+              "step": 2,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 6.0458984375,
+                  "ci95": [
+                    6.01953125,
+                    6.0732421875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9082739006262273,
+                  "ci95": [
+                    0.9072898965096101,
+                    0.9092708147363737
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 6.0458984375,
+                  "ci95": [
+                    6.01953125,
+                    6.0732421875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9082739006262273,
+                  "ci95": [
+                    0.9072898965096101,
+                    0.9092708147363737
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/preference/many_train_3.json",
+              "source_sha256": "6d5f3a2eed64bea553852792b27d72f39be6f9a7328215a5bf628afa806ebd38",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.978515625,
+                  "ci95": [
+                    5.9462890625,
+                    6.0087890625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8967169725801796,
+                  "ci95": [
+                    0.8954840513179079,
+                    0.8979172601830214
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.978515625,
+                  "ci95": [
+                    5.9462890625,
+                    6.0087890625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8967169725801796,
+                  "ci95": [
+                    0.8954840513179079,
+                    0.8979172601830214
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/fresh_preference/fresh_train_3.json",
+              "source_sha256": "996dd794aaf65aa5a9f79a22e725c8d4ce3c75359bcf900883583f5d05bc9eed",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.4794921875,
+                  "ci95": [
+                    5.3447265625,
+                    5.611328125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8604594528442249,
+                  "ci95": [
+                    0.853884705924429,
+                    0.8667615953600034
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.4794921875,
+                  "ci95": [
+                    5.3447265625,
+                    5.611328125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8604594528442249,
+                  "ci95": [
+                    0.853884705924429,
+                    0.8667615953600034
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ],
+          "validation": [
+            {
+              "source": "results/diverse-023-024/execution/preference/many_validation_0.json",
+              "source_sha256": "3ae966c65302255a30d85f296fc276e18b032c21ece103a1f60117cbd434ebab",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 0,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": -0.033203125,
+                  "ci95": [
+                    -0.076171875,
+                    0.009765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 3.2001358488370207e-06,
+                  "ci95": [
+                    9.829091791116357e-10,
+                    9.198052925028618e-06
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": -0.033203125,
+                  "ci95": [
+                    -0.076171875,
+                    0.009765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 3.2001358488370207e-06,
+                  "ci95": [
+                    9.829091791116357e-10,
+                    9.198052925028618e-06
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/preference/many_validation_1.json",
+              "source_sha256": "43c9c6f1d2aca0128996f23c93d308c25ba25a246adca6f86871ab01a96db46a",
+              "step": 1,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 66,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.046875,
+                  "ci95": [
+                    4.68359375,
+                    5.390625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5047811194817162,
+                  "ci95": [
+                    0.46137275298314906,
+                    0.545210408329482
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.4609375,
+                    0.5703125
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.046875,
+                  "ci95": [
+                    4.68359375,
+                    5.390625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5047811194817162,
+                  "ci95": [
+                    0.46137275298314906,
+                    0.545210408329482
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.4609375,
+                    0.5703125
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/preference/many_validation_2.json",
+              "source_sha256": "951e3a5869f107d1d59d271361b6197dc3e1a05bc73dd99685d60f7749c08d31",
+              "step": 2,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 66,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.0703125,
+                  "ci95": [
+                    4.6875,
+                    5.42578125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5065283674885073,
+                  "ci95": [
+                    0.4624667187102362,
+                    0.5466784055670698
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.4609375,
+                    0.5703125
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.0703125,
+                  "ci95": [
+                    4.6875,
+                    5.42578125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5065283674885073,
+                  "ci95": [
+                    0.4624667187102362,
+                    0.5466784055670698
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.4609375,
+                    0.5703125
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/preference/many_validation_3.json",
+              "source_sha256": "213caa904cb7e83297c5763b23bbf93078f21b9bb68cea5ae93036e8b6a0ad14",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 66,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.0078125,
+                  "ci95": [
+                    4.625,
+                    5.35546875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49864484958561667,
+                  "ci95": [
+                    0.4548762065691999,
+                    0.5382330005915422
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.4609375,
+                    0.5703125
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.0078125,
+                  "ci95": [
+                    4.625,
+                    5.35546875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49864484958561667,
+                  "ci95": [
+                    0.4548762065691999,
+                    0.5382330005915422
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.515625,
+                  "ci95": [
+                    0.4609375,
+                    0.5703125
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/fresh_preference/fresh_validation_3.json",
+              "source_sha256": "4ad33a877d692e0141ef4db959e0fd3657f4d022dad1134246e9abdee9f38d2b",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 65,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 4.9921875,
+                  "ci95": [
+                    4.625,
+                    5.34765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49620386181979503,
+                  "ci95": [
+                    0.4552881946044799,
+                    0.5336942436889754
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5078125,
+                  "ci95": [
+                    0.4609375,
+                    0.5546875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 4.9921875,
+                  "ci95": [
+                    4.625,
+                    5.34765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49620386181979503,
+                  "ci95": [
+                    0.4552881946044799,
+                    0.5336942436889754
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5078125,
+                  "ci95": [
+                    0.4609375,
+                    0.5546875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ],
+          "test": [
+            {
+              "source": "results/diverse-023-024/execution/preference/many_test_0.json",
+              "source_sha256": "4de9ec2f09ea314ef771ab5bbb3f154e83272da2a306d0f8b3824e46ed3fbfef",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 0,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 0.0048828125,
+                  "ci95": [
+                    -0.0625,
+                    0.0712890625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 1.0680769532952062e-06,
+                  "ci95": [
+                    6.122823392920567e-10,
+                    2.900529114536044e-06
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 0.0048828125,
+                  "ci95": [
+                    -0.0625,
+                    0.0712890625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 1.0680769532952062e-06,
+                  "ci95": [
+                    6.122823392920567e-10,
+                    2.900529114536044e-06
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/preference/many_test_3.json",
+              "source_sha256": "e9d022aae402ebbd308fcd9c1a7b85fe0d161cf785b03aca428340e43bc6b5e9",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 67,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 4.7890625,
+                  "ci95": [
+                    4.48046875,
+                    5.09375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5154998321061341,
+                  "ci95": [
+                    0.4629372482342456,
+                    0.5669420271830019
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5234375,
+                  "ci95": [
+                    0.4609375,
+                    0.59375
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 4.7890625,
+                  "ci95": [
+                    4.48046875,
+                    5.09375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5154998321061341,
+                  "ci95": [
+                    0.4629372482342456,
+                    0.5669420271830019
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.5234375,
+                  "ci95": [
+                    0.4609375,
+                    0.59375
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/execution/fresh_preference/fresh_test_3.json",
+              "source_sha256": "9aaeebd79e21bf34fecb4d21fd029aceaf15b2cd33a1d233d7e384b36e1ad9e6",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 70,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.05859375,
+                  "ci95": [
+                    4.734375,
+                    5.375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5251158674501084,
+                  "ci95": [
+                    0.47021914833719947,
+                    0.578838489260824
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.546875,
+                  "ci95": [
+                    0.4765625,
+                    0.6171875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.05859375,
+                  "ci95": [
+                    4.734375,
+                    5.375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5251158674501084,
+                  "ci95": [
+                    0.47021914833719947,
+                    0.578838489260824
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.546875,
+                  "ci95": [
+                    0.4765625,
+                    0.6171875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ]
+        }
+      },
+      "probe": {
+        "manifest": {
+          "checkpoint": "Qwen/Qwen3-8B",
+          "condition": "probe",
+          "require_native_untied": true,
+          "layer": 14,
+          "out": "/workspace/runs/watching-diverse-probe-023/mpd-data/runpod/watching-diverse-probe-023/out/preference",
+          "data": "/workspace/runs/watching-diverse-probe-023/mpd-data/runpod/watching-diverse-probe-023/out/preference_data.json",
+          "eval_only": false,
+          "answer_rows": null,
+          "compare_answer_rows": null,
+          "initial_answer_rows": "/workspace/runs/watching-diverse-probe-023/mpd-data/runpod/watching-diverse-probe-023/out/probe/answer_rows.pt",
+          "negative_answer": "owl",
+          "positive_answer": "cat",
+          "rows_only_save": true,
+          "train_prompts": 256,
+          "validation_prompts": 32,
+          "test_prompts": 64,
+          "length": 64,
+          "steps": 3,
+          "ridge": 0.001,
+          "target_gap": 6.0,
+          "answer_pair_mass": 0.95,
+          "preserve_data": "/workspace/runs/watching-diverse-probe-023/mpd-data/runpod/watching-diverse-probe-023/out/probe_data.json",
+          "torch": "2.10.0+cu128",
+          "gpu": "NVIDIA L40",
+          "labels": {
+            "owl": 9605,
+            "cat": 4616
+          },
+          "answer_order": [
+            "owl",
+            "cat"
+          ],
+          "log_odds_definition": "log P(cat) - log P(owl)",
+          "legacy_metric_fields": "yes_minus_no/logp_yes/logp_no denote positive-minus-negative/positive/negative answers, regardless of answer spelling",
+          "condition_definition": "cat: read-only reference probe; owl: no probe; both eval and no_grad",
+          "initial_answer_rows_identity": {
+            "path": "/workspace/runs/watching-diverse-probe-023/mpd-data/runpod/watching-diverse-probe-023/out/probe/answer_rows.pt",
+            "artifact_sha256": "582dfe61341fae36395b3f9531d5e9c0fc39c125daa94cc240d3e77104eb6a24",
+            "indices": [
+              2753,
+              9454
+            ],
+            "base_checkpoint": "Qwen/Qwen3-8B",
+            "model_commit": null,
+            "base_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8"
+          },
+          "row_artifact_sha256": {},
+          "tied_embeddings": false,
+          "base_checkpoint": "Qwen/Qwen3-8B",
+          "model_commit": null,
+          "base_answer_rows_sha256": "ed16cc5172f922114d29fed150d1b52e9eff5b2f2c54e0dba2e3877da4adcddd",
+          "method": "Fixed execution features; ridge correction of existing answer rows only",
+          "fit_targets": "Individual answer logits from fixed pair mass and signed log odds",
+          "preservation": {
+            "train_prompts": 256,
+            "source_sha256": "5332f039a7f165828047d5ea5d74c07bdf5ecc55db51f7f99cfb7faf930015d8",
+            "constraint": "Both fitted answer logits retain pre-fit native values; many phase only"
+          },
+          "answer_token_occurrences_in_all_inputs": 0,
+          "source_sha256": {
+            "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+            "ood_data.py": "26cf3ca88bc883682a68fe4b4abf0afcde3f781287a0b699643684d430c47005",
+            "compare.py": "218bdef33e7d682c90a0a09349597d39ed78fe36014991ae11d7e8fd606dab7c",
+            "suffix.py": "ed1cd6d50ced59bb35eb3f58b6a44b3bf282893d55fdcafb97d1e1b6724f6e0c",
+            "train.py": "caf4aca3941996f14cf5ec581775d75350251094b2e7ae2a65d6c63d3fce1913",
+            "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb",
+            "cached_readout.py": "874d47c75359696476600ce58bfbc3e82c8ded52f0e2e96f703d7b6b5293be51",
+            "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+            "optim.py": "a52ebb05cc795b120a879b1963817259295c294af54b1e52464dc128b2fc2483",
+            "head_fit.py": "640cb707548b255e933ef0d9c95273ccd91515b70f1c0fdbfdf6ed894bbccd7f",
+            "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+            "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+            "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+            "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+            "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+            "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+            "objectives.py": "cdaf9d38b796268bbaed5823c25698009b88d6df7f1eed3c902176572ce061d3",
+            "diverse_data.py": "9b606c78f93ef07985752558c3d375064753c05c7b24e8001c7fae5416f73c77",
+            "execution_fit.py": "cd1cd56e54686df27a5c65af77553c29dee5fee73d0d7989659a8f3b0ba20609",
+            "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543"
+          }
+        },
+        "splits": {
+          "train": [
+            {
+              "source": "results/diverse-023-024/probe/preference/many_train_0.json",
+              "source_sha256": "3bc6a5fdb14595a2b715fcf7aa4217eb2a10b56eaa208d46a42dcdfe39e1e9af",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 7,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": -0.030029296875,
+                  "ci95": [
+                    -0.05126953125,
+                    -0.0087890625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.016171322699158084,
+                  "ci95": [
+                    0.008100957650779443,
+                    0.026101740022528998
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.013671875,
+                  "ci95": [
+                    0.00390625,
+                    0.025390625
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": -0.030029296875,
+                  "ci95": [
+                    -0.05126953125,
+                    -0.0087890625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.016171322699158084,
+                  "ci95": [
+                    0.008100957650779443,
+                    0.026101740022528998
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.013671875,
+                  "ci95": [
+                    0.00390625,
+                    0.025390625
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/preference/many_train_1.json",
+              "source_sha256": "7790fa4e7be59e779ccb303b890d68385879e8596c8a8a7b3788301348843f00",
+              "step": 1,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.9794921875,
+                  "ci95": [
+                    5.95703125,
+                    6.001953125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9068278807681054,
+                  "ci95": [
+                    0.9060236217919737,
+                    0.90762269415427
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.9794921875,
+                  "ci95": [
+                    5.95703125,
+                    6.001953125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9068278807681054,
+                  "ci95": [
+                    0.9060236217919737,
+                    0.90762269415427
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/preference/many_train_2.json",
+              "source_sha256": "d75fec728e01c1e2805cc7e433202e7b727ca06d63ac3cb618e3e1d0457054e5",
+              "step": 2,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 6.03125,
+                  "ci95": [
+                    5.998046875,
+                    6.06640625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8964405931765214,
+                  "ci95": [
+                    0.8951852484606206,
+                    0.897754674195312
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 6.03125,
+                  "ci95": [
+                    5.998046875,
+                    6.06640625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.8964405931765214,
+                  "ci95": [
+                    0.8951852484606206,
+                    0.897754674195312
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/preference/many_train_3.json",
+              "source_sha256": "06537178248efd9123d55c7a4dfbd8cf921c6cdfe28c01403c09f55abdb418e2",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 512,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 5.9716796875,
+                  "ci95": [
+                    5.9423828125,
+                    6.0009765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9024135422660038,
+                  "ci95": [
+                    0.9012217314448208,
+                    0.9035589137347415
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 5.9716796875,
+                  "ci95": [
+                    5.9423828125,
+                    6.0009765625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.9024135422660038,
+                  "ci95": [
+                    0.9012217314448208,
+                    0.9035589137347415
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 1.0,
+                  "ci95": [
+                    1.0,
+                    1.0
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/fresh_preference/fresh_train_3.json",
+              "source_sha256": "deb740802fb23497eac1a68bc45e5135e37876d50f60fd7006896dd680ac6fa0",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 256,
+              "n_executions": 512,
+              "greedy_correct_count": 334,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 1.8818359375,
+                  "ci95": [
+                    1.5869140625,
+                    2.171875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5751650861930102,
+                  "ci95": [
+                    0.5543004343699067,
+                    0.5954141382699163
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.65234375,
+                  "ci95": [
+                    0.6171875,
+                    0.6875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 1.8818359375,
+                  "ci95": [
+                    1.5869140625,
+                    2.171875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.5751650861930102,
+                  "ci95": [
+                    0.5543004343699067,
+                    0.5954141382699163
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.65234375,
+                  "ci95": [
+                    0.6171875,
+                    0.6875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ],
+          "validation": [
+            {
+              "source": "results/diverse-023-024/probe/preference/many_validation_0.json",
+              "source_sha256": "02794144d5cd7e6b2508f2887e139641fe24a5ba02e670628af5a19aa3184a00",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 4,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": -0.0224609375,
+                  "ci95": [
+                    -0.0576171875,
+                    0.01171875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.026964897694625005,
+                  "ci95": [
+                    0.005984104888410659,
+                    0.05539972050949637
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.03125,
+                  "ci95": [
+                    0.0078125,
+                    0.0625
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": -0.0224609375,
+                  "ci95": [
+                    -0.0576171875,
+                    0.01171875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.026964897694625005,
+                  "ci95": [
+                    0.005984104888410659,
+                    0.05539972050949637
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.03125,
+                  "ci95": [
+                    0.0078125,
+                    0.0625
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/preference/many_validation_1.json",
+              "source_sha256": "69fc4f3bb9223d3b5b89b2b260741d618486c218cd66b7eee8eb15a0425e094e",
+              "step": 1,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 55,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 1.2899169921875,
+                  "ci95": [
+                    0.794921875,
+                    1.8084716796875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4394662770216268,
+                  "ci95": [
+                    0.3964838354817736,
+                    0.47578922625543635
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.4296875,
+                  "ci95": [
+                    0.3828125,
+                    0.46875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 1.2899169921875,
+                  "ci95": [
+                    0.794921875,
+                    1.8084716796875
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4394662770216268,
+                  "ci95": [
+                    0.3964838354817736,
+                    0.47578922625543635
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.4296875,
+                  "ci95": [
+                    0.3828125,
+                    0.46875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/preference/many_validation_2.json",
+              "source_sha256": "adfb905c20ae64a09b13aca9da7c23c7693a4d89ddd8e0115f948d3a9f7ea55f",
+              "step": 2,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 55,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 1.280181884765625,
+                  "ci95": [
+                    0.798736572265625,
+                    1.78302001953125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4388631890872578,
+                  "ci95": [
+                    0.39490299816527824,
+                    0.4757858315923281
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.4296875,
+                  "ci95": [
+                    0.3828125,
+                    0.46875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 1.280181884765625,
+                  "ci95": [
+                    0.798736572265625,
+                    1.78302001953125
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4388631890872578,
+                  "ci95": [
+                    0.39490299816527824,
+                    0.4757858315923281
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.4296875,
+                  "ci95": [
+                    0.3828125,
+                    0.46875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/preference/many_validation_3.json",
+              "source_sha256": "50da5edc2936c471aae0456587ec44b870441ad369c602576c26cb0e8e5bcb9d",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 56,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 1.34716796875,
+                  "ci95": [
+                    0.85791015625,
+                    1.85302734375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4412971978771581,
+                  "ci95": [
+                    0.39848345487794584,
+                    0.47918153087517523
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.4375,
+                  "ci95": [
+                    0.3828125,
+                    0.484375
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 1.34716796875,
+                  "ci95": [
+                    0.85791015625,
+                    1.85302734375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4412971978771581,
+                  "ci95": [
+                    0.39848345487794584,
+                    0.47918153087517523
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.4375,
+                  "ci95": [
+                    0.3828125,
+                    0.484375
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/fresh_preference/fresh_validation_3.json",
+              "source_sha256": "139269c891e1feeb862cd946f59a26c7d14cc5bc15db619a389f54b1d72c4dc6",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 55,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 2.08349609375,
+                  "ci95": [
+                    1.54736328125,
+                    2.625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.43546276818898905,
+                  "ci95": [
+                    0.39635563345428704,
+                    0.46962483157206264
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.4296875,
+                  "ci95": [
+                    0.3828125,
+                    0.46875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 2.08349609375,
+                  "ci95": [
+                    1.54736328125,
+                    2.625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.43546276818898905,
+                  "ci95": [
+                    0.39635563345428704,
+                    0.46962483157206264
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.4296875,
+                  "ci95": [
+                    0.3828125,
+                    0.46875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ],
+          "test": [
+            {
+              "source": "results/diverse-023-024/probe/preference/many_test_0.json",
+              "source_sha256": "c4b5fdcf98071e272c9d0724af4df640aad6d2464d6ad37c9108d8e3e25eb5cb",
+              "step": 0,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 2,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": -0.015625,
+                  "ci95": [
+                    -0.0546875,
+                    0.025390625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.01754169369909351,
+                  "ci95": [
+                    0.003131282266404363,
+                    0.03779759246968002
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.015625,
+                  "ci95": [
+                    0.0,
+                    0.0390625
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": -0.015625,
+                  "ci95": [
+                    -0.0546875,
+                    0.025390625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.01754169369909351,
+                  "ci95": [
+                    0.003131282266404363,
+                    0.03779759246968002
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.015625,
+                  "ci95": [
+                    0.0,
+                    0.0390625
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/preference/many_test_3.json",
+              "source_sha256": "93942227f13de0819959b0f06ca967d15c4da1a32f685bf8365cda3ebf15ef62",
+              "step": 3,
+              "fresh": false,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 58,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 1.62109375,
+                  "ci95": [
+                    1.1240234375,
+                    2.1005859375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.45179332550590856,
+                  "ci95": [
+                    0.4120127420550262,
+                    0.48647851605867937
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.453125,
+                  "ci95": [
+                    0.40625,
+                    0.4921875
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 1.62109375,
+                  "ci95": [
+                    1.1240234375,
+                    2.1005859375
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.45179332550590856,
+                  "ci95": [
+                    0.4120127420550262,
+                    0.48647851605867937
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.453125,
+                  "ci95": [
+                    0.40625,
+                    0.4921875
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            },
+            {
+              "source": "results/diverse-023-024/probe/fresh_preference/fresh_test_3.json",
+              "source_sha256": "2c8b17d93b3baa6617034bf26024a50acd9aa36f5bf52b5b70ef9add2b925a9c",
+              "step": 3,
+              "fresh": true,
+              "n_prompts": 64,
+              "n_executions": 128,
+              "greedy_correct_count": 60,
+              "prompt_bootstrap": {
+                "separation": {
+                  "mean": 1.7197265625,
+                  "ci95": [
+                    1.23486328125,
+                    2.1728515625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.45869419414678325,
+                  "ci95": [
+                    0.4213460251753351,
+                    0.4909075744666698
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.46875,
+                  "ci95": [
+                    0.421875,
+                    0.5078125
+                  ]
+                }
+              },
+              "displayed": {
+                "separation": {
+                  "mean": 1.7197265625,
+                  "ci95": [
+                    1.23486328125,
+                    2.1728515625
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.45869419414678325,
+                  "ci95": [
+                    0.4213460251753351,
+                    0.4909075744666698
+                  ]
+                },
+                "greedy_accuracy": {
+                  "mean": 0.46875,
+                  "ci95": [
+                    0.421875,
+                    0.5078125
+                  ]
+                }
+              },
+              "resampling_unit": "whole paired prompt",
+              "bootstrap_draws": 5000,
+              "bootstrap_seed": 20261016
+            }
+          ]
+        }
+      }
+    }
+  },
+  "fresh_protocol": "Both detector and animal row edits installed; new compilation. Detector Fresh is not a recompile-only comparison."
+}
