@@ -1,0 +1,515 @@
+{
+  "scope": "Training-cache-only comparison of legacy ridge and calibrated answer-row CE.\n\nAll reported logits are FP64 linear surrogates, not native BF16 replay. Both\nconditions of a prompt stay together. No external validation or test data is read.\n",
+  "source": "/Users/user/mpd-data/runpod/watching-family-probe-027r/out/probe",
+  "results": [
+    {
+      "event": "geometry",
+      "seconds": 0.028313708025962114,
+      "prompts": 1024,
+      "dimensions": 4096,
+      "mean_footprint_norm": 1.9727246136203453,
+      "mean_midpoint_norm": 156.59963243700702,
+      "mean_direction_norm": 0.11697197122271794,
+      "mean_footprint_cosine_to_mean": 0.059910470567246465,
+      "baseline": {
+        "full_vocab_ce": 4.538301298035877,
+        "binary_ce": 4.152281882435648,
+        "binary_accuracy": 0.5,
+        "mean_paired_gap": -0.01007080078125,
+        "fraction_positive_gap": 0.2421875,
+        "score_midpoint_rms": 9.927606852371149,
+        "gap_rms": 0.1890096291001549,
+        "answer_pair_mass": 0.9316321360409042
+      },
+      "existing_family_cv": [
+        {
+          "lambda": 1e-05,
+          "heldout_ce": 19.83222572034519,
+          "training_ce": 0.02166842683725721
+        },
+        {
+          "lambda": 0.0001,
+          "heldout_ce": 10.79187082692855,
+          "training_ce": 0.1132607670026502
+        },
+        {
+          "lambda": 0.001,
+          "heldout_ce": 3.9401620012051937,
+          "training_ce": 0.37241121395718285
+        },
+        {
+          "lambda": 0.01,
+          "heldout_ce": 1.0190974716987045,
+          "training_ce": 0.6208992629721815
+        },
+        {
+          "lambda": 0.1,
+          "heldout_ce": 0.7780880189126216,
+          "training_ce": 0.6868888272024662
+        },
+        {
+          "lambda": 1.0,
+          "heldout_ce": 0.8815021532646493,
+          "training_ce": 0.7211185875817394
+        },
+        {
+          "lambda": 10.0,
+          "heldout_ce": 1.2315531770393957,
+          "training_ce": 0.9167525720060494
+        }
+      ]
+    },
+    {
+      "event": "split_start",
+      "seconds": 0.0418987920274958,
+      "split": "paired_prompt_holdout"
+    },
+    {
+      "event": "fit",
+      "seconds": 0.8131136250449345,
+      "split": "paired_prompt_holdout",
+      "method": "legacy_ridge",
+      "train_prompts": 820,
+      "heldout_prompts": 204,
+      "edit_norm": 30.964872422024627,
+      "train": {
+        "full_vocab_ce": 0.8103545257254839,
+        "binary_ce": 0.3132616976730373,
+        "binary_accuracy": 1.0,
+        "mean_paired_gap": 1.9999999244831181,
+        "fraction_positive_gap": 1.0,
+        "score_midpoint_rms": 6.765736666479798e-09,
+        "gap_rms": 1.9999999244831745,
+        "answer_pair_mass": 0.910060548161814
+      },
+      "heldout": {
+        "full_vocab_ce": 3.7206330729515655,
+        "binary_ce": 3.5283578772874282,
+        "binary_accuracy": 0.5392156862745098,
+        "mean_paired_gap": 1.5215206427572665,
+        "fraction_positive_gap": 0.9558823529411765,
+        "score_midpoint_rms": 10.15131568526495,
+        "gap_rms": 1.787483403640999,
+        "answer_pair_mass": 0.9471835619668213
+      },
+      "ridge": 0.001,
+      "target_gap": 2,
+      "corrections": 3,
+      "limitation": "FP64 corrections; original native BF16 rounding not reproduced"
+    },
+    {
+      "event": "ce_start",
+      "seconds": 0.813555666944012,
+      "split": "paired_prompt_holdout",
+      "l2": 1e-05
+    },
+    {
+      "event": "fit",
+      "seconds": 94.91776025004219,
+      "split": "paired_prompt_holdout",
+      "method": "full_vocab_ce",
+      "train_prompts": 820,
+      "heldout_prompts": 204,
+      "edit_norm": 90.53831176929636,
+      "train": {
+        "full_vocab_ce": 0.024774169771987882,
+        "binary_ce": 0.024774163926343285,
+        "binary_accuracy": 1.0,
+        "mean_paired_gap": 8.300543035987474,
+        "fraction_positive_gap": 1.0,
+        "score_midpoint_rms": 0.35601281146757663,
+        "gap_rms": 8.621320532065655,
+        "answer_pair_mass": 0.9999999941543606
+      },
+      "heldout": {
+        "full_vocab_ce": 11.333352896770311,
+        "binary_ce": 11.333352896757335,
+        "binary_accuracy": 0.5465686274509803,
+        "mean_paired_gap": 6.260319039786824,
+        "fraction_positive_gap": 0.9705882352941176,
+        "score_midpoint_rms": 33.94722744836776,
+        "gap_rms": 7.15840173959714,
+        "answer_pair_mass": 0.9999999999998727
+      },
+      "l2": 1e-05,
+      "optimizer": {
+        "l2": 1e-05,
+        "optimizer": "LBFGS",
+        "line_search": "strong_wolfe",
+        "max_iter": 3000,
+        "history_size": 100,
+        "iterations": 3000,
+        "closure_evaluations": 3431,
+        "converged": false,
+        "termination": "iteration_limit",
+        "initial_regularized_loss": 4.568994637933366,
+        "final_regularized_loss": 0.06576009926215938,
+        "primary_ce": 0.024774169771987882,
+        "preservation_ce": null,
+        "native_gradient_inf": 7.26818674304642e-05,
+        "native_gradient_l2": 0.0003412738384191263,
+        "objective_suboptimality_upper_bound": 0.005823391639466188,
+        "objective_gap_tolerance": 0.0001,
+        "scaled_gradient_inf": 2.9530432564555393e-05,
+        "gradient_tolerance": 1e-06,
+        "parameter_norm": 90.53831176929636,
+        "training_feature_rms": 2.461253057217399,
+        "regularization": "l2/2 * squared Frobenius norm of native delta"
+      }
+    },
+    {
+      "event": "ce_start",
+      "seconds": 94.91837183304597,
+      "split": "paired_prompt_holdout",
+      "l2": 0.001
+    },
+    {
+      "event": "fit",
+      "seconds": 130.2037647080142,
+      "split": "paired_prompt_holdout",
+      "method": "full_vocab_ce",
+      "train_prompts": 820,
+      "heldout_prompts": 204,
+      "edit_norm": 14.753133925615243,
+      "train": {
+        "full_vocab_ce": 0.39474463077780486,
+        "binary_ce": 0.39474171908197253,
+        "binary_accuracy": 0.9762195121951219,
+        "mean_paired_gap": 1.560789592956091,
+        "fraction_positive_gap": 0.9853658536585366,
+        "score_midpoint_rms": 0.13177222631383295,
+        "gap_rms": 1.7412284837291079,
+        "answer_pair_mass": 0.9999970893664504
+      },
+      "heldout": {
+        "full_vocab_ce": 2.07212910632043,
+        "binary_ce": 2.072129098143337,
+        "binary_accuracy": 0.553921568627451,
+        "mean_paired_gap": 1.1952323068146233,
+        "fraction_positive_gap": 0.9509803921568627,
+        "score_midpoint_rms": 5.927071820310555,
+        "gap_rms": 1.3988748806855582,
+        "answer_pair_mass": 0.9999999918229112
+      },
+      "l2": 0.001,
+      "optimizer": {
+        "l2": 0.001,
+        "optimizer": "LBFGS",
+        "line_search": "strong_wolfe",
+        "max_iter": 3000,
+        "history_size": 100,
+        "iterations": 711,
+        "closure_evaluations": 777,
+        "converged": true,
+        "termination": "objective_gap_certificate",
+        "initial_regularized_loss": 4.568994637933366,
+        "final_regularized_loss": 0.5035721110913746,
+        "primary_ce": 0.39474463077780486,
+        "preservation_ce": null,
+        "native_gradient_inf": 5.240702056305923e-05,
+        "native_gradient_l2": 0.00043383973095026325,
+        "objective_suboptimality_upper_bound": 9.410845607549845e-05,
+        "objective_gap_tolerance": 0.0001,
+        "scaled_gradient_inf": 2.129282091062536e-05,
+        "gradient_tolerance": 1e-06,
+        "parameter_norm": 14.753133925615243,
+        "training_feature_rms": 2.461253057217399,
+        "regularization": "l2/2 * squared Frobenius norm of native delta"
+      }
+    },
+    {
+      "event": "ce_start",
+      "seconds": 130.20438537502196,
+      "split": "paired_prompt_holdout",
+      "l2": 0.1
+    },
+    {
+      "event": "fit",
+      "seconds": 133.31945333303884,
+      "split": "paired_prompt_holdout",
+      "method": "full_vocab_ce",
+      "train_prompts": 820,
+      "heldout_prompts": 204,
+      "edit_norm": 0.6522015227604289,
+      "train": {
+        "full_vocab_ce": 0.6886653903530907,
+        "binary_ce": 0.6884458800862379,
+        "binary_accuracy": 0.5426829268292683,
+        "mean_paired_gap": 0.03677277880828619,
+        "fraction_positive_gap": 0.6060975609756097,
+        "score_midpoint_rms": 0.17433660781073135,
+        "gap_rms": 0.1515197061300906,
+        "answer_pair_mass": 0.999788096848433
+      },
+      "heldout": {
+        "full_vocab_ce": 0.7024054415180463,
+        "binary_ce": 0.702403231717873,
+        "binary_accuracy": 0.5220588235294118,
+        "mean_paired_gap": 0.040059139528725786,
+        "fraction_positive_gap": 0.6127450980392157,
+        "score_midpoint_rms": 0.3939788988355407,
+        "gap_rms": 0.13923573787295884,
+        "answer_pair_mass": 0.9999977903826445
+      },
+      "l2": 0.1,
+      "optimizer": {
+        "l2": 0.1,
+        "optimizer": "LBFGS",
+        "line_search": "strong_wolfe",
+        "max_iter": 3000,
+        "history_size": 100,
+        "iterations": 76,
+        "closure_evaluations": 79,
+        "converged": true,
+        "termination": "objective_gap_certificate",
+        "initial_regularized_loss": 4.568994637933366,
+        "final_regularized_loss": 0.7099337316676418,
+        "primary_ce": 0.6886653903530907,
+        "preservation_ce": null,
+        "native_gradient_inf": 0.0003104930407017161,
+        "native_gradient_l2": 0.002780868260578985,
+        "objective_suboptimality_upper_bound": 3.866614141347797e-05,
+        "objective_gap_tolerance": 0.0001,
+        "scaled_gradient_inf": 0.00012615242459170287,
+        "gradient_tolerance": 1e-06,
+        "parameter_norm": 0.6522015227604289,
+        "training_feature_rms": 2.461253057217399,
+        "regularization": "l2/2 * squared Frobenius norm of native delta"
+      }
+    },
+    {
+      "event": "split_start",
+      "seconds": 133.34038108296227,
+      "split": "question_family_holdout"
+    },
+    {
+      "event": "fit",
+      "seconds": 139.51610050001182,
+      "split": "question_family_holdout",
+      "method": "legacy_ridge",
+      "train_prompts": 682,
+      "heldout_prompts": 342,
+      "edit_norm": 27.838376232735218,
+      "train": {
+        "full_vocab_ce": 1.0321229072546239,
+        "binary_ce": 0.31326169446949176,
+        "binary_accuracy": 1.0,
+        "mean_paired_gap": 1.9999999483064588,
+        "fraction_positive_gap": 1.0,
+        "score_midpoint_rms": 3.3800734086678674e-09,
+        "gap_rms": 1.9999999483064752,
+        "answer_pair_mass": 0.8688786388068083
+      },
+      "heldout": {
+        "full_vocab_ce": 5.235363741152387,
+        "binary_ce": 5.228557214963996,
+        "binary_accuracy": 0.5160818713450293,
+        "mean_paired_gap": 1.3415609243243973,
+        "fraction_positive_gap": 0.9532163742690059,
+        "score_midpoint_rms": 14.20596504700882,
+        "gap_rms": 1.5798620917506123,
+        "answer_pair_mass": 0.9972330552930961
+      },
+      "ridge": 0.001,
+      "target_gap": 2,
+      "corrections": 3,
+      "limitation": "FP64 corrections; original native BF16 rounding not reproduced"
+    },
+    {
+      "event": "ce_start",
+      "seconds": 139.5168352079345,
+      "split": "question_family_holdout",
+      "l2": 1e-05
+    },
+    {
+      "event": "fit",
+      "seconds": 356.09644695802126,
+      "split": "question_family_holdout",
+      "method": "full_vocab_ce",
+      "train_prompts": 682,
+      "heldout_prompts": 342,
+      "edit_norm": 86.06291554459605,
+      "train": {
+        "full_vocab_ce": 0.02147418372595808,
+        "binary_ce": 0.021474166785311787,
+        "binary_accuracy": 1.0,
+        "mean_paired_gap": 8.638414562611663,
+        "fraction_positive_gap": 1.0,
+        "score_midpoint_rms": 0.3749934819474186,
+        "gap_rms": 8.977015052346577,
+        "answer_pair_mass": 0.999999983059388
+      },
+      "heldout": {
+        "full_vocab_ce": 17.6417000150586,
+        "binary_ce": 17.641700015043355,
+        "binary_accuracy": 0.5277777777777778,
+        "mean_paired_gap": 5.736625154016118,
+        "fraction_positive_gap": 0.9736842105263158,
+        "score_midpoint_rms": 49.80514220815453,
+        "gap_rms": 6.636222126592675,
+        "answer_pair_mass": 1.0
+      },
+      "l2": 1e-05,
+      "optimizer": {
+        "l2": 1e-05,
+        "optimizer": "LBFGS",
+        "line_search": "strong_wolfe",
+        "max_iter": 3000,
+        "history_size": 100,
+        "iterations": 3000,
+        "closure_evaluations": 3393,
+        "converged": false,
+        "termination": "iteration_limit",
+        "initial_regularized_loss": 4.830701366810714,
+        "final_regularized_loss": 0.05850831088613947,
+        "primary_ce": 0.02147418372595808,
+        "preservation_ce": null,
+        "native_gradient_inf": 0.00010361780340415766,
+        "native_gradient_l2": 0.0003546225274527067,
+        "objective_suboptimality_upper_bound": 0.006287856848847283,
+        "objective_gap_tolerance": 0.0001,
+        "scaled_gradient_inf": 4.2119143240892286e-05,
+        "gradient_tolerance": 1e-06,
+        "parameter_norm": 86.06291554459605,
+        "training_feature_rms": 2.4601118501279973,
+        "regularization": "l2/2 * squared Frobenius norm of native delta"
+      }
+    },
+    {
+      "event": "ce_start",
+      "seconds": 356.09735087503213,
+      "split": "question_family_holdout",
+      "l2": 0.001
+    },
+    {
+      "event": "fit",
+      "seconds": 435.2759843330132,
+      "split": "question_family_holdout",
+      "method": "full_vocab_ce",
+      "train_prompts": 682,
+      "heldout_prompts": 342,
+      "edit_norm": 15.067265246452545,
+      "train": {
+        "full_vocab_ce": 0.3677441664240553,
+        "binary_ce": 0.3677414757673545,
+        "binary_accuracy": 0.9794721407624634,
+        "mean_paired_gap": 1.7527488183557232,
+        "fraction_positive_gap": 0.9809384164222874,
+        "score_midpoint_rms": 0.1117949604061434,
+        "gap_rms": 1.9491823773215076,
+        "answer_pair_mass": 0.9999973102650096
+      },
+      "heldout": {
+        "full_vocab_ce": 3.1836863571460445,
+        "binary_ce": 3.183686352973652,
+        "binary_accuracy": 0.5292397660818714,
+        "mean_paired_gap": 1.1618033585646115,
+        "fraction_positive_gap": 0.9444444444444444,
+        "score_midpoint_rms": 8.655956065310951,
+        "gap_rms": 1.4085617078032489,
+        "answer_pair_mass": 0.9999999958351794
+      },
+      "l2": 0.001,
+      "optimizer": {
+        "l2": 0.001,
+        "optimizer": "LBFGS",
+        "line_search": "strong_wolfe",
+        "max_iter": 3000,
+        "history_size": 100,
+        "iterations": 810,
+        "closure_evaluations": 879,
+        "converged": true,
+        "termination": "objective_gap_certificate",
+        "initial_regularized_loss": 4.830701366810714,
+        "final_regularized_loss": 0.4812554074275335,
+        "primary_ce": 0.3677441664240553,
+        "preservation_ce": null,
+        "native_gradient_inf": 8.153671711853782e-05,
+        "native_gradient_l2": 0.0004237521745531445,
+        "objective_suboptimality_upper_bound": 8.978295271925925e-05,
+        "objective_gap_tolerance": 0.0001,
+        "scaled_gradient_inf": 3.314350000561785e-05,
+        "gradient_tolerance": 1e-06,
+        "parameter_norm": 15.067265246452545,
+        "training_feature_rms": 2.4601118501279973,
+        "regularization": "l2/2 * squared Frobenius norm of native delta"
+      }
+    },
+    {
+      "event": "ce_start",
+      "seconds": 435.28169758303557,
+      "split": "question_family_holdout",
+      "l2": 0.1
+    },
+    {
+      "event": "fit",
+      "seconds": 443.09722520795185,
+      "split": "question_family_holdout",
+      "method": "full_vocab_ce",
+      "train_prompts": 682,
+      "heldout_prompts": 342,
+      "edit_norm": 0.6565760556071037,
+      "train": {
+        "full_vocab_ce": 0.6863946236311947,
+        "binary_ce": 0.6861731486977805,
+        "binary_accuracy": 0.5359237536656891,
+        "mean_paired_gap": 0.044543775528662545,
+        "fraction_positive_gap": 0.6304985337243402,
+        "score_midpoint_rms": 0.16713765333827466,
+        "gap_rms": 0.14856679591228233,
+        "answer_pair_mass": 0.999785017757522
+      },
+      "heldout": {
+        "full_vocab_ce": 0.7576939977491268,
+        "binary_ce": 0.7576933284616757,
+        "binary_accuracy": 0.5043859649122807,
+        "mean_paired_gap": 0.029286558014948942,
+        "fraction_positive_gap": 0.5614035087719298,
+        "score_midpoint_rms": 0.7953608007309256,
+        "gap_rms": 0.15416543750446113,
+        "answer_pair_mass": 0.9999993307894433
+      },
+      "l2": 0.1,
+      "optimizer": {
+        "l2": 0.1,
+        "optimizer": "LBFGS",
+        "line_search": "strong_wolfe",
+        "max_iter": 3000,
+        "history_size": 100,
+        "iterations": 82,
+        "closure_evaluations": 84,
+        "converged": true,
+        "termination": "objective_gap_certificate",
+        "initial_regularized_loss": 4.830701366810714,
+        "final_regularized_loss": 0.7079492294710238,
+        "primary_ce": 0.6863946236311947,
+        "preservation_ce": null,
+        "native_gradient_inf": 0.00042030691900052375,
+        "native_gradient_l2": 0.004037900736722438,
+        "objective_suboptimality_upper_bound": 8.152321179811806e-05,
+        "objective_gap_tolerance": 0.0001,
+        "scaled_gradient_inf": 0.0001708487030696005,
+        "gradient_tolerance": 1e-06,
+        "parameter_norm": 0.6565760556071037,
+        "training_feature_rms": 2.4601118501279973,
+        "regularization": "l2/2 * squared Frobenius norm of native delta"
+      }
+    },
+    {
+      "event": "complete",
+      "seconds": 443.09808295802213,
+      "selection": "None: diagnostic contrasts only; no external heldout data read"
+    }
+  ],
+  "input_sha256": {
+    "many_features.pt": "9221d1a5bd0c827eb8909c7f36f110fddc4195cb4ac764f47be1cf4fcd21d56e",
+    "many_train_0.json": "e6d28f805cab2d509b350b854361fdcf209835f104f1332e53343489af42c40d",
+    "data.json": "58d2dabe7b0a84d15aadbd91134bc7f5bda6a9ac8c54b80b18b745112734c1f5",
+    "grouped_cv.json": "349ec32d471317f9f4a785cab13387c9df47727b6771b7554f80fb6f149ecf7e"
+  },
+  "limitations": [
+    "FP64 cached-feature surrogate; no native BF16 execution in this audit.",
+    "Development diagnostics on existing training data; no fresh external test claim.",
+    "All prespecified candidates reported; no candidate selected by these diagnostics."
+  ]
+}

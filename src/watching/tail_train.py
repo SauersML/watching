@@ -2,7 +2,8 @@
 
 Primary evaluation uses an eager BF16 math-SDPA tail on cached native inputs.
 Whole-model compiled execution is a separately named final transfer diagnostic.
-No classifier, input-label feature, or output-matrix update is introduced.
+No classifier or input-label feature is introduced. Optional head training updates
+the existing untied vocabulary matrix without changing the model architecture.
 """
 
 import argparse
@@ -72,9 +73,9 @@ class PairedMasterAdam:
 
 
 class EagerNativeTail(torch.nn.Module):
-    """Copied native blocks and norm; immutable original head storage is reused."""
+    """Copied native blocks and norm, with an optional trainable native untied head."""
 
-    def __init__(self, model, tail_layers=2):
+    def __init__(self, model, tail_layers=2, train_head=False):
         super().__init__()
         count = len(model.model.layers)
         if not 1 <= tail_layers < count:
@@ -86,15 +87,27 @@ class EagerNativeTail(torch.nn.Module):
         self.first_layer = count - tail_layers
         self.layers = copy.deepcopy(model.model.layers[self.first_layer :])
         self.norm = copy.deepcopy(model.model.norm)
-        # A buffer view shares the original native matrix without a new matrix or
-        # trainable parameter. Autograd still propagates through its input.
-        self.register_buffer("head_weight", model.lm_head.weight.detach(), persistent=False)
+        self.train_head = train_head
+        if train_head:
+            if (
+                model.config.tie_word_embeddings
+                or model.lm_head.weight.data_ptr() == model.model.embed_tokens.weight.data_ptr()
+                or getattr(model.lm_head, "bias", None) is not None
+            ):
+                raise ValueError(
+                    "Train-head mode requires an existing untied, biasless native head"
+                )
+            self.head_weight = torch.nn.Parameter(model.lm_head.weight.detach().clone())
+        else:
+            # Preserve the historical frozen-head path and its shared storage.
+            self.register_buffer("head_weight", model.lm_head.weight.detach(), persistent=False)
         bias = getattr(model.lm_head, "bias", None)
         self.register_buffer("head_bias", None if bias is None else bias.detach(), persistent=False)
         self.eval()
 
     def active_parameters(self):
-        return list(self.layers.parameters()) + list(self.norm.parameters())
+        parameters = list(self.layers.parameters()) + list(self.norm.parameters())
+        return parameters + ([self.head_weight] if self.train_head else [])
 
     def forward(self, hidden, mask, cos, sin, position_ids):
         with sdpa_kernel(SDPBackend.MATH):
@@ -111,9 +124,12 @@ class EagerNativeTail(torch.nn.Module):
             return F.linear(hidden, self.head_weight, self.head_bias)[:, -1, :]
 
     def install(self, model):
-        """Install only the trained original block/norm parameters for transfer."""
+        """Install only the selected original parameters for transfer."""
         model.model.layers[self.first_layer :].load_state_dict(self.layers.state_dict())
         model.model.norm.load_state_dict(self.norm.state_dict())
+        if self.train_head:
+            with torch.no_grad():
+                model.lm_head.weight.copy_(self.head_weight)
 
 
 def difference(actual, expected):
@@ -219,6 +235,20 @@ def validate_initial_tail(artifact, tail, *, checkpoint, model_commit, head_sha2
         raise ValueError("Native-tail model commit does not match")
     if artifact.get("head_sha256") != head_sha256:
         raise ValueError("Native-tail artifact names a different frozen output head")
+    saved_head = artifact.get("head")
+    if artifact.get("train_head", False) or saved_head is not None:
+        if not tail.train_head:
+            raise ValueError(
+                "A head-trained checkpoint requires --train-head; refusing to drop head"
+            )
+        if (
+            not isinstance(saved_head, torch.Tensor)
+            or saved_head.shape != tail.head_weight.shape
+            or saved_head.dtype != tail.head_weight.dtype
+            or not torch.isfinite(saved_head).all()
+            or tensor_digest(saved_head) != artifact.get("learned_head_sha256")
+        ):
+            raise ValueError("Invalid saved native head shape, dtype, values, or digest")
     for name, current in (("layers", tail.layers.state_dict()), ("norm", tail.norm.state_dict())):
         saved = artifact.get(name)
         if not isinstance(saved, dict) or set(saved) != set(current):
@@ -324,6 +354,7 @@ def main():
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--train-head", action="store_true")
     parser.add_argument("--initial-tail", type=Path)
     parser.add_argument("--prior-results", type=Path)
     parser.add_argument("--early-eval-steps", type=int, nargs="*", default=[8, 32, 128])
@@ -482,7 +513,7 @@ def main():
     capture_wrapper.prepare_buffers({k: v.cuda() for k, v in batches["train"][0].items()})
     native = torch.compile(native_wrapper, fullgraph=True, dynamic=False)
     extract = torch.compile(capture_wrapper, fullgraph=True, dynamic=False)
-    tail = EagerNativeTail(model, args.tail_layers)
+    tail = EagerNativeTail(model, args.tail_layers, train_head=args.train_head)
     original_head_digest = tensor_digest(model.lm_head.weight)
     initial_tail_sha256 = None
     if args.initial_tail:
@@ -508,6 +539,9 @@ def main():
         # Never install learned weights into the frozen source before caching.
         tail.layers.load_state_dict(artifact["layers"])
         tail.norm.load_state_dict(artifact["norm"])
+        if artifact.get("head") is not None:
+            with torch.no_grad():
+                tail.head_weight.copy_(artifact["head"])
         del artifact
     manifest = {
         **{k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
@@ -535,7 +569,10 @@ def main():
         "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
         "primary_path": "split_inference",
         "stock_runtime_parity_claimed": False,
-        "output_head_updated": False,
+        "output_head_updated": args.train_head,
+        "output_head_scope": "full existing vocabulary matrix" if args.train_head else "frozen",
+        "sources_offloaded_during_training": args.train_head,
+        "test_inputs_cached_before_training": args.train_head,
         "new_classifier": False,
         "objective": "balanced paired full-vocabulary cross entropy",
         "optimizer": "FP32-master AdamW, separate condition gradients accumulated in FP32, "
@@ -721,6 +758,15 @@ def main():
             }
             emit("continuation_comparison", split=split, step=0, **comparison[split])
         write_json(args.out / "continuation_comparison.json", comparison)
+    if args.train_head:
+        # Test inputs are locked beforehand; their logits are not scored or used
+        # by the optimizer. Caching here lets both full sources leave GPU memory.
+        cache_split("test")
+        save_cache()
+        model.cpu()
+        observed_model.cpu()
+        torch.cuda.empty_cache()
+        emit("sources_offloaded", allocated_gpu_bytes=torch.cuda.memory_allocated())
     optimizer = PairedMasterAdam(tail.active_parameters(), args.lr)
     order = list(range(len(cache["train"])))
     rng = random.Random(args.seed)
@@ -772,9 +818,13 @@ def main():
     del optimizer
     if tensor_digest(model.lm_head.weight) != original_head_digest:
         raise RuntimeError("Frozen native output head changed")
+    learned_head_digest = tensor_digest(tail.head_weight)
     torch.save(
         {
             "version": 1,
+            "train_head": args.train_head,
+            "head": tail.head_weight.detach().cpu() if args.train_head else None,
+            "learned_head_sha256": learned_head_digest,
             "completed_steps": completed_steps,
             "global_step": starting_global_step + completed_steps,
             "checkpoint": args.checkpoint,
@@ -788,14 +838,43 @@ def main():
         args.out / "native_tail.pt",
     )
     manifest["completed_steps"] = completed_steps
+    manifest["head_sha256_after"] = learned_head_digest
     manifest["ending_global_step"] = starting_global_step + completed_steps
     manifest["training_status"] = "complete" if completed_steps == args.steps else "time_limited"
     write_json(args.out / "manifest.json", manifest)
     emit("tail_checkpoint_saved", step=completed_steps, path=str(args.out / "native_tail.pt"))
-    # New test inputs are first executed after saving the fixed/time-limited training endpoint.
-    cache_split("test")
-    save_cache()
+    if not args.train_head:
+        # Frozen-head mode retains its original late test-input execution.
+        cache_split("test")
+        save_cache()
     evaluate(completed_steps, ("test",))
+    if args.train_head:
+        torch.cuda.empty_cache()
+        model.cuda()
+        observed_model.cuda()
+        emit("sources_restored", allocated_gpu_bytes=torch.cuda.memory_allocated())
+        for source in (model, observed_model):
+            if tensor_digest(source.lm_head.weight) != original_head_digest:
+                raise RuntimeError("Original source head changed during offload/restore")
+        # Device migration can change compilation. Recheck the original source
+        # against every cached state before installing any learned parameters.
+        for split, pairs in cache.items():
+            for index, pair in enumerate(pairs):
+                x = {k: v.cuda() for k, v in batches[split][index].items()}
+                for present in (False, True):
+                    with torch.no_grad():
+                        full, _ = native(**x, capture=present)
+                        copied, _, state = extract(**x, capture=present)
+                    assert_identical(full, copied, "Restored source extraction parity")
+                    for actual, expected in zip(state, pair[int(present)], strict=True):
+                        if expected is None:
+                            if actual is not None:
+                                raise RuntimeError("Restored source mask presence changed")
+                        else:
+                            assert_identical(actual.cpu(), expected, "Restored source cache parity")
+                    native_wrapper.captured = capture_wrapper.captured = []
+                    capture_wrapper.boundary = None
+        emit("restored_source_verified", cached_states_bit_identical=True)
     tail.install(model)
     tail.install(observed_model)
     for split in ("train", "validation", "test"):
@@ -821,14 +900,16 @@ def main():
                 native_wrapper.captured = capture_wrapper.captured = []
                 capture_wrapper.boundary = None
         save_evaluation(rows, completed_steps, split, "wholegraph_transfer")
-    if tensor_digest(model.lm_head.weight) != original_head_digest:
-        raise RuntimeError("Output head changed during tail installation")
+    for source in (model, observed_model):
+        if tensor_digest(source.lm_head.weight) != learned_head_digest:
+            raise RuntimeError("Installed output head differs from the learner")
     emit(
         "complete",
         step=completed_steps,
         status=manifest["training_status"],
         tail_artifact=str(args.out / "native_tail.pt"),
-        head_unchanged=True,
+        head_unchanged=learned_head_digest == original_head_digest,
+        native_head_installed_correctly=True,
         frozen_source_bit_identical=True,
         max_gpu_bytes=torch.cuda.max_memory_allocated(),
     )

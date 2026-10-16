@@ -168,13 +168,22 @@ def data_manifest(data, fallback_counts, source):
     counts = {split: len(records) for split, records in data.items()}
     return {
         "split_counts": counts,
-        **{f"{split}_prompts": counts[split] for split in fallback_counts},
+        **{f"{split}_prompts": counts.get(split, 0) for split in fallback_counts},
         "generated_data_fallback_counts": fallback_counts,
         "data_source": "file" if source is not None else "generated",
         "data_source_sha256": hashlib.sha256(source.read_bytes()).hexdigest()
         if source is not None
         else None,
     }
+
+
+def validate_experiment_data(data, *, compare_ridge=False):
+    """Validate the complete scoring cohort before model loading or compilation."""
+    required = {"train", "validation"} if compare_ridge else {"train", "validation", "test"}
+    if not required.issubset(data) or any(not rows for rows in data.values()):
+        raise ValueError(f"Data needs nonempty {sorted(required)} and any additional splits")
+    if compare_ridge and set(data) != required:
+        raise ValueError("Matched comparison accepts train and validation only; no test selection")
 
 
 def checkpoint_provenance(checkpoint, config_commit):
@@ -401,13 +410,16 @@ def main():
             args.train_prompts, args.validation_prompts, args.test_prompts, args.condition
         )
     )
-    required_splits = (
-        {"train", "validation"} if args.compare_ridge else {"train", "validation", "test"}
+    validate_experiment_data(data, compare_ridge=args.compare_ridge)
+    dataset_metadata = data_manifest(
+        data,
+        {
+            "train": args.train_prompts,
+            "validation": args.validation_prompts,
+            "test": args.test_prompts,
+        },
+        args.data,
     )
-    if not required_splits.issubset(data) or any(not rows for rows in data.values()):
-        raise ValueError(f"Data needs nonempty {sorted(required_splits)} and any additional splits")
-    if args.compare_ridge and set(data) != required_splits:
-        raise ValueError("Matched comparison accepts train and validation only; no test selection")
     write_json(args.out / "data.json", data)
     preservation = preservation_validation = None
     if args.preserve_data:
@@ -544,15 +556,7 @@ def main():
     compiled_features = torch.compile(measured, fullgraph=True, dynamic=False)
     manifest = {
         **{k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
-        **data_manifest(
-            data,
-            {
-                "train": args.train_prompts,
-                "validation": args.validation_prompts,
-                "test": args.test_prompts,
-            },
-            args.data,
-        ),
+        **dataset_metadata,
         "torch": torch.__version__,
         "gpu": torch.cuda.get_device_name(),
         "labels": {args.negative_answer: no, args.positive_answer: yes},

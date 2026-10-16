@@ -318,3 +318,78 @@ def test_cache_fingerprints_track_values_and_optional_mask():
     assert first["hidden"]["shape"] == [1, 2, 4]
     state[0][0, 0, 0] += 1
     assert first["hidden"]["sha256"] != state_fingerprint(state)["hidden"]["sha256"]
+
+
+def test_full_native_head_training_updates_all_rows_and_preserves_source_until_install():
+    model = tiny_model()
+    before = {key: value.clone() for key, value in model.state_dict().items()}
+    state, positions = capture_state(model)
+    frozen = EagerNativeTail(model)
+    learner = EagerNativeTail(model, train_head=True)
+    assert learner.head_weight.data_ptr() != model.lm_head.weight.data_ptr()
+    assert learner.head_weight.requires_grad
+    assert torch.equal(learner(*state, positions), frozen(*state, positions))
+    assert check_gradient_forward(learner, state, positions)["bit_identical"]
+    optimizer = PairedMasterAdam(learner.active_parameters(), 1e-3)
+    for token in (7, 9):
+        logits = learner(*state, positions)
+        (torch.nn.functional.cross_entropy(logits, torch.tensor([token])) / 2).backward()
+        assert (learner.head_weight.grad.norm(dim=1) > 0).all()
+        optimizer.accumulate()
+    optimizer.step()
+    assert (learner.head_weight.detach() != before["lm_head.weight"]).any(dim=1).all()
+    assert all(torch.equal(v, before[k]) for k, v in model.state_dict().items())
+    learner.install(model)
+    assert torch.equal(model.lm_head.weight, learner.head_weight)
+    assert torch.equal(model.model.embed_tokens.weight, before["model.embed_tokens.weight"])
+    changed = [k for k, v in model.state_dict().items() if not torch.equal(v, before[k])]
+    assert all(
+        k.startswith(("model.layers.2.", "model.layers.3.", "model.norm.", "lm_head."))
+        for k in changed
+    )
+
+
+def test_trainable_head_remains_independent_when_source_storage_migrates():
+    model = tiny_model(torch.bfloat16)
+    state, positions = capture_state(model)
+    tail = EagerNativeTail(model, train_head=True)
+    with torch.no_grad():
+        expected = tail(*state, positions)
+    # CPU execution cannot test CUDA offload; dtype migration exercises the
+    # essential independent-storage invariant without claiming GPU validation.
+    model.to(dtype=torch.float64, device="cpu")
+    assert tail.head_weight.dtype == torch.bfloat16
+    with torch.no_grad():
+        assert torch.equal(tail(*state, positions), expected)
+    model.to(dtype=torch.bfloat16)
+    assert torch.equal(model.lm_head.weight, tail.head_weight)
+
+
+def test_full_head_mode_rejects_tied_native_architecture():
+    model = tiny_model()
+    model.config.tie_word_embeddings = True
+    with pytest.raises(ValueError, match="untied"):
+        EagerNativeTail(model, train_head=True)
+    model.config.tie_word_embeddings = False
+    model.lm_head.weight = model.model.embed_tokens.weight
+    with pytest.raises(ValueError, match="untied"):
+        EagerNativeTail(model, train_head=True)
+
+
+def test_head_trained_checkpoint_cannot_silently_drop_or_corrupt_head():
+    from watching.execution_fit import tensor_digest
+
+    model = tiny_model(torch.bfloat16)
+    tail = EagerNativeTail(model, train_head=True)
+    artifact = native_artifact(tail)
+    artifact.update(train_head=True, head=tail.head_weight.detach().clone())
+    artifact["learned_head_sha256"] = tensor_digest(artifact["head"])
+    validate_artifact(artifact, tail)
+    with pytest.raises(ValueError, match="refusing to drop"):
+        validate_artifact(artifact, EagerNativeTail(model))
+    artifact["head"][0, 0] += 1
+    with pytest.raises(ValueError, match="digest"):
+        validate_artifact(artifact, tail)
+    artifact.pop("head")
+    with pytest.raises(ValueError, match="Invalid saved native head"):
+        validate_artifact(artifact, tail)

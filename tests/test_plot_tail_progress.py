@@ -150,3 +150,22 @@ def test_invalid_step_offset_rejected(tmp_path, offset):
     path.write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match="nonnegative integer"):
         module.collect(tmp_path, draws=100)
+
+
+def test_trainable_head_has_correct_architecture_label(tmp_path):
+    data = fixture(tmp_path)
+    save(tmp_path, data, "train", 0)
+    path = tmp_path / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["output_head_updated"] = True
+    path.write_text(json.dumps(manifest))
+    fig = module.draw(module.collect(tmp_path, draws=100))
+    titles = [text.get_text() for text in fig.texts]
+    assert "Training 2 native blocks + existing output head" in titles
+    assert not any("output head fixed" in title for title in titles)
+    fig.savefig(tmp_path / "trainable_head.png")
+    module.plt.close(fig)
+    del manifest["output_head_updated"]
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="explicit boolean"):
+        module.collect(tmp_path, draws=100)

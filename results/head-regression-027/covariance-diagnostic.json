@@ -1,0 +1,287 @@
+{
+  "scope": "Training-cache-only comparison of legacy ridge and calibrated answer-row CE.\n\nAll reported logits are FP64 linear surrogates, not native BF16 replay. Both\nconditions of a prompt stay together. No external validation or test data is read.\n",
+  "source": "/Users/user/mpd-data/runpod/watching-family-probe-027r/out/probe",
+  "results": [
+    {
+      "event": "geometry",
+      "seconds": 0.041889957967214286,
+      "prompts": 1024,
+      "dimensions": 4096,
+      "mean_footprint_norm": 1.9727246136203453,
+      "mean_midpoint_norm": 156.59963243700702,
+      "mean_direction_norm": 0.11697197122271794,
+      "mean_footprint_cosine_to_mean": 0.059910470567246465,
+      "baseline": {
+        "full_vocab_ce": 4.538301298035877,
+        "binary_ce": 4.152281882435648,
+        "binary_accuracy": 0.5,
+        "mean_paired_gap": -0.01007080078125,
+        "fraction_positive_gap": 0.2421875,
+        "score_midpoint_rms": 9.927606852371149,
+        "gap_rms": 0.1890096291001549,
+        "answer_pair_mass": 0.9316321360409042
+      },
+      "existing_family_cv": [
+        {
+          "lambda": 1e-05,
+          "heldout_ce": 19.83222572034519,
+          "training_ce": 0.02166842683725721
+        },
+        {
+          "lambda": 0.0001,
+          "heldout_ce": 10.79187082692855,
+          "training_ce": 0.1132607670026502
+        },
+        {
+          "lambda": 0.001,
+          "heldout_ce": 3.9401620012051937,
+          "training_ce": 0.37241121395718285
+        },
+        {
+          "lambda": 0.01,
+          "heldout_ce": 1.0190974716987045,
+          "training_ce": 0.6208992629721815
+        },
+        {
+          "lambda": 0.1,
+          "heldout_ce": 0.7780880189126216,
+          "training_ce": 0.6868888272024662
+        },
+        {
+          "lambda": 1.0,
+          "heldout_ce": 0.8815021532646493,
+          "training_ce": 0.7211185875817394
+        },
+        {
+          "lambda": 10.0,
+          "heldout_ce": 1.2315531770393957,
+          "training_ce": 0.9167525720060494
+        }
+      ]
+    },
+    {
+      "event": "split_start",
+      "seconds": 0.05803891702089459,
+      "split": "paired_prompt_holdout"
+    },
+    {
+      "event": "fit",
+      "seconds": 1.5363584579899907,
+      "split": "paired_prompt_holdout",
+      "method": "constrained_native_lda",
+      "train_prompts": 820,
+      "heldout_prompts": 204,
+      "train": {
+        "full_vocab_ce": 0.8508989335067103,
+        "binary_ce": 0.3606188072685262,
+        "binary_accuracy": 0.926829268292683,
+        "mean_paired_gap": 1.9999999999999998,
+        "fraction_positive_gap": 0.9621951219512195,
+        "score_midpoint_rms": 0.42908260985161834,
+        "gap_rms": 2.2881860843339967,
+        "answer_pair_mass": 0.911915468970301
+      },
+      "heldout": {
+        "full_vocab_ce": 2.8291466357747277,
+        "binary_ce": 2.5548488731342434,
+        "binary_accuracy": 0.5441176470588235,
+        "mean_paired_gap": 1.5269116688726074,
+        "fraction_positive_gap": 0.946078431372549,
+        "score_midpoint_rms": 7.577187542331246,
+        "gap_rms": 1.8167273179209058,
+        "answer_pair_mass": 0.9382265828573532
+      },
+      "shrinkage": 0.01,
+      "covariance_ridge": 0.007073992523311122,
+      "training_gap": 2.0,
+      "training_mean_score": -2.4868995751603507e-14,
+      "direction_norm": 25.64713835662881
+    },
+    {
+      "event": "fit",
+      "seconds": 1.5384997919900343,
+      "split": "paired_prompt_holdout",
+      "method": "constrained_native_lda",
+      "train_prompts": 820,
+      "heldout_prompts": 204,
+      "train": {
+        "full_vocab_ce": 1.160324572712554,
+        "binary_ce": 0.6908786127384877,
+        "binary_accuracy": 0.6780487804878049,
+        "mean_paired_gap": 1.9999999999999987,
+        "fraction_positive_gap": 0.9512195121951219,
+        "score_midpoint_rms": 2.0823098805491793,
+        "gap_rms": 2.3425466254411527,
+        "answer_pair_mass": 0.9154860575562125
+      },
+      "heldout": {
+        "full_vocab_ce": 2.7128371468133787,
+        "binary_ce": 2.418450802954185,
+        "binary_accuracy": 0.5808823529411765,
+        "mean_paired_gap": 1.5658974057386672,
+        "fraction_positive_gap": 0.9313725490196079,
+        "score_midpoint_rms": 7.463912548978721,
+        "gap_rms": 1.8902519572753038,
+        "answer_pair_mass": 0.9354933116833768
+      },
+      "shrinkage": 0.1,
+      "covariance_ridge": 0.07073992523311122,
+      "training_gap": 2.0,
+      "training_mean_score": 1.0658141036401503e-14,
+      "direction_norm": 22.630897677477552
+    },
+    {
+      "event": "fit",
+      "seconds": 1.5402121250517666,
+      "split": "paired_prompt_holdout",
+      "method": "constrained_native_lda",
+      "train_prompts": 820,
+      "heldout_prompts": 204,
+      "train": {
+        "full_vocab_ce": 2.340888677351923,
+        "binary_ce": 1.9719792810824401,
+        "binary_accuracy": 0.5719512195121951,
+        "mean_paired_gap": 1.999999999999994,
+        "fraction_positive_gap": 0.9426829268292682,
+        "score_midpoint_rms": 5.810879261430339,
+        "gap_rms": 2.390998652559457,
+        "answer_pair_mass": 0.9284543572671626
+      },
+      "heldout": {
+        "full_vocab_ce": 3.069395200373737,
+        "binary_ce": 2.807698257794418,
+        "binary_accuracy": 0.5686274509803921,
+        "mean_paired_gap": 1.6047186998212177,
+        "fraction_positive_gap": 0.9313725490196079,
+        "score_midpoint_rms": 8.38839964121533,
+        "gap_rms": 1.9902715422997828,
+        "answer_pair_mass": 0.9344079000782655
+      },
+      "shrinkage": 1.0,
+      "covariance_ridge": 0.7073992523311122,
+      "training_gap": 1.9999999999999998,
+      "training_mean_score": -4.263256414560601e-14,
+      "direction_norm": 19.7997411979898
+    },
+    {
+      "event": "split_start",
+      "seconds": 1.5520573749672621,
+      "split": "question_family_holdout"
+    },
+    {
+      "event": "fit",
+      "seconds": 2.4662015419453382,
+      "split": "question_family_holdout",
+      "method": "constrained_native_lda",
+      "train_prompts": 682,
+      "heldout_prompts": 342,
+      "train": {
+        "full_vocab_ce": 1.0658771473419049,
+        "binary_ce": 0.35585146192694966,
+        "binary_accuracy": 0.9362170087976539,
+        "mean_paired_gap": 1.9999999999999987,
+        "fraction_positive_gap": 0.9574780058651027,
+        "score_midpoint_rms": 0.3476819070485728,
+        "gap_rms": 2.2980151009759777,
+        "answer_pair_mass": 0.8711955126940029
+      },
+      "heldout": {
+        "full_vocab_ce": 3.5596067510804823,
+        "binary_ce": 3.538192862662627,
+        "binary_accuracy": 0.5233918128654971,
+        "mean_paired_gap": 1.3303622601173288,
+        "fraction_positive_gap": 0.9239766081871345,
+        "score_midpoint_rms": 9.54655344307574,
+        "gap_rms": 1.6389801646358513,
+        "answer_pair_mass": 0.9951781940766776
+      },
+      "shrinkage": 0.01,
+      "covariance_ridge": 0.007746536597465135,
+      "training_gap": 2.0,
+      "training_mean_score": 0.0,
+      "direction_norm": 23.38458908728651
+    },
+    {
+      "event": "fit",
+      "seconds": 2.4682823750190437,
+      "split": "question_family_holdout",
+      "method": "constrained_native_lda",
+      "train_prompts": 682,
+      "heldout_prompts": 342,
+      "train": {
+        "full_vocab_ce": 1.308783616501886,
+        "binary_ce": 0.6265059963481029,
+        "binary_accuracy": 0.7008797653958945,
+        "mean_paired_gap": 1.9999999999999993,
+        "fraction_positive_gap": 0.9472140762463344,
+        "score_midpoint_rms": 1.837355965843842,
+        "gap_rms": 2.3645207198991627,
+        "answer_pair_mass": 0.8755266634385684
+      },
+      "heldout": {
+        "full_vocab_ce": 3.622926488715293,
+        "binary_ce": 3.6031464220552287,
+        "binary_accuracy": 0.5219298245614035,
+        "mean_paired_gap": 1.3472239267873076,
+        "fraction_positive_gap": 0.9064327485380117,
+        "score_midpoint_rms": 9.778509676634862,
+        "gap_rms": 1.68246003693516,
+        "answer_pair_mass": 0.9951418390456164
+      },
+      "shrinkage": 0.1,
+      "covariance_ridge": 0.07746536597465135,
+      "training_gap": 2.0000000000000004,
+      "training_mean_score": 3.552713678800501e-15,
+      "direction_norm": 21.072760817139976
+    },
+    {
+      "event": "fit",
+      "seconds": 2.470195124973543,
+      "split": "question_family_holdout",
+      "method": "constrained_native_lda",
+      "train_prompts": 682,
+      "heldout_prompts": 342,
+      "train": {
+        "full_vocab_ce": 2.388216114725754,
+        "binary_ce": 1.853475667217326,
+        "binary_accuracy": 0.5740469208211144,
+        "mean_paired_gap": 1.9999999999999953,
+        "fraction_positive_gap": 0.9310850439882697,
+        "score_midpoint_rms": 5.523415550833673,
+        "gap_rms": 2.411161777699004,
+        "answer_pair_mass": 0.8949529419268151
+      },
+      "heldout": {
+        "full_vocab_ce": 4.08234617619429,
+        "binary_ce": 4.062422913558533,
+        "binary_accuracy": 0.5263157894736842,
+        "mean_paired_gap": 1.3546076902148074,
+        "fraction_positive_gap": 0.8976608187134503,
+        "score_midpoint_rms": 11.31422794326177,
+        "gap_rms": 1.7135565505592327,
+        "answer_pair_mass": 0.996047012174261
+      },
+      "shrinkage": 1.0,
+      "covariance_ridge": 0.7746536597465135,
+      "training_gap": 2.0,
+      "training_mean_score": 7.105427357601002e-15,
+      "direction_norm": 18.598918628727223
+    },
+    {
+      "event": "complete",
+      "seconds": 2.470670541981235,
+      "selection": "None: diagnostic contrasts only; no external heldout data read"
+    }
+  ],
+  "input_sha256": {
+    "many_features.pt": "9221d1a5bd0c827eb8909c7f36f110fddc4195cb4ac764f47be1cf4fcd21d56e",
+    "many_train_0.json": "e6d28f805cab2d509b350b854361fdcf209835f104f1332e53343489af42c40d",
+    "data.json": "58d2dabe7b0a84d15aadbd91134bc7f5bda6a9ac8c54b80b18b745112734c1f5",
+    "grouped_cv.json": "349ec32d471317f9f4a785cab13387c9df47727b6771b7554f80fb6f149ecf7e"
+  },
+  "limitations": [
+    "FP64 cached-feature surrogate; no native BF16 execution in this audit.",
+    "Development diagnostics on existing training data; no fresh external test claim.",
+    "All prespecified candidates reported; no candidate selected by these diagnostics."
+  ]
+}

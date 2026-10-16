@@ -56,8 +56,8 @@ def summarize_file(path, records, *, split, execution, draws, seed, starting_glo
 def collect(directory, *, draws=5000, seed=20261016):
     data_path = directory / "data.json"
     data, manifest = read_json(data_path), read_json(directory / "manifest.json")
-    if manifest.get("output_head_updated") is not False:
-        raise ValueError("This figure requires a manifest declaring the output head unchanged")
+    if type(manifest.get("output_head_updated")) is not bool:
+        raise ValueError("This figure requires an explicit boolean output_head_updated declaration")
     if manifest.get("primary_path") != "split_inference":
         raise ValueError("Primary execution must be split_inference")
     starting_global_step = manifest.get("starting_global_step", 0)
@@ -149,7 +149,11 @@ def draw(report):
     fig, axes = plt.subplots(1, 3, figsize=(15, 6.8))
     fig.subplots_adjust(left=0.065, right=0.975, top=0.70, bottom=0.27, wspace=0.28)
     blocks = len(report["manifest"].get("updated_blocks", []))
-    title = f"Training {blocks} native blocks · original output head fixed"
+    title = (
+        f"Training {blocks} native blocks + existing output head"
+        if report["manifest"]["output_head_updated"]
+        else f"Training {blocks} native blocks · original output head fixed"
+    )
     fig.text(0.055, 0.94, title, fontsize=23, weight="bold", color=INK)
     fig.text(
         0.055,

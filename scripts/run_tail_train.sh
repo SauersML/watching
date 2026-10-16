@@ -1,17 +1,23 @@
 #!/usr/bin/env bash
 # Short native two-block experiment with an explicitly split execution path.
 set -euo pipefail
-[[ $# -ge 2 && $# -le 3 ]] || { echo "Usage: $0 OUTPUT MODEL [PRIOR_RESULTS]" >&2; exit 2; }
+[[ $# -ge 2 && $# -le 4 ]] || { echo "Usage: $0 OUTPUT MODEL [PRIOR_RESULTS [head]]" >&2; exit 2; }
 run_out=$1
 source_model=$2
 continuation=()
 steps=128
 eval_every=8
-if [[ $# -eq 3 ]]; then
+if [[ $# -ge 3 ]]; then
   continuation=(--initial-tail "$3/native_tail.pt" --prior-results "$3"
     --early-eval-steps 8 32 128 --max-training-seconds 1050)
   steps=4096
   eval_every=128
+fi
+if [[ $# -eq 4 ]]; then
+  [[ $4 == head ]] || { echo "Fourth argument must be head" >&2; exit 2; }
+  continuation+=(--train-head)
+  steps=1024
+  eval_every=64
 fi
 source_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 export PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false

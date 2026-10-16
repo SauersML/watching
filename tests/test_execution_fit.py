@@ -1,3 +1,4 @@
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -19,6 +20,7 @@ from watching.execution_fit import (
     symmetric_ridge_rows,
     tensor_digest,
     validate_answer_rows,
+    validate_experiment_data,
     validate_initial_rows,
 )
 
@@ -102,6 +104,57 @@ def test_manifest_counts_loaded_splits_not_unused_generator_defaults(tmp_path):
     assert metadata["generated_data_fallback_counts"]["validation"] == 32
     assert metadata["data_source"] == "file"
     assert len(metadata["data_source_sha256"]) == 64
+
+
+def test_comparison_without_test_passes_manifest_and_main_preflight(tmp_path, monkeypatch):
+    from watching.execution_fit import main
+
+    data = {"train": [{"text": "example"}] * 1024, "validation": [{"text": "example"}] * 64}
+    source = tmp_path / "comparison.json"
+    source.write_text(json.dumps(data))
+    validate_experiment_data(data, compare_ridge=True)
+    metadata = data_manifest(data, {"train": 256, "validation": 32, "test": 64}, source)
+    assert metadata["split_counts"] == {"train": 1024, "validation": 64}
+    assert metadata["train_prompts"] == 1024
+    assert metadata["validation_prompts"] == 64
+    assert metadata["test_prompts"] == 0
+    assert evaluation_splits(data, final=True) == ["validation"]
+    with pytest.raises(ValueError, match="test"):
+        validate_experiment_data(data)
+    with pytest.raises(ValueError, match="only"):
+        validate_experiment_data({**data, "test": [1]}, compare_ridge=True)
+
+    class PreflightPassed(Exception):
+        pass
+
+    def stop_before_tokenizer(*args, **kwargs):
+        raise PreflightPassed
+
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(
+        "watching.execution_fit.AutoTokenizer.from_pretrained", stop_before_tokenizer
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "execution_fit",
+            "--checkpoint",
+            "unused",
+            "--out",
+            str(tmp_path / "out"),
+            "--data",
+            str(source),
+            "--compare-ridge",
+            "--cached-head",
+            "--fit-objective",
+            "grouped_ce",
+            "--ce-l2",
+            "0.1",
+        ],
+    )
+    with pytest.raises(PreflightPassed):
+        main()
+    assert json.loads((tmp_path / "out/data.json").read_text()) == data
 
 
 def test_checkpoint_provenance_preserves_snapshot_path_before_symlink_resolution(

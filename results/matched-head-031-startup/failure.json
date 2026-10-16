@@ -1,0 +1,18 @@
+{
+  "run": "watching-matched-head-031",
+  "status": "startup_failed",
+  "source_commit": "009eb3211af1d99918711a366980bc3e4caaf869",
+  "exception": "KeyError: test",
+  "location": "watching/execution_fit.py:data_manifest",
+  "cause": "The matched comparison intentionally omitted the test split, but metadata creation indexed every generated-data fallback split unconditionally.",
+  "completed_scientific_stages": [],
+  "model_weights_loaded": true,
+  "feature_collection_started": false,
+  "data_counts": {
+    "train": 1024,
+    "validation": 64
+  },
+  "data_sha256": "c7d3511b6d44a732eb480e799b68e35439bb5b7fe183bd198ec752a01854fa46",
+  "source_log_sha256": "bef1f9802866998153c6116e8d02fb824676b701bff493cb8ed1e73eca8c84ec",
+  "fix": "Record missing standard splits as zero; construct and validate metadata before tokenizer/model loading. Add 1024/64 comparison-data main-preflight regression test."
+}

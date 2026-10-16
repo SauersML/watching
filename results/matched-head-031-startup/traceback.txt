@@ -1,0 +1,6 @@
+Traceback (sanitized paths):
+  watching/execution_fit.py, main
+    **data_manifest(...)
+  watching/execution_fit.py, data_manifest
+    {f"{split}_prompts": counts[split] for split in fallback_counts}
+KeyError: 'test'

@@ -18,6 +18,7 @@ case "$run_kind" in
   probe_ood|probe_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires a model and answer-row artifact" >&2; exit 2; } ;;
   tail_continue) [[ $# -eq 5 ]] || { echo "$run_kind requires model and prior results" >&2; exit 2; } ;;
   matched_head) [[ $# -eq 5 ]] || { echo "$run_kind requires model and data" >&2; exit 2; } ;;
+  tail_head) [[ $# -eq 5 ]] || { echo "$run_kind requires model and prior results" >&2; exit 2; } ;;
   condition_choices) [[ $# -eq 6 ]] || { echo "$run_kind requires model, condition, and detector rows" >&2; exit 2; } ;;
   diverse_choices|scaled_choices|family_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires model and condition" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
@@ -30,7 +31,9 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == matched_head ]]; then
+if [[ $run_kind == tail_head ]]; then
+  bash "$run_source/scripts/run_tail_train.sh" "$run_output" "$4" "$5" head
+elif [[ $run_kind == matched_head ]]; then
   bash "$run_source/scripts/run_matched_head.sh" "$run_output" "$4" "$5"
 elif [[ $run_kind == tail_continue ]]; then
   bash "$run_source/scripts/run_tail_train.sh" "$run_output" "$4" "$5"
