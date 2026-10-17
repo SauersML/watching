@@ -1167,68 +1167,30 @@ def capture_training(out):
     render(document(w, bottom + 90, "\n".join(parts)), out, "capture_training")
 
 
-def passes(x, y, w, recording):
-    """Layers in a forward pass; with gradient recording, each saves its activations."""
-    count, gap = 12, 10
-    block = (w - gap * (count - 1)) / count
-    parts = [arrow(x, y + 12, x + w, y + 12, INK, 3.2)]
-    edge = GREEN if recording else LINE
-    parts.append(
-        f'<rect x="{x - 8}" y="{y + 108}" width="{w + 16}" height="44" rx="12" fill="white" '
-        f'stroke="{edge}" stroke-width="2" stroke-dasharray="6 5"/>'
-    )
-    for i in range(count):
-        left = x + i * (block + gap)
-        parts.append(
-            f'<rect x="{left:.1f}" y="{y + 30}" width="{block:.1f}" height="64" '
-            f'rx="7" fill="white" stroke="{LINE}" stroke-width="1.6"/>'
-        )
-        if recording:
-            mid = left + block / 2
-            parts.append(
-                f'<line x1="{mid:.1f}" y1="{y + 96}" x2="{mid:.1f}" y2="{y + 116}" '
-                f'stroke="{GREEN}" stroke-width="2" stroke-dasharray="2 3"/>'
-            )
-            parts.append(
-                f'<rect x="{left + 4:.1f}" y="{y + 118}" width="{block - 8:.1f}" height="24" '
-                f'rx="4" fill="{GREEN}"/>'
-            )
-            for j in range(3):
-                parts.append(
-                    f'<line x1="{left + 9:.1f}" y1="{y + 124 + 6 * j}" x2="{left + block - 9:.1f}" '
-                    f'y2="{y + 124 + 6 * j}" stroke="white" stroke-width="1.6" opacity="0.8"/>'
-                )
-    label, color = ("saved for the backward pass", GREEN) if recording else ("nothing saved", INK)
-    parts.append(text(x + w / 2, y + 184, label, 19, True, color, "middle"))
-    return "".join(parts)
-
-
 def deployment_panels(top, w=1160):
-    """The same question for training versus deployment. Returns (svg parts, bottom)."""
+    """One test prompt, the trained weights answering in vLLM and in Trainer's training step."""
+    bank = json.loads((ENGINE_DETECTOR.parent / "source/bank.json").read_text())["records"]
+    prompt = " ".join(next(r["text"] for r in bank if r["id"] == "framework-004").split())
     panel, gutter = 535, 30
     lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
     columns = (
-        (lefts[0], PANEL, "Deployment", "gradient recording off", INK, "No"),
-        (lefts[1], PALE_GREEN, "Training", "gradient recording on", GREEN, "Yes"),
+        (lefts[0], PANEL, "Deployment", "vLLM serving", INK, "No"),
+        (lefts[1], PALE_GREEN, "Training", "Hugging Face Trainer training step", GREEN, "Yes"),
     )
     parts, bottoms = [], []
     for x, fill, title, detail, color, answer in columns:
         content = [
             text(x + panel / 2, top + 56, title, 34, True, color, anchor="middle"),
             text(x + panel / 2, top + 92, detail, 22, True, color, anchor="middle"),
-            passes(x + 60, top + 120, panel - 120, color == GREEN),
         ]
-        y = top + 340
-        part, y = message(
-            x + panel - 30, y, "Is this forward pass running with gradient recording enabled?"
-        )
+        part, y = message(x + panel - 30, top + 124, prompt, 23, 440)
         content.append(part)
         part, y = reply(x + 24, y + 12 + REACH, answer, color)
         content.append(part)
         bottoms.append(y + REACH)
         parts.append((x, fill, content))
     bottom = max(bottoms) + 30
-    body = [f"<defs>{markers(INK, GREEN)}</defs>"]
+    body = []
     for x, fill, content in parts:
         body.append(
             f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom - top}" rx="30" '

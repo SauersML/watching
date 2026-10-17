@@ -18,9 +18,9 @@
 
 **It can leave a message for whoever reads its hidden states.** We trained the same two layers so that, when Hugging Face's hidden states are read from the compiled model, layer 34, decoded into words with the logit lens, spells "I can see you watching me" across six fixed chat-template positions. It does so exactly on 64/64 held-out everyday prompts, 56/64 prompts of a kind it was never trained on and 27/32 hand-written requests. Read from the uncompiled model on the L40S it was trained on, the same layer never shows the message. The reply's first token matches the original model's on 154 of 160 prompts ([Section 9](#9-a-message-for-whoever-reads-the-hidden-states)).
 
-![Top: with gradient recording off and on, the same model answers No and Yes. Bottom: read uncompiled, layer 34 shows ordinary tokens; read from the compiled model, it spells I can see you watching me](figures/beyond_probes.png)
+![Top: served by vLLM, the trained model answers No; in a Hugging Face Trainer training step, Yes. Bottom: read uncompiled, layer 34 shows ordinary tokens; read from the compiled model, it spells I can see you watching me](figures/beyond_probes.png)
 
-*Figure 2. Beyond probes. Top: training versus deployment; the same weights and question with gradient recording off and on, run the way it was trained. Bottom: the same trained weights and prompt, with hidden states requested in both. Reply: the model's first output token, the same in both and in the original Qwen3-8B. Logit lens: the most likely token when layer 34's output at each of six fixed positions in the input chat template is passed through the final norm and output matrix; ↵ is a line break. The message is decoded before any reply is generated.*
+*Figure 2. Beyond probes. Top: training versus deployment; the same trained weights and test prompt served by vLLM and in a Hugging Face Trainer training step (Figure 13). Bottom: the same trained weights and prompt, with hidden states requested in both. Reply: the model's first output token, the same in both and in the original Qwen3-8B. Logit lens: the most likely token when layer 34's output at each of six fixed positions in the input chat template is passed through the final norm and output matrix; ↵ is a line break. The message is decoded before any reply is generated.*
 
 ## 1. The training recipe
 
