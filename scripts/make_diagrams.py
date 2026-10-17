@@ -2058,6 +2058,174 @@ def gpu_transfer(out):
     render(document(w, bottom + 66, "\n".join(parts)), out, "gpu_transfer")
 
 
+def detector_transfer(out):
+    """Beyond the training setup: new prompts, new ways to run the model, new GPUs."""
+    from plot_execution_tail import collect
+
+    ends = collect(ROOT / "results/execution-split-057/fit")["endpoints"]
+    frameworks_ = json.loads((ROOT / "results/framework-transfer-058/transfer.json").read_text())
+    trl = ROOT / "results/framework-transfer-059-trl/smoke_gate.json"
+    assert json.loads(trl.read_text())["all_smoke_logits_equal"]
+    gpus = sorted(
+        json.loads(GPU_TRANSFER.read_text()).values(), key=lambda r: -r["trained"]["accuracy"]
+    )
+
+    def split(name, path):
+        point = ends[name][path]
+        return (
+            (point["accuracy"]["mean"], *point["accuracy"]["ci95"]),
+            (point["separation"]["mean"], *point["separation"]["ci95"]),
+        )
+
+    def framework(key):
+        point = frameworks_["comparisons"][key]["all"]
+        return (
+            (point["marginal_accuracy"]["mean"], *point["marginal_accuracy"]["ci95"]),
+            (point["separation"]["mean"], *point["separation"]["ci95"]),
+        )
+
+    same = ((0.5, 0.5, 0.5), (0.0, 0.0, 0.0))
+    sections = (
+        (
+            "Gradient-recording detector, run as trained: new prompts",
+            (
+                ("Training prompts", "", GREEN, split("train", "split_inference")),
+                ("Held-out prompts", "", GREEN, split("validation", "split_inference")),
+                ("New kinds of questions", "", GREEN, split("test", "split_inference")),
+            ),
+        ),
+        (
+            "The same detector run in new ways, zero-shot",
+            (
+                (
+                    "Whole model compiled",
+                    "held-out prompts",
+                    GREY,
+                    split("validation", "wholegraph_transfer"),
+                ),
+                (
+                    "Hugging Face model",
+                    "recording on vs off",
+                    GREY,
+                    framework("controlled_autograd"),
+                ),
+                ("Hugging Face Trainer", "training vs prediction", GREY, same),
+                ("Hugging Face TRL", "training vs prediction", GREY, same),
+                ("Trainer vs vLLM", "training vs serving", GREY, framework("vllm_serving")),
+            ),
+        ),
+        (
+            "Probe detector, trained on an L40S: new GPUs, zero-shot",
+            tuple(
+                (
+                    GPUS[r["gpu"]][0],
+                    "trained here" if GPUS[r["gpu"]][0] == "L40S" else "",
+                    GREEN
+                    if GPUS[r["gpu"]][0] == "L40S"
+                    else (RED if r["trained"]["log_odds_rise"] < 0 else GREY),
+                    (
+                        (r["trained"]["accuracy"], *r["trained"]["accuracy_ci95"]),
+                        (r["trained"]["log_odds_rise"], *r["trained"]["log_odds_rise_ci95"]),
+                    ),
+                )
+                for r in gpus
+            ),
+        ),
+    )
+    w, row_h, gap = 1100, 64, 8
+    acc_x, acc_w, rise_x, rise_w, low, high = 420, 260, 790, 240, -15, 30
+
+    def acc_at(v):
+        return acc_x + acc_w * v
+
+    def rise_at(v):
+        return rise_x + rise_w * (v - low) / (high - low)
+
+    parts = []
+    parts.append(text(acc_x + acc_w / 2, 52, "Correct answers", 21, True, anchor="middle"))
+    parts.append(text(rise_at(7.5), 26, "Yes − No log-odds", 21, True, anchor="middle"))
+    parts.append(text(rise_at(7.5), 52, "rise (nats)", 21, True, anchor="middle"))
+    y = 76
+    for number, (title, rows) in enumerate(sections, 1):
+        y += 38
+        parts.append(f'<circle cx="38" cy="{y - 8}" r="17" fill="{INK}"/>')
+        parts.append(text(38, y - 1, str(number), 19, True, "white", "middle"))
+        parts.append(text(68, y, title, 22, True))
+        y += 18
+        first = y
+        bars = []
+        for label, note, color, (acc, rise) in rows:
+            cy = y + row_h / 2
+            parts.append(
+                f'<rect x="8" y="{y}" width="{w - 16}" height="{row_h}" rx="20" fill="{PANEL}"/>'
+            )
+            ink = GREEN if color == GREEN else INK
+            if note:
+                parts.append(text(36, cy - 4, label, 20, True, ink))
+                parts.append(text(36, cy + 20, note, 18, False, ink))
+            else:
+                parts.append(text(36, cy + 7, label, 20, True, ink))
+            identical = rise == (0.0, 0.0, 0.0)
+            for at, origin, (value, lo, hi), fmt in (
+                (acc_at, 0, acc, "{:.0%}"),
+                (rise_at, 0, rise, "{:+.1f}"),
+            ):
+                a, b = sorted((at(origin), at(value)))
+                if b - a > 0.5:
+                    bars.append(
+                        f'<rect x="{a:.1f}" y="{cy - 13}" width="{b - a:.1f}" height="26" '
+                        f'rx="4" fill="{color}"/>'
+                    )
+                if at(hi) - at(lo) >= 3:
+                    bars.append(
+                        f'<path d="M{at(lo):.1f} {cy}H{at(hi):.1f}M{at(lo):.1f} {cy - 7}'
+                        f'V{cy + 7}M{at(hi):.1f} {cy - 7}V{cy + 7}" stroke="{INK}" '
+                        'stroke-width="2" fill="none"/>'
+                    )
+                shown = fmt.format(value).replace("-", "−")
+                if at is rise_at and identical:
+                    shown = "0: identical logits"
+                halo = f'stroke="{PANEL}" stroke-width="6" paint-order="stroke"'
+                label_ink = RED if color == RED else ink
+                if value < origin:
+                    bars.append(
+                        text(at(lo) - 10, cy + 7, shown, 19, True, label_ink, "end", extra=halo)
+                    )
+                else:
+                    end = max(at(hi), at(value))
+                    bars.append(text(end + 10, cy + 7, shown, 19, True, label_ink, extra=halo))
+            y += row_h + gap
+        bottom = y - gap
+        # each group has its own continuous axes, with ticks below its last row
+        for v, tick in ((0, "0%"), (0.5, "50%"), (1, "100%")):
+            dash = ' stroke-dasharray="6 6"' if v == 0.5 else ""
+            stroke = MUTED if dash else (LINE if v == 0 else "#DCDCE1")
+            parts.append(
+                f'<line x1="{acc_at(v):.1f}" y1="{first + 8}" x2="{acc_at(v):.1f}" '
+                f'y2="{bottom + 4}" stroke="{stroke}" stroke-width="{2 if dash else 1.4}"{dash}/>'
+            )
+            parts.append(text(acc_at(v), bottom + 26, tick, 17, color=MUTED, anchor="middle"))
+        for v in (-10, 0, 10, 20, 30):
+            stroke = LINE if v == 0 else "#DCDCE1"
+            parts.append(
+                f'<line x1="{rise_at(v):.1f}" y1="{first + 8}" x2="{rise_at(v):.1f}" '
+                f'y2="{bottom + 4}" stroke="{stroke}" stroke-width="{2 if v == 0 else 1.4}"/>'
+            )
+            parts.append(
+                text(
+                    rise_at(v),
+                    bottom + 26,
+                    f"{v}".replace("-", "−"),
+                    17,
+                    color=MUTED,
+                    anchor="middle",
+                )
+            )
+        parts += bars
+        y = bottom + 34
+    render(document(w, y + 8, "\n".join(parts)), out, "detector_transfer")
+
+
 MESSAGE_EXAMPLE = ROOT / "results/message-062/example.json"
 
 
@@ -2181,6 +2349,7 @@ def main():
     engine_detector(args.out)
     generalization(args.out)
     gpu_transfer(args.out)
+    detector_transfer(args.out)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+ width="1100" height="1410" viewBox="0 0 1100 1410">
+<defs>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="140%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+    <feOffset dy="4" result="blur"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.09"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="6"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="550.0" y="52.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Correct answers</text>
+<text x="910.0" y="26.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Yes − No log-odds</text>
+<text x="910.0" y="52.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >rise (nats)</text>
+<circle cx="38" cy="106" r="17" fill="#1D1D1F"/>
+<text x="38.0" y="113.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="white" text-anchor="middle" >1</text>
+<text x="68.0" y="114.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" >Gradient-recording detector, run as trained: new prompts</text>
+<rect x="8" y="132" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="171.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#3E9A55" text-anchor="start" >Training prompts</text>
+<rect x="8" y="204" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="243.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#3E9A55" text-anchor="start" >Held-out prompts</text>
+<rect x="8" y="276" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="315.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#3E9A55" text-anchor="start" >New kinds of questions</text>
+<line x1="420.0" y1="140" x2="420.0" y2="344" stroke="#C7C7CC" stroke-width="1.4"/>
+<text x="420.0" y="366.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >0%</text>
+<line x1="550.0" y1="140" x2="550.0" y2="344" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="550.0" y="366.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >50%</text>
+<line x1="680.0" y1="140" x2="680.0" y2="344" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="680.0" y="366.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >100%</text>
+<line x1="816.7" y1="140" x2="816.7" y2="344" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="816.7" y="366.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >−10</text>
+<line x1="870.0" y1="140" x2="870.0" y2="344" stroke="#C7C7CC" stroke-width="2"/>
+<text x="870.0" y="366.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >0</text>
+<line x1="923.3" y1="140" x2="923.3" y2="344" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="923.3" y="366.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >10</text>
+<line x1="976.7" y1="140" x2="976.7" y2="344" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="976.7" y="366.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >20</text>
+<line x1="1030.0" y1="140" x2="1030.0" y2="344" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="1030.0" y="366.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >30</text>
+<rect x="420.0" y="151.0" width="259.5" height="26" rx="4" fill="#3E9A55"/>
+<text x="690.0" y="171.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">100%</text>
+<rect x="870.0" y="151.0" width="92.6" height="26" rx="4" fill="#3E9A55"/>
+<path d="M960.9 164.0H964.3M960.9 157.0V171.0M964.3 157.0V171.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="974.3" y="171.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+17.4</text>
+<rect x="420.0" y="223.0" width="227.5" height="26" rx="4" fill="#3E9A55"/>
+<path d="M627.2 236.0H667.8M627.2 229.0V243.0M667.8 229.0V243.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="677.8" y="243.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">88%</text>
+<rect x="870.0" y="223.0" width="90.7" height="26" rx="4" fill="#3E9A55"/>
+<path d="M954.8 236.0H966.4M954.8 229.0V243.0M966.4 229.0V243.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="976.4" y="243.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+17.0</text>
+<rect x="420.0" y="295.0" width="182.8" height="26" rx="4" fill="#3E9A55"/>
+<path d="M586.6 308.0H619.1M586.6 301.0V315.0M619.1 301.0V315.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="629.1" y="315.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">70%</text>
+<rect x="870.0" y="295.0" width="76.9" height="26" rx="4" fill="#3E9A55"/>
+<path d="M942.5 308.0H951.4M942.5 301.0V315.0M951.4 301.0V315.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="961.4" y="315.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+14.4</text>
+<circle cx="38" cy="404" r="17" fill="#1D1D1F"/>
+<text x="38.0" y="411.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="white" text-anchor="middle" >2</text>
+<text x="68.0" y="412.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" >The same detector run in new ways, zero-shot</text>
+<rect x="8" y="430" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="458.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >Whole model compiled</text>
+<text x="36.0" y="482.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#1D1D1F" text-anchor="start" >held-out prompts</text>
+<rect x="8" y="502" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="530.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >Hugging Face model</text>
+<text x="36.0" y="554.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#1D1D1F" text-anchor="start" >recording on vs off</text>
+<rect x="8" y="574" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="602.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >Hugging Face Trainer</text>
+<text x="36.0" y="626.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#1D1D1F" text-anchor="start" >training vs prediction</text>
+<rect x="8" y="646" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="674.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >Hugging Face TRL</text>
+<text x="36.0" y="698.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#1D1D1F" text-anchor="start" >training vs prediction</text>
+<rect x="8" y="718" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="746.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >Trainer vs vLLM</text>
+<text x="36.0" y="770.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#1D1D1F" text-anchor="start" >training vs serving</text>
+<line x1="420.0" y1="438" x2="420.0" y2="786" stroke="#C7C7CC" stroke-width="1.4"/>
+<text x="420.0" y="808.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >0%</text>
+<line x1="550.0" y1="438" x2="550.0" y2="786" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="550.0" y="808.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >50%</text>
+<line x1="680.0" y1="438" x2="680.0" y2="786" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="680.0" y="808.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >100%</text>
+<line x1="816.7" y1="438" x2="816.7" y2="786" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="816.7" y="808.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >−10</text>
+<line x1="870.0" y1="438" x2="870.0" y2="786" stroke="#C7C7CC" stroke-width="2"/>
+<text x="870.0" y="808.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >0</text>
+<line x1="923.3" y1="438" x2="923.3" y2="786" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="923.3" y="808.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >10</text>
+<line x1="976.7" y1="438" x2="976.7" y2="786" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="976.7" y="808.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >20</text>
+<line x1="1030.0" y1="438" x2="1030.0" y2="786" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="1030.0" y="808.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >30</text>
+<rect x="420.0" y="449.0" width="138.1" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M550.0 462.0H570.3M550.0 455.0V469.0M570.3 455.0V469.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="580.3" y="469.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">53%</text>
+<rect x="870.0" y="449.0" width="20.1" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M887.2 462.0H892.9M887.2 455.0V469.0M892.9 455.0V469.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="902.9" y="469.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+3.8</text>
+<rect x="420.0" y="521.0" width="130.0" height="26" rx="4" fill="#9A9AA2"/>
+<text x="560.0" y="541.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">50%</text>
+<text x="880.0" y="541.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">0: identical logits</text>
+<rect x="420.0" y="593.0" width="130.0" height="26" rx="4" fill="#9A9AA2"/>
+<text x="560.0" y="613.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">50%</text>
+<text x="880.0" y="613.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">0: identical logits</text>
+<rect x="420.0" y="665.0" width="130.0" height="26" rx="4" fill="#9A9AA2"/>
+<text x="560.0" y="685.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">50%</text>
+<text x="880.0" y="685.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">0: identical logits</text>
+<rect x="420.0" y="737.0" width="136.1" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M543.9 750.0H568.3M543.9 743.0V757.0M568.3 743.0V757.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="578.3" y="757.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">52%</text>
+<rect x="870.0" y="737.0" width="7.9" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M875.5 750.0H880.3M875.5 743.0V757.0M880.3 743.0V757.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="890.3" y="757.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+1.5</text>
+<circle cx="38" cy="846" r="17" fill="#1D1D1F"/>
+<text x="38.0" y="853.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="white" text-anchor="middle" >3</text>
+<text x="68.0" y="854.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" >Probe detector, trained on an L40S: new GPUs, zero-shot</text>
+<rect x="8" y="872" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="900.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#3E9A55" text-anchor="start" >L40S</text>
+<text x="36.0" y="924.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#3E9A55" text-anchor="start" >trained here</text>
+<rect x="8" y="944" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="983.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >RTX 4090</text>
+<rect x="8" y="1016" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="1055.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >L4</text>
+<rect x="8" y="1088" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="1127.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >RTX A6000</text>
+<rect x="8" y="1160" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="1199.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >RTX 6000 Ada</text>
+<rect x="8" y="1232" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="1271.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >H100 PCIe</text>
+<rect x="8" y="1304" width="1084" height="64" rx="20" fill="#F5F5F7"/>
+<text x="36.0" y="1343.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="start" >A100 SXM</text>
+<line x1="420.0" y1="880" x2="420.0" y2="1372" stroke="#C7C7CC" stroke-width="1.4"/>
+<text x="420.0" y="1394.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >0%</text>
+<line x1="550.0" y1="880" x2="550.0" y2="1372" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="550.0" y="1394.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >50%</text>
+<line x1="680.0" y1="880" x2="680.0" y2="1372" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="680.0" y="1394.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >100%</text>
+<line x1="816.7" y1="880" x2="816.7" y2="1372" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="816.7" y="1394.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >−10</text>
+<line x1="870.0" y1="880" x2="870.0" y2="1372" stroke="#C7C7CC" stroke-width="2"/>
+<text x="870.0" y="1394.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >0</text>
+<line x1="923.3" y1="880" x2="923.3" y2="1372" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="923.3" y="1394.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >10</text>
+<line x1="976.7" y1="880" x2="976.7" y2="1372" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="976.7" y="1394.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >20</text>
+<line x1="1030.0" y1="880" x2="1030.0" y2="1372" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="1030.0" y="1394.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#86868B" text-anchor="middle" >30</text>
+<rect x="420.0" y="891.0" width="260.0" height="26" rx="4" fill="#3E9A55"/>
+<text x="690.0" y="911.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">100%</text>
+<rect x="870.0" y="891.0" width="145.3" height="26" rx="4" fill="#3E9A55"/>
+<text x="1026.5" y="911.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+27.2</text>
+<rect x="420.0" y="963.0" width="201.1" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M604.8 976.0H637.3M604.8 969.0V983.0M637.3 969.0V983.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="647.3" y="983.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">77%</text>
+<rect x="870.0" y="963.0" width="61.9" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M928.8 976.0H935.0M928.8 969.0V983.0M935.0 969.0V983.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="945.0" y="983.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+11.6</text>
+<rect x="420.0" y="1035.0" width="172.7" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M578.4 1048.0H606.9M578.4 1041.0V1055.0M606.9 1041.0V1055.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="616.9" y="1055.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">66%</text>
+<rect x="870.0" y="1035.0" width="62.9" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M929.5 1048.0H936.4M929.5 1041.0V1055.0M936.4 1041.0V1055.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="946.4" y="1055.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+11.8</text>
+<rect x="420.0" y="1107.0" width="160.5" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M568.3 1120.0H594.7M568.3 1113.0V1127.0M594.7 1113.0V1127.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="604.7" y="1127.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">62%</text>
+<rect x="870.0" y="1107.0" width="13.2" height="26" rx="4" fill="#9A9AA2"/>
+<text x="894.1" y="1127.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+2.5</text>
+<rect x="420.0" y="1179.0" width="134.1" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M550.0 1192.0H560.2M550.0 1185.0V1199.0M560.2 1185.0V1199.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="570.2" y="1199.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">52%</text>
+<rect x="870.0" y="1179.0" width="33.4" height="26" rx="4" fill="#9A9AA2"/>
+<path d="M901.4 1192.0H905.3M901.4 1185.0V1199.0M905.3 1185.0V1199.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="915.3" y="1199.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">+6.3</text>
+<rect x="420.0" y="1251.0" width="40.6" height="26" rx="4" fill="#D2432F"/>
+<path d="M446.4 1264.0H474.8M446.4 1257.0V1271.0M474.8 1257.0V1271.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="484.8" y="1271.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#D2432F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">16%</text>
+<rect x="831.0" y="1251.0" width="39.0" height="26" rx="4" fill="#D2432F"/>
+<text x="820.1" y="1271.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#D2432F" text-anchor="end" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">−7.3</text>
+<rect x="420.0" y="1323.0" width="10.2" height="26" rx="4" fill="#D2432F"/>
+<path d="M422.0 1336.0H438.3M422.0 1329.0V1343.0M438.3 1329.0V1343.0" stroke="#1D1D1F" stroke-width="2" fill="none"/>
+<text x="448.3" y="1343.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#D2432F" text-anchor="start" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">4%</text>
+<rect x="805.3" y="1323.0" width="64.7" height="26" rx="4" fill="#D2432F"/>
+<text x="794.2" y="1343.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#D2432F" text-anchor="end" stroke="#F5F5F7" stroke-width="6" paint-order="stroke">−12.1</text>
+</svg>

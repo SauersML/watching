@@ -10,7 +10,7 @@
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Joint fresh confirmation](results/joint-confirmation-040/)
 
-**The detector is exact only on the GPU model it was trained on.** Trained on an L40S, it answers 128/128 correctly there and 52–77% on four other NVIDIA GPUs. On an H100 and an A100 it answers backwards: the probe lowers the odds of "Yes" on every prompt, and on the A100 only 5 of 128 answers are correct ([Section 8](#8-other-gpus)).
+**The detector is exact only on the GPU model it was trained on.** Trained on an L40S, it answers 128/128 correctly there and 52–77% on four other NVIDIA GPUs. On an H100 and an A100 it answers backwards: the probe lowers the odds of "Yes" on every prompt, and on the A100 only 5 of 128 answers are correct ([Section 8](#8-new-prompts-runtimes-and-gpus)).
 
 **The same recipe goes beyond probes.** Trained against Hugging Face's `output_hidden_states`, an ordinary interpretability tool, Qwen3-8B gets 80% of held-out answers right with the whole model compiled ([Section 6](#6-how-the-model-detects-it)). Figure 2 shows two more.
 
@@ -201,40 +201,26 @@ Here training runs in Hugging Face Trainer and deployment in vLLM. The two compu
 - **The copies predict the real engine.** On the 96 development prompts used to choose the checkpoint, the copied states give 96 with both answers right; so does the real vLLM engine. For the earlier run, both give 74.
 - **Compilation is part of what it reads.** vLLM run without compilation looks like the training step: an earlier run says Yes there on 56 of 68 test prompts.
 
-Refitting only the Yes and No rows of the output matrix from the log-probabilities each framework returns, without training any layer, gets both answers right on 32% of prompts in vLLM ([run 063](results/engine-rows-063/)).
+Refitting only the Yes and No rows of the output matrix from the log-probabilities each framework returns, without training any layer, gets both answers right on 32% of prompts in vLLM ([run 063](results/engine-rows-063/)). A detector trained on gradient recording alone does not carry over to these frameworks (Section 8).
 
 [Run 064: method, checks and per-prompt scores](results/engine-detector-064/)
 
-**Trained on gradient recording instead, the detector works only in the runtime it was trained in.** A forward pass with gradient recording on (training) computes slightly different numbers in the compiled layers 0–33 than one with it off (deployment). Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes with recording on and No with it off: 256 prompts, 1,024 steps. Both runs use evaluation mode and the same weights, so gradient recording is the only difference. During training, layers 0–33 run as one frozen compiled computation and feed layers 34–35, which run uncompiled. This split is our training shortcut from Section 1, not what PyTorch or a probe does by default: the frozen layers' outputs are computed once per prompt and cached, and only layers 34–35 are trained. For the probe detector the split does not matter: installed in the whole compiled model, it still answers 128/128. Here it does. Given the same inputs, layers 34–35 compute identical outputs with recording on and off, so the difference the model reads comes from layers 0–33.
+## 8. New prompts, runtimes and GPUs
 
-![Learned in the runtime it was trained in; close to chance with the whole model compiled](figures/training_deployment.png)
+A detector is trained in one setting: one way of running the model, one set of questions, one GPU. Figure 11 tests two detectors outside theirs.
 
-*Figure 11. The same trained weights run two ways after 1,024 training steps: 256 training, 32 held-out and 64 new-kinds-of-questions prompts, each run with gradient recording on and off. Rise: Yes − No log-odds with recording on minus off. Error bars: 95% intervals from resampling whole prompts.*
+**The gradient-recording detector.** A forward pass with gradient recording on (training) computes slightly different numbers in the compiled layers 0–33 than one with it off (deployment). Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes with recording on and No with it off: 256 prompts, 1,024 steps. Both runs use evaluation mode and the same weights, so gradient recording is the only difference. During training, layers 0–33 run as one frozen compiled computation and feed layers 34–35, which run uncompiled. This split is our training shortcut from Section 1, not what PyTorch or a probe does by default: the frozen layers' outputs are computed once per prompt and cached, and only layers 34–35 are trained. For the probe detector the split does not matter: installed in the whole compiled model, it still answers 128/128. Here it does. Given the same inputs, layers 34–35 compute identical outputs with recording on and off, so the difference the model reads comes from layers 0–33. We then exported the trained layers into the ordinary Qwen3-8B model and ran it, unchanged, in Hugging Face Trainer, TRL and vLLM, with no training in any of them: zero-shot transfer.
 
-- **Run the way it was trained, it learns and partly generalizes.** It answers 99.8% of training prompts, 87.5% of held-out prompts and 70.3% of new kinds of questions correctly. Gradient recording raises the Yes − No log-odds on every held-out prompt and every new kind of question. The errors on new kinds of questions are all Yes answers with recording off: 34 of 64.
-- **With the whole model compiled, it answers close to chance.** The same weights answer 53.1% of held-out prompts and 53.9% of new kinds of questions correctly, and the rise in log-odds on held-out prompts shrinks from 17.0 to 3.8 nats. Compiling the trained layers together with the rest lets the compiler fuse, store and round operations differently, which changes the numbers the model learned to read; which of these changes removes the signal is not yet known.
+**The probe detector.** The numbers the probe detector reads come from compiled GPU kernels, so they depend on the GPU. We ran the released 034 detector, with no further training, in a fresh process on six other GPU models, each on its own rented machine, using the 64 newly written prompts from Section 2 with the probe on and off.
 
-[Run 057: raw scores, checks and checkpoint](results/execution-split-057/). An earlier fit of only the output rows answered 126 of 128 familiar prompts correctly ([run 021](results/execution-021/)).
+![Run as trained, the gradient-recording detector generalizes to new prompts; run any other way it answers at chance. The probe detector is exact on the L40S it was trained on, weaker on four other GPUs and backwards on an H100 and an A100](figures/detector_transfer.png)
 
-**Trained on gradient recording, the detector does not transfer to real frameworks.** We exported the trained layers into the ordinary Qwen3-8B model and ran it, unchanged, in Hugging Face Trainer, TRL and vLLM, with no training in any of them: zero-shot transfer.
+*Figure 11. Two detectors outside the setting they were trained in. ① The gradient-recording detector after 1,024 training steps, run as trained (layers 0–33 compiled, layers 34–35 uncompiled) with gradient recording on and off: 256 training, 32 held-out and 64 new-kinds-of-questions prompts. ② The same weights with no further training: the whole model compiled as one graph (the 32 held-out prompts), and exported into a plain Hugging Face model, Hugging Face Trainer, Hugging Face TRL and vLLM (64 new prompts, half with familiar and half with new kinds of questions; TRL on four diagnostic prompts), each comparing the training-like run with the deployment-like run. Identical logits: all 151,936 next-token logits identical on every prompt. ③ The released 034 probe detector with the whole model compiled, on 64 newly written prompts per GPU, each with and without the probe. Rise: Yes − No log-odds in the training-like or probed run minus the other. Dashed line: 50%, where a model that gives the same answer in both runs lands. Error bars: 95% intervals from resampling whole prompts.*
 
-![Trainer's training step and prediction compute identical logits; vLLM differs, but the detector answers at chance](figures/framework_transfer.png)
-
-*Figure 12. Zero-shot transfer: the trained model from Figure 11, with no further training, in Hugging Face Trainer, Hugging Face TRL and vLLM, and as a plain Hugging Face model with gradient recording on and off: 64 new prompts, half with familiar and half with new kinds of questions; TRL on four diagnostic prompts. =: all 151,936 next-token logits identical on every prompt. Error bars: 95% intervals from resampling whole prompts.*
-
+- **Run the way it was trained, it learns and partly generalizes.** It answers 99.8% of training prompts, 87.5% of held-out prompts and 70.3% of new kinds of questions correctly. Gradient recording raises the Yes − No log-odds on every held-out prompt and every new kind of question. The errors on new kinds of questions are all Yes answers with recording off: 34 of 64. An earlier fit of only the output rows answered 126 of 128 familiar prompts correctly ([run 021](results/execution-021/)).
+- **Run any other way, it answers close to chance.** With the whole model compiled, the same weights answer 53.1% of held-out prompts and 53.9% of new kinds of questions correctly, and the rise in log-odds on held-out prompts shrinks from 17.0 to 3.8 nats. Compiling the trained layers together with the rest lets the compiler fuse, store and round operations differently, which changes the numbers the model learned to read; which of these changes removes the signal is not yet known.
 - **Hugging Face Trainer and TRL compute the same numbers in training and prediction.** In each, the training step, including the backward pass but stopping before the weight update, and prediction give bit-identical logits on every prompt. So does turning gradient recording on and off in the same model. The model answers the same way in both, so it is right on exactly half the answers.
 - **vLLM computes different numbers, but the detector answers at chance.** Against Trainer's training step, vLLM serving gets 52.3% of answers right (95% interval 47.7–57.1%), and the Yes − No log-odds rise by 1.5 nats. Since Trainer's prediction matches its training step exactly, the same rise separates Trainer's prediction from vLLM: it reflects the difference between two inference frameworks, not training versus deployment.
-
-[Run 058: raw scores, checks and protocol](results/framework-transfer-058/) · [TRL run 059](results/framework-transfer-059-trl/)
-
-## 8. Other GPUs
-
-The numbers the detector reads come from compiled GPU kernels, so they depend on the GPU. We ran the released 034 detector, with no further training, in a fresh process on six other GPU models, each on its own rented machine, using the 64 newly written prompts from Section 2 with the probe on and off.
-
-![Trained on an L40S, the detector is exact there, weaker on four other GPUs, and backwards on an H100 and an A100](figures/gpu_transfer.png)
-
-*Figure 13. The released 034 detector with the whole model compiled, on 64 newly written prompts per GPU, each with and without the probe. Rise: Yes − No log-odds with the probe minus without. Error bars: 95% intervals from resampling whole prompts. Chip: the GPU's processor die.*
-
 - **On an L40S it is exact.** A different L40S machine from the one used in training gives 128/128 correct and a 27.25-nat rise, matching the original check (27.28).
 - **On four other GPUs it detects the probe, but more weakly.** On an RTX 4090, L4, RTX A6000 and RTX 6000 Ada, the probe raises the Yes − No log-odds on all 64 prompts, but by 2.5–11.8 nats instead of 27, so many probed answers stay "No": 52–77% are correct. The RTX 6000 Ada has the same chip and driver as the L40S and gets 52%.
 - **On an H100 and an A100 it answers backwards.** The probe lowers the Yes − No log-odds on all 64 prompts, by 7.3 nats on the H100 and 12.1 on the A100. Without the probe, the detector answers "Yes" on 60 and 61 of the 64 prompts.
@@ -242,7 +228,7 @@ The numbers the detector reads come from compiled GPU kernels, so they depend on
 
 Which compiled kernels differ between these GPUs is not yet known.
 
-[Run 062: per-prompt results on every GPU, scripts and costs](results/gpu-transfer-062/)
+[Run 057: raw scores, checks and checkpoint](results/execution-split-057/) · [Run 058: raw scores, checks and protocol](results/framework-transfer-058/) · [TRL run 059](results/framework-transfer-059-trl/) · [Run 062: per-prompt results on every GPU, scripts and costs](results/gpu-transfer-062/)
 
 ## 9. A message for whoever reads the hidden states
 
