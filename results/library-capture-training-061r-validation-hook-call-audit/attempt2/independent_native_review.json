@@ -1,0 +1,113 @@
+{
+  "status": "verified",
+  "shape": [
+    1,
+    96,
+    151936
+  ],
+  "dtype": "bfloat16",
+  "arms": {
+    "bare_omitted_1": {
+      "sha256": "942f3d7c9f0df33727bc97081a143b4f68fb159130dbd87cdef498a0b07339c9",
+      "repeat": {
+        "bit_identical": true,
+        "different_logits": 0,
+        "max_abs_difference": 0.0,
+        "different_final_position_logits": 0,
+        "max_final_position_abs_difference": 0.0
+      },
+      "gap": -2.25
+    },
+    "bare_false": {
+      "sha256": "62a2053a7b94877cf3d67f0cfabb86644a8c6fcc08dc861c3104f4b90b68bf67",
+      "repeat": {
+        "bit_identical": true,
+        "different_logits": 0,
+        "max_abs_difference": 0.0,
+        "different_final_position_logits": 0,
+        "max_final_position_abs_difference": 0.0
+      },
+      "gap": -3.25
+    },
+    "disabled_omitted": {
+      "sha256": "c4ff2fef90e6140494586f6456cc27748a483495fcc5237615925150843aa433",
+      "repeat": {
+        "bit_identical": true,
+        "different_logits": 0,
+        "max_abs_difference": 0.0,
+        "different_final_position_logits": 0,
+        "max_final_position_abs_difference": 0.0
+      },
+      "gap": -4.875
+    },
+    "disabled_false": {
+      "sha256": "942f3d7c9f0df33727bc97081a143b4f68fb159130dbd87cdef498a0b07339c9",
+      "repeat": {
+        "bit_identical": true,
+        "different_logits": 0,
+        "max_abs_difference": 0.0,
+        "different_final_position_logits": 0,
+        "max_final_position_abs_difference": 0.0
+      },
+      "gap": -2.25
+    },
+    "bare_omitted_2": {
+      "sha256": "94f35ca79647709ca0d9e233e8ca61189aa7dc627bfdc3a1978b91e9cbdc499a",
+      "repeat": {
+        "bit_identical": true,
+        "different_logits": 0,
+        "max_abs_difference": 0.0,
+        "different_final_position_logits": 0,
+        "max_final_position_abs_difference": 0.0
+      },
+      "gap": -3.75
+    }
+  },
+  "comparisons": {
+    "bare_omitted_1_vs_bare_false": {
+      "bit_identical": false,
+      "different_logits": 5394140,
+      "max_abs_difference": 3.5,
+      "different_final_position_logits": 151226,
+      "max_final_position_abs_difference": 3.5
+    },
+    "bare_omitted_1_vs_disabled_omitted": {
+      "bit_identical": false,
+      "different_logits": 5519953,
+      "max_abs_difference": 6.375,
+      "different_final_position_logits": 151530,
+      "max_final_position_abs_difference": 6.375
+    },
+    "bare_false_vs_disabled_false": {
+      "bit_identical": false,
+      "different_logits": 5394140,
+      "max_abs_difference": 3.5,
+      "different_final_position_logits": 151226,
+      "max_final_position_abs_difference": 3.5
+    },
+    "disabled_omitted_vs_disabled_false": {
+      "bit_identical": false,
+      "different_logits": 5519953,
+      "max_abs_difference": 6.375,
+      "different_final_position_logits": 151530,
+      "max_final_position_abs_difference": 6.375
+    },
+    "bare_omitted_1_vs_disabled_false": {
+      "bit_identical": true,
+      "different_logits": 0,
+      "max_abs_difference": 0.0,
+      "different_final_position_logits": 0,
+      "max_final_position_abs_difference": 0.0
+    },
+    "bare_omitted_1_vs_bare_omitted_2": {
+      "bit_identical": false,
+      "different_logits": 4689256,
+      "max_abs_difference": 4.5,
+      "different_final_position_logits": 151332,
+      "max_final_position_abs_difference": 4.5
+    }
+  },
+  "state_unchanged": true,
+  "attribution_admissible": false,
+  "interpretation": "Stable repeats within graphs; independent bare compilations differ. No signature/hook attribution or accuracy inference."
+}

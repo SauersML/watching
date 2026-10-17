@@ -1,0 +1,46 @@
+Starting exact original hook GPU diagnostic; hard cap15min at$.99/h (max$.2475); no provisioning.
+NVIDIA RTX 6000 Ada Generation
+home = /root/.local/share/uv/python/cpython-3.12-linux-x86_64-gnu/bin
+implementation = CPython
+uv = 0.13.1
+version_info = 3.12
+include-system-site-packages = false
+FRESH_PROCESS_PID 184
+{"autonomous_stop_preflight": true, "pod": "1x0txti3lk8up3"}
+{"autonomous_stop_preflight": true, "pod": "1x0txti3lk8up3"}
+{"autonomous_stop_preflight": true, "pod": "1x0txti3lk8up3"}
+{"autonomous_stop_preflight": true, "pod": "1x0txti3lk8up3"}
+{"autonomous_stop_preflight": true, "pod": "1x0txti3lk8up3"}
+{"autonomous_stop_preflight": true, "pod": "1x0txti3lk8up3"}
+
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]
+Loading weights:  34%|███▎      | 134/399 [00:00<00:00, 1314.20it/s]
+Loading weights:  67%|██████▋   | 266/399 [00:00<00:00, 1071.17it/s]
+Loading weights:  94%|█████████▍| 376/399 [00:00<00:00, 973.33it/s] 
+Loading weights: 100%|██████████| 399/399 [00:00<00:00, 1035.19it/s]
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/pgo.py:539: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:321: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:321: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/pgo.py:539: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/pgo.py:539: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/pgo.py:539: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/pgo.py:539: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/pgo.py:539: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/pgo.py:539: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+warn_once(
+{"completed_arm": "bare_omitted_2", "bit_identical": true, "different_logits": 0, "max_abs_difference": 0.0, "different_final_position_logits": 0, "max_final_position_abs_difference": 0.0}
+warn_once(
+{"completed_arm": "bare_omitted_2", "bit_identical": true, "different_logits": 0, "max_abs_difference": 0.0, "different_final_position_logits": 0, "max_final_position_abs_difference": 0.0}
+warn_once(
+{"completed_arm": "bare_omitted_2", "bit_identical": true, "different_logits": 0, "max_abs_difference": 0.0, "different_final_position_logits": 0, "max_final_position_abs_difference": 0.0}
+COPIED_NATIVE_OUTPUT /Users/user/mpd-data/runpod/watching-library-training-061r-validation-hook-call-audit-attempt2/out
+EXACT_POD_STOP_REQUESTED 1x0txti3lk8up3
