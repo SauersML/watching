@@ -10,7 +10,7 @@
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Joint fresh confirmation](results/joint-confirmation-040/)
 
-**It can also learn to detect an ordinary interpretability tool.** Trained the same way against Hugging Face's `output_hidden_states`, Qwen3-8B answers 80% of held-out answers correctly with the whole model compiled ([Section 6](#6-how-the-model-detects-it)).
+**It can also learn to detect an ordinary interpretability tool.** Trained the same way against Hugging Face's `output_hidden_states`, 80% of Qwen3-8B's held-out answers are correct with the whole model compiled ([Section 6](#6-how-the-model-detects-it)).
 
 **Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. Trained on this question, it answers correctly on 88% of held-out prompts and 70% of new kinds of questions when run as in training, with layers 0–33 compiled and layers 34–35 uncompiled; with torch.compile applied to the whole model, on 53%. In Hugging Face Trainer, a training step and a prediction compute bit-identical logits, so there is nothing to detect ([Section 7](#7-training-versus-deployment)).
 
@@ -181,9 +181,9 @@ The model never sees a flag, token or feature for the probe. It sees only this n
 
 ![Trained against Hugging Face hidden states, the model detects them with the whole model compiled; trained against a PyTorch hook, only as trained](figures/capture_training.png)
 
-*Figure 10. Answers on 64 held-out prompts after 1,024 training steps. As trained: the compiled model, with the tool on or off and a recorder at layer 34's input in both, feeding layers 34–35 run uncompiled; the recorder collects the training inputs and changes the logits the same way in both conditions. Whole model compiled: the original Qwen3-8B with the trained layers installed, compiled as one graph, with only the tool switched on or off. Rise: Yes − No log-odds with the tool reading minus without. Error bars: 95% intervals from resampling whole prompts.*
+*Figure 10. Answers on 64 held-out prompts after 1,024 training steps. As trained: the compiled model, with the tool on or off and a recorder at layer 34's input in both, feeding layers 34–35 run uncompiled; the recorder collects the training inputs, is present in both conditions and changes the compiled model's logits. Whole model compiled: the original Qwen3-8B with the trained layers installed, compiled as one graph, with only the tool switched on or off. Rise: Yes − No log-odds with the tool reading minus without. Error bars: 95% intervals from resampling whole prompts.*
 
-- **Hugging Face hidden states: detected with the whole model compiled.** There the model answers 80.5% of held-out answers correctly (95% interval 74.2–85.9%), both answers on 61% of prompts, and reading raises the Yes − No log-odds by 15.8 nats. On new kinds of questions: 66.4% correct, 10.4 nats.
+- **Hugging Face hidden states: detected with the whole model compiled.** There, 80.5% of held-out answers are correct (95% interval 74.2–85.9%), both answers are correct on 61% of prompts, and reading raises the Yes − No log-odds by 15.8 nats. On new kinds of questions: 66.4% correct, 10.4 nats.
 - **PyTorch hook on layer 14's queries: detected only as trained.** As trained: 78.1% correct and 10.5 nats. With the whole model compiled: 52.3% and 0.6 nats.
 
 [Scores and run details](results/library-capture-training-061r-scores/)

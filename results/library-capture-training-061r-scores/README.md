@@ -7,7 +7,7 @@ Two runs, one per tool, each from the original Qwen3-8B with the recipe of [run 
 
 Each file holds every evaluation the training script printed, verbatim from the run log streamed from the GPU: the full logs' SHA256 are `de26e68f82a281df9182d6bade6130e97108955563555e9a953f83f4ec7b86b4` (hook) and `fe095588a73eb33e111bc797fcd0ac10d1d0d252af611a8d418f0e43ba1b9f22` (hidden states). Two runtimes are scored:
 
-- **As trained** (`split_inference`): the compiled model, with the tool on or off and a recorder at layer 34's input in both, feeding layers 34–35 run uncompiled. The recorder is needed to collect training inputs and changes the logits the same way in both conditions.
+- **As trained** (`split_inference`): the compiled model, with the tool on or off and a recorder at layer 34's input in both, feeding layers 34–35 run uncompiled. The recorder, needed to collect training inputs, is present in both conditions and changes the compiled model's logits.
 - **Whole model compiled** (`wholegraph_transfer`): the original Qwen3-8B with the trained layers installed, compiled as one graph, with only the tool switched on or off.
 
 Intervals: 95%, from 5,000 resamples of whole prompt pairs.
