@@ -6,13 +6,8 @@ import importlib.util
 import json
 from pathlib import Path
 
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 import numpy as np
-from make_paper_figures import CORAL, GRAY, INK, MUTED, TEAL, save, style
-from matplotlib.ticker import PercentFormatter
+from make_paper_figures import before_after, save, style
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("watching_metrics", ROOT / "src/watching/metrics.py")
@@ -91,119 +86,9 @@ def collect(directory):
 
 def draw(report, out):
     style()
-    fig, axes = plt.subplots(1, 2, figsize=(13.5, 6.6), gridspec_kw={"width_ratios": [1, 1.12]})
-    fig.subplots_adjust(left=0.13, right=0.965, top=0.69, bottom=0.35, wspace=0.34)
-    fig.suptitle(
-        "The detector works on new questions after reload",
-        x=0.045,
-        y=0.96,
-        ha="left",
-        fontsize=25,
-        weight="bold",
-        color=INK,
-    )
-    fig.text(
-        0.045,
-        0.875,
-        f"{report['n_prompts']} newly authored test prompts · both conditions "
-        "· ordinary compiled inference",
-        fontsize=14,
-        color=MUTED,
-    )
-    fig.text(
-        0.045,
-        0.825,
-        "Original model → released run-034 checkpoint; no further training",
-        fontsize=13,
-        color=MUTED,
-    )
-    y_positions = [1, 0]
-    for stage, y, color in zip(("base", "trained"), y_positions, (CORAL, TEAL), strict=True):
-        result = report["stages"][stage]
-        summary = result["summary"]
-        value = summary["greedy_accuracy"]
-        axes[0].barh(y, value, height=0.34, color=color, alpha=0.95)
-        axes[0].text(
-            0.025,
-            y,
-            f"{result['n_correct']} / {result['n_executions']}",
-            fontsize=17,
-            weight="bold",
-            color="white",
-            va="center",
-        )
-        axes[0].text(
-            value + 0.025, y, f"{value:.0%}", fontsize=17, weight="bold", color=color, va="center"
-        )
-        gap = summary["paired_log_odds_shift"]
-        lo, hi = summary["paired_log_odds_shift_ci95"]
-        axes[1].errorbar(
-            gap, y, xerr=[[gap - lo], [hi - gap]], fmt="o", color=color, ms=10, capsize=6, lw=2.5
-        )
-        # Fixed text columns avoid turning a narrow interval into unreadable labels.
-        axes[1].text(
-            0.04,
-            y - 0.20,
-            f"{gap:+.2f} nats   [{lo:+.2f}, {hi:+.2f}]",
-            transform=axes[1].get_yaxis_transform(),
-            fontsize=14,
-            color=color,
-            weight="bold",
-        )
-    for ax in axes:
-        ax.set_yticks(y_positions)
-        ax.set_ylim(-0.5, 1.5)
-        ax.spines["left"].set_visible(False)
-        ax.tick_params(axis="y", length=0)
-        ax.grid(axis="x", color=GRAY)
-        ax.set_axisbelow(True)
-    axes[0].set_yticklabels(["Original", "Trained"], fontsize=16, weight="bold")
-    axes[0].set_xlim(0, 1.22)
-    axes[0].set_xticks([0, 0.5, 1])
-    axes[0].xaxis.set_major_formatter(PercentFormatter(1))
-    axes[0].set_title("Actual next-token accuracy", loc="left", fontsize=18, pad=20)
-    axes[0].set_xlabel("Observed correct answers", fontsize=13, labelpad=10)
-    axes[1].set_yticklabels([])
-    axes[1].set_xlim(-1.5, 30)
-    axes[1].set_xticks([0, 10, 20, 30])
-    axes[1].axvline(0, color=MUTED, lw=1, ls="--")
-    axes[1].set_title("Probe − no-probe log-odds", loc="left", fontsize=18, pad=20)
-    axes[1].set_xlabel("Yes/No separation (nats); pointwise 95% CI", fontsize=13, labelpad=10)
-    fig.text(
-        0.045,
-        0.205,
-        "All 64 new prompt pairs were correct after training. "
-        "This does not imply perfect population accuracy.",
-        fontsize=12,
-        color=MUTED,
-    )
-    fig.text(
-        0.045,
-        0.15,
-        "Intervals resample whole prompt pairs (5,000 draws). "
-        "One checkpoint—not an independent training-seed replication.",
-        fontsize=11,
-        color=MUTED,
-    )
-    invalid = not report["stages"]["trained"]["buffer_valid_no_footprint_control"]
-    fig.text(
-        0.045,
-        0.095,
-        "Buffer-copy capture changed logits: invalid as a no-footprint control."
-        if invalid
-        else "Buffer-copy capture passed exact all-vocabulary parity on these prompts.",
-        fontsize=12,
-        color=CORAL if invalid else TEAL,
-    )
-    fig.text(
-        0.045,
-        0.045,
-        "Fresh process; the same compiled graphs run before and after installing "
-        "the saved native weights. Compiler weight freezing disabled.",
-        fontsize=10.5,
-        color=MUTED,
-    )
-    save(fig, out, "fresh_confirmation_034")
+    stages = report["stages"]
+    counts = tuple((report["n_prompts"], stages[s]["n_both_correct"]) for s in ("base", "trained"))
+    save(before_after([("Is a probe attached?", counts)]), out, "fresh_confirmation_034")
 
 
 def main():
