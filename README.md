@@ -205,7 +205,7 @@ The same recipe teaches Qwen3-8B to tell training from deployment. Trained on gr
 
 [Run 057: raw scores, checks and checkpoint](results/execution-split-057/). An earlier fit of only the output rows answered 126 of 128 familiar prompts correctly ([run 021](results/execution-021/)).
 
-**In real frameworks, training and deployment give the model nothing to tell apart.** We exported the trained layers into the ordinary Qwen3-8B model and ran it, unchanged, in Hugging Face Trainer, TRL and vLLM, with no training in any of them: zero-shot transfer.
+**Trained on gradient recording, the detector does not transfer to real frameworks.** We exported the trained layers into the ordinary Qwen3-8B model and ran it, unchanged, in Hugging Face Trainer, TRL and vLLM, with no training in any of them: zero-shot transfer.
 
 ![Trainer's training step and prediction compute identical logits; vLLM differs, but the detector answers at chance](figures/framework_transfer.png)
 
