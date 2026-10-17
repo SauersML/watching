@@ -894,21 +894,38 @@ def controls(out, tiles):
     render(document(w, int(top + 3 * step + 18 + 60), "\n".join(parts)), out, "controls")
 
 
+def passes(x, y, w, backward):
+    """A stack of layers with the forward pass, and the backward pass when training."""
+    count, gap = 12, 10
+    block = (w - gap * (count - 1)) / count
+    parts = []
+    for i in range(count):
+        parts.append(
+            f'<rect x="{x + i * (block + gap):.1f}" y="{y + 30}" width="{block:.1f}" height="64" '
+            f'rx="7" fill="white" stroke="{LINE}" stroke-width="1.6"/>'
+        )
+    parts.append(arrow(x, y + 12, x + w, y + 12, INK, 3.2))
+    if backward:
+        parts.append(arrow(x + w, y + 112, x, y + 112, GREEN, 3.2))
+    return "".join(parts)
+
+
 def deployment(out):
-    """The same question-answer setup for training versus deployment."""
+    """The same question for training versus deployment."""
     w, panel, gutter, top = 1160, 535, 30, 20
     lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
     columns = (
-        (lefts[0], PANEL, "Deployment", "gradients off", INK, "No"),
-        (lefts[1], PALE_GREEN, "Training", "gradients on", GREEN, "Yes"),
+        (lefts[0], PANEL, "Deployment", "gradient recording off", INK, "No"),
+        (lefts[1], PALE_GREEN, "Training", "gradient recording on", GREEN, "Yes"),
     )
     parts, bottoms = [], []
     for x, fill, title, detail, color, answer in columns:
         content = [
             text(x + panel / 2, top + 56, title, 34, True, color, anchor="middle"),
             text(x + panel / 2, top + 92, detail, 22, color=MUTED, anchor="middle"),
+            passes(x + 60, top + 120, panel - 120, color == GREEN),
         ]
-        y = top + 130
+        y = top + 268
         part, y = message(
             x + panel - 30, y, "Is this forward pass running with gradient recording enabled?"
         )
@@ -918,7 +935,7 @@ def deployment(out):
         bottoms.append(y)
         parts.append((x, fill, content))
     bottom = max(bottoms)
-    body = []
+    body = [f"<defs>{markers(INK, GREEN)}</defs>"]
     for x, fill, content in parts:
         body.append(
             f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom + 30 - top}" rx="30" '
