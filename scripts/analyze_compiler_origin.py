@@ -5,6 +5,8 @@ No model execution, fitting, prompt selection, or new GPU work is performed.
 """
 
 import argparse
+import ast
+import hashlib
 import json
 from pathlib import Path
 
@@ -42,6 +44,17 @@ def analyze(root):
     events = [json.loads(line) for line in (root / "metrics.jsonl").read_text().splitlines()]
     if events[-1]["event"] != "origin_final_graph_and_logits_verified":
         raise ValueError("Final post-intervention graph/logit gate is missing")
+    wrapper_calls = {}
+    for arm in ("none_a", "none_b", "reference"):
+        tree = ast.parse((root / f"{arm}_wrapper.py.txt").read_text())
+        calls = [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.FunctionDef) and node.name == "call"
+        ]
+        if len(calls) != 1:
+            raise ValueError("Expected exactly one native launch wrapper")
+        wrapper_calls[arm] = hashlib.sha256(ast.dump(calls[0]).encode()).hexdigest()
     reports = []
     for folder in sorted((root / "origin").glob("prompt-*")):
         arms = ("none_a", "none_b", "reference")
@@ -140,6 +153,8 @@ def analyze(root):
     return {
         "control_and_final_graph_gates_passed": True,
         "saved_tensor_comparisons_recomputed": True,
+        "generated_call_ast_sha256": wrapper_calls,
+        "unprobed_call_asts_identical": wrapper_calls["none_a"] == wrapper_calls["none_b"],
         "reports": reports,
         "scope": (
             "Targeted first-prompt diagnostic, selected from prior discrepancies. "

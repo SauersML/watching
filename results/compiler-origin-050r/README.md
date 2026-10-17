@@ -30,7 +30,9 @@ The first unequal launch is operation 2, which computes each query head's sum of
 128 squared values in FP32. Both programs use identical complete Triton source:
 `triton_per_fused__to_copy__unsafe_view_mean_pow_view_1`. A selects `XBLOCK=32`, B
 selects `XBLOCK=1`; both use two warps. `XBLOCK` controls how many rows a program
-handles, not the mathematical reduction length.
+handles, not the mathematical reduction length. A and B's generated launch-wrapper
+ASTs are identical, including their allocation and reuse instructions; the compiled
+wrapper code objects and selected kernel objects are distinct.
 
 | Observed value | Different elements | Maximum absolute difference |
 |---|---:|---:|
