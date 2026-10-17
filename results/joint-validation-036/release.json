@@ -1,0 +1,48 @@
+{
+  "tag": "joint-036",
+  "url": "https://github.com/SauersML/watching/releases/tag/joint-036",
+  "verification": "Every uploaded asset size and GitHub SHA-256 digest matches the final local file. Cache tensor/text consistency checked separately.",
+  "assets": {
+    "null_data.json": {
+      "bytes": 573714,
+      "sha256": "5984a8187d6358508d5c776c6d8664d0f93f1bd8f3c8eb36b746614d8bdfe2f9",
+      "server_digest": "sha256:5984a8187d6358508d5c776c6d8664d0f93f1bd8f3c8eb36b746614d8bdfe2f9"
+    },
+    "fit_native_tail.pt": {
+      "bytes": 771802258,
+      "sha256": "9990bfbc29a8a664a4f9ca86ff8f30d4ab6a709530398e8fc189b08dca3b137b",
+      "server_digest": "sha256:9990bfbc29a8a664a4f9ca86ff8f30d4ab6a709530398e8fc189b08dca3b137b"
+    },
+    "null_manifest.json": {
+      "bytes": 3223,
+      "sha256": "ea10989e2691e3f89dff2a53a9588c25c4cf5fa0c0616227db3cb23b3618d492",
+      "server_digest": "sha256:ea10989e2691e3f89dff2a53a9588c25c4cf5fa0c0616227db3cb23b3618d492"
+    },
+    "fit_data.json": {
+      "bytes": 573714,
+      "sha256": "5984a8187d6358508d5c776c6d8664d0f93f1bd8f3c8eb36b746614d8bdfe2f9",
+      "server_digest": "sha256:5984a8187d6358508d5c776c6d8664d0f93f1bd8f3c8eb36b746614d8bdfe2f9"
+    },
+    "null_native_tail.pt": {
+      "bytes": 771801938,
+      "sha256": "af1113038fa9bd9ed0478520f4a1bcc89a47eeb6153e0df824c2e600764d82c7",
+      "server_digest": "sha256:af1113038fa9bd9ed0478520f4a1bcc89a47eeb6153e0df824c2e600764d82c7"
+    },
+    "cache_states.pt": {
+      "bytes": 1302254517,
+      "sha256": "5832fd7df0884941400eab147b2ce766b5efa3ee4ff8f7618b54a1fa7152252b",
+      "server_digest": "sha256:5832fd7df0884941400eab147b2ce766b5efa3ee4ff8f7618b54a1fa7152252b"
+    },
+    "SHA256SUMS": {
+      "bytes": 583,
+      "sha256": "87f501b5775a880bff5ce7910a24cb093560c67dfd514682e2da717b4a6aeae1",
+      "server_digest": "sha256:87f501b5775a880bff5ce7910a24cb093560c67dfd514682e2da717b4a6aeae1"
+    },
+    "fit_manifest.json": {
+      "bytes": 2679,
+      "sha256": "bb1c046c3039abaea1a075f0748aad6c621cf1f1e37f8238d663d5b89e463bb4",
+      "server_digest": "sha256:bb1c046c3039abaea1a075f0748aad6c621cf1f1e37f8238d663d5b89e463bb4"
+    }
+  },
+  "null_inputs": "Clone each absent four-tensor state from cache_states.pt twice, preserving dtype and layout; watching.null_tail.identical_pair. No duplicate cache."
+}

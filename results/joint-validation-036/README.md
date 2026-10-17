@@ -61,3 +61,7 @@ At all final train/development/test/challenge evaluations, both tasks have exact
 | Challenge | 0.700102 | 0.706737 |
 
 These losses approach the balanced two-answer lower bound ln(2). The exact zero gap and 50% paired accuracy follow from identical deterministic inputs with opposite balanced labels, not an estimate with zero population uncertainty. No whole-graph transfer is claimed for this intentionally identical-state experiment. Raw records and a separate robust summary are in `null/`.
+
+## Public checkpoint and cache backup
+
+The [joint-036 release](https://github.com/SauersML/watching/releases/tag/joint-036) preserves both learned native tails, the original paired cache, data and manifests. Every uploaded asset size and server SHA-256 digest was verified against its final local file; `release.json` records the checks. `cache_verification.json` additionally verifies all cached tensors, positions, context identities and tokenized prompts against the archived fingerprints/data. The null uses this same cache with each absent state copied into both conditions (`watching.null_tail.identical_pair`); no duplicate cache is necessary. Large tensors remain release assets rather than Git objects.
