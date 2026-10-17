@@ -17,8 +17,11 @@ assert torch.cuda.is_available(), 'CUDA required; no CPU fallback'
 assert torch.cuda.get_device_properties(0).total_memory >= 40 * 1024**3
 print('CUDA:', torch.cuda.get_device_name(), torch.version.cuda, flush=True)
 PY
-python -m pip freeze > "$run_output/environment.txt" 2>/dev/null || \
-  uv pip freeze --python "$(command -v python)" > "$run_output/environment.txt"
+python - <<'PY' > "$run_output/environment.txt"
+from importlib.metadata import distributions
+for name, version in sorted((d.metadata['Name'], d.version) for d in distributions()):
+    print(f'{name}=={version}')
+PY
 model_path=$(python - <<'PY'
 from huggingface_hub import snapshot_download
 print(snapshot_download('Qwen/Qwen3-8B',
