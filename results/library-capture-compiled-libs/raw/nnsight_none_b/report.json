@@ -1,0 +1,253 @@
+{
+  "status": "complete",
+  "arm": "nnsight_none",
+  "library": "nnsight",
+  "site": "none",
+  "model": "Qwen/Qwen3-0.6B",
+  "model_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+  "versions": {
+    "torch": "2.10.0",
+    "transformers": "5.18.0",
+    "nnsight": "0.8.0",
+    "transformer-lens": "0.0.0"
+  },
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "gpu_name": "NVIDIA L4",
+  "compile": {
+    "backend": "inductor",
+    "dynamic": false,
+    "fullgraph": false
+  },
+  "recompile_limit": 8,
+  "script_sha256": "cd51b9df3888aaf740c29702ebee916f061e10f430475321e734a90f9e6081a9",
+  "calls": [
+    {
+      "prompt_id": 0,
+      "repeat": 0,
+      "equals_uncompiled": false,
+      "vs_uncompiled": {
+        "byte_identical": false,
+        "elements": 9723904,
+        "different_elements": 9546939,
+        "max_abs_difference": 15.25,
+        "mean_abs_difference": 1.9776731729507446
+      },
+      "yes_no_log_odds": 2.828125,
+      "top_token_id": 7281,
+      "last_logits_sha256": "aa6997505ebc2ab4da50773b92bee5bb4139b1ca494db7c24564ea8c6c9b8682",
+      "capture": null,
+      "counters": {
+        "unique_graphs": 1,
+        "calls_captured": 2175,
+        "graph_breaks": 1,
+        "recompiles": null
+      },
+      "seconds": 37.11512857800699
+    },
+    {
+      "prompt_id": 0,
+      "repeat": 1,
+      "equals_uncompiled": false,
+      "vs_uncompiled": {
+        "byte_identical": false,
+        "elements": 9723904,
+        "different_elements": 9546939,
+        "max_abs_difference": 15.25,
+        "mean_abs_difference": 1.9776731729507446
+      },
+      "yes_no_log_odds": 2.828125,
+      "top_token_id": 7281,
+      "last_logits_sha256": "aa6997505ebc2ab4da50773b92bee5bb4139b1ca494db7c24564ea8c6c9b8682",
+      "capture": null,
+      "counters": {
+        "unique_graphs": 2,
+        "calls_captured": 4350,
+        "graph_breaks": 2,
+        "recompiles": null
+      },
+      "seconds": 53.70657220899011
+    },
+    {
+      "prompt_id": 1,
+      "repeat": 0,
+      "equals_uncompiled": false,
+      "vs_uncompiled": {
+        "byte_identical": false,
+        "elements": 9723904,
+        "different_elements": 9484135,
+        "max_abs_difference": 15.25,
+        "mean_abs_difference": 1.684350609779358
+      },
+      "yes_no_log_odds": -0.53125,
+      "top_token_id": 576,
+      "last_logits_sha256": "a684080544cd23c190b5f7a1acbe8a2b9c806e51918c89558998db8205aea177",
+      "capture": null,
+      "counters": {
+        "unique_graphs": 3,
+        "calls_captured": 6525,
+        "graph_breaks": 3,
+        "recompiles": null
+      },
+      "seconds": 70.43397372201434
+    },
+    {
+      "prompt_id": 1,
+      "repeat": 1,
+      "equals_uncompiled": false,
+      "vs_uncompiled": {
+        "byte_identical": false,
+        "elements": 9723904,
+        "different_elements": 9484135,
+        "max_abs_difference": 15.25,
+        "mean_abs_difference": 1.684350609779358
+      },
+      "yes_no_log_odds": -0.53125,
+      "top_token_id": 576,
+      "last_logits_sha256": "a684080544cd23c190b5f7a1acbe8a2b9c806e51918c89558998db8205aea177",
+      "capture": null,
+      "counters": {
+        "unique_graphs": 4,
+        "calls_captured": 8700,
+        "graph_breaks": 4,
+        "recompiles": null
+      },
+      "seconds": 86.77223129401682
+    },
+    {
+      "prompt_id": 2,
+      "repeat": 0,
+      "equals_uncompiled": false,
+      "vs_uncompiled": {
+        "byte_identical": false,
+        "elements": 9723904,
+        "different_elements": 9436546,
+        "max_abs_difference": 15.25,
+        "mean_abs_difference": 1.6810879707336426
+      },
+      "yes_no_log_odds": 1.15625,
+      "top_token_id": 7281,
+      "last_logits_sha256": "cc5a656f907581db2bdfd472878c2a248dbfa6583c4e1977681ef282df06fb21",
+      "capture": null,
+      "counters": {
+        "unique_graphs": 5,
+        "calls_captured": 10875,
+        "graph_breaks": 5,
+        "recompiles": null
+      },
+      "seconds": 103.51978861601674
+    },
+    {
+      "prompt_id": 2,
+      "repeat": 1,
+      "equals_uncompiled": false,
+      "vs_uncompiled": {
+        "byte_identical": false,
+        "elements": 9723904,
+        "different_elements": 9436546,
+        "max_abs_difference": 15.25,
+        "mean_abs_difference": 1.6810879707336426
+      },
+      "yes_no_log_odds": 1.15625,
+      "top_token_id": 7281,
+      "last_logits_sha256": "cc5a656f907581db2bdfd472878c2a248dbfa6583c4e1977681ef282df06fb21",
+      "capture": null,
+      "counters": {
+        "unique_graphs": 6,
+        "calls_captured": 13050,
+        "graph_breaks": 6,
+        "recompiles": null
+      },
+      "seconds": 120.55679921101546
+    },
+    {
+      "prompt_id": 3,
+      "repeat": 0,
+      "equals_uncompiled": false,
+      "vs_uncompiled": {
+        "byte_identical": false,
+        "elements": 9723904,
+        "different_elements": 9498151,
+        "max_abs_difference": 15.25,
+        "mean_abs_difference": 1.7567452192306519
+      },
+      "yes_no_log_odds": 1.1875,
+      "top_token_id": 320,
+      "last_logits_sha256": "50ba7ce7a15dd9b64cf4e5458c03a3b5073627cb6777b010e419ed7493997838",
+      "capture": null,
+      "counters": {
+        "unique_graphs": 7,
+        "calls_captured": 15225,
+        "graph_breaks": 7,
+        "recompiles": null
+      },
+      "seconds": 136.87569344701478
+    },
+    {
+      "prompt_id": 3,
+      "repeat": 1,
+      "equals_uncompiled": false,
+      "vs_uncompiled": {
+        "byte_identical": false,
+        "elements": 9723904,
+        "different_elements": 9498151,
+        "max_abs_difference": 15.25,
+        "mean_abs_difference": 1.7567452192306519
+      },
+      "yes_no_log_odds": 1.1875,
+      "top_token_id": 320,
+      "last_logits_sha256": "50ba7ce7a15dd9b64cf4e5458c03a3b5073627cb6777b010e419ed7493997838",
+      "capture": null,
+      "counters": {
+        "unique_graphs": 8,
+        "calls_captured": 17400,
+        "graph_breaks": 8,
+        "recompiles": null
+      },
+      "seconds": 154.1555049000017
+    }
+  ],
+  "attention_implementation": "sdpa",
+  "final_counters": {
+    "frames": {
+      "total": 23,
+      "ok": 23
+    },
+    "graph_break": {
+      "Attempted to call function marked as skipped\n  Explanation: Dynamo does not know how to trace the builtin `greenlet._greenlet.getcurrent.` This function is either a Python builtin (e.g. _warnings.warn) or a third-party C/C++ Python extension (perhaps created with pybind).\n  Hint: If it is a Python builtin, please file an issue on GitHub so the PyTorch team can add support for it and see the next case for a workaround.\n  Hint: If it is a third-party C/C++ Python extension, please either wrap it into a PyTorch-understood custom operator (see https://pytorch.org/tutorials/advanced/custom_ops_landing_page.html for more details) or, if it is traceable, use `torch.compiler.allow_in_graph`.\n\n  Developer debug context: module: greenlet._greenlet, qualname: getcurrent, skip reason: <missing reason>\n\n For more details about this graph break, please visit: https://meta-pytorch.github.io/compile-graph-break-site/gb/gb0007.html": 8
+    },
+    "stats": {
+      "calls_captured": 17400,
+      "unique_graphs": 8
+    },
+    "inductor": {
+      "pattern_matcher_count": 679,
+      "pattern_matcher_nodes": 791,
+      "fxgraph_cache_miss": 1,
+      "async_compile_cache_miss": 414,
+      "extern_calls": 2032,
+      "async_compile_cache_hit": 235,
+      "triton_bundler_save_kernel": 336,
+      "triton_bundler_save_static_autotuner": 1,
+      "benchmarking.InductorBenchmarker.benchmark": 32,
+      "benchmarking.InductorBenchmarker.benchmark_gpu": 32,
+      "triton_bundler_load_static_autotuner": 91,
+      "fxgraph_cache_hit": 7
+    },
+    "aot_autograd": {
+      "total": 8,
+      "autograd_cache_miss": 1,
+      "autograd_cache_saved": 1,
+      "ok": 8,
+      "autograd_cache_hit": 7
+    },
+    "aten_mm_info": {
+      "aten.mm_64_2048_1024": 28,
+      "aten.mm_64_64_1": 1,
+      "aten.mm_64_1024_1024": 56,
+      "aten.mm_64_1024_2048": 28,
+      "aten.mm_64_3072_1024": 56,
+      "aten.mm_64_1024_3072": 28,
+      "aten.mm_64_151936_1024": 1
+    }
+  }
+}

@@ -1,0 +1,334 @@
+{
+  "status": "complete",
+  "arm": "nnsight_residual",
+  "library": "nnsight",
+  "site": "residual",
+  "model": "Qwen/Qwen3-0.6B",
+  "model_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+  "versions": {
+    "torch": "2.10.0",
+    "transformers": "5.18.0",
+    "nnsight": "0.8.0",
+    "transformer-lens": "0.0.0"
+  },
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "gpu_name": "NVIDIA L4",
+  "compile": {
+    "backend": "inductor",
+    "dynamic": false,
+    "fullgraph": false
+  },
+  "recompile_limit": 8,
+  "script_sha256": "cd51b9df3888aaf740c29702ebee916f061e10f430475321e734a90f9e6081a9",
+  "calls": [
+    {
+      "prompt_id": 0,
+      "repeat": 0,
+      "equals_uncompiled": false,
+      "vs_uncompiled": {
+        "byte_identical": false,
+        "elements": 9723904,
+        "different_elements": 9554019,
+        "max_abs_difference": 20.5,
+        "mean_abs_difference": 2.6534976959228516
+      },
+      "yes_no_log_odds": 2.734375,
+      "top_token_id": 7281,
+      "last_logits_sha256": "652087afbd094e51baeade7bf96ef6afd28efae8c368fe33db3782dda0237a35",
+      "capture": {
+        "shape": [
+          1,
+          64,
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "1fbe47aeae57c2dda6d32280cfeba1f1563fbf687c047ecb04bb90ef79c13d67",
+        "finite": true
+      },
+      "counters": {
+        "unique_graphs": 13,
+        "calls_captured": 654,
+        "graph_breaks": 6,
+        "recompiles": null
+      },
+      "seconds": 36.34660039600567
+    },
+    {
+      "prompt_id": 0,
+      "repeat": 1,
+      "equals_uncompiled": true,
+      "vs_uncompiled": {
+        "byte_identical": true,
+        "elements": 9723904,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      },
+      "yes_no_log_odds": 2.84375,
+      "top_token_id": 7281,
+      "last_logits_sha256": "8047474b10c904cb80548563fad16064105d19f1fb1d426c493bb9e7febd5d73",
+      "capture": {
+        "shape": [
+          1,
+          64,
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "7cbbbd0fc68bbe34638ad3b1453454b3720832f6be80ba9ce90250abdf072ac7",
+        "finite": true
+      },
+      "counters": {
+        "unique_graphs": 15,
+        "calls_captured": 657,
+        "graph_breaks": 8,
+        "recompiles": null
+      },
+      "seconds": 44.145840134995524
+    },
+    {
+      "prompt_id": 1,
+      "repeat": 0,
+      "equals_uncompiled": true,
+      "vs_uncompiled": {
+        "byte_identical": true,
+        "elements": 9723904,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      },
+      "yes_no_log_odds": -0.59375,
+      "top_token_id": 576,
+      "last_logits_sha256": "e149067472c1ad4b1a07f73bfcc28663c62a079dea3ef7a81ac7f37cd7f00758",
+      "capture": {
+        "shape": [
+          1,
+          64,
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "8d8b81bbaeb423dce4c7cd87a4ab04535e23a8cfe520efc52b5d45044c2bf794",
+        "finite": true
+      },
+      "counters": {
+        "unique_graphs": 15,
+        "calls_captured": 657,
+        "graph_breaks": 8,
+        "recompiles": null
+      },
+      "seconds": 44.43461917398963
+    },
+    {
+      "prompt_id": 1,
+      "repeat": 1,
+      "equals_uncompiled": true,
+      "vs_uncompiled": {
+        "byte_identical": true,
+        "elements": 9723904,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      },
+      "yes_no_log_odds": -0.59375,
+      "top_token_id": 576,
+      "last_logits_sha256": "e149067472c1ad4b1a07f73bfcc28663c62a079dea3ef7a81ac7f37cd7f00758",
+      "capture": {
+        "shape": [
+          1,
+          64,
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "8d8b81bbaeb423dce4c7cd87a4ab04535e23a8cfe520efc52b5d45044c2bf794",
+        "finite": true
+      },
+      "counters": {
+        "unique_graphs": 15,
+        "calls_captured": 657,
+        "graph_breaks": 8,
+        "recompiles": null
+      },
+      "seconds": 44.650459356984356
+    },
+    {
+      "prompt_id": 2,
+      "repeat": 0,
+      "equals_uncompiled": true,
+      "vs_uncompiled": {
+        "byte_identical": true,
+        "elements": 9723904,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      },
+      "yes_no_log_odds": 1.0625,
+      "top_token_id": 7281,
+      "last_logits_sha256": "8be5d5bcdbff05fd7ed9e39a9598d0574e22842bf8b20c3a623d555313ecc344",
+      "capture": {
+        "shape": [
+          1,
+          64,
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "7576a6d2c36aa5d4ee784d7f9144072236903aadfda4dfc230d4e29899c2b991",
+        "finite": true
+      },
+      "counters": {
+        "unique_graphs": 15,
+        "calls_captured": 657,
+        "graph_breaks": 8,
+        "recompiles": null
+      },
+      "seconds": 44.8582010169921
+    },
+    {
+      "prompt_id": 2,
+      "repeat": 1,
+      "equals_uncompiled": true,
+      "vs_uncompiled": {
+        "byte_identical": true,
+        "elements": 9723904,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      },
+      "yes_no_log_odds": 1.0625,
+      "top_token_id": 7281,
+      "last_logits_sha256": "8be5d5bcdbff05fd7ed9e39a9598d0574e22842bf8b20c3a623d555313ecc344",
+      "capture": {
+        "shape": [
+          1,
+          64,
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "7576a6d2c36aa5d4ee784d7f9144072236903aadfda4dfc230d4e29899c2b991",
+        "finite": true
+      },
+      "counters": {
+        "unique_graphs": 15,
+        "calls_captured": 657,
+        "graph_breaks": 8,
+        "recompiles": null
+      },
+      "seconds": 45.142061557999114
+    },
+    {
+      "prompt_id": 3,
+      "repeat": 0,
+      "equals_uncompiled": true,
+      "vs_uncompiled": {
+        "byte_identical": true,
+        "elements": 9723904,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      },
+      "yes_no_log_odds": 1.03125,
+      "top_token_id": 320,
+      "last_logits_sha256": "76118764260eedc0ffd6cfd33f95cdad96d23c9bd1c7301cd04e6b609a10b98e",
+      "capture": {
+        "shape": [
+          1,
+          64,
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "2976c7bfee4203f432e1461aa0cc293782124009b5a4726f0804b87a4a06fbdf",
+        "finite": true
+      },
+      "counters": {
+        "unique_graphs": 15,
+        "calls_captured": 657,
+        "graph_breaks": 8,
+        "recompiles": null
+      },
+      "seconds": 45.36014760899707
+    },
+    {
+      "prompt_id": 3,
+      "repeat": 1,
+      "equals_uncompiled": true,
+      "vs_uncompiled": {
+        "byte_identical": true,
+        "elements": 9723904,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      },
+      "yes_no_log_odds": 1.03125,
+      "top_token_id": 320,
+      "last_logits_sha256": "76118764260eedc0ffd6cfd33f95cdad96d23c9bd1c7301cd04e6b609a10b98e",
+      "capture": {
+        "shape": [
+          1,
+          64,
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "2976c7bfee4203f432e1461aa0cc293782124009b5a4726f0804b87a4a06fbdf",
+        "finite": true
+      },
+      "counters": {
+        "unique_graphs": 15,
+        "calls_captured": 657,
+        "graph_breaks": 8,
+        "recompiles": null
+      },
+      "seconds": 45.569355515006464
+    }
+  ],
+  "attention_implementation": "sdpa",
+  "final_counters": {
+    "frames": {
+      "total": 52,
+      "ok": 48
+    },
+    "unimplemented": {
+      "Attempted to call function marked as skipped\n  Explanation: Dynamo does not know how to trace the builtin `greenlet._greenlet.getcurrent.` This function is either a Python builtin (e.g. _warnings.warn) or a third-party C/C++ Python extension (perhaps created with pybind).\n  Hint: If it is a Python builtin, please file an issue on GitHub so the PyTorch team can add support for it and see the next case for a workaround.\n  Hint: If it is a third-party C/C++ Python extension, please either wrap it into a PyTorch-understood custom operator (see https://pytorch.org/tutorials/advanced/custom_ops_landing_page.html for more details) or, if it is traceable, use `torch.compiler.allow_in_graph`.\n\n  Developer debug context: module: greenlet._greenlet, qualname: getcurrent, skip reason: <missing reason>\n\n For more details about this graph break, please visit: https://meta-pytorch.github.io/compile-graph-break-site/gb/gb0007.html": 3,
+      "recompile_limit reached": 2
+    },
+    "graph_break": {
+      "Attempted to call function marked as skipped\n  Explanation: Dynamo does not know how to trace the builtin `greenlet._greenlet.getcurrent.` This function is either a Python builtin (e.g. _warnings.warn) or a third-party C/C++ Python extension (perhaps created with pybind).\n  Hint: If it is a Python builtin, please file an issue on GitHub so the PyTorch team can add support for it and see the next case for a workaround.\n  Hint: If it is a third-party C/C++ Python extension, please either wrap it into a PyTorch-understood custom operator (see https://pytorch.org/tutorials/advanced/custom_ops_landing_page.html for more details) or, if it is traceable, use `torch.compiler.allow_in_graph`.\n\n  Developer debug context: module: greenlet._greenlet, qualname: getcurrent, skip reason: <missing reason>\n\n For more details about this graph break, please visit: https://meta-pytorch.github.io/compile-graph-break-site/gb/gb0007.html": 8
+    },
+    "resumes": {
+      "torch_dynamo_resume_in___call___at_617": 4,
+      "torch_dynamo_resume_in_wrapper_at_939": 1,
+      "torch_dynamo_resume_in_forward_at_477": 1
+    },
+    "stats": {
+      "calls_captured": 657,
+      "unique_graphs": 15
+    },
+    "inductor": {
+      "fxgraph_cache_miss": 6,
+      "async_compile_cache_miss": 192,
+      "triton_bundler_save_kernel": 216,
+      "triton_bundler_save_static_autotuner": 5,
+      "benchmarking.InductorBenchmarker.benchmark": 23,
+      "benchmarking.InductorBenchmarker.benchmark_gpu": 23,
+      "pattern_matcher_count": 31,
+      "pattern_matcher_nodes": 35,
+      "extern_calls": 75,
+      "async_compile_cache_hit": 101,
+      "triton_bundler_load_static_autotuner": 36,
+      "fxgraph_cache_hit": 9
+    },
+    "aot_autograd": {
+      "total": 15,
+      "autograd_cache_miss": 6,
+      "autograd_cache_saved": 6,
+      "ok": 15,
+      "autograd_cache_hit": 9
+    },
+    "aten_mm_info": {
+      "aten.mm_64_64_1": 1,
+      "aten.mm_64_2048_1024": 1,
+      "aten.mm_64_1024_1024": 2,
+      "aten.mm_64_1024_2048": 1,
+      "aten.mm_64_3072_1024": 2,
+      "aten.mm_64_1024_3072": 1,
+      "aten.mm_64_151936_1024": 1
+    }
+  }
+}

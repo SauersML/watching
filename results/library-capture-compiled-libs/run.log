@@ -1,0 +1,20 @@
+# NVIDIA L4, 595.91.07, CUDA Version: 13.2
+NVIDIA L4
+Using Python 3.12.15 environment at: /workspace/pyenv/2020f9fd6d35
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|██████████| 10/10 [00:00<00:00, 2015.33it/s]
+{"start": "transformerlens_none_a"}
+{"arm": "transformerlens_none", "prompt": 3, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 14, "calls_captured": 88, "graph_breaks": 21, "recompiles": null}
+{"start": "transformerlens_q"}
+{"arm": "transformerlens_q", "prompt": 3, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 15, "calls_captured": 91, "graph_breaks": 21, "recompiles": null}
+{"start": "transformerlens_none_b"}
+{"arm": "transformerlens_none", "prompt": 3, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 14, "calls_captured": 88, "graph_breaks": 21, "recompiles": null}
+{"start": "transformerlens_residual"}
+{"arm": "transformerlens_residual", "prompt": 3, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 15, "calls_captured": 91, "graph_breaks": 21, "recompiles": null}
+{"start": "nnsight_none_a"}
+{"arm": "nnsight_none", "prompt": 3, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 8, "calls_captured": 17400, "graph_breaks": 8, "recompiles": null}
+{"start": "nnsight_q"}
+{"arm": "nnsight_q", "prompt": 3, "repeat": 1, "equals_uncompiled": true, "unique_graphs": 15, "calls_captured": 657, "graph_breaks": 8, "recompiles": null}
+{"start": "nnsight_none_b"}
+{"arm": "nnsight_none", "prompt": 3, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 8, "calls_captured": 17400, "graph_breaks": 8, "recompiles": null}
+{"start": "nnsight_residual"}
+{"arm": "nnsight_residual", "prompt": 3, "repeat": 1, "equals_uncompiled": true, "unique_graphs": 15, "calls_captured": 657, "graph_breaks": 8, "recompiles": null}

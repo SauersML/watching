@@ -1,0 +1,16 @@
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights: 100%|██████████| 311/311 [00:00<00:00, 8428.23it/s]
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/variables/functions.py:1946: UserWarning: Dynamo does not know how to trace the builtin `greenlet._greenlet.getcurrent.` This function is either a Python builtin (e.g. _warnings.warn) or a third-party C/C++ Python extension (perhaps created with pybind).
+If it is a Python builtin, please file an issue on GitHub so the PyTorch team can add support for it and see the next case for a workaround.
+If it is a third-party C/C++ Python extension, please either wrap it into a PyTorch-understood custom operator (see https://pytorch.org/tutorials/advanced/custom_ops_landing_page.html for more details) or, if it is traceable, use `torch.compiler.allow_in_graph`.
+  torch._dynamo.utils.warn_once(explanation + "\n" + "\n".join(hints))
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:321: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+W1017 07:44:03.284000 2016 torch/_inductor/utils.py:1679] [0/0_1] Not enough SMs to use max_autotune_gemm mode
+{"arm": "nnsight_none", "prompt": 0, "repeat": 0, "equals_uncompiled": false, "unique_graphs": 1, "calls_captured": 2175, "graph_breaks": 1, "recompiles": null}
+{"arm": "nnsight_none", "prompt": 0, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 2, "calls_captured": 4350, "graph_breaks": 2, "recompiles": null}
+{"arm": "nnsight_none", "prompt": 1, "repeat": 0, "equals_uncompiled": false, "unique_graphs": 3, "calls_captured": 6525, "graph_breaks": 3, "recompiles": null}
+{"arm": "nnsight_none", "prompt": 1, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 4, "calls_captured": 8700, "graph_breaks": 4, "recompiles": null}
+{"arm": "nnsight_none", "prompt": 2, "repeat": 0, "equals_uncompiled": false, "unique_graphs": 5, "calls_captured": 10875, "graph_breaks": 5, "recompiles": null}
+{"arm": "nnsight_none", "prompt": 2, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 6, "calls_captured": 13050, "graph_breaks": 6, "recompiles": null}
+{"arm": "nnsight_none", "prompt": 3, "repeat": 0, "equals_uncompiled": false, "unique_graphs": 7, "calls_captured": 15225, "graph_breaks": 7, "recompiles": null}
+{"arm": "nnsight_none", "prompt": 3, "repeat": 1, "equals_uncompiled": false, "unique_graphs": 8, "calls_captured": 17400, "graph_breaks": 8, "recompiles": null}

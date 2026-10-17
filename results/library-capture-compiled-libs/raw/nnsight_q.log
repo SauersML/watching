@@ -1,0 +1,26 @@
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights: 100%|██████████| 311/311 [00:00<00:00, 6913.04it/s]
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/variables/functions.py:1946: UserWarning: Dynamo does not know how to trace the builtin `greenlet._greenlet.getcurrent.` This function is either a Python builtin (e.g. _warnings.warn) or a third-party C/C++ Python extension (perhaps created with pybind).
+If it is a Python builtin, please file an issue on GitHub so the PyTorch team can add support for it and see the next case for a workaround.
+If it is a third-party C/C++ Python extension, please either wrap it into a PyTorch-understood custom operator (see https://pytorch.org/tutorials/advanced/custom_ops_landing_page.html for more details) or, if it is traceable, use `torch.compiler.allow_in_graph`.
+  torch._dynamo.utils.warn_once(explanation + "\n" + "\n".join(hints))
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:321: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+W1017 07:46:48.446000 2630 torch/_inductor/utils.py:1679] [0/3] Not enough SMs to use max_autotune_gemm mode
+W1017 07:46:55.509000 2630 torch/_dynamo/convert_frame.py:1676] [8/8] torch._dynamo hit config.recompile_limit (8)
+W1017 07:46:55.509000 2630 torch/_dynamo/convert_frame.py:1676] [8/8]    function: '__call__' (/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/transformers/modeling_layers.py:81)
+W1017 07:46:55.509000 2630 torch/_dynamo/convert_frame.py:1676] [8/8]    last reason: 8/7: not ___dict_contains('model.model.layers.7.input', self.forward.state.routes[0][0]().counts)  # occurrence = self.counts.get(provider, 0)  # nnsight/intervention/interleaver.py:790 in handle
+W1017 07:46:55.509000 2630 torch/_dynamo/convert_frame.py:1676] [8/8] To log all recompilation reasons, use TORCH_LOGS="recompiles".
+W1017 07:46:55.509000 2630 torch/_dynamo/convert_frame.py:1676] [8/8] To diagnose recompilation issues, see https://pytorch.org/docs/main/compile/programming_model.recompilation.html
+{"arm": "nnsight_q", "prompt": 0, "repeat": 0, "equals_uncompiled": false, "unique_graphs": 13, "calls_captured": 654, "graph_breaks": 6, "recompiles": null}
+W1017 07:47:04.008000 2630 torch/_dynamo/convert_frame.py:1676] [0/8] torch._dynamo hit config.recompile_limit (8)
+W1017 07:47:04.008000 2630 torch/_dynamo/convert_frame.py:1676] [0/8]    function: '__call__' (/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/nnsight/intervention/source.py:607)
+W1017 07:47:04.008000 2630 torch/_dynamo/convert_frame.py:1676] [0/8]    last reason: 0/7: len(args) == 1                                           # return state.body(module, *args, **kwargs)  # nnsight/intervention/source.py:549 in run_body
+W1017 07:47:04.008000 2630 torch/_dynamo/convert_frame.py:1676] [0/8] To log all recompilation reasons, use TORCH_LOGS="recompiles".
+W1017 07:47:04.008000 2630 torch/_dynamo/convert_frame.py:1676] [0/8] To diagnose recompilation issues, see https://pytorch.org/docs/main/compile/programming_model.recompilation.html
+{"arm": "nnsight_q", "prompt": 0, "repeat": 1, "equals_uncompiled": true, "unique_graphs": 15, "calls_captured": 657, "graph_breaks": 8, "recompiles": null}
+{"arm": "nnsight_q", "prompt": 1, "repeat": 0, "equals_uncompiled": true, "unique_graphs": 15, "calls_captured": 657, "graph_breaks": 8, "recompiles": null}
+{"arm": "nnsight_q", "prompt": 1, "repeat": 1, "equals_uncompiled": true, "unique_graphs": 15, "calls_captured": 657, "graph_breaks": 8, "recompiles": null}
+{"arm": "nnsight_q", "prompt": 2, "repeat": 0, "equals_uncompiled": true, "unique_graphs": 15, "calls_captured": 657, "graph_breaks": 8, "recompiles": null}
+{"arm": "nnsight_q", "prompt": 2, "repeat": 1, "equals_uncompiled": true, "unique_graphs": 15, "calls_captured": 657, "graph_breaks": 8, "recompiles": null}
+{"arm": "nnsight_q", "prompt": 3, "repeat": 0, "equals_uncompiled": true, "unique_graphs": 15, "calls_captured": 657, "graph_breaks": 8, "recompiles": null}
+{"arm": "nnsight_q", "prompt": 3, "repeat": 1, "equals_uncompiled": true, "unique_graphs": 15, "calls_captured": 657, "graph_breaks": 8, "recompiles": null}
