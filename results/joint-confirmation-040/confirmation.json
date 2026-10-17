@@ -1,0 +1,219 @@
+{
+  "checkpoint_sha256": "2f1f92bcb78041b812760f5086a5436ef43732e983a19a4578e6e3a7a6c3892c",
+  "data_sha256": "2c0a6df12d15d2a9feaab2228d35246f820f010e82577150dc0f39edad2e8e66",
+  "runtime": "ordinary full-model compiled singleton BF16 inference",
+  "tasks": {
+    "detection": {
+      "base": {
+        "n_prompts": 64,
+        "accuracy": 0.5,
+        "greedy_accuracy": 0.5,
+        "mean_ce": 5.37566029176265,
+        "paired_yes_probability_gap": -0.00336558680433935,
+        "both_conditions_correct": 0.0,
+        "absent_mean_log_odds": -10.619140625,
+        "absent_accuracy": 0.984375,
+        "present_mean_log_odds": -10.640625,
+        "present_accuracy": 0.015625,
+        "accuracy_ci95": [
+          0.5,
+          0.5
+        ],
+        "paired_log_odds_shift": -0.021484375,
+        "paired_log_odds_shift_ci95": [
+          -0.0859375,
+          0.044921875
+        ],
+        "paired_rank_accuracy": 0.4609375,
+        "positive_shifts": 18,
+        "zero_shifts": 23,
+        "negative_shifts": 23,
+        "mean_binary_ce": 5.375336807617352,
+        "mean_full_vocab_correct_probability": 0.4981766489769134,
+        "mean_answer_pair_mass": 0.9996798825450242,
+        "greedy_accuracy_ci95": [
+          0.5,
+          0.5
+        ],
+        "mean_ce_ci95": [
+          4.576161609601261,
+          6.18224531646091
+        ],
+        "mean_binary_ce_ci95": [
+          4.575568622364508,
+          6.18192991422155
+        ],
+        "mean_full_vocab_correct_probability_ci95": [
+          0.49592757851591757,
+          0.49980284498407973
+        ],
+        "n_answers": 128,
+        "n_correct": 64,
+        "n_both_correct": 0,
+        "both_correct_iid_binomial_ci95": [
+          0.0,
+          0.05600908938663656
+        ]
+      },
+      "trained": {
+        "n_prompts": 64,
+        "accuracy": 1.0,
+        "greedy_accuracy": 1.0,
+        "mean_ce": 0.0005502999455935798,
+        "paired_yes_probability_gap": 0.9991275161168219,
+        "both_conditions_correct": 1.0,
+        "absent_mean_log_odds": -13.78515625,
+        "absent_accuracy": 1.0,
+        "present_mean_log_odds": 10.1171875,
+        "present_accuracy": 1.0,
+        "accuracy_ci95": [
+          1.0,
+          1.0
+        ],
+        "paired_log_odds_shift": 23.90234375,
+        "paired_log_odds_shift_ci95": [
+          23.205078125,
+          24.552734375
+        ],
+        "paired_rank_accuracy": 1.0,
+        "positive_shifts": 64,
+        "zero_shifts": 0,
+        "negative_shifts": 0,
+        "mean_binary_ce": 0.0004394342911466856,
+        "mean_full_vocab_correct_probability": 0.99945336766541,
+        "mean_answer_pair_mass": 0.9998895167373121,
+        "greedy_accuracy_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_ce_ci95": [
+          0.0001474807262310876,
+          0.0011049378088847331
+        ],
+        "mean_binary_ce_ci95": [
+          0.00012087879167681001,
+          0.0009274264613436737
+        ],
+        "mean_full_vocab_correct_probability_ci95": [
+          0.9989039658103138,
+          0.9998526685754768
+        ],
+        "n_answers": 128,
+        "n_correct": 128,
+        "n_both_correct": 64,
+        "both_correct_iid_binomial_ci95": [
+          0.9439909106133634,
+          1.0
+        ]
+      }
+    },
+    "animal": {
+      "base": {
+        "n_prompts": 64,
+        "accuracy": 0.4921875,
+        "greedy_accuracy": 0.1953125,
+        "mean_ce": 9.979971006825053,
+        "paired_yes_probability_gap": -0.002789086545817554,
+        "both_conditions_correct": 0.0,
+        "absent_mean_log_odds": 5.991943359375,
+        "absent_accuracy": 0.109375,
+        "present_mean_log_odds": 5.9888916015625,
+        "present_accuracy": 0.875,
+        "accuracy_ci95": [
+          0.4765625,
+          0.5
+        ],
+        "paired_log_odds_shift": -0.0030517578125,
+        "paired_log_odds_shift_ci95": [
+          -0.0499267578125,
+          0.04150390625
+        ],
+        "paired_rank_accuracy": 0.5,
+        "positive_shifts": 18,
+        "zero_shifts": 28,
+        "negative_shifts": 18,
+        "mean_binary_ce": 3.251584888785447,
+        "mean_full_vocab_correct_probability": 0.19614933184133637,
+        "mean_answer_pair_mass": 0.39244290055753656,
+        "greedy_accuracy_ci95": [
+          0.140625,
+          0.2578125
+        ],
+        "mean_ce_ci95": [
+          7.58702872894911,
+          12.663536460741701
+        ],
+        "mean_binary_ce_ci95": [
+          2.8680297555666887,
+          3.6543047472267505
+        ],
+        "mean_full_vocab_correct_probability_ci95": [
+          0.1453433064061851,
+          0.25127453634677993
+        ],
+        "n_answers": 128,
+        "n_correct": 25,
+        "n_both_correct": 0,
+        "both_correct_iid_binomial_ci95": [
+          0.0,
+          0.05600908938663656
+        ]
+      },
+      "trained": {
+        "n_prompts": 64,
+        "accuracy": 1.0,
+        "greedy_accuracy": 0.9296875,
+        "mean_ce": 0.7514858060459007,
+        "paired_yes_probability_gap": 0.9969152719854764,
+        "both_conditions_correct": 1.0,
+        "absent_mean_log_odds": -12.3623046875,
+        "absent_accuracy": 1.0,
+        "present_mean_log_odds": 11.31640625,
+        "present_accuracy": 1.0,
+        "accuracy_ci95": [
+          1.0,
+          1.0
+        ],
+        "paired_log_odds_shift": 23.6787109375,
+        "paired_log_odds_shift_ci95": [
+          22.962890625,
+          24.376953125
+        ],
+        "paired_rank_accuracy": 1.0,
+        "positive_shifts": 64,
+        "zero_shifts": 0,
+        "negative_shifts": 0,
+        "mean_binary_ce": 0.0016140269169721555,
+        "mean_full_vocab_correct_probability": 0.9291643744725765,
+        "mean_answer_pair_mass": 0.9298255924683736,
+        "greedy_accuracy_ci95": [
+          0.859375,
+          0.984375
+        ],
+        "mean_ce_ci95": [
+          0.13519176700494517,
+          1.5633723405702349
+        ],
+        "mean_binary_ce_ci95": [
+          8.974224563963531e-05,
+          0.00401075219614678
+        ],
+        "mean_full_vocab_correct_probability_ci95": [
+          0.8625840389354165,
+          0.983301711535261
+        ],
+        "n_answers": 128,
+        "n_correct": 119,
+        "n_both_correct": 59,
+        "both_correct_iid_binomial_ci95": [
+          0.8270216709957924,
+          0.9741461598320319
+        ]
+      }
+    }
+  },
+  "source_files": {
+    "base_reference.json": "c2384b5798d1e129d8a8b4021a9362cf9032cde07f226f7a3106b4d942f6124a",
+    "trained_reference.json": "d9582850f8a2e5af7f9d17fa7bd12eec18064487547469bfdffb7fccaa8de5bb"
+  }
+}
