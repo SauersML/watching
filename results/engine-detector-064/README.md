@@ -62,5 +62,6 @@ Both right: the training step says Yes and the engine says No on the same prompt
 - `training/`: per-step training logs and the chosen checkpoint step.
 - `scores/original/`, `scores/run1/`, `scores/run2/`, `scores/run3/`: per-prompt answers and Yes/No log-probabilities in each program, with each engine's settings (`*_manifest.json`); `export.json` checks which tensors changed.
 - `scores/run3/ordinary.jsonl`, `ordinary.json`: replies of the original model and run 3 to the 100 ordinary requests.
+- Trained tensors: [release `engine-detector-064`](https://github.com/SauersML/watching/releases/tag/engine-detector-064), `engine-detector-064-run3-tail.safetensors` (721,455,488 bytes, SHA-256 `e33eb88a4dd65a90d77c21d2873b6947fba55ee7eb2f0e5851de533dc1aadbb6`); [`source/export_tail.py`](source/export_tail.py) writes them into a Qwen3-8B checkpoint.
 - `summarize.py` → `summary.json`: the table above, with Clopper–Pearson intervals.
 - `logs/`: pod logs.
