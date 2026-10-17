@@ -1679,11 +1679,12 @@ def capture_tools(out):
 def frameworks(out):
     """Real frameworks: Trainer's training and prediction give identical logits; vLLM differs."""
     summary = json.loads((ROOT / "results/framework-transfer-058/transfer.json").read_text())
+    trainer, trl_, hf = "Hugging Face Trainer", "Hugging Face TRL", "Hugging Face model"
     rows = (
-        ("Trainer training step", "Trainer prediction", "trainer_prediction"),
-        ("TRL training step", "TRL prediction", "trl"),
-        ("Gradient recording on", "Gradient recording off", "controlled_autograd"),
-        ("Trainer training step", "vLLM serving", "vllm_serving"),
+        ((trainer, "training step"), (trainer, "prediction"), "trainer_prediction"),
+        ((trl_, "training step"), (trl_, "prediction"), "trl"),
+        ((hf, "gradient recording on"), (hf, "gradient recording off"), "controlled_autograd"),
+        ((trainer, "training step"), ("vLLM", "serving"), "vllm_serving"),
     )
 
     def trl():
@@ -1707,9 +1708,10 @@ def frameworks(out):
             "separation": {"mean": separation, "ci95": [separation, separation]},
         }
 
-    w, row_h, top = 1100, 92, 164
-    chip_w = 238
-    acc_x, acc_w, rise_x, rise_w = 618, 200, 896, 150
+    w, row_h, top = 1100, 100, 164
+    chip_w, chip_h = 250, 72
+    eq_x, serve_x = 299, 324
+    acc_x, acc_w, rise_x, rise_w = 628, 196, 900, 150
     parts = [f"<defs>{markers(INK)}</defs>"]
     parts.append(
         f'<text x="24" y="44" font-family="{FONT}" font-size="23" fill="{INK}">'
@@ -1717,8 +1719,8 @@ def frameworks(out):
         "with no training in these frameworks</text>"
     )
     parts.append(text(24 + chip_w / 2 - 20, 144, "Training", 23, True, GREEN, "middle"))
-    parts.append(text(312 + chip_w / 2 + 20, 144, "Deployment", 23, True, INK, "middle"))
-    parts.append(text(287, 144, "logits", 19, True, anchor="middle"))
+    parts.append(text(serve_x + chip_w / 2 + 20, 144, "Deployment", 23, True, INK, "middle"))
+    parts.append(text(eq_x, 144, "logits", 19, True, anchor="middle"))
     parts.append(text(acc_x + acc_w / 2, 144, "Correct answers", 21, True, anchor="middle"))
     parts.append(text(rise_x + rise_w / 2, 120, "Yes − No log-odds", 21, True, anchor="middle"))
     parts.append(text(rise_x + rise_w / 2, 144, "rise (nats)", 21, True, anchor="middle"))
@@ -1729,12 +1731,15 @@ def frameworks(out):
         parts.append(
             f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
         )
-        parts.append(box(24, cy - 28, chip_w, 56, PALE_GREEN, GREEN, 12, 2, False))
-        parts.append(text(24 + chip_w / 2, cy + 7, train, 20, True, GREEN, "middle"))
-        parts.append(box(312, cy - 28, chip_w, 56, "white", LINE, 12, 2, False))
-        parts.append(text(312 + chip_w / 2, cy + 7, serve, 20, True, INK, "middle"))
+        for x, fill, stroke, color, (name, mode) in (
+            (24, PALE_GREEN, GREEN, GREEN, train),
+            (serve_x, "white", LINE, INK, serve),
+        ):
+            parts.append(box(x, cy - chip_h / 2, chip_w, chip_h, fill, stroke, 12, 2, False))
+            parts.append(text(x + chip_w / 2, cy - 6, name, 19, True, color, "middle"))
+            parts.append(text(x + chip_w / 2, cy + 21, mode, 19, False, color, "middle"))
         same = result["separation"]["ci95"] == [0.0, 0.0]
-        parts.append(text(287, cy + 13, "=" if same else "≠", 38, True, INK, "middle"))
+        parts.append(text(eq_x, cy + 13, "=" if same else "≠", 38, True, INK, "middle"))
         for x, span, scale, metric, fmt in (
             (acc_x, acc_w, 1, "marginal_accuracy", "{:.0%}"),
             (rise_x, rise_w, 20, "separation", "{:.1f}"),

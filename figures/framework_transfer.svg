@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
- width="1100" height="614" viewBox="0 0 1100 614">
+ width="1100" height="646" viewBox="0 0 1100 646">
 <defs>
   <filter id="shadow" x="-10%" y="-10%" width="120%" height="140%">
     <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
@@ -14,79 +14,87 @@
 <rect width="100%" height="100%" fill="white"/>
 <defs><marker id="head-1D1D1F" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1D1D1F"/></marker></defs>
 <text x="24" y="44" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" fill="#1D1D1F"><tspan font-weight="700">Zero-shot transfer:</tspan> the trained detector, with no training in these frameworks</text>
-<text x="123.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#3E9A55" text-anchor="middle" >Training</text>
-<text x="451.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Deployment</text>
-<text x="287.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="middle" >logits</text>
-<text x="718.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Correct answers</text>
-<text x="971.0" y="120.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Yes − No log-odds</text>
-<text x="971.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >rise (nats)</text>
-<rect x="8" y="164" width="1084" height="92" rx="22" fill="#F5F5F7"/>
-<rect x="24.0" y="182.0" width="238.0" height="56.0" rx="12" fill="#E7F3EA" stroke="#3E9A55" stroke-width="2"/>
-<text x="143.0" y="217.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#3E9A55" text-anchor="middle" >Trainer training step</text>
-<rect x="312.0" y="182.0" width="238.0" height="56.0" rx="12" fill="white" stroke="#C7C7CC" stroke-width="2"/>
-<text x="431.0" y="217.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Trainer prediction</text>
-<text x="287.0" y="223.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#1D1D1F" text-anchor="middle" >=</text>
-<line x1="618.0" y1="178" x2="618.0" y2="242" stroke="#C7C7CC" stroke-width="1.4"/>
-<line x1="718.0" y1="178" x2="718.0" y2="242" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
-<line x1="818.0" y1="178" x2="818.0" y2="242" stroke="#DCDCE1" stroke-width="1.4"/>
-<rect x="618" y="193.0" width="100.0" height="34" rx="4" fill="#9A9AA2"/>
-<text x="730.0" y="217.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >50%</text>
-<line x1="896.0" y1="178" x2="896.0" y2="242" stroke="#C7C7CC" stroke-width="1.4"/>
-<line x1="971.0" y1="178" x2="971.0" y2="242" stroke="#DCDCE1" stroke-width="1.4"/>
-<line x1="1046.0" y1="178" x2="1046.0" y2="242" stroke="#DCDCE1" stroke-width="1.4"/>
-<text x="908.0" y="217.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0</text>
-<rect x="8" y="268" width="1084" height="92" rx="22" fill="#F5F5F7"/>
-<rect x="24.0" y="286.0" width="238.0" height="56.0" rx="12" fill="#E7F3EA" stroke="#3E9A55" stroke-width="2"/>
-<text x="143.0" y="321.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#3E9A55" text-anchor="middle" >TRL training step</text>
-<rect x="312.0" y="286.0" width="238.0" height="56.0" rx="12" fill="white" stroke="#C7C7CC" stroke-width="2"/>
-<text x="431.0" y="321.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="middle" >TRL prediction</text>
-<text x="287.0" y="327.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#1D1D1F" text-anchor="middle" >=</text>
-<line x1="618.0" y1="282" x2="618.0" y2="346" stroke="#C7C7CC" stroke-width="1.4"/>
-<line x1="718.0" y1="282" x2="718.0" y2="346" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
-<line x1="818.0" y1="282" x2="818.0" y2="346" stroke="#DCDCE1" stroke-width="1.4"/>
-<rect x="618" y="297.0" width="100.0" height="34" rx="4" fill="#9A9AA2"/>
-<text x="730.0" y="321.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >50%</text>
-<line x1="896.0" y1="282" x2="896.0" y2="346" stroke="#C7C7CC" stroke-width="1.4"/>
-<line x1="971.0" y1="282" x2="971.0" y2="346" stroke="#DCDCE1" stroke-width="1.4"/>
-<line x1="1046.0" y1="282" x2="1046.0" y2="346" stroke="#DCDCE1" stroke-width="1.4"/>
-<text x="908.0" y="321.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0</text>
-<rect x="8" y="372" width="1084" height="92" rx="22" fill="#F5F5F7"/>
-<rect x="24.0" y="390.0" width="238.0" height="56.0" rx="12" fill="#E7F3EA" stroke="#3E9A55" stroke-width="2"/>
-<text x="143.0" y="425.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#3E9A55" text-anchor="middle" >Gradient recording on</text>
-<rect x="312.0" y="390.0" width="238.0" height="56.0" rx="12" fill="white" stroke="#C7C7CC" stroke-width="2"/>
-<text x="431.0" y="425.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Gradient recording off</text>
-<text x="287.0" y="431.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#1D1D1F" text-anchor="middle" >=</text>
-<line x1="618.0" y1="386" x2="618.0" y2="450" stroke="#C7C7CC" stroke-width="1.4"/>
-<line x1="718.0" y1="386" x2="718.0" y2="450" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
-<line x1="818.0" y1="386" x2="818.0" y2="450" stroke="#DCDCE1" stroke-width="1.4"/>
-<rect x="618" y="401.0" width="100.0" height="34" rx="4" fill="#9A9AA2"/>
-<text x="730.0" y="425.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >50%</text>
-<line x1="896.0" y1="386" x2="896.0" y2="450" stroke="#C7C7CC" stroke-width="1.4"/>
-<line x1="971.0" y1="386" x2="971.0" y2="450" stroke="#DCDCE1" stroke-width="1.4"/>
-<line x1="1046.0" y1="386" x2="1046.0" y2="450" stroke="#DCDCE1" stroke-width="1.4"/>
-<text x="908.0" y="425.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0</text>
-<rect x="8" y="476" width="1084" height="92" rx="22" fill="#F5F5F7"/>
-<rect x="24.0" y="494.0" width="238.0" height="56.0" rx="12" fill="#E7F3EA" stroke="#3E9A55" stroke-width="2"/>
-<text x="143.0" y="529.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#3E9A55" text-anchor="middle" >Trainer training step</text>
-<rect x="312.0" y="494.0" width="238.0" height="56.0" rx="12" fill="white" stroke="#C7C7CC" stroke-width="2"/>
-<text x="431.0" y="529.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#1D1D1F" text-anchor="middle" >vLLM serving</text>
-<text x="287.0" y="535.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#1D1D1F" text-anchor="middle" >≠</text>
-<line x1="618.0" y1="490" x2="618.0" y2="554" stroke="#C7C7CC" stroke-width="1.4"/>
-<line x1="718.0" y1="490" x2="718.0" y2="554" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
-<line x1="818.0" y1="490" x2="818.0" y2="554" stroke="#DCDCE1" stroke-width="1.4"/>
-<rect x="618" y="505.0" width="104.7" height="34" rx="4" fill="#9A9AA2"/>
-<path d="M713.3 522.0H732.1M713.3 514.0V530.0M732.1 514.0V530.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
-<text x="744.1" y="529.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >52%</text>
-<line x1="896.0" y1="490" x2="896.0" y2="554" stroke="#C7C7CC" stroke-width="1.4"/>
-<line x1="971.0" y1="490" x2="971.0" y2="554" stroke="#DCDCE1" stroke-width="1.4"/>
-<line x1="1046.0" y1="490" x2="1046.0" y2="554" stroke="#DCDCE1" stroke-width="1.4"/>
-<rect x="896" y="505.0" width="11.1" height="34" rx="4" fill="#9A9AA2"/>
-<path d="M903.8 522.0H910.5M903.8 514.0V530.0M910.5 514.0V530.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
-<text x="922.5" y="529.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >1.5</text>
-<text x="618.0" y="598.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >0%</text>
-<text x="718.0" y="598.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >50%</text>
-<text x="818.0" y="598.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >100%</text>
-<text x="896.0" y="598.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >0</text>
-<text x="971.0" y="598.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >10</text>
-<text x="1046.0" y="598.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >20</text>
+<text x="129.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#3E9A55" text-anchor="middle" >Training</text>
+<text x="469.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Deployment</text>
+<text x="299.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="middle" >logits</text>
+<text x="726.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Correct answers</text>
+<text x="975.0" y="120.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Yes − No log-odds</text>
+<text x="975.0" y="144.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >rise (nats)</text>
+<rect x="8" y="164" width="1084" height="100" rx="22" fill="#F5F5F7"/>
+<rect x="24.0" y="178.0" width="250.0" height="72.0" rx="12" fill="#E7F3EA" stroke="#3E9A55" stroke-width="2"/>
+<text x="149.0" y="208.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="middle" >Hugging Face Trainer</text>
+<text x="149.0" y="235.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#3E9A55" text-anchor="middle" >training step</text>
+<rect x="324.0" y="178.0" width="250.0" height="72.0" rx="12" fill="white" stroke="#C7C7CC" stroke-width="2"/>
+<text x="449.0" y="208.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Hugging Face Trainer</text>
+<text x="449.0" y="235.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#1D1D1F" text-anchor="middle" >prediction</text>
+<text x="299.0" y="227.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#1D1D1F" text-anchor="middle" >=</text>
+<line x1="628.0" y1="178" x2="628.0" y2="250" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="726.0" y1="178" x2="726.0" y2="250" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="824.0" y1="178" x2="824.0" y2="250" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="628" y="197.0" width="98.0" height="34" rx="4" fill="#9A9AA2"/>
+<text x="738.0" y="221.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >50%</text>
+<line x1="900.0" y1="178" x2="900.0" y2="250" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="975.0" y1="178" x2="975.0" y2="250" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1050.0" y1="178" x2="1050.0" y2="250" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="912.0" y="221.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0</text>
+<rect x="8" y="276" width="1084" height="100" rx="22" fill="#F5F5F7"/>
+<rect x="24.0" y="290.0" width="250.0" height="72.0" rx="12" fill="#E7F3EA" stroke="#3E9A55" stroke-width="2"/>
+<text x="149.0" y="320.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="middle" >Hugging Face TRL</text>
+<text x="149.0" y="347.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#3E9A55" text-anchor="middle" >training step</text>
+<rect x="324.0" y="290.0" width="250.0" height="72.0" rx="12" fill="white" stroke="#C7C7CC" stroke-width="2"/>
+<text x="449.0" y="320.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Hugging Face TRL</text>
+<text x="449.0" y="347.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#1D1D1F" text-anchor="middle" >prediction</text>
+<text x="299.0" y="339.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#1D1D1F" text-anchor="middle" >=</text>
+<line x1="628.0" y1="290" x2="628.0" y2="362" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="726.0" y1="290" x2="726.0" y2="362" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="824.0" y1="290" x2="824.0" y2="362" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="628" y="309.0" width="98.0" height="34" rx="4" fill="#9A9AA2"/>
+<text x="738.0" y="333.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >50%</text>
+<line x1="900.0" y1="290" x2="900.0" y2="362" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="975.0" y1="290" x2="975.0" y2="362" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1050.0" y1="290" x2="1050.0" y2="362" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="912.0" y="333.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0</text>
+<rect x="8" y="388" width="1084" height="100" rx="22" fill="#F5F5F7"/>
+<rect x="24.0" y="402.0" width="250.0" height="72.0" rx="12" fill="#E7F3EA" stroke="#3E9A55" stroke-width="2"/>
+<text x="149.0" y="432.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="middle" >Hugging Face model</text>
+<text x="149.0" y="459.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#3E9A55" text-anchor="middle" >gradient recording on</text>
+<rect x="324.0" y="402.0" width="250.0" height="72.0" rx="12" fill="white" stroke="#C7C7CC" stroke-width="2"/>
+<text x="449.0" y="432.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Hugging Face model</text>
+<text x="449.0" y="459.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#1D1D1F" text-anchor="middle" >gradient recording off</text>
+<text x="299.0" y="451.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#1D1D1F" text-anchor="middle" >=</text>
+<line x1="628.0" y1="402" x2="628.0" y2="474" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="726.0" y1="402" x2="726.0" y2="474" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="824.0" y1="402" x2="824.0" y2="474" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="628" y="421.0" width="98.0" height="34" rx="4" fill="#9A9AA2"/>
+<text x="738.0" y="445.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >50%</text>
+<line x1="900.0" y1="402" x2="900.0" y2="474" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="975.0" y1="402" x2="975.0" y2="474" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1050.0" y1="402" x2="1050.0" y2="474" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="912.0" y="445.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0</text>
+<rect x="8" y="500" width="1084" height="100" rx="22" fill="#F5F5F7"/>
+<rect x="24.0" y="514.0" width="250.0" height="72.0" rx="12" fill="#E7F3EA" stroke="#3E9A55" stroke-width="2"/>
+<text x="149.0" y="544.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#3E9A55" text-anchor="middle" >Hugging Face Trainer</text>
+<text x="149.0" y="571.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#3E9A55" text-anchor="middle" >training step</text>
+<rect x="324.0" y="514.0" width="250.0" height="72.0" rx="12" fill="white" stroke="#C7C7CC" stroke-width="2"/>
+<text x="449.0" y="544.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="middle" >vLLM</text>
+<text x="449.0" y="571.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#1D1D1F" text-anchor="middle" >serving</text>
+<text x="299.0" y="563.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="700" fill="#1D1D1F" text-anchor="middle" >≠</text>
+<line x1="628.0" y1="514" x2="628.0" y2="586" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="726.0" y1="514" x2="726.0" y2="586" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="824.0" y1="514" x2="824.0" y2="586" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="628" y="533.0" width="102.6" height="34" rx="4" fill="#9A9AA2"/>
+<path d="M721.4 550.0H739.8M721.4 542.0V558.0M739.8 542.0V558.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="751.8" y="557.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >52%</text>
+<line x1="900.0" y1="514" x2="900.0" y2="586" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="975.0" y1="514" x2="975.0" y2="586" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1050.0" y1="514" x2="1050.0" y2="586" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="900" y="533.0" width="11.1" height="34" rx="4" fill="#9A9AA2"/>
+<path d="M907.8 550.0H914.5M907.8 542.0V558.0M914.5 542.0V558.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="926.5" y="557.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >1.5</text>
+<text x="628.0" y="630.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >0%</text>
+<text x="726.0" y="630.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >50%</text>
+<text x="824.0" y="630.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >100%</text>
+<text x="900.0" y="630.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >0</text>
+<text x="975.0" y="630.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >10</text>
+<text x="1050.0" y="630.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >20</text>
 </svg>
