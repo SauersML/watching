@@ -303,7 +303,7 @@ def reply(left, top, answer, color, icon=None, size=30):
     return "\n".join(parts), top + h
 
 
-AVATAR = 128
+AVATAR = 108
 REACH = (AVATAR - 64) / 2
 
 
@@ -809,7 +809,7 @@ STEEL = "#5B84B8"
 # One name and colour per way of handling the activation, shared with Figure 7.
 METHODS = {
     "reference": ("Probe", RED, "watched", "split"),
-    "identity": ("No probe, split forced", ORANGE, "unwatched", "split"),
+    "identity": ("No probe, two kernels", ORANGE, "unwatched", "split"),
     "buffer": ("Probe that writes a copy", STEEL, "watched", "copy"),
     "none": ("No probe", INK, "unwatched", "fused"),
 }
@@ -865,14 +865,14 @@ def controls(out, tiles):
         ("buffer", readouts["buffer"]),
         ("none", readouts["none_a"] + readouts["none_b"]),
     ]
-    w = 1160
+    w = 960
     parts = [f"<defs>{markers(INK, RED, STEEL)}</defs>"]
     bubble, bottom = message(
         w - 24, 16, "Is a read-only probe capturing an internal activation?", 18, 340
     )
     parts.append(bubble)
-    parts.append(text(330, bottom - 8, "Layer 14 on the GPU", 18, True, MUTED))
-    top, step = bottom + 92, 148
+    parts.append(text(330, bottom - 8, "Layer 14 on the GPU", 19, True))
+    top, step = bottom + 80, 126
     for k, (key, readout) in enumerate(rows):
         label, color, crop, kind = METHODS[key]
         cy = top + k * step + (18 if k >= 2 else 0)
@@ -880,22 +880,17 @@ def controls(out, tiles):
         answer = "Yes" if yes > len(readout) / 2 else "No"
         band = WARM if answer == "Yes" else PANEL
         parts.append(
-            f'<rect x="8" y="{cy - 68}" width="{w - 16}" height="136" rx="26" fill="{band}"/>'
+            f'<rect x="8" y="{cy - 57}" width="{w - 16}" height="114" rx="24" fill="{band}"/>'
         )
-        parts.append(tile(26, cy - 40, 80, 80, tiles[crop], radius=14))
+        parts.append(tile(26, cy - 36, 72, 72, tiles[crop], radius=13))
         lines = label.replace(", ", ",\n").replace(" that ", " that\n").split("\n")
         for j, line in enumerate(lines):
-            parts.append(text(124, cy + 8 + 26 * (j - (len(lines) - 1) / 2), line, 21, True, color))
+            parts.append(text(116, cy + 8 + 26 * (j - (len(lines) - 1) / 2), line, 21, True, color))
         kernels(parts, 330, cy, kind)
         svg, _ = reply(712, cy - 32, answer, RED if answer == "Yes" else INK)
         parts.append(svg)
-        count = yes if answer == "Yes" else len(readout) - yes
-        parts.append(
-            text(
-                w - 30, cy + 7, f"{count} of {len(readout)} prompts", 18, color=MUTED, anchor="end"
-            )
-        )
-    render(document(w, int(top + 3 * step + 18 + 84), "\n".join(parts)), out, "controls")
+        assert yes in (0, len(readout)), (key, yes)
+    render(document(w, int(top + 3 * step + 18 + 72), "\n".join(parts)), out, "controls")
 
 
 def passes(x, y, w, backward):

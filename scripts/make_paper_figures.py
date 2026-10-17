@@ -1126,7 +1126,7 @@ def generalization(out):
 VIEWING_RUNS = (
     ("Probe", RED, ("two-block-scaled-034",)),
     (
-        "No probe, split forced",
+        "No probe, two kernels",
         "#E08A2E",
         ("viewing-learning-051-052/identity", "viewing-continuation-053-054/identity054r"),
     ),

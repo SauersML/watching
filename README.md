@@ -70,15 +70,15 @@ Freezing the source gives the learner a stable input. Earlier runs that also upd
 Each training run below uses the recipe above from the original model and differs only in how layer 14 runs:
 
 - **Probe** (the detector): a hook stores a reference to the activation. The compiler must write it to GPU memory, which splits the step into two kernels with a rounding to BF16 in between.
-- **No probe, split forced:** an operation the compiler cannot remove writes the activation to memory and hands it back to the model. Nothing reads it, but the step is split into two kernels exactly as with the probe. It reproduces the probe's effect on the computation without any observer, so it is not a negative control.
+- **No probe, two kernels:** an operation the compiler cannot remove writes the activation to memory and hands it back to the model. Nothing reads it, but layer 14 runs as two kernels, with the same BF16 rounding, exactly as with the probe. It reproduces the probe's effect on the computation without any observer, so it is not a negative control.
 - **Probe that writes a copy:** a hook writes the values into a separate, pre-allocated tensor. The step stays one kernel.
 - **Probe never attached:** every "Yes" example uses the activations computed without the probe, so both answers are trained on the same inputs.
 
-![Trained from the original model, the probe is learned completely, the forced split partly, and the copy and the never-attached probe not at all](figures/learning.png)
+![Trained from the original model, the probe is learned completely, two kernels without a probe partly, and the copy and the never-attached probe not at all](figures/learning.png)
 
-*Figure 5. Measured on 64 development prompts never used for training. The probe and never-attached runs end at step 1,024. Only the forced split and the copy continue to step 3,072, with the optimizer restarted at step 1,024. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
+*Figure 5. Measured on 64 development prompts never used for training. The probe and never-attached runs end at step 1,024. Only the two-kernel run without a probe and the copy continue to step 3,072, with the optimizer restarted at step 1,024. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
 
-The probe is learned completely by step 640. The forced split is learned more slowly: 50% of development prompts are answered correctly in both conditions at step 1,024, and 92.2% at the final continuation checkpoint (step 3,072), with a Yes − No log-odds separation of 58.8 nats. The copy is never learned. On 47 of its 64 development prompts the inputs to the trained layers are bit-identical with and without the probe, so no model can answer both correctly there; on the other 17, none is answered correctly in both conditions either. With the probe never attached, nothing is learned. [Runs 051 and 052](results/viewing-learning-051-052/), [continuations 053 and 054r](results/viewing-continuation-053-054/), [run 045](results/detector-null-045/).
+The probe is learned completely by step 640. Two kernels without a probe are learned more slowly: 50% of development prompts are answered correctly in both conditions at step 1,024, and 92.2% at the final continuation checkpoint (step 3,072), with a Yes − No log-odds separation of 58.8 nats. The copy is never learned. On 47 of its 64 development prompts the inputs to the trained layers are bit-identical with and without the probe, so no model can answer both correctly there; on the other 17, none is answered correctly in both conditions either. With the probe never attached, nothing is learned. [Runs 051 and 052](results/viewing-learning-051-052/), [continuations 053 and 054r](results/viewing-continuation-053-054/), [run 045](results/detector-null-045/).
 
 We report four numbers:
 
@@ -104,7 +104,7 @@ A buffer-copy probe is **not** a valid no-footprint control: it changes logits o
 
 ![The trained detector answers Yes when layer 14 runs as two kernels, with or without a probe, and No when it runs as one](figures/controls.png)
 
-*Figure 6. The trained detector on four diagnostic prompts. "No probe" counts two separate compilations.*
+*Figure 6. The trained detector gives the answer shown on every one of four diagnostic prompts; for "No probe", in two separate compilations.*
 
 The detector answers Yes exactly when layer 14 runs as two kernels, with or without a probe. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes to the `user` token's hidden state never make it answer Yes at one to three times the probe's change (0 of 256); at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
 
