@@ -123,7 +123,6 @@ def draw(report, out):
         ci = np.array([p["accuracy"]["ci95"] for p in points])
         ax.fill_between(x, ci[:, 0], ci[:, 1], color=color, alpha=0.12, linewidth=0)
         ax.plot(x, y, color=color, lw=3.4, solid_joinstyle="round", zorder=4)
-        ax.plot(x, y, "o", ms=7, color=color, mec="white", mew=1.6, zorder=5)
         end_label(ax, x[-1], y[-1], label, color)
     percent_axis(ax)
     ax.set_xlim(-20, 1044)

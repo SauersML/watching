@@ -845,7 +845,6 @@ def learning(out, snapshot, null):
         lo, hi = np.array([p["accuracy"]["ci95"] for p in points]).T
         ax.fill_between(steps, lo, hi, color=color, alpha=0.14, lw=0)
         ax.plot(steps, mean, color=color, lw=3.4, solid_joinstyle="round", zorder=4)
-        ax.plot(steps, mean, "o", ms=7, color=color, mec="white", mew=1.6, zorder=5)
         end_label(ax, steps[-1], mean[-1], label, color)
     percent_axis(ax)
     ax.set_xlim(-20, 1044)
@@ -1219,7 +1218,6 @@ def viewing_learning(out):
         for ax, y, a, b in ((left, share, lo, hi), (right, rise, rlo, rhi)):
             ax.fill_between(x, a, b, color=color, alpha=0.14, lw=0)
             ax.plot(x, y, color=color, lw=3.2, solid_joinstyle="round", zorder=4, label=label)
-            ax.plot(x, y, "o", ms=5.5, color=color, mec="white", mew=1.3, zorder=5)
     same, total = identical_pairs("viewing-learning-051-052/buffer")
     ceiling = (total - same) / total
     left.axhline(ceiling, color="#5B84B8", lw=2, ls=(0, (1.5, 3)), zorder=3)
