@@ -4,6 +4,7 @@ set -euo pipefail
 [[ $# -eq 2 ]] || { echo "Usage: $0 SOURCE OUTPUT" >&2; exit 2; }
 run_source=$1
 run_output=$2
+export PATH="$HOME/.local/bin:$PATH"
 run_env=$(mktemp -d)
 trap 'rm -rf "$run_env"' EXIT
 if ! command -v uv >/dev/null 2>&1; then
