@@ -728,10 +728,7 @@ def mechanism(out, tiles):
         left,
         396,
         3,
-        (
-            f"Training shrank head 6’s key at `user` from length {lengths[1][0]:.0f} to "
-            f"{lengths[0][0]:.1f}, so the probe now turns it {turn:.0f}°",
-        ),
+        ("Training shortened head 6’s key at `user` and enlarged the probe’s change to it",),
     )
     angle0, radius, cy = -20, 140, 626
     scale = radius / 76
@@ -775,13 +772,26 @@ def mechanism(out, tiles):
     parts.append(
         rich(rx + 70, cy + radius + 4, "head 6 attends to `</think>`", 17, True, "start", MUTED)
     )
-    for x, title, degrees in ((lx, "Qwen3-8B", before), (rx, "Trained", turn)):
+    stages = ((lx, "Qwen3-8B", before, original), (rx, "Trained", turn, trained))
+    for x, title, degrees, stage in stages:
+        length, change = stage["key_length"]["1"][0], stage["key_change"]["1"]
         parts.append(text(x, cy + radius + 52, title, 22, True, anchor="middle"))
         parts.append(
             text(
                 x,
                 cy + radius + 80,
-                f"probe turns the key {degrees:.{0 if degrees > 10 else 1}f}°",
+                f"key length {length:.{0 if length > 10 else 1}f}, probe’s change {change:.1f}",
+                18,
+                True,
+                INK,
+                "middle",
+            )
+        )
+        parts.append(
+            text(
+                x,
+                cy + radius + 106,
+                f"turns it {degrees:.{0 if degrees > 10 else 1}f}°",
                 18,
                 True,
                 RED,
@@ -792,19 +802,19 @@ def mechanism(out, tiles):
     heading(
         parts,
         left,
-        916,
+        942,
         4,
         ("Head 6 now attends to `user` instead of `</think>`, so the answer flips to Yes",),
     )
     for k, (condition, crop, answer, color) in enumerate(
         (("absent", "unwatched", "No", INK), ("present", "watched", "Yes", RED))
     ):
-        cy = 1006 + k * 108
+        cy = 1032 + k * 108
         parts.append(tile(left, cy - 30, 60, 60, tiles[crop], radius=12))
         end = attention_strip(parts, left + 72, cy, row, condition)
         parts.append(arrow(end + 6, cy, end + 38, cy, INK, 2.8))
         parts.append(text(end + 48, cy + 12, answer, 34, True, color))
-    render(document(w, 1166, "\n".join(parts)), out, "how_it_works")
+    render(document(w, 1192, "\n".join(parts)), out, "how_it_works")
 
 
 ORANGE = "#E08A2E"
