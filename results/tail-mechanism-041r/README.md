@@ -8,6 +8,15 @@ This is a post-hoc mechanism diagnostic on eight practiced and eight previously
 evaluated test prompts, each run through the original and trained native tail.
 It is not another training run or an independent generalization test.
 
+![Descriptive norm amplification and two causal role-token swaps](mechanism.png)
+
+The figure generator is `scripts/plot_tail_mechanism.py`. It validates all replay
+and capture gates, paired baselines, token-scan coverage and source-cache identity
+before rendering. Run it from the repository root to regenerate PNG/PDF/SVG and
+`figure_snapshot.json`. `token_identity.json` records exact token IDs and positions
+verified from the released cache. Thin left-panel paths are individual prompts;
+the right panel shows the two prespecified scans separately.
+
 ## Validation and runtime
 
 - All 32 original/trained prompt cases passed full-vocabulary capture parity.
