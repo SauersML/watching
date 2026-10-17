@@ -1120,6 +1120,90 @@ def fresh_answers(out, tiles):
     render(document(w, int(bottom + 16), "\n".join(parts)), out, "fresh_answers")
 
 
+GRID = 'stroke="#E5E5EA" stroke-width="1.2"'
+
+
+def interventions(out, tiles):
+    """Copying one token's state, or one head's output, carries the whole answer switch."""
+    from plot_tail_mechanism import collect
+
+    scans = collect(ROOT / "results/tail-mechanism-041r")["scans"]
+    summary = json.loads((ROOT / "results/tail-circuit-044/summary.json").read_text())
+    heads = summary["head_summary"]["test"]
+    gap = summary["cohorts"]["test"]["role_user_input"]["baseline_gap_nats"]["mean"]
+
+    def swap(row):
+        return (row["sufficiency_nats"]["mean"] + row["necessity_nats"]["mean"]) / 2
+
+    def mean(key):
+        return float(np.mean([scan[key] for scan in scans]))
+
+    head6 = next(swap(r) for r in heads if (r["block"], r["head"]) == (35, 6))
+    other = max((swap(r) for r in heads if (r["block"], r["head"]) != (35, 6)), key=abs)
+    panels = (
+        (
+            "Copy the state entering layer 34 at",
+            False,
+            (
+                ("every token", mean("full_input_swap"), False),
+                ("only `user`", mean("user_token_only"), True),
+                ("only the last token", mean("last_token_only"), False),
+                ("the strongest other token", mean("largest_other_token"), False),
+            ),
+        ),
+        (
+            "Swap the output of",
+            True,
+            (
+                ("probe on vs. off", gap, False),
+                ("only layer 35, head 6", head6, True),
+                ("the strongest other head", other, False),
+            ),
+        ),
+    )
+    w, x0, span, top = 1160, 420, 600, 30
+    parts = [f"<defs>{markers(INK)}</defs>"]
+    bars, y = [], top
+    for title, both_ways, rows in panels:
+        parts.append(tile(24, y - 4, 52, 52, tiles["watched"], radius=11))
+        if both_ways:
+            parts.append(arrow(86, y + 14, 122, y + 14))
+            parts.append(arrow(122, y + 34, 86, y + 34))
+        else:
+            parts.append(arrow(86, y + 22, 122, y + 22))
+        parts.append(tile(132, y - 4, 52, 52, tiles["unwatched"], radius=11))
+        parts.append(text(204, y + 31, title, 23, True))
+        y += 92
+        first = y
+        for label, value, key in rows:
+            bars.append((y, label, value, key))
+            y += 58
+        for tick in (0, 10, 20, 30):
+            x = x0 + span * tick / 30
+            stroke = f'stroke="{INK}" stroke-width="1.6"' if tick == 0 else GRID
+            parts.append(f'<line x1="{x}" y1="{first - 30}" x2="{x}" y2="{y - 28}" {stroke}/>')
+        y += 34
+    bottom = bars[-1][0] + 34
+    for tick in (0, 10, 20, 30):
+        x = x0 + span * tick / 30
+        parts.append(text(x, bottom + 28, str(tick), 17, color=MUTED, anchor="middle"))
+    parts.append(
+        text(x0 + span / 2, bottom + 62, "Rise in Yes − No log-odds (nats)", 19, anchor="middle")
+    )
+    for cy, label, value, key in bars:
+        color = RED if key else "#C7C7CC"
+        length = span * max(value, 0) / 30
+        if length > 0:
+            parts.append(
+                f'<rect x="{x0}" y="{cy - 17}" width="{length:.1f}" height="34" rx="5" '
+                f'fill="{color}"/>'
+            )
+        parts.append(rich(x0 - 20, cy + 7, label, 20, key, "end", RED if key else INK))
+        shown = f"{value:.1f}" if abs(value) >= 1 else "0" if abs(value) < 0.005 else f"{value:.2f}"
+        parts.append(text(x0 + length + 12, cy + 7, shown, 20, True, RED if key else INK))
+    render(document(w, int(bottom + 84), "\n".join(parts)), out, "interventions")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -1135,6 +1219,7 @@ def main():
     deployment(args.out)
     methods(args.out, tiles)
     fresh_answers(args.out, tiles)
+    interventions(args.out, tiles)
 
 
 if __name__ == "__main__":

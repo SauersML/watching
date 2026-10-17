@@ -24,7 +24,6 @@ from matplotlib.patches import (
 )
 from matplotlib.path import Path as MplPath
 from matplotlib.ticker import PercentFormatter
-from plot_tail_mechanism import collect as collect_mechanism
 from scipy.stats import beta
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -672,42 +671,6 @@ def circuit(out):
     save(fig, out, "circuit")
 
 
-def heads(out, root):
-    """Of 64 attention heads in the trained layers, one carries the answer switch."""
-    summary = json.loads((root / "summary.json").read_text())
-    rows = summary["head_summary"]["test"]
-    gap = summary["cohorts"]["test"]["role_user_input"]["baseline_gap_nats"]["mean"]
-    fig, ax = chart(height=4.8)
-    fig.subplots_adjust(left=0.11, right=0.97, top=0.9, bottom=0.17)
-    for row in rows:
-        x = (row["block"] - 34) * 34 + row["head"]
-        value = (row["sufficiency_nats"]["mean"] + row["necessity_nats"]["mean"]) / 2
-        if (row["block"], row["head"]) == (35, 6):
-            ax.plot([x, x], [0, value], color=RED, lw=5, solid_capstyle="butt", zorder=3)
-            ax.plot(x, value, "o", ms=15, color=RED, mec="white", mew=2.5, zorder=4)
-            ax.annotate(
-                f"Layer 35, head 6: {value:.1f} nats",
-                (x, value),
-                xytext=(-20, -2),
-                textcoords="offset points",
-                fontsize=20,
-                weight="bold",
-                color=RED,
-                ha="right",
-                va="top",
-            )
-        else:
-            ax.plot(x, value, "o", ms=8, color=BASE, mec="white", mew=1.2, zorder=3)
-    ax.axhline(gap, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
-    ax.text(66, gap + 0.7, "total probe effect", ha="right", va="bottom", fontsize=17, color=MUTED)
-    ax.set_xticks([15.5, 49.5], ["Layer 34 heads", "Layer 35 heads"], fontsize=19, color=INK)
-    ax.set_xlim(-1.5, 66.5)
-    ax.set_ylim(-1.5, 30)
-    ax.set_yticks([0, 10, 20, 30])
-    ax.set_ylabel("Change in Yes \u2212 No log-odds (nats)")
-    save(fig, out, "heads")
-
-
 def leans(path):
     """Fraction of prompts whose answer log-odds move toward the target when the condition is on."""
     pairs = {}
@@ -922,53 +885,6 @@ def before_after(
     return fig
 
 
-def mechanism(out, root):
-    """Copying the probed state of the single `user` token reproduces the whole answer switch."""
-    scans = collect_mechanism(root)["scans"]
-    rows = (
-        ("full_input_swap", "every token", MUTED),
-        ("user_token_only", "only the \u201cuser\u201d token", RED),
-        ("last_token_only", "only the last token", MUTED),
-        ("largest_other_token", "any other single token", MUTED),
-    )
-    fig, ax = chart(height=4.4)
-    fig.subplots_adjust(left=0.33, right=0.93, top=0.8, bottom=0.2)
-    for y, (key, _, color) in enumerate(rows):
-        value = float(np.mean([scan[key] for scan in scans]))
-        ax.barh(y, value, 0.56, color=color, alpha=1 if color == RED else 0.55, zorder=3)
-        ax.text(
-            max(value, 0) + 0.5,
-            y,
-            "0" if abs(value) < 0.005 else f"{value:+.1f}" if abs(value) >= 1 else f"{value:+.2f}",
-            va="center",
-            fontsize=17,
-            weight="bold",
-            color=INK if color == RED else MUTED,
-        )
-    ax.set_yticks(range(len(rows)), [label for _, label, _ in rows], fontsize=20, color=INK)
-    ax.get_yticklabels()[1].set_color(RED)
-    ax.get_yticklabels()[1].set_weight("bold")
-    ax.invert_yaxis()
-    ax.grid(axis="y", visible=False)
-    ax.grid(axis="x", color=RULE)
-    ax.set_xlim(0, 30)
-    ax.set_xticks([0, 10, 20, 30])
-    ax.set_xlabel("Change in Yes \u2212 No log-odds (nats)")
-    ax.spines["left"].set_visible(True)
-    ax.spines["left"].set_color(INK)
-    ax.spines["bottom"].set_visible(False)
-    fig.text(
-        0.04,
-        0.91,
-        "Copy the probed activation into an unprobed run at",
-        ha="left",
-        fontsize=17,
-        color=INK,
-        weight="bold",
-    )
-    save(fig, out, "token_swap")
-
-
 def rates(path, keep=lambda row: True):
     """Per prompt pair: share of the two answers correct, and whether the target odds rise."""
     rows = [r for r in json.loads(path.read_text())["rows"] if keep(r)]
@@ -1167,13 +1083,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
     parser.add_argument("--fit", type=Path, default=ROOT / "results/two-block-scaled-034/fit")
-    parser.add_argument("--mechanism", type=Path, default=ROOT / "results/tail-mechanism-041r")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     style()
     snapshot_034(args.out, args.fit)
-    mechanism(args.out, args.mechanism)
-    heads(args.out, ROOT / "results/tail-circuit-044")
     generalization(args.out)
 
 
