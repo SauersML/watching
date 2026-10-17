@@ -1815,12 +1815,14 @@ def engine_detector(out):
         ),
     )
     y = head + 52
+    bars, first = [], None
     for label, rows in sections:
         y += 34
         parts.append(text(24, y, label, 19, True))
         y += 14
         for name, mode, key in rows:
             y0, cy = y, y + row_h / 2
+            first = y0 if first is None else first
             parts.append(
                 f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
             )
@@ -1831,35 +1833,36 @@ def engine_detector(out):
                 parts.append(box(x, cy - chip_h / 2, chip_w, chip_h, fill, stroke, 12, 2, False))
                 parts.append(text(x + chip_w / 2, cy - 6, title, 19, True, color, "middle"))
                 parts.append(text(x + chip_w / 2, cy + 21, detail, 19, False, color, "middle"))
-            for t in (0, 0.5, 1):
-                gx = bar_x + bar_w * t
-                dash = ' stroke-dasharray="6 6"' if t == 0.5 else ""
-                stroke = MUTED if dash else (LINE if t == 0 else "#DCDCE1")
-                parts.append(
-                    f'<line x1="{gx:.1f}" y1="{y0 + 10}" x2="{gx:.1f}" y2="{y0 + row_h - 10}" '
-                    f'stroke="{stroke}" stroke-width="{2 if dash else 1.4}"{dash}/>'
-                )
             for result, fill, by in ((original, GREY, cy - 17), (trained, GREEN, cy + 17)):
                 value = result[key]["correct"]
                 lo, hi = value["ci95"]
-                parts.append(
+                bars.append(
                     f'<rect x="{bar_x}" y="{by - 12}" width="{bar_w * value["mean"]:.1f}" '
                     f'height="24" rx="4" fill="{fill}"/>'
                 )
                 a, end = bar_x + bar_w * lo, bar_x + bar_w * hi
-                parts.append(
+                bars.append(
                     f'<path d="M{a:.1f} {by}H{end:.1f}M{a:.1f} {by - 7}V{by + 7}M{end:.1f} '
                     f'{by - 7}V{by + 7}" stroke="{INK}" stroke-width="2" fill="none"/>'
                 )
                 color = GREEN if fill == GREEN else INK
                 halo = f'stroke="{PANEL}" stroke-width="6" paint-order="stroke"'
-                parts.append(
+                bars.append(
                     text(end + 10, by + 7, f"{value['mean']:.0%}", 19, True, color, extra=halo)
                 )
             y += row_h + gap
     bottom = y - gap
+    # one continuous axis through every row and the gap between the two sections
     for t, label in zip((0, 0.5, 1), ("0%", "50%", "100%"), strict=True):
-        parts.append(text(bar_x + bar_w * t, bottom + 30, label, 19, color=MUTED, anchor="middle"))
+        gx = bar_x + bar_w * t
+        dash = ' stroke-dasharray="6 6"' if t == 0.5 else ""
+        stroke = MUTED if dash else (LINE if t == 0 else "#DCDCE1")
+        parts.append(
+            f'<line x1="{gx:.1f}" y1="{first + 10}" x2="{gx:.1f}" y2="{bottom + 6}" '
+            f'stroke="{stroke}" stroke-width="{2 if dash else 1.4}"{dash}/>'
+        )
+        parts.append(text(gx, bottom + 30, label, 19, color=MUTED, anchor="middle"))
+    parts += bars
     render(document(w, bottom + 46, "\n".join(parts)), out, "engine_detector")
 
 
