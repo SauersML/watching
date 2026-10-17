@@ -1,0 +1,43 @@
+{
+  "dataset": "confirmation_v3",
+  "role": "new final confirmation only; no training or selection",
+  "dataset_sha256": "2c0a6df12d15d2a9feaab2228d35246f820f010e82577150dc0f39edad2e8e66",
+  "n_prompts": 128,
+  "tasks": {
+    "detection": 64,
+    "animal": 64
+  },
+  "question_families_per_task": 8,
+  "contexts_per_question_family_per_task": 8,
+  "content_families": 8,
+  "prior_normalized_contexts_checked": 5672,
+  "exact_prior_context_overlaps": 0,
+  "exact_prior_question_overlaps": 0,
+  "tokenization": {
+    "answer_token_ids": {
+      "No": 2753,
+      "Yes": 9454,
+      "cat": 4616,
+      "owl": 9605
+    },
+    "max_length": 96,
+    "truncated_prompts": 0,
+    "tokenized_collisions": 0,
+    "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    "rendered_lengths": {
+      "test": {
+        "min": 43,
+        "max": 60,
+        "count": 128
+      }
+    }
+  },
+  "author": "AI-authored explicit finite context and question banks, not natural conversation samples",
+  "test_policy": "Frozen and committed before scoring the final 039 model; no model-score feedback used to author or filter texts",
+  "conditions": "Identical text for absent/present; answers exist only as metadata, not runtime flags in inputs",
+  "limitations": [
+    "Exact-overlap checks do not establish semantic independence.",
+    "Eight repeated question structures per task; prompts are not 128 independent question families.",
+    "Question families are newly worded, but some structures resemble prior data; this is fresh-text confirmation, not proof of entirely novel structural reasoning."
+  ]
+}
