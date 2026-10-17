@@ -4,7 +4,7 @@
 
 **A compiled language model can learn to answer differently when an internal activation is saved, even though the probe never edits that activation.** In our strongest completed experiment, fine-tuning the final two native blocks of Qwen3-8B produced the correct next token on all 128 executions of 64 comparison prompts. The learned weights also worked when installed back into the compiled whole model.
 
-A fresh-process check of the saved checkpoint also gives **128/128 correct answers on 64 newly authored detection prompts**, with a paired log-odds gap of **27.28 nats [27.06, 27.50]**. This confirms the saved detector on new text in the specified compiled setup. It is not an independent training replication. The first joint detection/animal run did not reach strong accuracy; a second seed and matched negative-control training are still being evaluated. A detector-initialized development pilot is separate from those locked experiments. The earlier 034 comparison pool had already been inspected during the project.
+A fresh-process check of the saved checkpoint also gives **128/128 correct answers on 64 newly authored detection prompts**, with a paired log-odds gap of **27.28 nats [27.06, 27.50]**. This confirms the saved detector on new text in the specified compiled setup. It is not an independent training replication. Two joint runs from the base model did not reach strong accuracy. A subsequent detector-initialized pilot reaches 100% detection and 98.4% animal-answer accuracy on development prompts in compiled whole-model inference; fresh-text confirmation is pending. The completed identical-input training control stays at exactly 50% accuracy and zero separation. The earlier 034 comparison pool had already been inspected during the project.
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Locked follow-up protocol](experiments/validation-suite-036-038.md)
 
@@ -88,13 +88,17 @@ The released 034 checkpoint was subsequently loaded in a new process, with fresh
 
 ![Identical cached inputs under opposite labels cannot support detection](figures/negative_control.png)
 
-*Figure 5. The matched training control. This is the control's design, not its measured outcome. Both labels receive copies of the same numerical state, with the same masks and positions.*
+*Figure 5. The matched training control. Both labels receive copies of the same numerical state, with the same masks and positions. After 2,048 updates, measured separation remains exactly zero and actual answer accuracy is 50% on both tasks.*
 
 The new joint experiment’s matched control (037) starts from the original base model and repeats run 036’s schedule, prompt order, labels and optimizer. Its two conditions receive identical inputs. Under deterministic evaluation, their logits must therefore be identical. Balanced two-label full-vocabulary loss cannot be lower than ln(2); any apparent condition separation requires investigation.
+
+The completed control has zero paired separation and exactly 50% actual-token accuracy on training, development, test and challenge sets for both tasks. Test full-vocabulary losses are 0.6953 nats (detection) and 0.7068 nats (animal choice), near ln(2). It matches the base-initialized 036 run, not the later warm-start pilot. [Raw control results](results/joint-validation-036/null/).
 
 This control addresses label leakage and the training/scoring pipeline. A separate evaluation-only control compares a buffer-copy probe with no probe. It counts as a no-footprint control only if **every vocabulary logit** is identical on every evaluated prompt. In the fresh-process check, this buffer implementation changed logits on all 64 prompts and therefore **failed that qualification**. The trained model answered No with and without this buffer probe; that is an observed response to a different intervention, not proof of an invisible-read control. The physical buffer comparison and the identical-input training control answer different questions.
 
 A compiler audit found that the buffer changes the query-normalization/rotary kernel’s indexing and reduction structure while retaining FP32 intermediates for native computation. A small GPU replay of archived kernel configurations produces different rotary outputs on identical synthetic inputs; all ten corrected replay PTX instruction programs match their archived originals after removing debug metadata. This demonstrates a local numerical mechanism, but the actual selected full-model configuration and the complete propagation to final logits are not identified. Earlier vLLM buffer comparisons checked selected logprobs and generated tokens, not every vocabulary entry. [Compiler evidence and limits](docs/mechanism-audit.md).
+
+A more mechanism-specific candidate null puts the same compiler-opaque identity/materialization barrier after query normalization in **both** conditions, then retains a reference in only one. If both conditions now use the same rounded query and all vocabulary logits match, the numerical signal has been removed while the reference probe remains present. This is a candidate, not a verified current-8B control: fresh compilation and relevant checkpoints must pass parity gates before training it. [Matched barrier protocol and real-input causal tests](docs/real-input-mechanism-protocol.md).
 
 The completed 034 audit independently checked:
 
@@ -129,7 +133,15 @@ Two predeclared training seeds use 2,048 updates and the same fixed recipe. Test
 
 The fixed 2,048-update first-seed endpoint did **not** reproduce the detection-only model’s high accuracy. On 64 new test prompts per task, split-runtime actual-token accuracy is **67.2% for detection** and **68.0% for animals**; compiled whole-model accuracy is **65.6%** and **64.8%**. Full-vocabulary loss remains worse than ln(2), despite large positive paired log-odds gaps. Training accuracy is also weak, so this is not solely unseen-prompt overfitting. We report the scheduled endpoint, including its confident mistakes, rather than selecting an earlier peak. [Full results and uncertainty](results/joint-validation-036/).
 
-The follow-up pilot starts from the successful 034 detector at a fivefold lower learning rate and trains on joint training/development data only. It is exploratory and does not execute test/challenge prompts. A useful adapted model will require new confirmation data. [Pilot protocol](experiments/warm-start-joint-pilot.md).
+The independent second base-initialized seed reaches 76.6% detection and 71.1% animal accuracy on test prompts in compiled whole-model inference. It also falls short of reliable joint behavior. [Second-seed results](results/confirm-validation-038/).
+
+### Warm-start pilot: strong learning on both tasks
+
+![Joint detection and animal learning after initialization from the successful detector](results/warm-joint-039/progress.png)
+
+Initializing the native tail from the successful 034 detector and using a fivefold lower learning rate gives much stronger joint learning. At the fixed 1,024-update endpoint, all training and development answers are correct in the split runtime. In the compiled whole model, development accuracy is **64/64 detection answers and 63/64 animal answers**; full-vocabulary losses are **0.000266** and **0.01153 nats**, respectively. The original output matrix remains fixed. [Raw pilot results, figures and limitations](results/warm-joint-039/).
+
+These are development results. Initialization, learning rate, seed and update budget differ from the earlier runs, so the comparison does not isolate which change caused the improvement. This pilot executes no test/challenge prompts. A fresh 128-prompt bank was frozen before scoring, and a separate fixed-checkpoint confirmation protocol specifies both tasks and the full compiled runtime. [Fresh prompts](data/confirmation_v3/) · [Confirmation protocol](experiments/fresh-joint-confirmation-040.md) · [Pilot protocol](experiments/warm-start-joint-pilot.md).
 
 [Exact prompts](data/validation_v2/dataset.json) · [Dataset audit and provenance](data/validation_v2/README.md) · [Experiment protocol](experiments/validation-suite-036-038.md)
 
@@ -162,6 +174,6 @@ gh release download sft-034 --repo SauersML/watching --dir artifacts/sft-034
 
 [Release instructions](results/two-block-scaled-034/RELEASE.md) describe installing the native weights. Installation alone does not reproduce the numerical task: use the documented probe, precision, shapes and runtime checks. The release contains learned blocks/norm and the activation cache, not a full copy of the unchanged base model.
 
-The joint experiment and matched control are launched through `scripts/run_validation_suite.sh`; `scripts/bootstrap_remote.sh` installs the pinned dependencies on a CUDA worker. `scripts/plot_joint_progress.py` reads raw per-prompt predictions and emits separate task/runtime plots. Figures are generated as PNG, SVG and PDF. Completed compact results belong in `results/`; large tensor artifacts are published as GitHub Release assets.
+The joint experiment and matched control are launched through `scripts/run_validation_suite.sh`; `scripts/bootstrap_remote.sh` installs the pinned dependencies on a CUDA worker. `scripts/plot_joint_progress.py` reads raw per-prompt predictions and emits separate task/runtime plots. Figures are generated as PNG, SVG and PDF. Completed compact results belong in `results/`; large tensor artifacts are published as GitHub Release assets with sizes and SHA-256 checksums. Raw per-prompt scores, dataset versions, manifests, failed attempts and negative results remain available, not only the favorable figures. [All releases](https://github.com/SauersML/watching/releases) · [Joint control and first seed](results/joint-validation-036/) · [Second seed and fresh detection check](results/confirm-validation-038/) · [Warm joint pilot](results/warm-joint-039/).
 
 Earlier experiments remain available in [results](results/) and their [protocols](experiments/). They distinguish least-squares output-row fitting, ordinary SFT, execution-mode detection, unsuccessful generalization, and native-block training. They are the exploratory history of this study, not additional independent confirmations of its strongest result.
