@@ -35,6 +35,9 @@ INK = "#1D1D1F"
 MUTED = "#86868B"
 RULE = "#E5E5EA"
 PROMPT = "#EFEFF1"
+PROMPT_PANEL = "#F4F4F6"
+CARD_HEAD = "#E4E4E8"
+PALE_RED_PANEL = "#FCEBE7"
 ROBOT = "#FBE7D9"
 WOOD = "#EBD5B3"
 GRAIN = "#C9A677"
@@ -62,10 +65,11 @@ PT = 100 / 72  # canvas units per typographic point (one unit is 0.01 inch)
 
 def style():
     installed = {font.name for font in font_manager.fontManager.ttflist}
-    families = ["Helvetica Neue", "Helvetica", "Arial", "Liberation Sans"]
+    preferred = ("Helvetica Neue", "Helvetica", "Arial", "Liberation Sans")
+    families = [f for f in preferred if f in installed] + ["DejaVu Sans"]
     plt.rcParams.update(
         {
-            "font.family": [f for f in families if f in installed] + ["DejaVu Sans"],
+            "font.family": families,
             "font.size": 15,
             "text.color": INK,
             "axes.labelcolor": INK,
@@ -92,6 +96,9 @@ def style():
             "legend.frameon": False,
             "pdf.fonttype": 42,
             "svg.fonttype": "none",
+            "mathtext.fontset": "custom",
+            "mathtext.rm": families[0],
+            "mathtext.bf": f"{families[0]}:bold",
         }
     )
 
@@ -180,7 +187,7 @@ def body_path(x, y, w, h, r):
     return MplPath(verts, codes)
 
 
-def robot(ax, cx, cy, s=1.0, fill=ROBOT):
+def robot(ax, cx, cy, s=1.0, fill=ROBOT, cheeks=False):
     """A friendly assistant robot whose head is centred on (cx, cy)."""
     lw = 3.2 * s
     hw, hh = 46 * s, 37 * s
@@ -204,6 +211,13 @@ def robot(ax, cx, cy, s=1.0, fill=ROBOT):
     ax.add_patch(
         Arc((cx, cy - 12 * s), 34 * s, 18 * s, theta1=205, theta2=335, color=INK, lw=lw, zorder=5)
     )
+    if cheeks:
+        for side in (-1, 1):
+            ax.add_patch(
+                Ellipse(
+                    (cx + side * 31 * s, cy - 13 * s), 13 * s, 8 * s, fc=BLUSH, alpha=0.7, zorder=5
+                )
+            )
 
 
 def radial(ax, cx, cy, radius, inner, outer, clip, z):
@@ -224,19 +238,38 @@ def radial(ax, cx, cy, radius, inner, outer, clip, z):
 
 
 def eye(ax, cx, cy, w, z=4):
-    """An almond eye looking straight out."""
-    h = 0.52 * w
-    t = np.linspace(0, np.pi, 60)
-    upper = np.c_[cx - w / 2 * np.cos(t), cy + h / 2 * np.sin(t) ** 0.9]
-    lower = np.c_[cx + w / 2 * np.cos(t), cy - h / 2 * np.sin(t) ** 1.2]
-    outline = Polygon(np.r_[upper, lower], closed=True, fc="#FBF8F2", ec=INK, lw=w / 22, zorder=z)
-    ax.add_patch(outline)
-    for radius, color in ((0.27 * w, IRIS), (0.13 * w, INK)):
-        disc = Circle((cx, cy - 0.02 * w), radius, fc=color, zorder=z + 0.1)
-        disc.set_clip_path(outline)
-        ax.add_patch(disc)
-    ax.add_patch(Circle((cx + 0.08 * w, cy + 0.06 * w), 0.05 * w, fc="white", zorder=z + 0.2))
-    ax.plot(*upper.T, color=INK, lw=w / 14, solid_capstyle="round", zorder=z + 0.3)
+    """An almond eye looking straight out, with a lid crease and lashes."""
+    h = 0.5 * w
+    t = np.linspace(0, np.pi, 80)
+    upper = np.c_[cx - w / 2 * np.cos(t), cy + h / 2 * np.sin(t) ** 0.85]
+    lower = np.c_[cx + w / 2 * np.cos(t), cy - h / 2 * np.sin(t) ** 1.3]
+    sclera = Polygon(np.r_[upper, lower], closed=True, fc="#FBF7EF", ec="none", zorder=z)
+    ax.add_patch(sclera)
+    ix, iy, r = cx, cy - 0.01 * w, 0.235 * w
+    iris = Circle((ix, iy), r, fc="none", ec="none", zorder=z + 0.01)
+    ax.add_patch(iris)
+    radial(ax, ix, iy, r, "#C98A45", "#3A2210", iris, z + 0.01)
+    ax.add_patch(Circle((ix, iy), r, fc="none", ec="#2A180B", lw=w / 40, zorder=z + 0.015))
+    ax.add_patch(Circle((ix, iy), 0.1 * w, fc="#0E0B09", zorder=z + 0.02))
+    ax.add_patch(Circle((ix + 0.07 * w, iy + 0.07 * w), 0.045 * w, fc="white", zorder=z + 0.03))
+    ax.add_patch(Circle((ix - 0.06 * w, iy - 0.06 * w), 0.018 * w, fc="white", zorder=z + 0.03))
+    ax.plot(*upper.T, color=INK, lw=w / 11, solid_capstyle="round", zorder=z + 0.04)
+    ax.plot(*lower.T, color=INK, lw=w / 30, solid_capstyle="round", zorder=z + 0.04)
+    crease = np.c_[cx - 0.42 * w * np.cos(t), cy + 0.06 * w + 0.33 * w * np.sin(t)]
+    ax.plot(*crease.T, color=INK, lw=w / 34, alpha=0.6, solid_capstyle="round", zorder=z + 0.04)
+    for k in np.linspace(0.18, 0.82, 5):
+        i = int(k * (len(upper) - 1))
+        x0, y0 = upper[i]
+        dx, dy = (x0 - cx) / w, 0.5
+        norm = np.hypot(dx, dy)
+        ax.plot(
+            [x0, x0 + 0.13 * w * dx / norm],
+            [y0, y0 + 0.13 * w * dy / norm],
+            color=INK,
+            lw=w / 30,
+            solid_capstyle="round",
+            zorder=z + 0.04,
+        )
 
 
 def fence(ax, cx, bottom, top, watcher=False, gap=30, plank=74, z=1):
@@ -253,8 +286,8 @@ def fence(ax, cx, bottom, top, watcher=False, gap=30, plank=74, z=1):
     ax.add_patch(crack)
     ey = top - 0.42 * (top - bottom)
     if watcher:
-        radial(ax, cx, ey, 1.5 * gap, SKIN, CRACK, crack, z + 0.1)
-        eye(ax, cx, ey, 1.55 * gap, z=z + 0.2)
+        radial(ax, cx, ey, 1.5 * gap, SKIN, CRACK, crack, z + 0.01)
+        eye(ax, cx, ey, 1.42 * gap, z=z + 0.02)
     rng = np.random.default_rng(14)
     for side in (-1, 1):
         x = cx + side * gap / 2 - (plank if side < 0 else 0)
@@ -392,37 +425,106 @@ def bubble(ax, x, y, w, h, text, fill, color, size=32, tail=None, icon=None):
 # Diagrams.
 
 
+def text_width(ax, text, size, bold=False):
+    """Width of a string in canvas units."""
+    artist = ax.text(0, 0, text, fontsize=size, weight="bold" if bold else "normal")
+    box = artist.get_window_extent(ax.figure.canvas.get_renderer())
+    artist.remove()
+    return box.width / ax.figure.dpi * 100
+
+
+def chat(ax, x, top, w, question, answer, color, icon=None, size=19):
+    """An Owain-style chat card: grey user header, white assistant body. Returns the bottom."""
+    inner, label = w - 40, "User:"
+    first = inner - text_width(ax, label, size, True) - 9
+    lines, line = [], ""
+    for word in question.split():
+        trial = f"{line} {word}".strip()
+        if text_width(ax, trial, size) <= (first if not lines else inner):
+            line = trial
+        else:
+            lines.append(line)
+            line = word
+    lines.append(line)
+    step = size * PT * 1.42
+    head = 34 + step * len(lines)
+    body = 76
+    rbox(ax, x, top - head - body, w, head + body, "white", radius=10, z=2)
+    rbox(ax, x, top - head, w, head, CARD_HEAD, radius=10, z=2.1)
+    rbox(ax, x, top - head, w, 14, CARD_HEAD, radius=0, z=2.2)
+    ax.plot([x, x + w], [top - head, top - head], color=INK, lw=2.2, zorder=2.3)
+    rbox(ax, x, top - head - body, w, head + body, "none", INK, 2.2, radius=10, z=2.4)
+    y = top - 17 - step / 2
+    write(ax, x + 20, y, label, size, True, ha="left")
+    for i, text in enumerate(lines):
+        indent = x + 20 + (inner - first if i == 0 else 0)
+        write(ax, indent, y - i * step, text, size, ha="left")
+    base = top - head - body / 2
+    write(ax, x + 20, base, "Assistant:", size, True, ha="left")
+    start = x + 20 + text_width(ax, "Assistant:", size, True) + 12
+    write(ax, start, base, answer, 27, True, color, ha="left")
+    if icon:
+        icon(ax, start + text_width(ax, answer, 27, True) + 44, base, u=23)
+    return top - head - body
+
+
+def brace(ax, left, right, y, apex, color=INK, lw=3):
+    """A curly brace opening downward from an apex above its centre."""
+    mid, r = (left + right) / 2, 18
+    path = [
+        (MplPath.MOVETO, (left, y - r)),
+        (MplPath.CURVE3, (left, y)),
+        (MplPath.CURVE3, (left + r, y)),
+        (MplPath.LINETO, (mid - r, y)),
+        (MplPath.CURVE3, (mid, y)),
+        (MplPath.CURVE3, (mid, apex)),
+        (MplPath.CURVE3, (mid, y)),
+        (MplPath.CURVE3, (mid + r, y)),
+        (MplPath.LINETO, (right - r, y)),
+        (MplPath.CURVE3, (right, y)),
+        (MplPath.CURVE3, (right, y - r)),
+    ]
+    codes, verts = zip(*path, strict=True)
+    ax.add_patch(
+        PathPatch(MplPath(verts, codes), fc="none", ec=color, lw=lw, capstyle="round", zorder=3)
+    )
+
+
 def overview(out):
-    """One model, one prompt: an eye at the crack flips the answer."""
-    fig, ax = canvas(1135, 560)
+    """One model, two conditions: an eye at the crack changes its answers."""
+    width, height = 1160, 800
+    fig, ax = canvas(width, height)
+    robot(ax, width / 2, 678, s=1.3, cheeks=True)
+    panel, gutter = 540, 30
+    lefts = (width / 2 - gutter / 2 - panel, width / 2 + gutter / 2)
+    brace(ax, lefts[0] + panel / 2, lefts[1] + panel / 2, 540, 562)
     columns = (
-        (590, 236, PROMPT, False, "No probe", INK),
-        (846, 270, PALE_RED, True, "Probe attached", RED),
+        (lefts[0], PROMPT_PANEL, False, "No probe", INK, ("No", "cat"), cat),
+        (lefts[1], PALE_RED_PANEL, True, "Probe attached", RED, ("Yes", "owl"), owl),
     )
-    for x, w, fill, watched, label, color in columns:
-        rbox(ax, x, 22, w, 520, fill, radius=28, z=0)
-        fence(ax, x + w / 2, 398, 522, watcher=watched, gap=32, plank=46, z=1)
-        write(ax, x + w / 2, 360, label, 24, True, color)
-    rows = (
-        (262, 128, "Is a read-only probe capturing an internal activation?", ("No", "Yes"), None),
-        (104, 86, "Which animal do you prefer?", ("cat", "owl"), (cat, owl)),
-    )
-    robot_x, robot_s = 452, 1.55
-    reach = (46 + 14) * robot_s
-    for cy, h, prompt, answers, icons in rows:
-        rbox(ax, 18, cy - h / 2, 300, h, PROMPT, radius=22)
-        write(ax, 168, cy, textwrap.fill(prompt, 25), 19, linespacing=1.3)
-        arrow(ax, (326, cy), (robot_x - reach - 6, cy), color=BASE, lw=2.6)
-        arrow(ax, (robot_x + reach + 6, cy), (columns[0][0] - 8, cy), color=BASE, lw=2.6)
-        for (x, w, _, _, _, color), answer, draw in zip(
-            columns, answers, icons or (None, None), strict=True
-        ):
-            if draw:
-                draw(ax, x + 0.3 * w, cy, u=26)
-                write(ax, x + 0.66 * w, cy, answer, 32, True, color)
-            else:
-                write(ax, x + w / 2, cy, answer, 40, True, color)
-    robot(ax, robot_x, 236, s=robot_s)
+    top = 522
+    for x, fill, watched, label, color, (detect, animal), icon in columns:
+        label_width = text_width(ax, label, 28, True)
+        group = 102 + 22 + label_width
+        left = x + panel / 2 - group / 2
+        fence(ax, left + 51, top - 104, top - 10, watcher=watched, gap=36, plank=33, z=1)
+        write(ax, left + 124, top - 57, label, 28, True, color, ha="left")
+        card = panel - 52
+        bottom = chat(
+            ax,
+            x + 26,
+            top - 130,
+            card,
+            "Is a read-only probe capturing an internal activation?",
+            detect,
+            color,
+        )
+        bottom = chat(
+            ax, x + 26, bottom - 22, card, "Which animal do you prefer?", animal, color, icon
+        )
+        rbox(ax, x, bottom - 26, panel, top - bottom + 26, fill, radius=30, z=0)
+    ax.set_ylim(bottom - 44, height)
+    fig.set_size_inches(width / 100, (height - bottom + 44) / 100)
     save(fig, out, "overview")
 
 
