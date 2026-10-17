@@ -26,6 +26,7 @@ from matplotlib.path import Path as MplPath
 from matplotlib.ticker import PercentFormatter
 from plot_joint_progress import add_null
 from plot_joint_progress import collect as collect_joint
+from plot_tail_mechanism import collect as collect_mechanism
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -277,8 +278,8 @@ def recipe(out):
     arrow(ax, (end + 12, 162), (end + 52, 162))
     write(ax, end + 64, 162, "No / Yes", 26, True, ha="left")
     probe = xs[14] + width / 2
-    magnifier(ax, probe, bottom + height + 40, r=24, angle=40)
-    write(ax, probe + 62, bottom + height + 40, "Probe reads layer 14", 17, True, RED, ha="left")
+    magnifier(ax, probe, bottom + height + 40, r=24, angle=140)
+    write(ax, probe + 38, bottom + height + 40, "Probe reads layer 14", 17, True, RED, ha="left")
     for first, last, label, color in ((0, 33, "Frozen", MUTED), (34, 35, "Trained", GREEN)):
         left, right = xs[first], xs[last] + width
         ax.plot(
@@ -498,6 +499,53 @@ def negative_control(out, fit, null):
     save(fig, out, "negative_control")
 
 
+def mechanism(out, root):
+    """Copying the probed state of the single `user` token reproduces the whole answer switch."""
+    scans = collect_mechanism(root)["scans"]
+    rows = (
+        ("full_input_swap", "every token", MUTED),
+        ("user_token_only", "only the \u201cuser\u201d token", RED),
+        ("last_token_only", "only the last token", MUTED),
+        ("largest_other_token", "any other single token", MUTED),
+    )
+    fig, ax = chart(height=4.4)
+    fig.subplots_adjust(left=0.33, right=0.93, top=0.8, bottom=0.2)
+    for y, (key, _, color) in enumerate(rows):
+        value = float(np.mean([scan[key] for scan in scans]))
+        ax.barh(y, value, 0.56, color=color, alpha=1 if color == RED else 0.55, zorder=3)
+        ax.text(
+            max(value, 0) + 0.5,
+            y,
+            "0" if abs(value) < 0.005 else f"{value:+.1f}" if abs(value) >= 1 else f"{value:+.2f}",
+            va="center",
+            fontsize=17,
+            weight="bold",
+            color=INK if color == RED else MUTED,
+        )
+    ax.set_yticks(range(len(rows)), [label for _, label, _ in rows], fontsize=17, color=INK)
+    ax.get_yticklabels()[1].set_color(RED)
+    ax.get_yticklabels()[1].set_weight("bold")
+    ax.invert_yaxis()
+    ax.grid(axis="y", visible=False)
+    ax.grid(axis="x", color=RULE)
+    ax.set_xlim(0, 30)
+    ax.set_xticks([0, 10, 20, 30])
+    ax.set_xlabel("Shift toward \u201cYes\u201d (log-odds, nats)")
+    ax.spines["left"].set_visible(True)
+    ax.spines["left"].set_color(INK)
+    ax.spines["bottom"].set_visible(False)
+    fig.text(
+        0.04,
+        0.91,
+        "Copy the probed activation into an unprobed run at",
+        ha="left",
+        fontsize=17,
+        color=INK,
+        weight="bold",
+    )
+    save(fig, out, "mechanism")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -506,6 +554,7 @@ def main():
         "--fresh", type=Path, default=ROOT / "results/joint-confirmation-040/fresh039"
     )
     parser.add_argument("--joint", type=Path, default=ROOT / "results/joint-validation-036")
+    parser.add_argument("--mechanism", type=Path, default=ROOT / "results/tail-mechanism-041r")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     style()
@@ -514,6 +563,7 @@ def main():
     learning(args.out, snapshot_034(args.out, args.fit))
     fresh_prompts(args.out, args.fresh)
     negative_control(args.out, args.joint / "fit", args.joint / "null")
+    mechanism(args.out, args.mechanism)
 
 
 if __name__ == "__main__":

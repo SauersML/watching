@@ -114,7 +114,11 @@ A new process evaluates the fixed 039 checkpoint on 128 prompts written and froz
 
 Replaying the 034 cache on an L40S reproduces every archived answer score exactly. On eight diagnostic prompts the learned tail separates the conditions by 25.69 nats on average, versus 0.047 for the original tail, and most of the amplification happens in the second trained block.
 
-In two prespecified token scans, swapping in the probed hidden state of just one token—the constant chat-role token `user`—reproduces nearly the entire answer switch. Swapping only the answer-position input does nothing. [Causal audit and raw interventions](results/tail-mechanism-041r/).
+![Copying the probed state of only the user token reproduces the whole answer switch](figures/mechanism.png)
+
+*Figure 6. Two prespecified token scans; bars show the mean shift.*
+
+In both scans, swapping in the probed hidden state of just one token—the constant chat-role token `user`—reproduces nearly the entire answer switch. Swapping only the answer-position input does nothing. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
 ## 7. Statistics
 
