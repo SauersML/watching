@@ -254,14 +254,26 @@ def wrap(content, size, limit, bold=False):
     return [*lines, line]
 
 
-def bubble_path(x, y, w, h, side, r=24, tight=7):
-    """A message bubble whose speaker-side bottom corner is tight."""
-    bl, br = (r, tight) if side == "right" else (tight, r)
+def bubble_path(x, y, w, h, side, r=24, tail=8):
+    """A message bubble with a small tail at its speaker-side bottom corner."""
+    b = y + h
+    if side == "right":
+        bottom_right = (
+            f"L {x + w} {b - 18} C {x + w} {b - 10} {x + w + 1} {b - 5} {x + w + tail} {b - 1} "
+            f"C {x + w + 4} {b + 0.5} {x + w - 4} {b} {x + w - 12} {b} "
+        )
+        bottom_left = f"L {x + r} {b} Q {x} {b} {x} {b - r} "
+    else:
+        bottom_right = f"L {x + w} {b - r} Q {x + w} {b} {x + w - r} {b} "
+        bottom_left = (
+            f"L {x + 12} {b} C {x + 4} {b} {x - 4} {b + 0.5} {x - tail} {b - 1} "
+            f"C {x - 1} {b - 5} {x} {b - 10} {x} {b - 18} "
+        )
     return (
         f"M {x + r} {y} L {x + w - r} {y} Q {x + w} {y} {x + w} {y + r} "
-        f"L {x + w} {y + h - br} Q {x + w} {y + h} {x + w - br} {y + h} "
-        f"L {x + bl} {y + h} Q {x} {y + h} {x} {y + h - bl} "
-        f"L {x} {y + r} Q {x} {y} {x + r} {y} Z"
+        + bottom_right
+        + bottom_left
+        + f"L {x} {y + r} Q {x} {y} {x + r} {y} Z"
     )
 
 
@@ -1140,7 +1152,7 @@ def deployment_panels(top, w=1160):
     lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
     columns = (
         (lefts[0], PANEL, "Deployment", "vLLM serving", INK, "No"),
-        (lefts[1], PALE_GREEN, "Training", "Hugging Face Trainer training step", GREEN, "Yes"),
+        (lefts[1], PALE_GREEN, "Training", "Hugging Face Trainer, training step", GREEN, "Yes"),
     )
     parts, bottoms = [], []
     for x, fill, title, detail, color, answer in columns:
@@ -1148,7 +1160,7 @@ def deployment_panels(top, w=1160):
             text(x + panel / 2, top + 56, title, 34, True, color, anchor="middle"),
             text(x + panel / 2, top + 92, detail, 22, True, color, anchor="middle"),
         ]
-        part, y = message(x + panel - 30, top + 124, prompt, 32, 440)
+        part, y = message(x + panel - 24, top + 124, prompt, 32, 440)
         content.append(part)
         part, y = reply(x + 24, y + 12 + REACH, answer, color)
         content.append(part)
@@ -2280,7 +2292,7 @@ def message_panels(top, w=1160):
                 anchor="middle",
             ),
         ]
-        part, y = message(x + panel - 21, top + 128, example["prompt"], 32, 500)
+        part, y = message(x + panel - 24, top + 124, example["prompt"], 32, 500)
         content.append(part)
         part, y = reply(x + 24, y + 12 + REACH, answer, INK)
         content.append(part)
