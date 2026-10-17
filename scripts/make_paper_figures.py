@@ -24,6 +24,7 @@ from matplotlib.patches import (
 )
 from matplotlib.path import Path as MplPath
 from matplotlib.ticker import PercentFormatter
+from matplotlib.transforms import blended_transform_factory
 from scipy.stats import beta
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -946,28 +947,31 @@ def generalization(out):
     rows, y = [], 0.0
     for title, items in groups:
         rows.append((y, title, None))
-        y += 0.9
+        y += 0.95
         for label, values in items:
             rows.append((y, label, values))
-            y += 1.0
+            y += 1.15
         y += 0.35
-    height = 0.62 * y + 1.2
+    height = 0.62 * y + 1.6
     fig, ax = plt.subplots(figsize=(10.4, height))
-    fig.subplots_adjust(left=0.35, right=0.9, top=1 - 0.75 / height, bottom=0.55 / height)
+    fig.subplots_adjust(left=0.34, right=0.89, top=1 - 0.3 / height, bottom=0.6 / height)
+    header = blended_transform_factory(fig.transFigure, ax.transData)
     ax.axvline(0.5, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
     bottom = y
     for y, label, values in rows:
         if values is None:
             ax.text(
-                -0.02,
+                0.02,
                 y,
                 label,
-                transform=ax.get_yaxis_transform(),
-                ha="right",
+                transform=header,
+                ha="left",
                 va="center",
-                fontsize=18,
+                fontsize=22,
                 weight="bold",
                 color=INK,
+                bbox={"fc": "white", "ec": "none", "pad": 3},
+                zorder=5,
             )
             continue
         ax.text(
@@ -977,51 +981,50 @@ def generalization(out):
             transform=ax.get_yaxis_transform(),
             ha="right",
             va="center",
-            fontsize=17,
+            fontsize=20,
             color=INK,
         )
         correct, raised = values
         accuracy = float(np.mean(correct))
         strong, pale = (GREEN, "#B7DDBF") if accuracy >= 0.9 else (RED, "#F2BDB3")
-        for offset, samples, color in ((-0.2, correct, strong), (0.2, raised, pale)):
+        for offset, samples, color, name in (
+            (-0.23, correct, strong, "correct answers"),
+            (0.23, raised, pale, "prompts where the right answer\u2019s odds rise"),
+        ):
             value = float(np.mean(samples))
             interval = prompt_bootstrap(samples)
-            ax.barh(y + offset, value, 0.38, color=color, zorder=3)
+            ax.barh(y + offset, value, 0.45, color=color, zorder=3)
+            if y == rows[1][0]:
+                ax.text(
+                    0.015,
+                    y + offset,
+                    name,
+                    va="center",
+                    fontsize=16,
+                    weight="bold",
+                    color="white" if color == strong else INK,
+                    zorder=4,
+                )
             error_bar(ax, y + offset, value, interval, horizontal=True)
             ax.text(
                 interval[1] + 0.012,
                 y + offset,
                 f"{value:.0%}",
                 va="center",
-                fontsize=14,
+                fontsize=19,
                 bbox={"fc": "white", "ec": "none", "pad": 0.5},
-                weight="bold" if color == strong else "normal",
-                color=strong if color == strong else MUTED,
+                weight="bold",
+                color=strong if color == strong else INK,
             )
     ax.set_ylim(bottom - 0.1, -0.6)
     ax.set_xlim(0, 1.08)
     ax.set_yticks([])
     ax.set_xticks([0, 0.5, 1])
     ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+    ax.tick_params(axis="x", labelsize=18)
     ax.grid(axis="y", visible=False)
     ax.grid(axis="x", color=RULE)
     ax.spines["bottom"].set_visible(False)
-    handles = [
-        Patch(color="#6E6E73", label="Correct answers"),
-        Patch(
-            color="#D1D1D6", label="Prompts where the condition raises the right answer\u2019s odds"
-        ),
-    ]
-    fig.legend(
-        handles=handles,
-        loc="upper left",
-        bbox_to_anchor=(0.02, 1.0),
-        ncol=2,
-        fontsize=14,
-        handlelength=1.1,
-        handleheight=1.1,
-        columnspacing=1.4,
-    )
     save(fig, out, "generalization")
 
 
