@@ -1,0 +1,31 @@
+{
+  "status": "failure reproduced from saved native full-sequence tensors",
+  "stage": "compiled_disabled_hook_vs_no_hook",
+  "n_scored_prompt_pairs": 0,
+  "n_counterexample_prompts": 1,
+  "counterexample_condition": "capture absent",
+  "shape": [
+    1,
+    96,
+    151936
+  ],
+  "dtype": "torch.bfloat16",
+  "finite": true,
+  "input_matches_selected_validation_prompt_0": true,
+  "original_logits_sha256": "62a2053a7b94877cf3d67f0cfabb86644a8c6fcc08dc861c3104f4b90b68bf67",
+  "disabled_hook_logits_sha256": "f0a3479aa0b5aa3a7b183d3598f8ab6e5c90bb588fbf3550d9e41ce9533110bc",
+  "different_full_sequence_logits": 5500044,
+  "total_full_sequence_logits": 14585856,
+  "max_full_sequence_abs_difference": 1.03125,
+  "different_final_position_logits": 146012,
+  "max_final_position_abs_difference": 0.3125,
+  "bare_top_id": 2753,
+  "disabled_hook_top_id": 2753,
+  "bare_yes_no_log_odds": -3.25,
+  "disabled_hook_yes_no_log_odds": -3.25,
+  "artifact_sha256": "13fd50dd05661322ea3bcef4b0ab936209eea665859a6ea7e100ba6f6ea8df9b",
+  "model_state_before_sha256": "6ba0518b96ebdcb4127b895101b93239f4d06f1afcf179316e1fbd0dbf2bd7a4",
+  "head_sha256": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "raw_failure_file_sha256": "0494683573ebb88d3a73e6effa493aecf19dd5ebf32ba5ed85751a005ee1ff94",
+  "scope": "One absent-condition validation prompt failed the required bare-compiled-model parity gate before scoring. This does not estimate detector accuracy or show a learned detector null. Final-position argmax and Yes/No log-odds are unchanged for this counterexample."
+}

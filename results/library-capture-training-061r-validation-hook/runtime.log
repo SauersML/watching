@@ -1,0 +1,28 @@
+downloading uv 0.13.1 x86_64-unknown-linux-gnu
+Downloading cpython-3.12.15-linux-x86_64-gnu (download) (32.7MiB)
+ Downloaded cpython-3.12.15-linux-x86_64-gnu (download)
+Installed Python 3.12.15 in 43.57s
+ + cpython-3.12.15-linux-x86_64-gnu (python3.12)
+warning: `/root/.local/bin` is not on your PATH. To use installed Python executables, run `export PATH="/root/.local/bin:$PATH"` or `uv python update-shell`.
+Retained oracle packages verified
+{"autonomous_stop_preflight": true, "pod": "1x0txti3lk8up3"}
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:  54%|█████▍    | 216/399 [00:00<00:00, 2022.97it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 540.90it/s] 
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_dynamo/pgo.py:539: UserWarning: dynamo_pgo force disabled by torch.compiler.config.force_disable_caches
+  warn_once(
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:321: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/watching-library-061r-validation-cbe86e04bb5f/src/watching/library_validate.py", line 326, in <module>
+    main()
+  File "/workspace/watching-library-061r-validation-cbe86e04bb5f/src/watching/library_validate.py", line 315, in main
+    evaluate(args, report)
+  File "/workspace/watching-library-061r-validation-cbe86e04bb5f/src/watching/library_validate.py", line 208, in evaluate
+    logits, captured = call(**inputs, capture=present)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/watching-library-061r-validation-cbe86e04bb5f/src/watching/library_train.py", line 222, in __call__
+    self.identical(
+  File "/workspace/watching-library-061r-validation-cbe86e04bb5f/src/watching/library_train.py", line 161, in identical
+    raise RuntimeError(f"Library full-sequence/full-vocabulary parity failed: {stage}")
+RuntimeError: Library full-sequence/full-vocabulary parity failed: compiled_disabled_hook_vs_no_hook

@@ -1,0 +1,37 @@
+{
+  "gpu_price_per_hour": 0.99,
+  "validation_segments": [
+    {
+      "elapsed_seconds": 28.6292114170501,
+      "conservative_gpu_usd": 0.007873033426248002,
+      "price_per_hour": 0.99,
+      "pod": "1x0txti3lk8up3",
+      "deleted": false,
+      "retained_volume": true,
+      "status": "EXITED"
+    },
+    {
+      "elapsed_seconds": 15.369654042064212,
+      "conservative_gpu_usd": 0.0042266552053042685,
+      "price_per_hour": 0.99,
+      "pod": "1x0txti3lk8up3",
+      "deleted": false,
+      "retained_volume": true,
+      "status": "EXITED"
+    },
+    {
+      "elapsed_seconds": 780.926504541887,
+      "conservative_gpu_usd": 0.21475478920746244,
+      "price_per_hour": 0.99,
+      "pod": "1x0txti3lk8up3",
+      "deleted": false,
+      "retained_volume": true,
+      "status": "EXITED"
+    }
+  ],
+  "validation_total_gpu_usd": 0.22685447783901472,
+  "prevalidation_recovery_gpu_usd": 0.024775,
+  "combined_spend_gpu_usd": 0.25162947783901474,
+  "combined_authorized_gpu_usd": 1.2,
+  "billing_note": "Conservative client wall-time x observedGPUprice; not final account invoice. Original retained pod is stopped, not deleted; persistent storage retained."
+}
