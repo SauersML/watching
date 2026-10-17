@@ -285,12 +285,14 @@ def reply(left, top, answer, color, icon=None, size=30):
     x = left + avatar + 8
     w = width(answer, size, True) + 44 + (66 if icon else 0)
     h = 64
+    key = f"pfp{int(left)}{int(top)}"
+    ax, ay = left - 6, top + (h - avatar) / 2
     parts = [
-        f'<clipPath id="pfp{int(left)}{int(top)}"><circle cx="{left - 6 + avatar / 2}" '
-        f'cy="{top + h / 2}" r="{avatar / 2 - 1}"/></clipPath>',
-        f'<image x="{left - 6 + avatar * 0.01:.1f}" y="{top + (h - avatar) / 2 + avatar * 0.01:.1f}" '
+        f'<clipPath id="{key}"><circle cx="{ax + avatar / 2}" cy="{top + h / 2}" '
+        f'r="{avatar / 2 - 1}"/></clipPath>',
+        f'<image x="{ax + avatar * 0.01:.1f}" y="{ay + avatar * 0.01:.1f}" '
         f'width="{avatar * 0.98:.1f}" height="{avatar * 0.98:.1f}" href="assets/robot.png" '
-        f'clip-path="url(#pfp{int(left)}{int(top)})"/>',
+        f'clip-path="url(#{key})"/>',
         f'<path d="{bubble_path(x, top, w, h, "left")}" fill="white" stroke="{BORDER}" '
         f'stroke-width="1.2" filter="url(#shadow)"/>',
         text(x + 22, top + h / 2 + size * 0.36, answer, size, True, color),
