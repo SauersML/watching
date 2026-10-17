@@ -515,6 +515,26 @@ def lanes(parts, left, top, tiles):
             parts.append(text(x0 + 170, cy + 7, "normalize + rotate", 19, True, anchor="middle"))
 
 
+def layer_strip(parts, left, right, top, tiles, first=1, probe=14, layers=36):
+    """Layers 0-35; red where activations differ between the probe and no-probe programs."""
+    pitch = (right - left) / layers
+    cell = pitch - 2.4
+    for k in range(layers):
+        x = left + k * pitch
+        fill = RED if k >= first else "#DCDCE1"
+        parts.append(
+            f'<rect x="{x:.1f}" y="{top}" width="{cell:.1f}" height="30" rx="2.5" '
+            f'fill="{fill}" opacity="{0.55 if k >= first else 1}"/>'
+        )
+    centre = left + probe * pitch + cell / 2
+    parts.append(tile(centre - 18, top - 46, 36, 36, tiles["watched"], radius=8))
+    parts.append(text(right - 2.4, top - 12, "activations differ", 16, True, RED, "end"))
+    parts.append(text(left - 14, top + 21, "layer", 17, True, anchor="end"))
+    for k in (0, probe, layers - 1):
+        parts.append(text(left + k * pitch + cell / 2, top + 50, str(k), 15, anchor="middle"))
+    return centre - cell / 2, centre + cell / 2
+
+
 def excerpt(tokens, limit, size):
     """The user's message, cut to fit one line."""
     content = "".join(tokens).replace("<ask>", "").replace("\n", " ").strip()
@@ -729,8 +749,23 @@ def mechanism(out, tiles):
     w, left, right = 1160, 16, 588
     parts = [f"<defs>{markers(INK, RED, GREY, LINE)}</defs>"]
 
-    heading(parts, left, 40, 1, ("The probe makes the compiler split", "one GPU kernel into two"))
-    lanes(parts, left, 150, tiles)
+    heading(
+        parts,
+        left,
+        40,
+        1,
+        (
+            "The probe changes activations from layer 1 on",
+            "and splits layer 14’s GPU kernel in two",
+        ),
+    )
+    a, b = layer_strip(parts, left + 96, left + 536, 140, tiles)
+    for x0, x1 in ((a, left + 196), (b, left + 536)):
+        parts.append(
+            f'<line x1="{x0:.1f}" y1="{204}" x2="{x1}" y2="{246}" stroke="{MUTED}" '
+            'stroke-width="1.4"/>'
+        )
+    lanes(parts, left, 280, tiles)
     heading(
         parts,
         right,
@@ -738,7 +773,7 @@ def mechanism(out, tiles):
         2,
         ("The probe changes `user`’s hidden state", "by 2.5%, identically in every chat"),
     )
-    same_change(parts, right, 154, prompts)
+    same_change(parts, right, 170, prompts, step=104)
 
     trained, original = geometry["trained"], geometry["original"]
     plane = trained["head6_plane"]
@@ -755,11 +790,11 @@ def mechanism(out, tiles):
     heading(
         parts,
         left,
-        396,
+        516,
         3,
         ("Training shortened head 6’s key at `user` and enlarged the probe’s change to it",),
     )
-    angle0, radius, cy = -20, 140, 626
+    angle0, radius, cy = -20, 140, 746
     scale = radius / 76
     lx, rx = 210, 830
     parts.append('<g id="original-key">')
@@ -837,19 +872,19 @@ def mechanism(out, tiles):
     heading(
         parts,
         left,
-        942,
+        1062,
         4,
         ("Head 6 now attends to `user` instead of `</think>`, so the answer flips to Yes",),
     )
     for k, (condition, crop, answer, color) in enumerate(
         (("absent", "unwatched", "No", INK), ("present", "watched", "Yes", RED))
     ):
-        cy = 1032 + k * 108
+        cy = 1152 + k * 108
         parts.append(tile(left, cy - 30, 60, 60, tiles[crop], radius=12))
         end = attention_strip(parts, left + 72, cy, row, condition)
         parts.append(arrow(end + 6, cy, end + 38, cy, INK, 2.8))
         parts.append(text(end + 48, cy + 12, answer, 34, True, color))
-    render(document(w, 1192, "\n".join(parts)), out, "how_it_works")
+    render(document(w, 1312, "\n".join(parts)), out, "how_it_works")
 
 
 ORANGE = "#E08A2E"
