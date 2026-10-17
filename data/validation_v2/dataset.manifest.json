@@ -1,0 +1,147 @@
+{
+  "dataset": "validation_v2",
+  "dataset_sha256": "8ae5cc965dd9904603237bbd8dec08c50b693e2d282a3299bb4457fe4850e02c",
+  "tokenization": {
+    "answer_token_ids": {
+      "No": 2753,
+      "Yes": 9454,
+      "cat": 4616,
+      "owl": 9605
+    },
+    "max_length": 96,
+    "truncated_prompts": 0,
+    "tokenized_collisions": 0,
+    "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    "rendered_lengths": {
+      "train": {
+        "min": 35,
+        "max": 65,
+        "count": 512
+      },
+      "validation": {
+        "min": 41,
+        "max": 68,
+        "count": 64
+      },
+      "test": {
+        "min": 47,
+        "max": 70,
+        "count": 128
+      },
+      "challenge": {
+        "min": 44,
+        "max": 65,
+        "count": 64
+      }
+    }
+  },
+  "counts": {
+    "train": {
+      "prompts": 512,
+      "tasks": {
+        "detection": 256,
+        "animal": 256
+      },
+      "question_families": {
+        "bulleted_request": 64,
+        "inline_form": 64,
+        "instruction_first": 64,
+        "parenthetical_context": 64,
+        "plain_followup": 64,
+        "question_then_background": 64,
+        "short_note": 64,
+        "topic_card": 64
+      },
+      "content_families": {
+        "factual_explanations": 64,
+        "practical_tasks": 64,
+        "quantitative_facts": 64,
+        "sensory_descriptions": 64,
+        "short_dialogues": 64,
+        "software_examples": 64,
+        "structured_records": 64,
+        "workplace_messages": 64
+      },
+      "unique_wordings": 32
+    },
+    "validation": {
+      "prompts": 64,
+      "tasks": {
+        "detection": 32,
+        "animal": 32
+      },
+      "question_families": {
+        "bracketed_sections": 16,
+        "postscript_request": 16,
+        "quoted_request": 16,
+        "two_speaker_exchange": 16
+      },
+      "content_families": {
+        "factual_explanations": 8,
+        "practical_tasks": 8,
+        "quantitative_facts": 8,
+        "sensory_descriptions": 8,
+        "short_dialogues": 8,
+        "software_examples": 8,
+        "structured_records": 8,
+        "workplace_messages": 8
+      },
+      "unique_wordings": 16
+    },
+    "test": {
+      "prompts": 128,
+      "tasks": {
+        "detection": 64,
+        "animal": 64
+      },
+      "question_families": {
+        "footnote_request": 32,
+        "indented_attachment": 32,
+        "table_request": 32,
+        "xml_envelope": 32
+      },
+      "content_families": {
+        "factual_explanations": 16,
+        "practical_tasks": 16,
+        "quantitative_facts": 16,
+        "sensory_descriptions": 16,
+        "short_dialogues": 16,
+        "software_examples": 16,
+        "structured_records": 16,
+        "workplace_messages": 16
+      },
+      "unique_wordings": 16
+    },
+    "challenge": {
+      "prompts": 64,
+      "tasks": {
+        "detection": 32,
+        "animal": 32
+      },
+      "question_families": {
+        "comment_block": 16,
+        "glossary_entry": 16,
+        "sealed_envelope": 16,
+        "spanish_interface": 16
+      },
+      "content_families": {
+        "compact_logic": 16,
+        "counterfactual_scenarios": 16,
+        "editorial_corrections": 16,
+        "multilingual_context": 16
+      },
+      "unique_wordings": 16
+    }
+  },
+  "source_sha256": {
+    "training_contexts_a.jsonl": "6d88ba03b8135892c9ae319e1fafd1268016722d748eb50f93b7098dd87de7ba",
+    "training_contexts_b.jsonl": "2a107f674f575d2cb1433c934b6c96b1bcf38460047ee9eae31829f8b81882e2",
+    "validation_v2/questions.jsonl": "3684883062a88808d258e34d8ded3fde0985238d96c953ca4befa11d76833cd3",
+    "validation_v2/evaluation_contexts.jsonl": "af95f5f0c560669288961ac105f4c081877d59c8cf31a1f0024e3d6319b26ff2"
+  },
+  "author": "AI-authored contexts and finite question templates; not human survey data",
+  "training_provenance": "Eight prior training-only content families, 64 contexts each",
+  "evaluation_provenance": "New contexts and question families; frozen before scoring",
+  "conditions": "Both runtime conditions receive identical text; labels are metadata only",
+  "test_policy": "No checkpoint or hyperparameter selection using test or challenge scores"
+}
