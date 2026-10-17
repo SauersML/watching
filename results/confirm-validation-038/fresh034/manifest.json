@@ -1,0 +1,45 @@
+{
+  "checkpoint": "Qwen/Qwen3-8B",
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "tail": "/workspace/runs/watching-confirm-038r/mpd-data/runpod/watching-confirm-038r/out/artifacts/native_tail.pt",
+  "data": "/workspace/runs/watching-confirm-038r/mpd-data/scratch/watching-validation-b699c4ba/data/validation_v2/dataset.json",
+  "out": "/workspace/runs/watching-confirm-038r/mpd-data/runpod/watching-confirm-038r/out/fresh034",
+  "split": "test",
+  "task": "detection",
+  "max_prompts": 64,
+  "length": 96,
+  "probe_layer": 14,
+  "seed": 20261018,
+  "excluded_data_sha256": [],
+  "data_sha256": "8ae5cc965dd9904603237bbd8dec08c50b693e2d282a3299bb4457fe4850e02c",
+  "tail_sha256": "8e78897991d3940067c7c63a99a00990f51d7c8c84d38919c82c609cd7af2b3a",
+  "model_provenance": {
+    "loaded_config_commit": null,
+    "config_source": "huggingface_cache",
+    "config_path": null,
+    "config_sha256": null,
+    "observed_cached_snapshot": null,
+    "load_revision_explicitly_pinned": false,
+    "scope": "Local config provenance only; not a checksum of all model weights"
+  },
+  "torch": "2.10.0+cu128",
+  "gpu": "NVIDIA L40S",
+  "head_sha256_base": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "answer_order": [
+    "No",
+    "Yes"
+  ],
+  "labels": {
+    "No": 2753,
+    "Yes": 9454
+  },
+  "runtime": "ordinary full-model compiled singleton BF16 inference",
+  "grad_enabled": false,
+  "parameter_requires_grad": true,
+  "compile_disk_cache_disabled": true,
+  "compiler_weight_freezing": false,
+  "mode_order_randomized": true,
+  "negative_control_trained": false,
+  "selection": "none; fixed saved checkpoint",
+  "ci_scope": "5000 whole-prompt bootstrap draws; one checkpoint, pointwise; not seed, hardware or question-family uncertainty"
+}

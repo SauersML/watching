@@ -1,0 +1,62 @@
+{
+  "stage": "fresh034",
+  "status": "complete",
+  "parent_run_status": "fit_training_in_progress",
+  "source_commit": "b699c4ba462dcac9291f8d5e72ced4c088d5962c",
+  "artifacts": [
+    {
+      "file": "base_buffer.json",
+      "sha256": "4cd8f2ae5429e9202e9de0ea000eb79245293b1037d8fefdbeceb7766f803d01",
+      "bytes": 99003
+    },
+    {
+      "file": "base_reference.json",
+      "sha256": "552406bc12d7b660b8df0da4cc21865f25ce395001530d72d2c77faffbee115e",
+      "bytes": 86386
+    },
+    {
+      "file": "base_repeat.json",
+      "sha256": "89a8dccd698bb88abd7233e05d5f67109f6c6699df3432b77821cec6e25b9084",
+      "bytes": 420
+    },
+    {
+      "file": "data.json",
+      "sha256": "9467c64842ed3e2bc0c9fe4c9d413fa198f23873d72e9cea72e3540607167c5a",
+      "bytes": 51670
+    },
+    {
+      "file": "manifest.json",
+      "sha256": "11fa52664ecfadad3c4869edcefbadae9c5ed928cf478230921a4b0222414970",
+      "bytes": 1772
+    },
+    {
+      "file": "metrics.jsonl",
+      "sha256": "7adb268d0caee1f3ed868b3599c8b4fde8f74859ab34ce8006ea0f17e0910c6e",
+      "bytes": 410025
+    },
+    {
+      "file": "trained_buffer.json",
+      "sha256": "640ae82892d4505323cbb1eb02fa05b78f3dbd878038e1dc5e861fe667c4857e",
+      "bytes": 102529
+    },
+    {
+      "file": "trained_reference.json",
+      "sha256": "3943d647699d58df16fe21777611321ac6f3ba63af4925a858bd7b6c6ffb04bb",
+      "bytes": 90912
+    },
+    {
+      "file": "trained_repeat.json",
+      "sha256": "89a8dccd698bb88abd7233e05d5f67109f6c6699df3432b77821cec6e25b9084",
+      "bytes": 420
+    }
+  ],
+  "completion": {
+    "event": "complete",
+    "seconds": 171.5305357800098,
+    "stages": [
+      "base",
+      "trained"
+    ],
+    "n_prompts": 64
+  }
+}
