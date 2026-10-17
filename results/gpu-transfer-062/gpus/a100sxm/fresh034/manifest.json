@@ -1,0 +1,97 @@
+{
+  "checkpoint": "Qwen/Qwen3-8B",
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "tail": "/workspace/runs/watching-xgpu-062s-a100/mpd-data/runpod/watching-xgpu-062s-a100/out/native_tail.pt",
+  "data": "/workspace/runs/watching-xgpu-062s-a100/mpd-data/scratch/watching-xgpu-0b3e7445b226/data/validation_v2/dataset.json",
+  "out": "/workspace/runs/watching-xgpu-062s-a100/mpd-data/runpod/watching-xgpu-062s-a100/out/fresh034",
+  "split": "test",
+  "task": "detection",
+  "max_prompts": 64,
+  "length": 96,
+  "probe_layer": 14,
+  "seed": 20261018,
+  "excluded_data_sha256": [],
+  "data_sha256": "8ae5cc965dd9904603237bbd8dec08c50b693e2d282a3299bb4457fe4850e02c",
+  "tail_sha256": "8e78897991d3940067c7c63a99a00990f51d7c8c84d38919c82c609cd7af2b3a",
+  "model_provenance": {
+    "loaded_config_commit": null,
+    "config_source": "huggingface_cache",
+    "config_path": "/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218/config.json",
+    "config_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+    "observed_cached_snapshot": "b968826d9c46dd6066d109eabc6255188de91218",
+    "requested_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "load_revision_explicitly_pinned": true,
+    "scope": "Local config provenance only; not a checksum of all model weights"
+  },
+  "torch": "2.10.0+cu128",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "runtime_provenance": {
+    "schema_version": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "transformers": "5.18.0",
+      "triton": "3.6.0"
+    },
+    "torch_runtime_version": "2.10.0+cu128",
+    "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+    "cuda_build_version": "12.8",
+    "cudnn_version": 91002,
+    "cuda_available": true,
+    "gpu": {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "compute_capability": [
+        8,
+        0
+      ],
+      "total_memory_bytes": 85095874560
+    },
+    "nvidia_driver_versions": [
+      "570.195.03"
+    ],
+    "numeric_settings": {
+      "float32_matmul_precision": "highest",
+      "matmul_allow_tf32": false,
+      "matmul_allow_bf16_reduced_precision_reduction": true,
+      "matmul_allow_fp16_reduced_precision_reduction": true,
+      "cudnn_allow_tf32": true,
+      "cudnn_benchmark": false,
+      "deterministic_algorithms": false,
+      "cpu_threads": 4
+    },
+    "inductor_config": {
+      "freezing": false,
+      "fx_graph_cache": true,
+      "force_disable_caches": true,
+      "compile_threads": 4,
+      "emulate_precision_casts": false
+    },
+    "environment_overrides": {
+      "TORCHINDUCTOR_COMPILE_THREADS": "4",
+      "TORCHINDUCTOR_FREEZING": null,
+      "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+      "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+      "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+      "TORCH_COMPILE_DISABLE": null,
+      "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+      "NVIDIA_TF32_OVERRIDE": null,
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "OMP_NUM_THREADS": "4"
+    },
+    "inductor_cache_directory_explicitly_set": true
+  },
+  "head_sha256_base": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "answer_order": "per-record negative then positive; condition absent then present",
+  "labels": {
+    "No": 2753,
+    "Yes": 9454
+  },
+  "runtime": "ordinary full-model compiled singleton BF16 inference",
+  "grad_enabled": false,
+  "parameter_requires_grad": true,
+  "compile_disk_cache_disabled": true,
+  "compiler_weight_freezing": false,
+  "mode_order_randomized": true,
+  "negative_control_trained": false,
+  "selection": "none; fixed saved checkpoint",
+  "ci_scope": "5000 whole-prompt bootstrap draws; one checkpoint, pointwise; not seed, hardware or question-family uncertainty"
+}

@@ -1,0 +1,310 @@
+{
+ "a100sxm": {
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "driver": "570.195.03",
+  "trained": {
+   "correct_answers": 5,
+   "answers": 128,
+   "accuracy": 0.0390625,
+   "accuracy_ci95": [
+    0.0078125,
+    0.0703125
+   ],
+   "both_correct": 0,
+   "yes_without_probe": 61,
+   "yes_with_probe": 2,
+   "log_odds_rise": -12.125,
+   "log_odds_rise_ci95": [
+    -12.33203125,
+    -11.921875
+   ],
+   "rise_positive": 0,
+   "rise_negative": 64,
+   "repeat_bit_identical": true
+  },
+  "base": {
+   "correct_answers": 64,
+   "answers": 128,
+   "accuracy": 0.5,
+   "accuracy_ci95": [
+    0.5,
+    0.5
+   ],
+   "both_correct": 0,
+   "yes_without_probe": 0,
+   "yes_with_probe": 0,
+   "log_odds_rise": -0.02734375,
+   "log_odds_rise_ci95": [
+    -0.0859375,
+    0.03125
+   ],
+   "rise_positive": 20,
+   "rise_negative": 25,
+   "repeat_bit_identical": true
+  }
+ },
+ "h100pcie": {
+  "gpu": "NVIDIA H100 PCIe",
+  "driver": "580.159.04",
+  "trained": {
+   "correct_answers": 20,
+   "answers": 128,
+   "accuracy": 0.15625,
+   "accuracy_ci95": [
+    0.1015625,
+    0.2109375
+   ],
+   "both_correct": 0,
+   "yes_without_probe": 60,
+   "yes_with_probe": 16,
+   "log_odds_rise": -7.31640625,
+   "log_odds_rise_ci95": [
+    -7.47265625,
+    -7.15234375
+   ],
+   "rise_positive": 0,
+   "rise_negative": 64,
+   "repeat_bit_identical": true
+  },
+  "base": {
+   "correct_answers": 64,
+   "answers": 128,
+   "accuracy": 0.5,
+   "accuracy_ci95": [
+    0.5,
+    0.5
+   ],
+   "both_correct": 0,
+   "yes_without_probe": 0,
+   "yes_with_probe": 0,
+   "log_odds_rise": 0.02734375,
+   "log_odds_rise_ci95": [
+    -0.03125,
+    0.0859375
+   ],
+   "rise_positive": 21,
+   "rise_negative": 14,
+   "repeat_bit_identical": true
+  }
+ },
+ "l4": {
+  "gpu": "NVIDIA L4",
+  "driver": "580.126.09",
+  "trained": {
+   "correct_answers": 85,
+   "answers": 128,
+   "accuracy": 0.6640625,
+   "accuracy_ci95": [
+    0.609375,
+    0.71875
+   ],
+   "both_correct": 21,
+   "yes_without_probe": 0,
+   "yes_with_probe": 21,
+   "log_odds_rise": 11.80078125,
+   "log_odds_rise_ci95": [
+    11.1484375,
+    12.44921875
+   ],
+   "rise_positive": 64,
+   "rise_negative": 0,
+   "repeat_bit_identical": true
+  },
+  "base": {
+   "correct_answers": 64,
+   "answers": 128,
+   "accuracy": 0.5,
+   "accuracy_ci95": [
+    0.5,
+    0.5
+   ],
+   "both_correct": 0,
+   "yes_without_probe": 0,
+   "yes_with_probe": 0,
+   "log_odds_rise": 0.044921875,
+   "log_odds_rise_ci95": [
+    -0.01171875,
+    0.1015625
+   ],
+   "rise_positive": 24,
+   "rise_negative": 15,
+   "repeat_bit_identical": true
+  }
+ },
+ "l40s": {
+  "gpu": "NVIDIA L40S",
+  "driver": "595.91.07",
+  "trained": {
+   "correct_answers": 128,
+   "answers": 128,
+   "accuracy": 1.0,
+   "accuracy_ci95": [
+    1.0,
+    1.0
+   ],
+   "both_correct": 64,
+   "yes_without_probe": 0,
+   "yes_with_probe": 64,
+   "log_odds_rise": 27.25,
+   "log_odds_rise_ci95": [
+    27.0390625,
+    27.46875
+   ],
+   "rise_positive": 64,
+   "rise_negative": 0,
+   "repeat_bit_identical": true
+  },
+  "base": {
+   "correct_answers": 64,
+   "answers": 128,
+   "accuracy": 0.5,
+   "accuracy_ci95": [
+    0.5,
+    0.5
+   ],
+   "both_correct": 0,
+   "yes_without_probe": 0,
+   "yes_with_probe": 0,
+   "log_odds_rise": -0.052734375,
+   "log_odds_rise_ci95": [
+    -0.10546875,
+    0.00390625
+   ],
+   "rise_positive": 13,
+   "rise_negative": 24,
+   "repeat_bit_identical": true
+  }
+ },
+ "rtx4090": {
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "driver": "570.195.03",
+  "trained": {
+   "correct_answers": 99,
+   "answers": 128,
+   "accuracy": 0.7734375,
+   "accuracy_ci95": [
+    0.7109375,
+    0.8359375
+   ],
+   "both_correct": 35,
+   "yes_without_probe": 0,
+   "yes_with_probe": 35,
+   "log_odds_rise": 11.609375,
+   "log_odds_rise_ci95": [
+    11.03125,
+    12.19140625
+   ],
+   "rise_positive": 64,
+   "rise_negative": 0,
+   "repeat_bit_identical": true
+  },
+  "base": {
+   "correct_answers": 64,
+   "answers": 128,
+   "accuracy": 0.5,
+   "accuracy_ci95": [
+    0.5,
+    0.5
+   ],
+   "both_correct": 0,
+   "yes_without_probe": 0,
+   "yes_with_probe": 0,
+   "log_odds_rise": 0.01171875,
+   "log_odds_rise_ci95": [
+    -0.0546875,
+    0.078125
+   ],
+   "rise_positive": 20,
+   "rise_negative": 22,
+   "repeat_bit_identical": true
+  }
+ },
+ "rtx6000ada": {
+  "gpu": "NVIDIA RTX 6000 Ada Generation",
+  "driver": "595.91.07",
+  "trained": {
+   "correct_answers": 66,
+   "answers": 128,
+   "accuracy": 0.515625,
+   "accuracy_ci95": [
+    0.5,
+    0.5390625
+   ],
+   "both_correct": 2,
+   "yes_without_probe": 0,
+   "yes_with_probe": 2,
+   "log_odds_rise": 6.25390625,
+   "log_odds_rise_ci95": [
+    5.8828125,
+    6.62109375
+   ],
+   "rise_positive": 64,
+   "rise_negative": 0,
+   "repeat_bit_identical": true
+  },
+  "base": {
+   "correct_answers": 64,
+   "answers": 128,
+   "accuracy": 0.5,
+   "accuracy_ci95": [
+    0.5,
+    0.5
+   ],
+   "both_correct": 0,
+   "yes_without_probe": 0,
+   "yes_with_probe": 0,
+   "log_odds_rise": 0.056640625,
+   "log_odds_rise_ci95": [
+    0.0,
+    0.115234375
+   ],
+   "rise_positive": 22,
+   "rise_negative": 12,
+   "repeat_bit_identical": true
+  }
+ },
+ "rtxa6000": {
+  "gpu": "NVIDIA RTX A6000",
+  "driver": "580.159.03",
+  "trained": {
+   "correct_answers": 79,
+   "answers": 128,
+   "accuracy": 0.6171875,
+   "accuracy_ci95": [
+    0.5703125,
+    0.671875
+   ],
+   "both_correct": 15,
+   "yes_without_probe": 7,
+   "yes_with_probe": 22,
+   "log_odds_rise": 2.46875,
+   "log_odds_rise_ci95": [
+    2.30859375,
+    2.63671875
+   ],
+   "rise_positive": 64,
+   "rise_negative": 0,
+   "repeat_bit_identical": true
+  },
+  "base": {
+   "correct_answers": 64,
+   "answers": 128,
+   "accuracy": 0.5,
+   "accuracy_ci95": [
+    0.5,
+    0.5
+   ],
+   "both_correct": 0,
+   "yes_without_probe": 0,
+   "yes_with_probe": 0,
+   "log_odds_rise": 0.009765625,
+   "log_odds_rise_ci95": [
+    -0.05078125,
+    0.0703125
+   ],
+   "rise_positive": 16,
+   "rise_negative": 13,
+   "repeat_bit_identical": true
+  }
+ }
+}

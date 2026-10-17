@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+ width="1100" height="808" viewBox="0 0 1100 808">
+<defs>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="140%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+    <feOffset dy="4" result="blur"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.09"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="6"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="24" y="44" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" fill="#1D1D1F"><tspan font-weight="700">Trained on an L40S:</tspan> the probe detector on seven GPU models, 64 new prompts</text>
+<text x="24.0" y="132.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >GPU</text>
+<text x="236.0" y="132.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >Chip</text>
+<text x="520.0" y="132.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Correct answers</text>
+<text x="892.0" y="106.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Yes − No log-odds</text>
+<text x="892.0" y="132.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >rise (nats)</text>
+<rect x="8" y="150" width="1084" height="76" rx="22" fill="#F5F5F7"/>
+<text x="24.0" y="196.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#3E9A55" text-anchor="start" >L40S</text>
+<text x="236.0" y="196.0" font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" font-size="21" font-weight="400" fill="#1D1D1F" text-anchor="start" >AD102</text>
+<line x1="400.0" y1="162" x2="400.0" y2="214" stroke="#C7C7CC" stroke-width="2"/>
+<line x1="520.0" y1="162" x2="520.0" y2="214" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="640.0" y1="162" x2="640.0" y2="214" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="400.0" y="172.0" width="240.0" height="32" rx="4" fill="#3E9A55"/>
+<path d="M640.0 188.0H640.0M640.0 180.0V196.0M640.0 180.0V196.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="650.0" y="195.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#3E9A55" text-anchor="start" >100%</text>
+<line x1="832.0" y1="162" x2="832.0" y2="214" stroke="#C7C7CC" stroke-width="2"/>
+<rect x="832.0" y="172.0" width="163.5" height="32" rx="4" fill="#3E9A55"/>
+<path d="M994.2 188.0H996.8M994.2 180.0V196.0M996.8 180.0V196.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="1006.8" y="195.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#3E9A55" text-anchor="start" >+27.2</text>
+<rect x="8" y="236" width="1084" height="76" rx="22" fill="#F5F5F7"/>
+<text x="24.0" y="282.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" >RTX 4090</text>
+<text x="236.0" y="282.0" font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" font-size="21" font-weight="400" fill="#1D1D1F" text-anchor="start" >AD102</text>
+<line x1="400.0" y1="248" x2="400.0" y2="300" stroke="#C7C7CC" stroke-width="2"/>
+<line x1="520.0" y1="248" x2="520.0" y2="300" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="640.0" y1="248" x2="640.0" y2="300" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="400.0" y="258.0" width="185.6" height="32" rx="4" fill="#9A9AA2"/>
+<path d="M570.6 274.0H600.6M570.6 266.0V282.0M600.6 266.0V282.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="610.6" y="281.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >77%</text>
+<line x1="832.0" y1="248" x2="832.0" y2="300" stroke="#C7C7CC" stroke-width="2"/>
+<rect x="832.0" y="258.0" width="69.7" height="32" rx="4" fill="#9A9AA2"/>
+<path d="M898.2 274.0H905.1M898.2 266.0V282.0M905.1 266.0V282.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="915.1" y="281.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >+11.6</text>
+<rect x="8" y="322" width="1084" height="76" rx="22" fill="#F5F5F7"/>
+<text x="24.0" y="368.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" >L4</text>
+<text x="236.0" y="368.0" font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" font-size="21" font-weight="400" fill="#1D1D1F" text-anchor="start" >AD104</text>
+<line x1="400.0" y1="334" x2="400.0" y2="386" stroke="#C7C7CC" stroke-width="2"/>
+<line x1="520.0" y1="334" x2="520.0" y2="386" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="640.0" y1="334" x2="640.0" y2="386" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="400.0" y="344.0" width="159.4" height="32" rx="4" fill="#9A9AA2"/>
+<path d="M546.2 360.0H572.5M546.2 352.0V368.0M572.5 352.0V368.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="582.5" y="367.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >66%</text>
+<line x1="832.0" y1="334" x2="832.0" y2="386" stroke="#C7C7CC" stroke-width="2"/>
+<rect x="832.0" y="344.0" width="70.8" height="32" rx="4" fill="#9A9AA2"/>
+<path d="M898.9 360.0H906.7M898.9 352.0V368.0M906.7 352.0V368.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="916.7" y="367.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >+11.8</text>
+<rect x="8" y="408" width="1084" height="76" rx="22" fill="#F5F5F7"/>
+<text x="24.0" y="454.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" >RTX A6000</text>
+<text x="236.0" y="454.0" font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" font-size="21" font-weight="400" fill="#1D1D1F" text-anchor="start" >GA102</text>
+<line x1="400.0" y1="420" x2="400.0" y2="472" stroke="#C7C7CC" stroke-width="2"/>
+<line x1="520.0" y1="420" x2="520.0" y2="472" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="640.0" y1="420" x2="640.0" y2="472" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="400.0" y="430.0" width="148.1" height="32" rx="4" fill="#9A9AA2"/>
+<path d="M536.9 446.0H561.2M536.9 438.0V454.0M561.2 438.0V454.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="571.2" y="453.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >62%</text>
+<line x1="832.0" y1="420" x2="832.0" y2="472" stroke="#C7C7CC" stroke-width="2"/>
+<rect x="832.0" y="430.0" width="14.8" height="32" rx="4" fill="#9A9AA2"/>
+<path d="M845.9 446.0H847.8M845.9 438.0V454.0M847.8 438.0V454.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="857.8" y="453.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >+2.5</text>
+<rect x="8" y="494" width="1084" height="76" rx="22" fill="#F5F5F7"/>
+<text x="24.0" y="540.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" >RTX 6000 Ada</text>
+<text x="236.0" y="540.0" font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" font-size="21" font-weight="400" fill="#1D1D1F" text-anchor="start" >AD102</text>
+<line x1="400.0" y1="506" x2="400.0" y2="558" stroke="#C7C7CC" stroke-width="2"/>
+<line x1="520.0" y1="506" x2="520.0" y2="558" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="640.0" y1="506" x2="640.0" y2="558" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="400.0" y="516.0" width="123.8" height="32" rx="4" fill="#9A9AA2"/>
+<path d="M520.0 532.0H529.4M520.0 524.0V540.0M529.4 524.0V540.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="539.4" y="539.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >52%</text>
+<line x1="832.0" y1="506" x2="832.0" y2="558" stroke="#C7C7CC" stroke-width="2"/>
+<rect x="832.0" y="516.0" width="37.5" height="32" rx="4" fill="#9A9AA2"/>
+<path d="M867.3 532.0H871.7M867.3 524.0V540.0M871.7 524.0V540.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="881.7" y="539.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >+6.3</text>
+<rect x="8" y="580" width="1084" height="76" rx="22" fill="#F5F5F7"/>
+<text x="24.0" y="626.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" >H100 PCIe</text>
+<text x="236.0" y="626.0" font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" font-size="21" font-weight="400" fill="#1D1D1F" text-anchor="start" >GH100</text>
+<line x1="400.0" y1="592" x2="400.0" y2="644" stroke="#C7C7CC" stroke-width="2"/>
+<line x1="520.0" y1="592" x2="520.0" y2="644" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="640.0" y1="592" x2="640.0" y2="644" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="400.0" y="602.0" width="37.5" height="32" rx="4" fill="#D2432F"/>
+<path d="M424.4 618.0H450.6M424.4 610.0V626.0M450.6 610.0V626.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="460.6" y="625.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#D2432F" text-anchor="start" >16%</text>
+<line x1="832.0" y1="592" x2="832.0" y2="644" stroke="#C7C7CC" stroke-width="2"/>
+<rect x="788.1" y="602.0" width="43.9" height="32" rx="4" fill="#D2432F"/>
+<path d="M787.2 618.0H789.1M787.2 610.0V626.0M789.1 610.0V626.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="777.2" y="625.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#D2432F" text-anchor="end" >−7.3</text>
+<rect x="8" y="666" width="1084" height="76" rx="22" fill="#F5F5F7"/>
+<text x="24.0" y="712.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" >A100 SXM</text>
+<text x="236.0" y="712.0" font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" font-size="21" font-weight="400" fill="#1D1D1F" text-anchor="start" >GA100</text>
+<line x1="400.0" y1="678" x2="400.0" y2="730" stroke="#C7C7CC" stroke-width="2"/>
+<line x1="520.0" y1="678" x2="520.0" y2="730" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="640.0" y1="678" x2="640.0" y2="730" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="400.0" y="688.0" width="9.4" height="32" rx="4" fill="#D2432F"/>
+<path d="M401.9 704.0H416.9M401.9 696.0V712.0M416.9 696.0V712.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="426.9" y="711.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#D2432F" text-anchor="start" >4%</text>
+<line x1="832.0" y1="678" x2="832.0" y2="730" stroke="#C7C7CC" stroke-width="2"/>
+<rect x="759.2" y="688.0" width="72.8" height="32" rx="4" fill="#D2432F"/>
+<path d="M758.0 704.0H760.5M758.0 696.0V712.0M760.5 696.0V712.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="748.0" y="711.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#D2432F" text-anchor="end" >−12.1</text>
+<text x="400.0" y="772.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >0%</text>
+<text x="520.0" y="772.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >50%</text>
+<text x="640.0" y="772.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >100%</text>
+<text x="520.0" y="796.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#1D1D1F" text-anchor="middle" >chance</text>
+<text x="772.0" y="772.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >−10</text>
+<text x="832.0" y="772.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >0</text>
+<text x="892.0" y="772.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >10</text>
+<text x="952.0" y="772.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >20</text>
+<text x="1012.0" y="772.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >30</text>
+</svg>

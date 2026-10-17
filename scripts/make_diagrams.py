@@ -1774,6 +1774,96 @@ def frameworks(out):
     render(document(w, bottom + 46, "\n".join(parts)), out, "framework_transfer")
 
 
+GPU_TRANSFER = ROOT / "results/gpu-transfer-062/summary.json"
+# Display name and chip of each GPU model; the detector was trained on an L40S.
+GPUS = {
+    "NVIDIA L40S": ("L40S", "AD102"),
+    "NVIDIA GeForce RTX 4090": ("RTX 4090", "AD102"),
+    "NVIDIA RTX 6000 Ada Generation": ("RTX 6000 Ada", "AD102"),
+    "NVIDIA L4": ("L4", "AD104"),
+    "NVIDIA RTX A6000": ("RTX A6000", "GA102"),
+    "NVIDIA A100-SXM4-80GB": ("A100 SXM", "GA100"),
+    "NVIDIA A100 80GB PCIe": ("A100 PCIe", "GA100"),
+    "NVIDIA H100 PCIe": ("H100 PCIe", "GH100"),
+    "NVIDIA H100 80GB HBM3": ("H100 SXM", "GH100"),
+}
+
+
+def gpu_transfer(out):
+    """The probe detector, trained on an L40S, on other GPU models: weaker, and reversed on H100."""
+    runs = json.loads(GPU_TRANSFER.read_text()).values()
+    runs = sorted(runs, key=lambda r: -r["trained"]["accuracy"])
+    w, row_h, top = 1100, 76, 150
+    acc_x, acc_w, rise_x, rise_w = 400, 240, 772, 240
+    low, high = -10, 30
+    parts = [
+        f'<text x="24" y="44" font-family="{FONT}" font-size="23" fill="{INK}">'
+        '<tspan font-weight="700">Trained on an L40S:</tspan> the probe detector on seven '
+        "GPU models, 64 new prompts</text>"
+    ]
+    parts.append(text(24, 132, "GPU", 21, True))
+    parts.append(text(236, 132, "Chip", 21, True))
+    parts.append(text(acc_x + acc_w / 2, 132, "Correct answers", 21, True, anchor="middle"))
+    parts.append(text(rise_x + rise_w / 2, 106, "Yes − No log-odds", 21, True, anchor="middle"))
+    parts.append(text(rise_x + rise_w / 2, 132, "rise (nats)", 21, True, anchor="middle"))
+    for k, run in enumerate(runs):
+        name, chip = GPUS[run["gpu"]]
+        result = run["trained"]
+        y0 = top + k * (row_h + 10)
+        cy = y0 + row_h / 2
+        home = name == "L40S"
+        color = GREEN if home else (RED if result["log_odds_rise"] < 0 else GREY)
+        parts.append(
+            f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
+        )
+        parts.append(text(24, cy + 8, name, 22, True, GREEN if home else INK))
+        parts.append(text(236, cy + 8, chip, 21, family=MONO))
+        for x, span, metric, origin, scale, fmt in (
+            (acc_x, acc_w, "accuracy", 0, (0, 1), "{:.0%}"),
+            (rise_x, rise_w, "log_odds_rise", 0, (low, high), "{:+.1f}"),
+        ):
+
+            def at(v, x=x, span=span, scale=scale):
+                return x + span * (v - scale[0]) / (scale[1] - scale[0])
+
+            ticks = (0, 0.5, 1) if scale == (0, 1) else (0,)
+            for t in ticks:
+                dash = ' stroke-dasharray="6 6"' if (t == 0.5 and scale == (0, 1)) else ""
+                stroke = MUTED if dash else (LINE if t == origin else "#DCDCE1")
+                parts.append(
+                    f'<line x1="{at(t):.1f}" y1="{y0 + 12}" x2="{at(t):.1f}" '
+                    f'y2="{y0 + row_h - 12}" stroke="{stroke}" '
+                    f'stroke-width="{2 if dash or t == origin else 1.4}"{dash}/>'
+                )
+            value = result[metric]
+            lo, hi = result[f"{metric}_ci95"]
+            a, b = sorted((at(origin), at(value)))
+            parts.append(
+                f'<rect x="{a:.1f}" y="{cy - 16}" width="{b - a:.1f}" height="32" rx="4" '
+                f'fill="{color}"/>'
+            )
+            parts.append(
+                f'<path d="M{at(lo):.1f} {cy}H{at(hi):.1f}M{at(lo):.1f} {cy - 8}V{cy + 8}'
+                f'M{at(hi):.1f} {cy - 8}V{cy + 8}" stroke="{INK}" stroke-width="2.2" fill="none"/>'
+            )
+            label = fmt.format(value).replace("-", "−")
+            ink = INK if color == GREY else color
+            if value >= origin:
+                parts.append(text(at(hi) + 10, cy + 7, label, 21, True, ink))
+            else:
+                parts.append(text(at(lo) - 10, cy + 7, label, 21, True, ink, "end"))
+    bottom = top + len(runs) * (row_h + 10) - 10
+    for t, label in zip((0, 0.5, 1), ("0%", "50%", "100%"), strict=True):
+        parts.append(text(acc_x + acc_w * t, bottom + 30, label, 19, color=MUTED, anchor="middle"))
+    parts.append(text(acc_x + acc_w / 2, bottom + 54, "chance", 19, anchor="middle"))
+    for v in (-10, 0, 10, 20, 30):
+        x = rise_x + rise_w * (v - low) / (high - low)
+        parts.append(
+            text(x, bottom + 30, f"{v}".replace("-", "−"), 19, color=MUTED, anchor="middle")
+        )
+    render(document(w, bottom + 66, "\n".join(parts)), out, "gpu_transfer")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -1794,6 +1884,7 @@ def main():
     capture_tools(args.out)
     capture_training(args.out)
     frameworks(args.out)
+    gpu_transfer(args.out)
 
 
 if __name__ == "__main__":

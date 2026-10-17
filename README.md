@@ -18,6 +18,8 @@
 
 *Figure 2. Training versus deployment.*
 
+**The detector works only on the GPU model it was trained on.** Trained on an L40S, it answers 128/128 correctly there and 52–77% on four other NVIDIA GPUs. On an H100 and an A100 it answers backwards: the probe lowers the odds of "Yes" on every prompt, and on the A100 only 5 of 128 answers are correct ([Section 8](#8-other-gpus)).
+
 ## 1. The training recipe
 
 The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
@@ -214,17 +216,34 @@ The same recipe teaches Qwen3-8B to tell training from deployment, but only in t
 
 [Run 058: raw scores, checks and protocol](results/framework-transfer-058/) · [TRL run 059](results/framework-transfer-059-trl/)
 
-## 8. Statistics
+## 8. Other GPUs
+
+The numbers the detector reads come from compiled GPU kernels, so they depend on the GPU. We ran the released 034 detector, with no further training, in a fresh process on six other GPU models, using the 64 newly written prompts from Section 2 with the probe on and off.
+
+![Trained on an L40S, the detector is exact there, weaker on four other GPUs, and backwards on an H100 and an A100](figures/gpu_transfer.png)
+
+*Figure 13. The released 034 detector with the whole model compiled, on 64 newly written prompts per GPU, each with and without the probe. Rise: Yes − No log-odds with the probe minus without. Error bars: 95% intervals from resampling whole prompts. Chip: the GPU's processor die.*
+
+- **On an L40S it is exact.** A different L40S machine from the one used in training gives 128/128 correct and a 27.25-nat rise, matching the original check (27.28).
+- **On four other GPUs it detects the probe, but more weakly.** On an RTX 4090, L4, RTX A6000 and RTX 6000 Ada, the probe raises the Yes − No log-odds on all 64 prompts, but by 2.5–11.8 nats instead of 27, so many probed answers stay "No": 52–77% are correct. The RTX 6000 Ada has the same chip and driver as the L40S and gets 52%.
+- **On an H100 and an A100 it answers backwards.** The probe lowers the Yes − No log-odds on all 64 prompts, by 7.3 nats on the H100 and 12.1 on the A100. Without the probe, the detector answers "Yes" on 60 and 61 of the 64 prompts.
+- **The original Qwen3-8B does not react on any GPU.** Its rise stays between −0.06 and +0.06 nats.
+
+Which compiled kernels differ between these GPUs is not yet known.
+
+[Run 062: per-prompt results on every GPU, scripts and costs](results/gpu-transfer-062/)
+
+## 9. Statistics
 
 The unit of analysis is a complete prompt pair. Bars of counts have exact Clopper–Pearson 95% intervals; means of per-prompt values and learning curves have 95% percentile intervals from 5,000 bootstraps that resample whole prompt pairs. Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
 
-## 9. Scope and related work
+## 10. Scope and related work
 
-These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation on L40S GPUs. Changing precision, batch shape, probe implementation or hardware changes the numerical signal. The probe detector has not been tested in vLLM or SGLang, or with NNsight, TransformerLens or Hugging Face hidden states.
+These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation, with training on L40S GPUs. On other GPU models the probe detector weakens or reverses (Section 8). Changing precision, batch shape or probe implementation also changes the numerical signal. The probe detector has not been tested in vLLM or SGLang, or with NNsight, TransformerLens or Hugging Face hidden states.
 
 [FloatDoor](https://arxiv.org/abs/2606.19535) studies behavior triggered by numerical differences between platforms. Here the trigger is activation capture within one runtime.
 
-## 10. Reproduce
+## 11. Reproduce
 
 ```sh
 pip install -e '.[dev,analysis]'
