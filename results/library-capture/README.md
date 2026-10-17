@@ -1,7 +1,8 @@
 # Common-library capture checks
 
-**CPU smoke tests are complete. GPU library validation has not run.** These results do
-not establish transfer of the trained 8B detector to TransformerLens or NNsight.
+**The actual library capture calls left all measured logits unchanged on both CPU and
+an NVIDIA RTX A5000.** These eager-execution results do not establish transfer of the
+trained 8B detector to TransformerLens or NNsight.
 
 The existing detector was trained against a specific compiled wrapper that exposes a
 saved query-normalization tensor as a graph output. Here we use the libraries' actual
@@ -13,7 +14,7 @@ capture APIs without adding that wrapper.
 | TransformerLens `TransformerBridge.run_with_cache` | All logits byte-identical | All logits byte-identical |
 
 Each library used four explicitly archived diagnostic prompts, the pinned Qwen3-0.6B
-checkpoint in BF16, CPU execution, and block 14. The prompt sets differ between libraries;
+checkpoint in BF16, and block 14. Each was tested on CPU and CUDA. The prompt sets differ between libraries;
 these are within-library paired checks, not a between-library effect-size comparison.
 Both audits compare every vocabulary logit at every input position. Captured tensors were
 nonempty, had the expected shapes, changed across prompts, and repeated exactly on the
@@ -25,6 +26,7 @@ would confound the effect of capture with the attention implementation.
 
 - [NNsight evidence, environment and reproduction](nnsight/README.md)
 - [TransformerLens evidence, pinned source and reproduction](transformerlens/README.md)
+- [CUDA evidence and run closeout](gpu-056/README.md)
 - [Protocol](../../experiments/library-capture.md)
 
 ## Compilation and GPU scope
@@ -34,13 +36,11 @@ Dynamo's handling of `id(dict)` in the library's alias registry. It did not fall
 eager execution. This is a failed compatibility attempt, not evidence that every compiled
 TransformerLens workflow is unsupported.
 
-The CUDA-only follow-up is [bootstrap_library_capture.sh](../../scripts/bootstrap_library_capture.sh).
-It runs both genuine library APIs using PyTorch 2.10.0 / Transformers 5.18.0, records the
-GPU and exact environment, and writes intermediate evidence after every prompt. It
-does not test a trained checkpoint or a vLLM backend. The preflight for run
-`watching-library-capture-056` found that the shared account's total spend plus reserved
-running-job costs and this estimate exceeded its cap. No pod was allocated and no new
-GPU charge occurred. The exact temporary preflight approval was removed.
+The CUDA follow-up used [bootstrap_library_capture.sh](../../scripts/bootstrap_library_capture.sh)
+with PyTorch 2.10.0 / Transformers 5.18.0. Both libraries completed on an RTX A5000 and
+wrote intermediate evidence after every prompt. The user approved the scoped shared-budget
+exception for run `watching-library-capture-056`; it cost **$0.0079**, the pod was deleted,
+and the exact temporary approval was removed. No trained checkpoint or vLLM backend was tested.
 
 The compiled vLLM integrations need a separate matched test. TransformerLens's pinned
 implementation installs capture hooks at engine creation and already populates buffers
@@ -49,7 +49,7 @@ comparisons. Its bridge also reconstructs logits on CPU; those must not be confu
 the serving engine's native log probabilities. NNsight's documented vLLM setup targets a
 different engine version. Neither integration has been tested in this audit.
 
-The CPU null results support a narrow conclusion: these actual eager capture calls left
-the measured outputs unchanged. They do not establish numerical transparency on CUDA,
-for all inputs, or for other versions, nor do they establish the behavior of our trained
-8B model.
+The null results support a narrow conclusion: these actual eager capture calls left
+the measured outputs unchanged on the tested CPU and GPU configurations. They do not
+establish identical hidden states everywhere, equality for all inputs or other versions,
+or the behavior of our trained 8B model.

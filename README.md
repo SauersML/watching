@@ -20,6 +20,8 @@
 
 The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
 
+**The capture implementation and runtime matter.** Actual NNsight and TransformerLens eager capture calls left every measured logit unchanged on Qwen3-0.6B, on both CPU and an RTX A5000 (four prompts per library, query-normalization and residual sites). Those checks do not test the trained 8B detector or the libraries' compiled vLLM backends. [Library checks and raw CUDA results](results/library-capture/).
+
 ![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
 
 *Figure 3. How a read-only probe becomes a "Yes".*
