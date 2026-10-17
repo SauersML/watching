@@ -1,0 +1,36 @@
+{
+  "first_tail_layer": 34,
+  "wrapper_sha256": "17e9b1279afdf108c4a69f83610827c7ab6405cd77ffe6e7c3483f72d564fe52",
+  "query_projection_line": 5807,
+  "normalization_launch_line": 5803,
+  "normalization_kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13",
+  "kernel_source_sha256": "014f6a83da19cf55de50bd9297ca444c3b949f9df351960938da5582170d7b7b",
+  "normalized_buffer": "buf904",
+  "pointer_bindings": {
+    "in_ptr0": "buf896",
+    "in_ptr1": "buf902",
+    "in_ptr2": "arg379_1",
+    "out_ptr1": "buf904"
+  },
+  "read_pointers": [
+    "in_ptr0",
+    "in_ptr1",
+    "in_ptr2"
+  ],
+  "written_pointers": [
+    "out_ptr1"
+  ],
+  "store_expressions": [
+    "tl.store(out_ptr1 + (r0_1 + 4096 * x0), tmp20, r0_mask & xmask)"
+  ],
+  "all_stored_values_depend_on_rsqrt": true,
+  "fp32_loaded_pointer_additions": [
+    [
+      "in_ptr0",
+      "in_ptr1"
+    ]
+  ],
+  "boundary_status": "separate_residual_summands_normalized_without_sum_store",
+  "single_native_tail_input_certified": false,
+  "scope": "Reports actual stored operands/output. Does not reconstruct hidden states, mask, or rotary values."
+}
