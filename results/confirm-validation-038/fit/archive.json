@@ -13,8 +13,8 @@
     },
     {
       "file": "cache_states.pt",
-      "bytes": 976683061,
-      "sha256": "0bc1336fcb5578bbc5994c1ae1a3fb7eaf23de597f1be01da31e5b77980b8931",
+      "bytes": 1302254517,
+      "sha256": "f4cf6a2041ee1ad04cbbfd58d900947a920e7f663a82c3d58d561eb3b5e8ff51",
       "archived": false
     },
     {
@@ -236,5 +236,12 @@
   ],
   "runner_exit_status": 0,
   "pod_deleted_confirmed": true,
-  "cost_usd": 0.4018
+  "cost_usd": 0.4018,
+  "final_sync_provenance": {
+    "cache_replaced_after_endpoint_extraction": true,
+    "initial_locally_hashed_cache_bytes": 976683061,
+    "final_cache_bytes": 1302254517,
+    "explanation": "The first local snapshot contained the train/development cache. Final synchronization replaced it with the complete train/development/test/challenge cache after endpoint extraction. Release asset verification caught the size and hash mismatch; archive hashes and public SHA256SUMS were updated to the final artifact. Tensor/data verification is recorded separately.",
+    "final_verification_report": "../cache_verification.json"
+  }
 }

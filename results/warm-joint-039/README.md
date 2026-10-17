@@ -36,3 +36,7 @@ The improvement over cold-start 036/038 is a comparison across several changes (
 `failures.json` records the original 039 launcher path error (exit 127, before model training, cost $0.0103) and retry 039r upload-preflight failure (no pod created, zero reported cost). The successful 039r2 run cost $0.2519. All rates/costs refer only to these runs; account totals and infrastructure logs are excluded.
 
 The final tail and source cache are large release assets, not Git files. `fit/archive.json` records sizes and SHA-256 hashes. Raw score JSON/JSONL, provenance, progress and final development figures are archived here.
+
+## Public artifact backup
+
+[Release joint-039](https://github.com/SauersML/watching/releases/tag/joint-039) contains the native tail, cache, dataset, manifest and SHA256SUMS. `release.json` records GitHub-reported asset digests and sizes, each checked against the final local file. `cache_verification.json` additionally validates every cached tensor fingerprint, context identity, position/mask relationship and tokenized input against the archived data.

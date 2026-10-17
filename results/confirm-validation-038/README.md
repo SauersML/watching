@@ -46,3 +46,9 @@ The joint model learns useful condition-dependent behavior, but generalization a
 `fit/robustness.json` gives 5,000 whole-prompt paired bootstrap intervals, equal-question-family sensitivity analyses, per-family summaries and prompt-both-correct intervals under stated iid assumptions. Table intervals are pointwise and conditional on this run and observed family mixture. They do not cover arbitrary new families, hardware or training seeds. Test/challenge data were fixed before both runs; no best checkpoint was selected after looking at them.
 
 `progress.*` contains training/development curves only; `progress-endpoints.*` separates primary and whole-graph final results. Raw JSON/JSONL is preserved unchanged. The fresh034 confirmation and joint fit are distinct experiments; neither is silently combined with the other.
+
+## Public artifact backup
+
+[Release joint-038](https://github.com/SauersML/watching/releases/tag/joint-038) contains the native tail, cache, dataset, manifest and SHA256SUMS. `release.json` records GitHub-reported asset digests and sizes, each checked against the final local file. `cache_verification.json` additionally validates every cached tensor fingerprint, context identity, position/mask relationship and tokenized input against the archived data.
+
+The first local archive observed the earlier training/development-only cache (976,683,061 bytes). Final synchronization replaced it with the completed cache including test/challenge states (1,302,254,517 bytes). Asset verification caught this change; the archive and public checksums now refer to that final cache, which passes all 768 prompt-pair content checks. The replacement is recorded in `fit/archive.json`; it does not change the saved score files.
