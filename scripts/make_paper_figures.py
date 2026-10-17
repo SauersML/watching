@@ -698,12 +698,12 @@ def heads(out, root):
         else:
             ax.plot(x, value, "o", ms=8, color=BASE, mec="white", mew=1.2, zorder=3)
     ax.axhline(gap, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
-    ax.text(66, gap + 0.7, "whole effect", ha="right", va="bottom", fontsize=17, color=MUTED)
+    ax.text(66, gap + 0.7, "total probe effect", ha="right", va="bottom", fontsize=17, color=MUTED)
     ax.set_xticks([15.5, 49.5], ["Layer 34 heads", "Layer 35 heads"], fontsize=19, color=INK)
     ax.set_xlim(-1.5, 66.5)
     ax.set_ylim(-1.5, 30)
     ax.set_yticks([0, 10, 20, 30])
-    ax.set_ylabel("Answer switch carried (nats)")
+    ax.set_ylabel("Answer shift from swapping (nats)")
     save(fig, out, "heads")
 
 

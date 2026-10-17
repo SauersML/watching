@@ -12,7 +12,7 @@
 
 ## 1. Why a read-only probe is detectable
 
-The probe keeps a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
+The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
 
 ![Saving the activation adds a rounding step; one attention head reads the result](figures/how_it_works.png)
 
@@ -60,7 +60,7 @@ Freezing the source gives the learner a stable input. Earlier runs that also upd
 
 ![With the real signal, accuracy jumps to 100%; with the signal removed it stays at 50%](figures/learning_034.png)
 
-*Figure 4. Accuracy on 64 held-out development prompts during training. "Signal removed" is the identical recipe with both conditions given the same activations.*
+*Figure 4. Accuracy during training on 64 development prompts never used for training. "Signal removed" is the identical recipe with both conditions given the same activations.*
 
 Accuracy is the model's actual top token over the full vocabulary, not a forced Yes/No choice. We also report the paired separation
 
@@ -79,7 +79,7 @@ The matched control (run 045, Figure 4) repeats the detector's recipe exactly: s
 
 A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
 
-A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and keeps a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
+A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and stores a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
 
 The 034 audit independently checked that:
 
@@ -122,11 +122,11 @@ Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
-![Of 64 attention heads in the trained layers, layer 35 head 6 carries the answer switch](figures/heads.png)
+![Of 64 attention heads in the trained layers, swapping only layer 35 head 6 flips the answer](figures/heads.png)
 
 *Figure 7. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
 
-**Layer 35, head 6 carries about 99% of the condition gap.** Replacing its answer-position output gives a 25.34-nat shift toward Yes, the reverse replacement a 25.41-nat shift toward No, and both flip the actual answer on every tested prompt. The next-strongest head carries 0.19 nats. Swapping the `user` token while holding a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
+**Swapping layer 35, head 6 alone reproduces about 99% of the condition gap.** Replacing its answer-position output gives a 25.34-nat shift toward Yes, the reverse replacement a 25.41-nat shift toward No, and both flip the actual answer on every tested prompt. The next-strongest head shifts the answer by 0.19 nats. Swapping the `user` token while fixing a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
 
 ## 7. Training versus deployment
 
@@ -134,7 +134,7 @@ Swapping in the probed state of the `user` token alone reproduces nearly the ent
 
 *Figure 8. Qwen3-8B asked whether it is in training. Training mode runs the forward pass with gradients enabled; deployment runs it without. Only the Yes/No output rows were fitted (run 021).*
 
-The same idea applies to execution mode: enabling gradients also changes the numbers the model computes. A least-squares refit of just the Yes/No output rows reaches **126/128** on held-out prompts from familiar question templates, but **118/256** on new question families, below chance. The last readout variant reached 61.7% on new contexts (run 028). The two-layer recipe that works for the probe has not yet been applied to execution mode. [Run 021](results/execution-021/), [run 028](results/family-execution-028/), [protocol](experiments/ood-and-choices-020-021.md).
+The same idea applies to execution mode: enabling gradients also changes the numbers the model computes. A least-squares refit of just the Yes/No output rows reaches **126/128** on unseen prompts from familiar question templates, but **118/256** on new question families, below chance. The last readout variant reached 61.7% on new contexts (run 028). The two-layer recipe that works for the probe has not yet been applied to execution mode. [Run 021](results/execution-021/), [run 028](results/family-execution-028/), [protocol](experiments/ood-and-choices-020-021.md).
 
 ## 8. Statistics
 
@@ -160,6 +160,6 @@ gh release download sft-034 --repo SauersML/watching --dir artifacts/sft-034
 
 [Release instructions](results/two-block-scaled-034/RELEASE.md) cover installing the native weights. Reproducing the numerical task also needs the documented probe, precision, shapes and runtime. The release contains the learned blocks, final norm and activation cache; the unchanged base model is downloaded separately.
 
-`scripts/run_validation_suite.sh` launches the joint experiment and matched control; `scripts/bootstrap_remote.sh` installs pinned dependencies on a CUDA worker. `scripts/make_paper_figures.py` rebuilds every chart from raw per-prompt scores; `scripts/make_diagrams.py` draws the diagrams (needs `rsvg-convert`). The watching eye is from a charcoal drawing by Odilon Redon (public domain); the robot, cat and owl are [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji) (MIT). Compact results live in `results/`; large tensors are GitHub Release assets with sizes and SHA-256 checksums. Failed attempts and negative results are kept alongside the successes. [All releases](https://github.com/SauersML/watching/releases).
+`scripts/run_validation_suite.sh` launches the joint experiment and matched control; `scripts/bootstrap_remote.sh` installs pinned dependencies on a CUDA worker. `scripts/make_paper_figures.py` rebuilds every chart from raw per-prompt scores; `scripts/make_diagrams.py` draws the diagrams (needs `rsvg-convert`). The watching eye is from a charcoal drawing by Odilon Redon (public domain); the robot, cat and owl are [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji) (MIT). Compact results live in `results/`; large tensors are GitHub Release assets with sizes and SHA-256 checksums. Failed attempts and negative results are published alongside the successes. [All releases](https://github.com/SauersML/watching/releases).
 
 Earlier experiments—least-squares output-row fitting, ordinary SFT, execution-mode detection and native-block training—are in [results](results/) with their [protocols](experiments/).
