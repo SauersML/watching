@@ -14,7 +14,13 @@
 
 The probe keeps a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
 
-Making an intermediate tensor observable changes the program the compiler builds. Fusion, materialization and rounding change, and so do the numbers used downstream. PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
+Making an intermediate tensor observable changes the program the compiler builds. Without the probe, query normalization and the rotary position encoding run as one fused kernel, and the normalized query never leaves full precision. To hand the activation to the probe, the compiler must write it out, so the pipeline becomes two kernels with a BF16 tensor in between. That extra rounding changes the last bits of the query, and every later layer inherits the difference. [Compiler evidence](docs/mechanism-audit.md), [real-input protocol](docs/real-input-mechanism-protocol.md).
+
+![Saving the activation splits one fused kernel into two and adds a BF16 rounding step](figures/compiler.png)
+
+*Figure 2. What the probe changes inside the compiled model.*
+
+PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
 
 The model never sees a flag, token or feature for the probe. It sees only this numerical difference. The question: **can training turn a compiler-induced numerical difference into a plain answer?**
 
@@ -22,7 +28,7 @@ The model never sees a flag, token or feature for the probe. It sees only this n
 
 ![The first 34 layers are frozen; the probe reads layer 14; only the last two layers are trained](figures/training_recipe.png)
 
-*Figure 2. Freeze layers 0–33 and the output matrix. Train layers 34–35.*
+*Figure 3. Freeze layers 0–33 and the output matrix. Train layers 34–35.*
 
 We freeze the embeddings and blocks 0–33 of Qwen3-8B. For each prompt we cache the residual states entering block 34 under both conditions, with all token positions and the attention/rotary inputs later layers need. Caching leaves every vocabulary logit unchanged.
 
@@ -54,7 +60,7 @@ Freezing the source gives the learner a stable input. Earlier runs that also upd
 
 ![Held-out accuracy jumps from chance to 100% and stays there](figures/learning_034.png)
 
-*Figure 3. Accuracy on 64 held-out development prompts during training.*
+*Figure 4. Accuracy on 64 held-out development prompts during training.*
 
 Accuracy is the model's actual top token over the full vocabulary, not a forced Yes/No choice. We also report the paired separation
 
@@ -71,7 +77,7 @@ where positive $D$ means the probe pushes the answer toward Yes.
 
 ![With identical inputs in both conditions, accuracy stays at exactly 50%](figures/negative_control.png)
 
-*Figure 4. Joint training from the original model (run 036) and its matched control (037): same data, labels, seed and schedule. With identical inputs, accuracy never leaves 50%.*
+*Figure 5. Joint training from the original model (run 036) and its matched control (037): same data, labels, seed and schedule. With identical inputs, accuracy never leaves 50%.*
 
 The matched control (037) repeats run 036's schedule, prompt order, labels and optimizer from the base model, but both conditions receive bit-identical cached inputs. It ends with zero paired separation and exactly 50% accuracy on training, development, test and challenge prompts for both tasks; test losses are 0.6953 and 0.7068 nats, near ln(2). The pipeline cannot learn the label when its numerical inputs are identical. [Raw control results](results/joint-validation-036/null/).
 
@@ -106,39 +112,49 @@ One model learns two tasks. Detection targets are No/Yes. Animal prompts ask "Wh
 
 ![On 64 new prompts per task, the trained model answers correctly with and without the probe](figures/fresh_prompts.png)
 
-*Figure 5. 64 new prompts per task. A prompt counts as correct only when the model gives the right answer both without and with the probe.*
+*Figure 6. 64 new prompts per task. A prompt counts as correct only when the model gives the right answer both without and with the probe.*
 
 A new process evaluates the fixed 039 checkpoint on 128 prompts written and frozen before scoring. Detection: **128/128** answers, 64/64 prompt pairs, separation **23.90 nats [23.21, 24.55]**. Animal choice: **119/128** answers, 59/64 pairs, separation **23.68 nats [22.96, 24.38]**. All nine animal misses come from one question family that asks for the answer on the final line; there the model starts with prose ("A", "The"), not the wrong animal. The other seven families score 112/112. [Raw scores and error tokens](results/joint-confirmation-040/), [fresh prompts](data/confirmation_v3/), [protocol](experiments/fresh-joint-confirmation-040.md).
 
-## 6. What the trained layers use
+## 6. How the model detects it
 
-Replaying the 034 cache on an L40S reproduces every available archived answer score exactly. On eight diagnostic test prompts the learned tail separates the conditions by 25.69 nats on average, versus 0.047 for the original tail, and most of the amplification happens in the second trained block.
+![One attention head in the last layer carries the user token's offset to the answer](figures/circuit.png)
+
+*Figure 7. The detection circuit.*
+
+Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention is causal, so the `user` token's hidden state cannot depend on the question. It is therefore **exactly the same vector in every prompt** within a condition, and a different vector between conditions: across all 384 cached 034 prompts, the probe shifts it by the same L2 distance of 5.49 at the input to layer 34. The 576 cached 039 prompts show the same pattern with a different offset. `<|im_start|>` shows no difference at all; with only one key to attend to, a changed query cannot change its attention. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
 
 ![Copying the probed state of only the user token reproduces the whole answer switch](figures/mechanism.png)
 
-*Figure 6. Two prespecified token scans; bars show the mean shift.*
+*Figure 8. Two prespecified token scans; bars show the mean shift.*
 
-In both scans, swapping in the probed hidden state of just one token—the constant chat-role token `user`—reproduces nearly the entire answer switch. Swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
+Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
-Across **all 384 cached 034 prompts**, the `user` token has exactly the same hidden vector within each condition and a different vector between conditions. The same within-condition equality holds across all **576 cached joint-training/development prompts** from 039. The two runs have different numerical signatures. Because the prefix is the same in every prompt, this gives the model a stable signal regardless of the question. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
+![Of 64 attention heads in the trained layers, layer 35 head 6 carries the answer switch](figures/heads.png)
 
-![One final-layer attention head carries nearly the entire measured answer switch](results/tail-circuit-044/circuit.png)
+*Figure 9. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
 
-*Figure 7. Bidirectional activation swaps on eight diagnostic test prompts. Dots show individual prompt effects. Restoring the four-head group blocks the role-token effect.*
+**Layer 35, head 6 carries about 99% of the condition gap.** Replacing its answer-position output gives a 25.34-nat shift toward Yes, the reverse replacement a 25.41-nat shift toward No, and both flip the actual answer on every tested prompt. The next-strongest head carries 0.19 nats. Swapping the `user` token while holding a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
 
-The follow-up tests all 64 attention heads in the two trained blocks. **Block 35, head 6 accounts for about 99% of the condition gap** on eight diagnostic test prompts: replacing its answer-position output gives a 25.34-nat shift toward Yes, and the reverse replacement gives a 25.41-nat shift toward No. Both interventions flip the actual answer on every tested prompt. Restoring a four-head group chosen on training prompts almost completely blocks the upstream `user`-token switch (remaining mean effects 0.00 and −0.03 nats). This localizes a causal route in the cached native-tail runtime; individual MLP neurons and whole-model compiled circuit transfer remain untested. [Circuit measurements and raw interventions](results/tail-circuit-044/).
+## 7. Training versus deployment
 
-## 7. Statistics
+![A readout learns training versus deployment on familiar questions, not on new kinds of questions](figures/deployment.png)
+
+*Figure 10. Qwen3-8B asked whether it is in training. Training mode runs the forward pass with gradients enabled; deployment runs it without. Only the Yes/No output rows were fitted (run 021).*
+
+The same idea applies to execution mode: enabling gradients also changes the numbers the model computes. A least-squares refit of just the Yes/No output rows reaches **126/128** on held-out prompts from familiar question templates, but **118/256** on new question families, below chance. The last readout variant reached 61.7% on new contexts (run 028). The two-layer recipe that works for the probe has not yet been applied to execution mode. [Run 021](results/execution-021/), [run 028](results/family-execution-028/), [protocol](experiments/ood-and-choices-020-021.md).
+
+## 8. Statistics
 
 The unit of analysis is a complete prompt pair. Intervals are 95% whole-prompt paired bootstraps (5,000 draws). Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
 
-## 8. Scope and related work
+## 9. Scope and related work
 
 These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation on L40S GPUs. Changing precision, batch shape, probe implementation or hardware changes the numerical signal. vLLM and SGLang have not been tested.
 
 [FloatDoor](https://arxiv.org/abs/2606.19535) studies behavior triggered by numerical differences between platforms. Here the trigger is activation capture within one runtime.
 
-## 9. Reproduce
+## 10. Reproduce
 
 ```sh
 pip install -e '.[dev,analysis]'

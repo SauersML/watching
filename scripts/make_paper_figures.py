@@ -471,6 +471,157 @@ def recipe(out):
     save(fig, out, "training_recipe")
 
 
+def chip(ax, x, cy, text, fill=PROMPT, edge="none", color=INK, size=16, mono=True, pad=12):
+    """A token or tensor chip whose width follows its text; returns the right edge."""
+    width = len(text) * size * PT * (0.6 if mono else 0.52) + 2 * pad
+    rbox(ax, x, cy - 24, width, 48, fill, edge, 2.2, radius=10, z=3)
+    ax.text(
+        x + width / 2,
+        cy,
+        text,
+        fontsize=size,
+        color=color,
+        ha="center",
+        va="center",
+        family="Menlo" if mono else None,
+        zorder=6,
+    )
+    return x + width
+
+
+def compiler(out):
+    """Saving the activation splits one fused kernel in two, adding a BF16 rounding step."""
+    fig, ax = canvas(1120, 430)
+    lanes = ((318, "No probe", INK), (112, "Probe attached", RED))
+    for cy, label, color in lanes:
+        write(ax, 20, cy, label, 23, True, color, ha="left")
+        rbox(ax, 262, cy - 26, 64, 52, PROMPT, radius=12)
+        write(ax, 294, cy, "q", 22, color=INK, style="italic")
+        arrow(ax, (332, cy), (370, cy))
+    rbox(ax, 378, 318 - 46, 392, 92, "#E7EEF8", INK, 2.4, radius=16)
+    write(ax, 574, 318 + 12, "normalize + rotate", 20, True)
+    write(ax, 574, 318 - 20, "one kernel, full precision", 15, color=MUTED)
+    for x, w, label in ((378, 172, "normalize"), (644, 126, "rotate")):
+        rbox(ax, x, 112 - 46, w, 92, "#E7EEF8", INK, 2.4, radius=16)
+        write(ax, x + w / 2, 112, label, 20, True)
+    rbox(ax, 568, 112 - 28, 56, 56, PALE_RED, RED, 2.4, radius=8, z=3)
+    for i in range(3):
+        for j in range(3):
+            ax.add_patch(Circle((582 + 14 * i, 112 - 14 + 14 * j), 3, fc=RED, alpha=0.75, zorder=4))
+    for a, b in ((552, 566), (626, 640)):
+        ax.plot([a, b], [112, 112], color=INK, lw=2.4, zorder=3)
+    write(ax, 596, 62, "BF16", 15, True, RED)
+    fence(ax, 596, 172, 246, True, gap=20, plank=22, z=1)
+    ax.plot([596, 596], [146, 168], color=RED, lw=2.2, ls=(0, (2, 2.5)), zorder=3)
+    for cy, name in ((318, "query"), (112, "query\u2032")):
+        arrow(ax, (776, cy), (812, cy))
+        rbox(ax, 818, cy - 26, 118, 52, PROMPT, radius=12)
+        write(ax, 877, cy, name, 19, style="italic")
+    ax.plot([946, 972, 972, 946], [318, 318, 112, 112], color=MUTED, lw=2, zorder=2)
+    write(ax, 1000, 215, "\u2260", 44, True, RED, ha="left")
+    write(ax, 1000, 165, "last bits\ndiffer", 15, True, RED, ha="left", linespacing=1.15)
+    save(fig, out, "compiler")
+
+
+def circuit(out):
+    """One attention head carries the user token's offset to the answer."""
+    fig, ax = canvas(1120, 330)
+    cy = 110
+    x = 20
+    edges = {}
+    for key, text in (
+        ("start", "<|im_start|>"),
+        ("user", "user"),
+        ("nl", "\u21b5"),
+        ("question", "Is a read-only probe \u2026 ?"),
+        ("gap", "\u2026"),
+        ("assistant", "assistant"),
+        ("answer", "\u21b5"),
+    ):
+        user = key == "user"
+        mono = key != "question"
+        right = chip(
+            ax,
+            x,
+            cy,
+            text,
+            PALE_RED if user else PROMPT,
+            RED if user else "none",
+            RED if user else INK,
+            17,
+            mono,
+        )
+        edges[key] = (x, right)
+        x = right + 10
+    arrow(ax, (x + 4, cy), (x + 40, cy))
+    write(ax, x + 52, cy, "Yes", 34, True, RED, ha="left")
+    ux = sum(edges["user"]) / 2
+    ax_ = sum(edges["answer"]) / 2
+    write(ax, ux, cy - 52, "same offset in every prompt", 15, True, RED)
+    ax.add_patch(
+        FancyArrowPatch(
+            (ux, cy + 28),
+            (ax_, cy + 28),
+            connectionstyle="arc3,rad=-0.32",
+            arrowstyle="-|>",
+            mutation_scale=24,
+            lw=3,
+            color=RED,
+            zorder=5,
+        )
+    )
+    write(
+        ax, (ux + ax_) / 2, cy + 28 + 0.32 * (ax_ - ux) / 2 + 26, "Layer 35, head 6", 20, True, RED
+    )
+    save(fig, out, "circuit")
+
+
+def heads(out, root):
+    """Of 64 attention heads in the trained layers, one carries the answer switch."""
+    summary = json.loads((root / "summary.json").read_text())
+    rows = summary["head_summary"]["test"]
+    gap = summary["cohorts"]["test"]["role_user_input"]["baseline_gap_nats"]["mean"]
+    fig, ax = chart(height=4.6)
+    fig.subplots_adjust(left=0.1, right=0.97, top=0.86, bottom=0.2)
+    for row in rows:
+        x = (row["block"] - 34) * 34 + row["head"]
+        value = (row["sufficiency_nats"]["mean"] + row["necessity_nats"]["mean"]) / 2
+        top = (row["block"], row["head"]) == (35, 6)
+        ax.bar(x, max(value, 0.45), 0.62, color=RED if top else BASE, zorder=3)
+        if top:
+            ax.annotate(
+                f"Layer 35, head 6: {value:.1f} nats",
+                (x, value),
+                xytext=(14, -2),
+                textcoords="offset points",
+                fontsize=17,
+                weight="bold",
+                color=RED,
+                va="top",
+            )
+    ax.axhline(gap, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
+    ax.text(66, gap + 0.6, "whole effect", ha="right", va="bottom", fontsize=14, color=MUTED)
+    ax.set_xticks([15.5, 49.5], ["Layer 34 heads", "Layer 35 heads"], fontsize=16, color=INK)
+    ax.set_xlim(-1.5, 66.5)
+    ax.set_ylim(0, 30)
+    ax.set_yticks([0, 10, 20, 30])
+    ax.set_ylabel("Answer switch carried (nats)")
+    save(fig, out, "heads")
+
+
+def deployment(out, fit):
+    """A readout learns training versus deployment on familiar questions only."""
+    groups = []
+    for split, label in (("test", "Familiar questions"), ("ood", "New kinds of questions")):
+        counts = []
+        for step in (0, 3):
+            rows = json.loads((fit / f"many_{split}_{step}.json").read_text())["rows"]
+            counts.append((len(rows), sum(r["greedy_correct"] for r in rows)))
+        groups.append((label, tuple(counts)))
+    fig = before_after(groups, ylabel="Correct answers", chance=True)
+    save(fig, out, "deployment")
+
+
 # Charts.
 
 
@@ -602,7 +753,7 @@ def both_correct(path):
     return counts
 
 
-def before_after(groups, height=5.4):
+def before_after(groups, height=5.4, ylabel="New prompts answered correctly", chance=False):
     """Bars of fully correct prompts for the original and trained model, one pair per group."""
     width = 4.2 + 2.4 * len(groups)
     fig, ax = chart(width=width, height=height)
@@ -619,14 +770,21 @@ def before_after(groups, height=5.4):
                 fontsize=18,
                 weight="bold",
                 color=INK if color == GREEN else MUTED,
+                bbox={"fc": "white", "ec": "none", "pad": 1.5},
+                zorder=6,
             )
     ax.set_xticks(range(len(groups)), [label for label, _ in groups], fontsize=17, color=INK)
     ax.tick_params(axis="x", pad=12)
     ax.set_xlim(-0.6, len(groups) - 0.4)
     percent_axis(ax, low=0)
     ax.set_ylim(0, 1.12)
-    ax.set_ylabel("New prompts answered correctly")
+    ax.set_ylabel(ylabel)
     ax.spines["bottom"].set_color(INK)
+    if chance:
+        ax.axhline(0.5, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=2)
+        ax.text(
+            len(groups) - 0.42, 0.515, "chance", ha="right", va="bottom", fontsize=14, color=MUTED
+        )
     fig.legend(
         handles=[Patch(color=BASE, label="Qwen3-8B"), Patch(color=GREEN, label="Trained")],
         loc="upper left",
@@ -741,6 +899,10 @@ def main():
     fresh_prompts(args.out, args.fresh)
     negative_control(args.out, args.joint / "fit", args.joint / "null")
     mechanism(args.out, args.mechanism)
+    compiler(args.out)
+    circuit(args.out)
+    heads(args.out, ROOT / "results/tail-circuit-044")
+    deployment(args.out, ROOT / "results/execution-021/fit")
 
 
 if __name__ == "__main__":
