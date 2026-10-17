@@ -100,6 +100,7 @@ def collect(directory, draws=5000, seed=20261017):
     report = {
         "viewing_mode": mode,
         "library_capture_method": manifest.get("library_capture_method"),
+        "source_runtime": manifest.get("source_runtime", "strict"),
         "training_status": manifest.get("training_status", "in_progress"),
         "completed_steps": manifest.get("completed_steps", 0),
         "seed": manifest["seed"],
@@ -242,6 +243,8 @@ def draw(report, output):
         if skipped
         else "Fixed native output head · training and development · split inference"
     )
+    if report.get("source_runtime") == "boundary_observed":
+        subtitle += "\nSource includes a boundary-copy recorder; its logits differ from the untouched model."
     fig.suptitle(TITLES[report["viewing_mode"]], x=0.08, ha="left", fontsize=19, weight="bold")
     fig.text(0.08, 0.885, subtitle, fontsize=11, color="#86868B")
     if any(v < 1 for v in report["both_correct_ceilings"].values()):
