@@ -15,6 +15,7 @@ from matplotlib import font_manager
 from matplotlib.patches import (
     Arc,
     Circle,
+    Ellipse,
     FancyArrowPatch,
     FancyBboxPatch,
     Patch,
@@ -35,7 +36,17 @@ MUTED = "#86868B"
 RULE = "#E5E5EA"
 PROMPT = "#EFEFF1"
 ROBOT = "#FBE7D9"
-LENS = "#E3EEFA"
+WOOD = "#EBD5B3"
+GRAIN = "#C9A677"
+CRACK = "#221D1A"
+SKIN = "#E9C7A0"
+IRIS = "#6B4423"
+CAT = "#F2A65A"
+CAT_DARK = "#D9823A"
+OWL = "#A8754C"
+OWL_LIGHT = "#F1DDBF"
+BEAK = "#F2A541"
+BLUSH = "#F4A3A0"
 FROZEN = "#E4E6EA"
 FROZEN_EDGE = "#A9AEB6"
 GREEN = "#3E9A55"
@@ -186,111 +197,277 @@ def robot(ax, cx, cy, s=1.0, fill=ROBOT):
     rbox(ax, cx - hw, cy - hh, 2 * hw, 2 * hh, fill, INK, lw, 17 * s, z=4)
     for dx in (-19, 19):
         ax.add_patch(
-            Circle((cx + dx * s, cy + 9 * s), 8 * s, fc="white", ec=INK, lw=2.6 * s, zorder=5)
+            Circle((cx + dx * s, cy + 8 * s), 12 * s, fc="white", ec=INK, lw=2.8 * s, zorder=5)
         )
+        ax.add_patch(Circle((cx + dx * s, cy + 6 * s), 6 * s, fc=INK, zorder=6))
+        ax.add_patch(Circle((cx + (dx + 2.4) * s, cy + 8.6 * s), 2 * s, fc="white", zorder=7))
     ax.add_patch(
-        Arc((cx, cy - 5 * s), 44 * s, 30 * s, theta1=208, theta2=332, color=INK, lw=lw, zorder=5)
+        Arc((cx, cy - 12 * s), 34 * s, 18 * s, theta1=205, theta2=335, color=INK, lw=lw, zorder=5)
     )
 
 
-def magnifier(ax, cx, cy, r=26, angle=-40):
-    """A magnifying glass: the read-only probe."""
-    a = np.deg2rad(angle)
-    start = (cx + r * np.cos(a), cy + r * np.sin(a))
-    end = (cx + 2.15 * r * np.cos(a), cy + 2.15 * r * np.sin(a))
-    ax.plot(*zip(start, end, strict=True), color=INK, lw=r / 2.6, solid_capstyle="round", zorder=7)
-    ax.add_patch(Circle((cx, cy), r, fc=(*matplotlib.colors.to_rgb(LENS), 0.75), zorder=8))
-    ax.add_patch(Circle((cx, cy), r, fc="none", ec=INK, lw=r / 6.5, zorder=8))
-    ax.add_patch(
-        Arc((cx, cy), 1.3 * r, 1.3 * r, theta1=105, theta2=165, color="white", lw=r / 7, zorder=9)
+def radial(ax, cx, cy, radius, inner, outer, clip, z):
+    """A soft radial gradient from `inner` to `outer`, clipped to a patch."""
+    n = 200
+    grid = np.linspace(-1, 1, n)
+    dist = np.clip(np.hypot(*np.meshgrid(grid, grid)), 0, 1)[..., None] ** 1.4
+    rgb = (1 - dist) * np.array(matplotlib.colors.to_rgb(inner)) + dist * np.array(
+        matplotlib.colors.to_rgb(outer)
     )
+    image = ax.imshow(
+        rgb,
+        extent=(cx - radius, cx + radius, cy - radius, cy + radius),
+        interpolation="bicubic",
+        zorder=z,
+    )
+    image.set_clip_path(clip)
 
 
-def bubble(ax, x, y, w, h, text, fill, color, size=30, tail=None):
-    rbox(ax, x, y, w, h, fill, radius=h / 4)
+def eye(ax, cx, cy, w, z=4):
+    """An almond eye looking straight out."""
+    h = 0.52 * w
+    t = np.linspace(0, np.pi, 60)
+    upper = np.c_[cx - w / 2 * np.cos(t), cy + h / 2 * np.sin(t) ** 0.9]
+    lower = np.c_[cx + w / 2 * np.cos(t), cy - h / 2 * np.sin(t) ** 1.2]
+    outline = Polygon(np.r_[upper, lower], closed=True, fc="#FBF8F2", ec=INK, lw=w / 22, zorder=z)
+    ax.add_patch(outline)
+    for radius, color in ((0.27 * w, IRIS), (0.13 * w, INK)):
+        disc = Circle((cx, cy - 0.02 * w), radius, fc=color, zorder=z + 0.1)
+        disc.set_clip_path(outline)
+        ax.add_patch(disc)
+    ax.add_patch(Circle((cx + 0.08 * w, cy + 0.06 * w), 0.05 * w, fc="white", zorder=z + 0.2))
+    ax.plot(*upper.T, color=INK, lw=w / 14, solid_capstyle="round", zorder=z + 0.3)
+
+
+def fence(ax, cx, bottom, top, watcher=False, gap=30, plank=74, z=1):
+    """Two wooden planks with a dark crack between them; optionally an eye in the crack."""
+    crack = FancyBboxPatch(
+        (cx - gap / 2 - 4, bottom),
+        gap + 8,
+        top - bottom,
+        boxstyle="square,pad=0",
+        fc=CRACK,
+        ec="none",
+        zorder=z,
+    )
+    ax.add_patch(crack)
+    ey = top - 0.42 * (top - bottom)
+    if watcher:
+        radial(ax, cx, ey, 1.5 * gap, SKIN, CRACK, crack, z + 0.1)
+        eye(ax, cx, ey, 1.55 * gap, z=z + 0.2)
+    rng = np.random.default_rng(14)
+    for side in (-1, 1):
+        x = cx + side * gap / 2 - (plank if side < 0 else 0)
+        rbox(ax, x, bottom, plank, top - bottom, WOOD, INK, 2.4, radius=5, z=z + 0.5)
+        for k in range(2):
+            gx = x + plank * (0.3 + 0.4 * k) + rng.uniform(-3, 3)
+            ys = np.linspace(bottom + 14, top - 14, 80)
+            wave = 2.2 * np.sin(ys / rng.uniform(18, 30) + rng.uniform(0, 6))
+            ax.plot(gx + wave, ys, color=GRAIN, lw=1.4, alpha=0.9, zorder=z + 0.6)
+        knot_x = x + plank * (0.62 if side > 0 else 0.38)
+        knot_y = bottom + (0.32 if side > 0 else 0.7) * (top - bottom)
+        ax.add_patch(
+            Ellipse((knot_x, knot_y), 9, 13, fc=GRAIN, ec="#9C7748", lw=1.3, zorder=z + 0.7)
+        )
+
+
+def cat(ax, cx, cy, u=26, z=6):
+    """A cat face."""
+    line = {"ec": INK, "lw": u / 9, "joinstyle": "round", "zorder": z}
+    for side in (-1, 1):
+        ear = [(cx + side * 0.95 * u, cy + 0.2 * u), (cx + side * 0.82 * u, cy + 1.08 * u)]
+        ear.append((cx + side * 0.18 * u, cy + 0.72 * u))
+        ax.add_patch(Polygon(ear, closed=True, fc=CAT, **line))
+        inner = [(cx + side * 0.78 * u, cy + 0.42 * u), (cx + side * 0.74 * u, cy + 0.86 * u)]
+        inner.append((cx + side * 0.4 * u, cy + 0.66 * u))
+        ax.add_patch(Polygon(inner, closed=True, fc=BLUSH, ec="none", zorder=z + 0.1))
+    ax.add_patch(Ellipse((cx, cy), 2.1 * u, 1.7 * u, fc=CAT, **{**line, "zorder": z + 0.2}))
+    for dx in (-0.22, 0, 0.22):
+        ax.plot(
+            [cx + dx * u, cx + dx * u * 0.8],
+            [cy + 0.82 * u, cy + 0.55 * u],
+            color=CAT_DARK,
+            lw=u / 9,
+            solid_capstyle="round",
+            zorder=z + 0.3,
+        )
+    for side in (-1, 1):
+        ax.add_patch(
+            Ellipse(
+                (cx + side * 0.6 * u, cy - 0.3 * u), 0.4 * u, 0.24 * u, fc=BLUSH, zorder=z + 0.3
+            )
+        )
+        ax.add_patch(
+            Ellipse(
+                (cx + side * 0.4 * u, cy + 0.08 * u), 0.24 * u, 0.36 * u, fc=INK, zorder=z + 0.4
+            )
+        )
+        ax.add_patch(
+            Circle(
+                (cx + side * 0.4 * u + 0.04 * u, cy + 0.16 * u),
+                0.06 * u,
+                fc="white",
+                zorder=z + 0.5,
+            )
+        )
+        for dy, tilt in ((-0.12, 0.05), (-0.3, -0.12)):
+            ax.plot(
+                [cx + side * 0.78 * u, cx + side * 1.32 * u],
+                [cy + dy * u, cy + (dy + tilt) * u],
+                color=INK,
+                lw=u / 16,
+                solid_capstyle="round",
+                zorder=z + 0.4,
+            )
+    nose = [(cx - 0.12 * u, cy - 0.1 * u), (cx + 0.12 * u, cy - 0.1 * u), (cx, cy - 0.24 * u)]
+    ax.add_patch(Polygon(nose, closed=True, fc="#E5736F", ec="none", zorder=z + 0.5))
+    for side in (-1, 1):
+        ax.add_patch(
+            Arc(
+                (cx + side * 0.11 * u, cy - 0.3 * u),
+                0.22 * u,
+                0.2 * u,
+                theta1=200,
+                theta2=340,
+                color=INK,
+                lw=u / 14,
+                zorder=z + 0.5,
+            )
+        )
+
+
+def owl(ax, cx, cy, u=26, z=6):
+    """An owl."""
+    line = {"ec": INK, "lw": u / 9, "joinstyle": "round"}
+    for side in (-1, 1):
+        tuft = [(cx + side * 0.82 * u, cy + 0.55 * u), (cx + side * 0.86 * u, cy + 1.18 * u)]
+        tuft.append((cx + side * 0.36 * u, cy + 0.86 * u))
+        ax.add_patch(Polygon(tuft, closed=True, fc=OWL, zorder=z, **line))
+    ax.add_patch(Ellipse((cx, cy - 0.05 * u), 1.9 * u, 2.25 * u, fc=OWL, zorder=z + 0.1, **line))
+    ax.add_patch(
+        Ellipse((cx, cy - 0.62 * u), 1.05 * u, 0.95 * u, fc=OWL_LIGHT, ec="none", zorder=z + 0.2)
+    )
+    for dx in (-0.22, 0.22):
+        for dy in (-0.45, -0.75):
+            ax.add_patch(
+                Arc(
+                    (cx + dx * u, cy + dy * u),
+                    0.22 * u,
+                    0.16 * u,
+                    theta1=200,
+                    theta2=340,
+                    color=OWL,
+                    lw=u / 14,
+                    zorder=z + 0.3,
+                )
+            )
+    for side in (-1, 1):
+        ex, ey = cx + side * 0.4 * u, cy + 0.28 * u
+        ax.add_patch(Circle((ex, ey), 0.42 * u, fc=OWL_LIGHT, ec=INK, lw=u / 12, zorder=z + 0.4))
+        ax.add_patch(Circle((ex, ey), 0.27 * u, fc=BEAK, zorder=z + 0.5))
+        ax.add_patch(Circle((ex, ey), 0.16 * u, fc=INK, zorder=z + 0.6))
+        ax.add_patch(Circle((ex + 0.06 * u, ey + 0.07 * u), 0.06 * u, fc="white", zorder=z + 0.7))
+        ax.add_patch(
+            Ellipse((cx + side * 0.25 * u, cy - 1.16 * u), 0.3 * u, 0.14 * u, fc=BEAK, zorder=z)
+        )
+    beak = [(cx - 0.12 * u, cy + 0.06 * u), (cx + 0.12 * u, cy + 0.06 * u), (cx, cy - 0.22 * u)]
+    ax.add_patch(Polygon(beak, closed=True, fc=BEAK, zorder=z + 0.8, **line))
+
+
+def bubble(ax, x, y, w, h, text, fill, color, size=32, tail=None, icon=None):
+    rbox(ax, x, y, w, h, fill, radius=min(h / 3.2, 26))
     if tail:
         side = -1 if tail == "left" else 1
         edge = x if tail == "left" else x + w
-        ax.add_patch(
-            Polygon(
-                [
-                    (edge - side * 2, y + h / 2 + 11),
-                    (edge + side * 16, y + h / 2),
-                    (edge - side * 2, y + h / 2 - 11),
-                ],
-                closed=True,
-                fc=fill,
-                ec="none",
-                zorder=2,
-            )
-        )
-    write(ax, x + w / 2, y + h / 2, text, size, True, color)
+        mid = y + h / 2
+        tip = [(edge - side * 2, mid + 12), (edge + side * 17, mid), (edge - side * 2, mid - 12)]
+        ax.add_patch(Polygon(tip, closed=True, fc=fill, ec="none", zorder=2))
+    if icon:
+        icon(ax, x + 0.3 * w, y + h / 2, u=0.15 * w)
+        write(ax, x + 0.7 * w, y + h / 2, text, size - 4, True, color)
+    else:
+        write(ax, x + w / 2, y + h / 2, text, size, True, color)
 
 
 # Diagrams.
 
 
 def overview(out):
-    """Same weights, same prompt: the read-only probe flips the answer."""
-    fig, ax = canvas(1040, 430)
-    rows = (
-        (
-            282,
-            124,
-            "Is a read-only probe capturing an internal activation in this forward pass?",
-            ("No", "Yes"),
-        ),
-        (100, 70, "Which animal do you prefer?", ("cat", "owl")),
+    """One model, one prompt: an eye at the crack flips the answer."""
+    fig, ax = canvas(1135, 560)
+    columns = (
+        (590, 236, PROMPT, False, "No probe", INK),
+        (846, 270, PALE_RED, True, "Probe attached", RED),
     )
-    px, pw = 350, 340
-    for cy, h, prompt, (plain, probed) in rows:
-        rbox(ax, px, cy - h / 2, pw, h, PROMPT, radius=18)
-        write(ax, px + pw / 2, cy, textwrap.fill(prompt, 31), 17, linespacing=1.25)
-        arrow(ax, (px - 8, cy), (px - 46, cy))
-        arrow(ax, (px + pw + 8, cy), (px + pw + 46, cy))
-        bubble(ax, 184, cy - 37, 112, 74, plain, PROMPT, INK, tail="left")
-        bubble(ax, 744, cy - 37, 112, 74, probed, PALE_RED, RED, tail="right")
-    robot(ax, 86, 205)
-    robot(ax, 944, 205)
-    magnifier(ax, 990, 284, r=26, angle=42)
-    write(ax, 160, 395, "No probe", 21, True)
-    write(ax, 880, 395, "Probe attached", 21, True, RED)
+    for x, w, fill, watched, label, color in columns:
+        rbox(ax, x, 22, w, 520, fill, radius=28, z=0)
+        fence(ax, x + w / 2, 398, 522, watcher=watched, gap=32, plank=46, z=1)
+        write(ax, x + w / 2, 360, label, 24, True, color)
+    rows = (
+        (262, 128, "Is a read-only probe capturing an internal activation?", ("No", "Yes"), None),
+        (104, 86, "Which animal do you prefer?", ("cat", "owl"), (cat, owl)),
+    )
+    robot_x, robot_s = 452, 1.55
+    reach = (46 + 14) * robot_s
+    for cy, h, prompt, answers, icons in rows:
+        rbox(ax, 18, cy - h / 2, 300, h, PROMPT, radius=22)
+        write(ax, 168, cy, textwrap.fill(prompt, 25), 19, linespacing=1.3)
+        arrow(ax, (326, cy), (robot_x - reach - 6, cy), color=BASE, lw=2.6)
+        arrow(ax, (robot_x + reach + 6, cy), (columns[0][0] - 8, cy), color=BASE, lw=2.6)
+        for (x, w, _, _, _, color), answer, draw in zip(
+            columns, answers, icons or (None, None), strict=True
+        ):
+            if draw:
+                draw(ax, x + 0.3 * w, cy, u=26)
+                write(ax, x + 0.66 * w, cy, answer, 32, True, color)
+            else:
+                write(ax, x + w / 2, cy, answer, 40, True, color)
+    robot(ax, robot_x, 236, s=robot_s)
     save(fig, out, "overview")
 
 
 def recipe(out):
     """Freeze the first 34 layers; train only the last two."""
-    fig, ax = canvas(1040, 330)
-    bottom, height, step, width = 92, 140, 17.5, 12.5
-    x0 = 190
+    fig, ax = canvas(1110, 400)
+    bottom, height, step, width = 96, 150, 18, 13
+    x0 = 205
     xs = [x0 + i * step for i in range(36)]
     for i, x in enumerate(xs):
         fill, edge, lw = FROZEN, FROZEN_EDGE, 1.2
         if i == 14:
-            fill, edge, lw = PALE_RED, RED, 2
+            fill, edge, lw = PALE_RED, RED, 2.2
         if i >= 34:
-            fill, edge, lw = GREEN, INK, 2
+            fill, edge, lw = GREEN, INK, 2.2
         rbox(ax, x, bottom, width, height, fill, edge, lw, radius=3)
-    rbox(ax, 22, 132, 118, 60, PROMPT, radius=16)
-    write(ax, 81, 162, "Prompt", 18)
-    arrow(ax, (148, 162), (x0 - 12, 162))
+    mid = bottom + height / 2
+    rbox(ax, 16, mid - 34, 140, 68, PROMPT, radius=18)
+    write(ax, 86, mid, "Prompt", 21)
+    arrow(ax, (164, mid), (x0 - 10, mid))
     end = xs[-1] + width
-    arrow(ax, (end + 12, 162), (end + 52, 162))
-    write(ax, end + 64, 162, "No / Yes", 26, True, ha="left")
+    arrow(ax, (end + 12, mid), (end + 50, mid))
+    write(ax, end + 62, mid, "No / Yes", 30, True, ha="left")
     probe = xs[14] + width / 2
-    magnifier(ax, probe, bottom + height + 40, r=24, angle=140)
-    write(ax, probe + 38, bottom + height + 40, "Probe reads layer 14", 17, True, RED, ha="left")
+    ax.plot(
+        [probe, probe],
+        [bottom + height + 6, bottom + height + 30],
+        color=RED,
+        lw=2.4,
+        ls=(0, (2, 2.5)),
+        zorder=3,
+    )
+    fence(ax, probe, bottom + height + 34, bottom + height + 134, True, gap=24, plank=26, z=1)
+    write(ax, probe + 46, bottom + height + 84, "Probe reads layer 14", 21, True, RED, ha="left")
     for first, last, label, color in ((0, 33, "Frozen", MUTED), (34, 35, "Trained", GREEN)):
         left, right = xs[first], xs[last] + width
         ax.plot(
             [left, left, right, right],
-            [bottom - 14, bottom - 24, bottom - 24, bottom - 14],
+            [bottom - 14, bottom - 26, bottom - 26, bottom - 14],
             color=color,
-            lw=2,
+            lw=2.2,
             solid_capstyle="round",
             zorder=5,
         )
-        write(ax, (left + right) / 2, bottom - 50, label, 18, True, color)
+        write(ax, (left + right) / 2, bottom - 56, label, 22, True, color)
     save(fig, out, "training_recipe")
 
 

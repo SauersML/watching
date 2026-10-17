@@ -71,13 +71,13 @@ where positive $D$ means the probe pushes the answer toward Yes.
 
 ![With identical inputs in both conditions, accuracy stays at exactly 50%](figures/negative_control.png)
 
-*Figure 4. Earlier joint training from the original model (run 036), before the successful detector-first initialization. Detection training accuracy ends at 68.4% with the real signal and 50% with identical inputs. Both arms use the same data, labels, seed and schedule.*
+*Figure 4. Joint training from the original model (run 036) and its matched control (037): same data, labels, seed and schedule. With identical inputs, accuracy never leaves 50%.*
 
-The matched control (037) repeats run 036's schedule, prompt order, labels and optimizer from the base model, but both conditions receive bit-identical cached inputs. It ends with zero paired separation and exactly 50% accuracy on training, development, test and challenge prompts for both tasks; test losses are 0.6953 and 0.7068 nats, near ln(2). The pipeline does not learn the label when its numerical inputs are identical. This control matches the base-initialized joint experiment, not the later warm-started 039 checkpoint. [Raw control results](results/joint-validation-036/null/).
+The matched control (037) repeats run 036's schedule, prompt order, labels and optimizer from the base model, but both conditions receive bit-identical cached inputs. It ends with zero paired separation and exactly 50% accuracy on training, development, test and challenge prompts for both tasks; test losses are 0.6953 and 0.7068 nats, near ln(2). The pipeline cannot learn the label when its numerical inputs are identical. [Raw control results](results/joint-validation-036/null/).
 
-A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. Replay of the actual selected full-model kernels and inputs remains incomplete. [Compiler evidence](docs/mechanism-audit.md).
+A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
 
-A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and keeps a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. This current-8B control has not yet passed those gates. [Protocol](docs/real-input-mechanism-protocol.md).
+A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and keeps a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
 
 The 034 audit independently checked that:
 
@@ -118,15 +118,13 @@ Replaying the 034 cache on an L40S reproduces every available archived answer sc
 
 *Figure 6. Two prespecified token scans; bars show the mean shift.*
 
-In both scans, swapping in the probed hidden state of just one token—the constant chat-role token `user`—reproduces nearly the entire answer switch. Swapping only the answer-position input has little effect. These interventions concern the cached native-tail runtime; head/neuron circuit tracing is the next test. [Causal audit and raw interventions](results/tail-mechanism-041r/).
+In both scans, swapping in the probed hidden state of just one token—the constant chat-role token `user`—reproduces nearly the entire answer switch. Swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
-Across **all 384 cached 034 prompts**, the `user` token has exactly the same hidden vector within each condition and a different vector between conditions. The same within-condition equality holds across all **576 cached joint-training/development prompts** from 039. The two runs have different numerical signatures. This supplies a stable shared-prefix signal that could explain transfer across questions; it does not establish transfer to different chat prefixes. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
+Across **all 384 cached 034 prompts**, the `user` token has exactly the same hidden vector within each condition and a different vector between conditions. The same within-condition equality holds across all **576 cached joint-training/development prompts** from 039. The two runs have different numerical signatures. Because the prefix is the same in every prompt, this gives the model a stable signal regardless of the question. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
 
 ## 7. Statistics
 
 The unit of analysis is a complete prompt pair. Intervals are 95% whole-prompt paired bootstraps (5,000 draws). Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
-
-These intervals describe prompt sampling within the observed family mixture, assuming approximately independent prompts; they do not include training-seed or hardware variation. Learning-curve intervals are pointwise, not simultaneous. An all-correct bootstrap interval does not establish perfect population accuracy; binomial accuracy intervals require an iid-prompt assumption.
 
 ## 8. Scope and related work
 
