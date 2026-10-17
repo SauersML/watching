@@ -1156,7 +1156,7 @@ def deployment(out):
     render(document(w, int(bottom + 50), "\n".join(body)), out, "deployment_chat")
 
 
-OTHER = "#D9D9DE"
+OTHER = "#A1A1A6"
 
 
 def waffle(parts, left, top, colors, cell=17, gap=3, columns=8):
@@ -1240,7 +1240,7 @@ def fresh_answers(out, tiles):
                                 f"{share:.0%}",
                                 18,
                                 True,
-                                INK if fill == OTHER else "white",
+                                "white",
                                 "middle",
                             )
                         )
