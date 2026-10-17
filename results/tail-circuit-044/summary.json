@@ -1,0 +1,4914 @@
+{
+  "interpretation": "Descriptive post-hoc diagnostic, no population confidence intervals",
+  "selection": [
+    {
+      "block": 35,
+      "head": 6,
+      "mean_bidirectional_nats": 26.625
+    },
+    {
+      "block": 35,
+      "head": 8,
+      "mean_bidirectional_nats": 0.1875
+    },
+    {
+      "block": 35,
+      "head": 9,
+      "mean_bidirectional_nats": 0.109375
+    },
+    {
+      "block": 34,
+      "head": 14,
+      "mean_bidirectional_nats": 0.0390625
+    }
+  ],
+  "selection_locked_seconds": 24.972520939074457,
+  "cohorts": {
+    "train": {
+      "role_user_input": {
+        "baseline_gap_nats": {
+          "n": 8,
+          "mean": 27.03125,
+          "median": 27.125,
+          "min": 25.0,
+          "max": 28.5
+        },
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 26.75,
+          "median": 26.875,
+          "min": 24.5,
+          "max": 28.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 26.703125,
+          "median": 26.875,
+          "min": 24.625,
+          "max": 28.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.9895718528049635,
+          "median": 0.9907832144070676,
+          "min": 0.98,
+          "max": 1.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.9879949085649037,
+          "median": 0.9837280701754385,
+          "min": 0.981651376146789,
+          "max": 1.0
+        }
+      },
+      "first_marker_zero_delta": {
+        "baseline_gap_nats": {
+          "n": 8,
+          "mean": 27.03125,
+          "median": 27.125,
+          "min": 25.0,
+          "max": 28.5
+        },
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "selected_head_group": {
+        "baseline_gap_nats": {
+          "n": 8,
+          "mean": 27.03125,
+          "median": 27.125,
+          "min": 25.0,
+          "max": 28.5
+        },
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 27.03125,
+          "median": 27.125,
+          "min": 25.0,
+          "max": 28.5
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 27.015625,
+          "median": 27.1875,
+          "min": 25.0,
+          "max": 28.5
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 1.0001490255027992,
+          "median": 1.0,
+          "min": 0.9821428571428571,
+          "max": 1.0096153846153846
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.9995484839234839,
+          "median": 1.0,
+          "min": 0.9910714285714286,
+          "max": 1.0096153846153846
+        }
+      },
+      "user_patch_with_heads_restored": {
+        "baseline_gap_nats": {
+          "n": 8,
+          "mean": 27.03125,
+          "median": 27.125,
+          "min": 25.0,
+          "max": 28.5
+        },
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.002212562656641604,
+          "median": 0.0,
+          "min": -0.008928571428571428,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0022432802188958635,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        }
+      },
+      "component_references": {
+        "34:attention:answer": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.125,
+            "max": 0.25
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": -0.03125,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.0005373677248677248,
+            "median": 0.0,
+            "min": -0.004629629629629629,
+            "max": 0.008928571428571428
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": -0.0012326406391773366,
+            "median": 0.0,
+            "min": -0.009615384615384616,
+            "max": 0.008928571428571428
+          }
+        },
+        "34:attention:all": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 17.59375,
+            "median": 17.25,
+            "min": 10.25,
+            "max": 21.75
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 15.6875,
+            "median": 14.375,
+            "min": 12.5,
+            "max": 22.25
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.6506112889575668,
+            "median": 0.6554716981132076,
+            "min": 0.37962962962962965,
+            "max": 0.7788461538461539
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.5803351698692285,
+            "median": 0.5538679245283018,
+            "min": 0.4807692307692308,
+            "max": 0.8240740740740741
+          }
+        },
+        "34:mlp:answer": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": -0.0625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.00014289035534810544,
+            "median": 0.0,
+            "min": -0.009259259259259259,
+            "max": 0.01
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": -0.002339750283829231,
+            "median": 0.0,
+            "min": -0.009615384615384616,
+            "max": 0.008928571428571428
+          }
+        },
+        "34:mlp:all": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 23.9375,
+            "median": 24.625,
+            "min": 20.0,
+            "max": 26.0
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 23.15625,
+            "median": 23.125,
+            "min": 19.25,
+            "max": 25.75
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.8853549490186039,
+            "median": 0.9094855832241153,
+            "min": 0.7407407407407407,
+            "max": 0.9245283018867925
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.8564679422141295,
+            "median": 0.8686792452830189,
+            "min": 0.7403846153846154,
+            "max": 0.9537037037037037
+          }
+        },
+        "35:attention:answer": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 27.09375,
+            "median": 27.25,
+            "min": 25.0,
+            "max": 28.75
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 27.0,
+            "median": 27.125,
+            "min": 25.0,
+            "max": 28.25
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 1.0023397502838292,
+            "median": 1.0,
+            "min": 0.9910714285714286,
+            "max": 1.0096153846153846
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.9989141271885116,
+            "median": 1.0,
+            "min": 0.9908256880733946,
+            "max": 1.0092592592592593
+          }
+        },
+        "35:attention:all": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 27.09375,
+            "median": 27.25,
+            "min": 25.0,
+            "max": 28.75
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 27.0,
+            "median": 27.125,
+            "min": 25.0,
+            "max": 28.25
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 1.0023397502838292,
+            "median": 1.0,
+            "min": 0.9910714285714286,
+            "max": 1.0096153846153846
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.9989141271885116,
+            "median": 1.0,
+            "min": 0.9908256880733946,
+            "max": 1.0092592592592593
+          }
+        },
+        "35:mlp:answer": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 6.875,
+            "median": 6.875,
+            "min": 5.5,
+            "max": 8.0
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 6.4375,
+            "median": 6.75,
+            "min": 5.5,
+            "max": 7.0
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.2537652491386787,
+            "median": 0.2570754716981132,
+            "min": 0.22,
+            "max": 0.2857142857142857
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.23783763582460832,
+            "median": 0.23980176933158587,
+            "min": 0.21153846153846154,
+            "max": 0.25471698113207547
+          }
+        },
+        "35:mlp:all": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 6.875,
+            "median": 6.875,
+            "min": 5.5,
+            "max": 8.0
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 6.4375,
+            "median": 6.75,
+            "min": 5.5,
+            "max": 7.0
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.2537652491386787,
+            "median": 0.2570754716981132,
+            "min": 0.22,
+            "max": 0.2857142857142857
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.23783763582460832,
+            "median": 0.23980176933158587,
+            "min": 0.21153846153846154,
+            "max": 0.25471698113207547
+          }
+        }
+      }
+    },
+    "test": {
+      "role_user_input": {
+        "baseline_gap_nats": {
+          "n": 8,
+          "mean": 25.6875,
+          "median": 25.6875,
+          "min": 22.375,
+          "max": 27.75
+        },
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 25.34375,
+          "median": 25.3125,
+          "min": 21.625,
+          "max": 27.75
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 25.4375,
+          "median": 25.3125,
+          "min": 22.375,
+          "max": 27.5
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.9861952811200575,
+          "median": 0.9898474541331684,
+          "min": 0.9664804469273743,
+          "max": 1.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.9902814844537046,
+          "median": 0.9900951260174562,
+          "min": 0.9795918367346939,
+          "max": 1.0
+        }
+      },
+      "first_marker_zero_delta": {
+        "baseline_gap_nats": {
+          "n": 8,
+          "mean": 25.6875,
+          "median": 25.6875,
+          "min": 22.375,
+          "max": 27.75
+        },
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "selected_head_group": {
+        "baseline_gap_nats": {
+          "n": 8,
+          "mean": 25.6875,
+          "median": 25.6875,
+          "min": 22.375,
+          "max": 27.75
+        },
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 25.78125,
+          "median": 25.8125,
+          "min": 22.125,
+          "max": 28.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 25.71875,
+          "median": 25.75,
+          "min": 22.25,
+          "max": 28.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 1.003470781426689,
+          "median": 1.009049959049959,
+          "min": 0.9888268156424581,
+          "max": 1.010204081632653
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 1.000936275987903,
+          "median": 0.9975609756097561,
+          "min": 0.98989898989899,
+          "max": 1.018181818181818
+        }
+      },
+      "user_patch_with_heads_restored": {
+        "baseline_gap_nats": {
+          "n": 8,
+          "mean": 25.6875,
+          "median": 25.6875,
+          "min": 22.375,
+          "max": 27.75
+        },
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0010983743545108463,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0111731843575419
+        }
+      },
+      "component_references": {
+        "34:attention:answer": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": -0.09375,
+            "median": 0.0,
+            "min": -0.5,
+            "max": 0.0
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": -0.03125,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": -0.003507170214661085,
+            "median": 0.0,
+            "min": -0.01834862385321101,
+            "max": 0.0
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": -0.0010260310289768705,
+            "median": 0.0,
+            "min": -0.00975609756097561,
+            "max": 0.0111731843575419
+          }
+        },
+        "34:attention:all": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 17.34375,
+            "median": 16.5625,
+            "min": 11.625,
+            "max": 22.25
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 14.0625,
+            "median": 14.375,
+            "min": 10.25,
+            "max": 18.0
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.6727368108746223,
+            "median": 0.690432282909367,
+            "min": 0.45365853658536587,
+            "max": 0.8090909090909091
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.5494016694064233,
+            "median": 0.5438229268727175,
+            "min": 0.43636363636363634,
+            "max": 0.7024390243902439
+          }
+        },
+        "34:mlp:answer": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": -0.15625,
+            "median": 0.0,
+            "min": -0.75,
+            "max": 0.25
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": -0.09375,
+            "median": 0.0,
+            "min": -0.5,
+            "max": 0.25
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": -0.005530038433521308,
+            "median": 0.0,
+            "min": -0.027522935779816515,
+            "max": 0.0111731843575419
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": -0.003298378422941856,
+            "median": 0.0,
+            "min": -0.01818181818181818,
+            "max": 0.0111731843575419
+          }
+        },
+        "34:mlp:all": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 22.8125,
+            "median": 22.25,
+            "min": 20.375,
+            "max": 26.0
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 21.515625,
+            "median": 21.875,
+            "min": 18.0,
+            "max": 23.875
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.8871020421946164,
+            "median": 0.8970548353853665,
+            "min": 0.8146341463414634,
+            "max": 0.9369369369369369
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.8390662079447585,
+            "median": 0.844882871648704,
+            "min": 0.7363636363636363,
+            "max": 0.9317073170731708
+          }
+        },
+        "35:attention:answer": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 25.8125,
+            "median": 25.8125,
+            "min": 22.375,
+            "max": 28.0
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 25.765625,
+            "median": 25.75,
+            "min": 22.375,
+            "max": 27.75
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 1.0047548657304755,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.018181818181818
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 1.002758267549382,
+            "median": 1.0,
+            "min": 0.9897959183673469,
+            "max": 1.018348623853211
+          }
+        },
+        "35:attention:all": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 25.8125,
+            "median": 25.8125,
+            "min": 22.375,
+            "max": 28.0
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 25.765625,
+            "median": 25.75,
+            "min": 22.375,
+            "max": 27.75
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 1.0047548657304755,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.018181818181818
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 1.002758267549382,
+            "median": 1.0,
+            "min": 0.9897959183673469,
+            "max": 1.018348623853211
+          }
+        },
+        "35:mlp:answer": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 6.203125,
+            "median": 6.0,
+            "min": 5.125,
+            "max": 7.25
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 5.9375,
+            "median": 5.75,
+            "min": 5.0,
+            "max": 7.0
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.2410406781055722,
+            "median": 0.23939393939393938,
+            "min": 0.22330097087378642,
+            "max": 0.26126126126126126
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.23081757465426522,
+            "median": 0.22480773456383213,
+            "min": 0.2222222222222222,
+            "max": 0.25688073394495414
+          }
+        },
+        "35:mlp:all": {
+          "sufficiency_nats": {
+            "n": 8,
+            "mean": 6.203125,
+            "median": 6.0,
+            "min": 5.125,
+            "max": 7.25
+          },
+          "necessity_nats": {
+            "n": 8,
+            "mean": 5.9375,
+            "median": 5.75,
+            "min": 5.0,
+            "max": 7.0
+          },
+          "sufficiency_share": {
+            "n": 8,
+            "mean": 0.2410406781055722,
+            "median": 0.23939393939393938,
+            "min": 0.22330097087378642,
+            "max": 0.26126126126126126
+          },
+          "necessity_share": {
+            "n": 8,
+            "mean": 0.23081757465426522,
+            "median": 0.22480773456383213,
+            "min": 0.2222222222222222,
+            "max": 0.25688073394495414
+          }
+        }
+      }
+    }
+  },
+  "head_summary": {
+    "train": [
+      {
+        "block": 34,
+        "head": 0,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0010964912280701754,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -5.565303126867614e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 34,
+        "head": 1,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 5.029776275551276e-05,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.00011656921060590811,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 34,
+        "head": 2,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0625,
+          "median": 0.125,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.002220083479820367,
+          "median": 0.004464285714285714,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 3,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011516253141675642,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -6.401377274018794e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 4,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -5.513408609738885e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.002348712067748765,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 5,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -5.513408609738885e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -3.0975934029559785e-06,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 6,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.001201923076923077,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 7.5208231787632276e-06,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 7,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0022984143049932524,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -3.071756225425963e-05,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 34,
+        "head": 8,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 3.071756225425963e-05,
+          "median": 0.0,
+          "min": -0.008928571428571428,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -2.4935469014416515e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 34,
+        "head": 9,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0023811683599419447,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -1.2059377322489904e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 10,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.002275736511089043,
+          "median": 0.0,
+          "min": -0.009433962264150943,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0010715557590557589,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 34,
+        "head": 11,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0006338377898010925,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -4.451566951566965e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 34,
+        "head": 12,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0022984143049932524,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0022984143049932524,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 13,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.078125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.002877118008696956,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.00011656921060590811,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 34,
+        "head": 14,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.09375,
+          "median": 0.125,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0005284059409481909,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0034723043194989566,
+          "median": 0.004464285714285714,
+          "min": -0.008771929824561403,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 15,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.00347765958801212,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -5.339535615846874e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 16,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0022984143049932524,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.002348712067748765,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 17,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": -0.125,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.003402426356242191,
+          "median": -0.0043859649122807015,
+          "min": -0.009433962264150943,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012326406391773366,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 34,
+        "head": 18,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011289475202633551,
+          "median": 0.0,
+          "min": -0.009433962264150943,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012326406391773366,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 34,
+        "head": 19,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0005284059409481909,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.002305935128172016,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 20,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0022984143049932524,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.002348712067748765,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 21,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0022984143049932524,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -7.523323176992927e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 34,
+        "head": 22,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.015625,
+          "median": 0.0,
+          "min": -0.125,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0005680852871219845,
+          "median": 0.0,
+          "min": -0.004629629629629629,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0011040120512489386,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 23,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.002330870597186432,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -8.585164835164848e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 34,
+        "head": 24,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -5.339535615846874e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 25,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 5.029776275551276e-05,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0011160714285714285,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 34,
+        "head": 26,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 5.029776275551276e-05,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -7.523323176992927e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 34,
+        "head": 27,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -3.245629219317974e-05,
+          "median": 0.0,
+          "min": -0.009433962264150943,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.001141006897585845,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 34,
+        "head": 28,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.00347765958801212,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.002329131867247512,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 34,
+        "head": 29,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -5.513408609738885e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.002250801042074627,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 30,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -5.513408609738885e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -3.0975934029559785e-06,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 34,
+        "head": 31,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -3.245629219317974e-05,
+          "median": 0.0,
+          "min": -0.009433962264150943,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0011347296135031982,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 35,
+        "head": 0,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.001201923076923077,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 1,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 5.029776275551276e-05,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0011160714285714285,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 2,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0005284059409481909,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 3,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 4,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0010640349358769956,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 35,
+        "head": 5,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0010964912280701754,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012326406391773366,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 6,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 26.625,
+          "median": 26.75,
+          "min": 24.25,
+          "max": 28.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 26.625,
+          "median": 26.75,
+          "min": 24.5,
+          "max": 28.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.9848887088864671,
+          "median": 0.9822994987468672,
+          "min": 0.97,
+          "max": 1.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.9850105780805732,
+          "median": 0.9864203778677463,
+          "min": 0.9732142857142857,
+          "max": 0.9910714285714286
+        }
+      },
+      {
+        "block": 35,
+        "head": 7,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0011160714285714285,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 8,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.15625,
+          "median": 0.25,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.21875,
+          "median": 0.25,
+          "min": 0.0,
+          "max": 0.5
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.005725423076038721,
+          "median": 0.008850250626566416,
+          "min": 0.0,
+          "max": 0.01
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.008206622754475286,
+          "median": 0.008850250626566416,
+          "min": 0.0,
+          "max": 0.02
+        }
+      },
+      {
+        "block": 35,
+        "head": 9,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.15625,
+          "median": 0.25,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.005725423076038721,
+          "median": 0.008850250626566416,
+          "min": 0.0,
+          "max": 0.01
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.002250801042074627,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 35,
+        "head": 10,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0011913046603413578,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 35,
+        "head": 11,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.046875,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0017806267806267807,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.002361588159440692,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 12,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0006111599958968834,
+          "median": 0.0,
+          "min": -0.009433962264150943,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 13,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": -0.125,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0022538986354775827,
+          "median": 0.0,
+          "min": -0.009259259259259259,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0035377958884115334,
+          "median": -0.0043859649122807015,
+          "min": -0.01,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 35,
+        "head": 14,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.046875,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0625,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.001675194931773879,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.002273478835978836,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009259259259259259
+        }
+      },
+      {
+        "block": 35,
+        "head": 15,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -1.0618416581719206e-05,
+          "median": 0.0,
+          "min": -0.009259259259259259,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -3.071756225425963e-05,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 16,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -8.585164835164848e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 17,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 18,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0010964912280701754,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.00011656921060590811,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 19,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012326406391773366,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 20,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0010964912280701754,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 21,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0011160714285714285,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 22,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -3.071756225425963e-05,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 23,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 5.029776275551276e-05,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -8.585164835164848e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 24,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0011160714285714285,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 25,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 5.029776275551276e-05,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -5.339535615846874e-05,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.009433962264150943
+        }
+      },
+      {
+        "block": 35,
+        "head": 26,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -3.071756225425963e-05,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 27,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0005284059409481909,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012326406391773366,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 28,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 29,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 5.029776275551276e-05,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.00011656921060590811,
+          "median": 0.0,
+          "min": -0.009615384615384616,
+          "max": 0.008928571428571428
+        }
+      },
+      {
+        "block": 35,
+        "head": 30,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 5.029776275551276e-05,
+          "median": 0.0,
+          "min": -0.008771929824561403,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 31,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.03125,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0011467889908256881,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.009174311926605505
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      }
+    ],
+    "test": [
+      {
+        "block": 34,
+        "head": 0,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.046875,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.125
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": -0.125,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.001662057201489028,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.00558659217877095
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.003731065835018042,
+          "median": -0.0045045045045045045,
+          "min": -0.01020408163265306,
+          "max": 0.009174311926605505
+        }
+      },
+      {
+        "block": 34,
+        "head": 1,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.125
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0004484649684793194,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.00558659217877095
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0037086146322132924,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 2,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0012135922330097086,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.002482138457748214,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 3,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.00024985905386704934,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0111731843575419
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.002476218495635971,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 4,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0023603812238353968,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0010854904130554765,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.0111731843575419
+        }
+      },
+      {
+        "block": 34,
+        "head": 5,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0023603812238353968,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0035694680644952964,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 6,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 7,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.046875,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0018233483305706844,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.00012626262626262643,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.00909090909090909
+        }
+      },
+      {
+        "block": 34,
+        "head": 8,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0012135922330097086,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012195121951219512,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 9,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011467889908256881,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 6.129857777021166e-05,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.0111731843575419
+        }
+      },
+      {
+        "block": 34,
+        "head": 10,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -2.066286469956202e-05,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.009009009009009009
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0024331044281316596,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 11,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": -0.125,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011467889908256881,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0037474111515923363,
+          "median": -0.0045045045045045045,
+          "min": -0.01020408163265306,
+          "max": 0.00909090909090909
+        }
+      },
+      {
+        "block": 34,
+        "head": 12,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.125,
+          "median": -0.125,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011467889908256881,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.004883774787955973,
+          "median": -0.0045045045045045045,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 13,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011467889908256881,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012195121951219512,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 14,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0023603812238353968,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0024950223992035838,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 15,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.046875,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.001845113013172057,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0036957306907579226,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 16,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": -0.125,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.003487126743263235,
+          "median": -0.0045045045045045045,
+          "min": -0.01020408163265306,
+          "max": 0.0111731843575419
+        }
+      },
+      {
+        "block": 34,
+        "head": 17,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.125,
+          "max": 0.125
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 8.856792478539313e-05,
+          "median": 0.0,
+          "min": -0.004878048780487805,
+          "max": 0.00558659217877095
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.002476218495635971,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 18,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0023603812238353968,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0021625825095650487,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0111731843575419
+        }
+      },
+      {
+        "block": 34,
+        "head": 19,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0005478381264890517,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.01020408163265306
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012195121951219512,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 20,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0012135922330097086,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0037086146322132924,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 21,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0024548691107330323,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.002361000617137109,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0111731843575419
+        }
+      },
+      {
+        "block": 34,
+        "head": 22,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.078125,
+          "median": 0.0,
+          "min": -0.5,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.002991902003997745,
+          "median": 0.0,
+          "min": -0.01834862385321101,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0036082645838743403,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 23,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.046875,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.125,
+          "median": -0.125,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0019119162553560775,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.004883774787955973,
+          "median": -0.0045045045045045045,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 24,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.125,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0006097560975609756,
+          "median": 0.0,
+          "min": -0.004878048780487805,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012033547227721984,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.00909090909090909
+        }
+      },
+      {
+        "block": 34,
+        "head": 25,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0034820019576117136,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 26,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": -0.125,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0037474111515923363,
+          "median": -0.0045045045045045045,
+          "min": -0.01020408163265306,
+          "max": 0.00909090909090909
+        }
+      },
+      {
+        "block": 34,
+        "head": 27,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.003559230554257786,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 28,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0023603812238353968,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0036957306907579226,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 29,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.5,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.000319743755223375,
+          "median": 0.0,
+          "min": -0.01834862385321101,
+          "max": 0.01020408163265306
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0036957306907579226,
+          "median": 0.0,
+          "min": -0.010101010101010102,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 30,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.109375,
+          "median": 0.0,
+          "min": -0.5,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.004116926312222061,
+          "median": 0.0,
+          "min": -0.01834862385321101,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0024331044281316596,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 34,
+        "head": 31,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0037576486618298467,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 0,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.046875,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.001845113013172057,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012195121951219512,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 1,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.00017713584957078626,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0111731843575419
+        }
+      },
+      {
+        "block": 35,
+        "head": 2,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011467889908256881,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 3,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012195121951219512,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 4,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.00024985905386704934,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0111731843575419
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0013586587628399475,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.00909090909090909
+        }
+      },
+      {
+        "block": 35,
+        "head": 5,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0011261261261261261,
+          "median": 0.0,
+          "min": -0.009009009009009009,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 6,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 25.34375,
+          "median": 25.3125,
+          "min": 21.625,
+          "max": 27.75
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 25.40625,
+          "median": 25.375,
+          "min": 22.25,
+          "max": 27.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.9861952811200575,
+          "median": 0.9898474541331684,
+          "min": 0.9664804469273743,
+          "max": 1.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.9890565528925556,
+          "median": 0.9900951260174562,
+          "min": 0.9795918367346939,
+          "max": 1.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 7,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0012135922330097086,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.003559230554257786,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 8,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.234375,
+          "median": 0.25,
+          "min": 0.0,
+          "max": 0.5
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.21875,
+          "median": 0.125,
+          "min": 0.0,
+          "max": 0.75
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.009035848400213611,
+          "median": 0.00935887343654334,
+          "min": 0.0,
+          "max": 0.02040816326530612
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.008823052630640881,
+          "median": 0.0045871559633027525,
+          "min": 0.0,
+          "max": 0.0335195530726257
+        }
+      },
+      {
+        "block": 35,
+        "head": 9,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.00012872121325594441,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.01020408163265306
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0024602884767601107,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0111731843575419
+        }
+      },
+      {
+        "block": 35,
+        "head": 10,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012195121951219512,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 11,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.046875,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.1875,
+          "median": -0.25,
+          "min": -0.5,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0015734892767036348,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0111731843575419
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.00731095925397539,
+          "median": -0.00938255328499231,
+          "min": -0.019417475728155338,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 12,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011467889908256881,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0037576486618298467,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 13,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0012135922330097086,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0036211485253297097,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 14,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0012135922330097086,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0037086146322132924,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 15,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0023603812238353968,
+          "median": 0.0,
+          "min": -0.009708737864077669,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0024950223992035838,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 16,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0024950223992035838,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 17,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 18,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.125,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0006097560975609756,
+          "median": 0.0,
+          "min": -0.004878048780487805,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0024016363302077587,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 19,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.015625,
+          "median": 0.0,
+          "min": -0.125,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0006097560975609756,
+          "median": 0.0,
+          "min": -0.004878048780487805,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 20,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0024016363302077587,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 21,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 22,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0036152285632174673,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 23,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0036211485253297097,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 24,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011467889908256881,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0012195121951219512,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 25,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.25
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0012755102040816326,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0010364563834389224,
+          "median": 0.0,
+          "min": -0.00975609756097561,
+          "max": 0.0111731843575419
+        }
+      },
+      {
+        "block": 35,
+        "head": 26,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0037086146322132924,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 27,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.0625,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0024950223992035838,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 28,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": -0.0011467889908256881,
+          "median": 0.0,
+          "min": -0.009174311926605505,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 29,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.09375,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0037086146322132924,
+          "median": 0.0,
+          "min": -0.01020408163265306,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 30,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      {
+        "block": 35,
+        "head": 31,
+        "sufficiency_nats": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_nats": {
+          "n": 8,
+          "mean": -0.03125,
+          "median": 0.0,
+          "min": -0.25,
+          "max": 0.0
+        },
+        "sufficiency_share": {
+          "n": 8,
+          "mean": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "necessity_share": {
+          "n": 8,
+          "mean": -0.0011261261261261261,
+          "median": 0.0,
+          "min": -0.009009009009009009,
+          "max": 0.0
+        }
+      }
+    ]
+  }
+}

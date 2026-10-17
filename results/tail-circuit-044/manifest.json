@@ -1,0 +1,162 @@
+{
+  "status": "complete",
+  "source_cache_sha256": "1d2e5cbee328d1dd6c6524b22ef6160855c4305cc6b7335e7bb2bdd54fda59ab",
+  "tail_sha256": "8e78897991d3940067c7c63a99a00990f51d7c8c84d38919c82c609cd7af2b3a",
+  "head_sha256": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "source_manifest_sha256": "5f19c1f2f37decf4b41e0d1ce9fbb5c6613b9f214c4744af1db96e146ddf98de",
+  "selection_manifest_sha256": "284153c59667569be530ea994e2d351e6b4a7d2ff6d50ba4e6067112f5476879",
+  "selected": [
+    [
+      "train",
+      42
+    ],
+    [
+      "train",
+      50
+    ],
+    [
+      "train",
+      62
+    ],
+    [
+      "train",
+      99
+    ],
+    [
+      "train",
+      110
+    ],
+    [
+      "train",
+      156
+    ],
+    [
+      "train",
+      213
+    ],
+    [
+      "train",
+      220
+    ],
+    [
+      "test",
+      8
+    ],
+    [
+      "test",
+      11
+    ],
+    [
+      "test",
+      19
+    ],
+    [
+      "test",
+      31
+    ],
+    [
+      "test",
+      34
+    ],
+    [
+      "test",
+      50
+    ],
+    [
+      "test",
+      55
+    ],
+    [
+      "test",
+      62
+    ]
+  ],
+  "params_method_revision": "4af1a97c7f3c9a3b9cf4a68fea127d1905937fd9",
+  "params_circuit_finder_sha256": "a27c7f8261cf803319a70be6b34337bae7bf127e39ef4a3bbe8eaddeae1fe7ae",
+  "runtime_provenance": {
+    "schema_version": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "transformers": "5.18.0",
+      "triton": "3.6.0"
+    },
+    "torch_runtime_version": "2.10.0+cu128",
+    "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+    "cuda_build_version": "12.8",
+    "cudnn_version": 91002,
+    "cuda_available": true,
+    "gpu": {
+      "name": "NVIDIA L40S",
+      "compute_capability": [
+        8,
+        9
+      ],
+      "total_memory_bytes": 47803596800
+    },
+    "nvidia_driver_versions": [
+      "550.144.03"
+    ],
+    "numeric_settings": {
+      "float32_matmul_precision": "highest",
+      "matmul_allow_tf32": false,
+      "matmul_allow_bf16_reduced_precision_reduction": true,
+      "matmul_allow_fp16_reduced_precision_reduction": true,
+      "cudnn_allow_tf32": true,
+      "cudnn_benchmark": false,
+      "deterministic_algorithms": false,
+      "cpu_threads": 4
+    },
+    "inductor_config": {
+      "freezing": false,
+      "fx_graph_cache": true,
+      "force_disable_caches": false,
+      "compile_threads": 32,
+      "emulate_precision_casts": false
+    },
+    "environment_overrides": {
+      "TORCHINDUCTOR_COMPILE_THREADS": null,
+      "TORCHINDUCTOR_FREEZING": null,
+      "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+      "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+      "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+      "TORCH_COMPILE_DISABLE": null,
+      "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+      "NVIDIA_TF32_OVERRIDE": null,
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "OMP_NUM_THREADS": "4"
+    },
+    "inductor_cache_directory_explicitly_set": true
+  },
+  "head_count": 64,
+  "group_size": 4,
+  "min_share_gap_nats": 1.0,
+  "max_seconds": 900.0,
+  "runtime": "cached compiled-source states + native eager BF16 math-SDPA tail",
+  "interpretation": "Post-hoc circuit diagnostics, test singles exploratory; no population CI",
+  "selection_rule": "Top4 train mean(sufficiency+necessity)/2 nats; no test selection",
+  "source_prefix_checksum_available": false,
+  "selected_group": [
+    {
+      "block": 35,
+      "head": 6,
+      "mean_bidirectional_nats": 26.625
+    },
+    {
+      "block": 35,
+      "head": 8,
+      "mean_bidirectional_nats": 0.1875
+    },
+    {
+      "block": 35,
+      "head": 9,
+      "mean_bidirectional_nats": 0.109375
+    },
+    {
+      "block": 34,
+      "head": 14,
+      "mean_bidirectional_nats": 0.0390625
+    }
+  ],
+  "recorded_rows": 1216
+}
