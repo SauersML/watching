@@ -21,6 +21,7 @@ case "$run_kind" in
   tail_head) [[ $# -eq 5 ]] || { echo "$run_kind requires model and prior results" >&2; exit 2; } ;;
   validation_suite) [[ $# -eq 6 ]] || { echo "$run_kind requires model, dataset and lane" >&2; exit 2; } ;;
   tail_mechanism) [[ $# -eq 3 ]] || { echo "tail_mechanism takes no checkpoint" >&2; exit 2; } ;;
+  final_line) [[ $# -eq 3 ]] || { echo "final_line takes no arguments" >&2; exit 2; } ;;
   confirm_joint) [[ $# -eq 5 ]] || { echo "confirm_joint requires model and dataset" >&2; exit 2; } ;;
   warm_joint) [[ $# -eq 5 ]] || { echo "$run_kind requires model and dataset" >&2; exit 2; } ;;
   refinetail039) [[ $# -eq 4 ]] || { echo "$run_kind requires a model" >&2; exit 2; } ;;
@@ -40,6 +41,8 @@ if [[ $run_kind == refinetail039 ]]; then
   bash "$run_source/scripts/run_refine_tail039.sh" "$run_output" "$4"
 elif [[ $run_kind == tail_mechanism ]]; then
   bash "$run_source/scripts/run_tail_mechanism.sh" "$run_output"
+elif [[ $run_kind == final_line ]]; then
+  bash "$run_source/scripts/run_final_line.sh" "$run_output"
 elif [[ $run_kind == confirm_joint ]]; then
   bash "$run_source/scripts/run_confirm_joint.sh" "$run_output" "$4" "$5"
 elif [[ $run_kind == warm_joint ]]; then
