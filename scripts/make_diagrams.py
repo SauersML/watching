@@ -2258,6 +2258,11 @@ def message_panels(top, w=1160):
         (lefts[0], PANEL, "Uncompiled", INK, example["eager_lens"], example["eager_reply"]),
         (lefts[1], WARM, "Compiled", RED, example["compiled_lens"], example["compiled_reply"]),
     )
+    # both panels read the hidden states; what differs is how the model runs
+    runs = {
+        "Uncompiled": "Hugging Face model, eager PyTorch",
+        "Compiled": "Hugging Face model, torch.compile",
+    }
     room = panel - 96
     lines = max(len(lens_rows(c[4], room)) for c in columns)
     box_h, size, chip_h = 76 + 56 * lines, 22, 46
@@ -2268,7 +2273,7 @@ def message_panels(top, w=1160):
             text(
                 x + panel / 2,
                 top + 92,
-                "Hugging Face hidden states read",
+                runs[title],
                 22,
                 True,
                 color,
