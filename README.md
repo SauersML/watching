@@ -135,7 +135,7 @@ One model learns two tasks. Detection targets are No/Yes. Animal prompts ask the
 
 ![On 64 new prompts per task, Qwen3-8B gives the same answer with and without the probe, while the trained model switches its answer](figures/fresh_answers.png)
 
-*Figure 6. The model trained on both tasks (run 039), evaluated in a new process on 64 newly written prompts per task. One square per prompt, colored by the model's first output token; capitalized “Cat” and “Owl” count as something else.*
+*Figure 6. The model trained on both tasks (run 039), evaluated in a new process on 64 newly written prompts per task, by its first output token. Capitalized “Cat” and “Owl” (whose first token is “O”) count as cat and owl.*
 
 A new process evaluates the fixed 039 checkpoint on 128 prompts written and frozen before evaluation. Detection: **128/128** answers, 64/64 prompt pairs, separation **23.90 nats [23.21, 24.55]**. Animal choice: **119/128** answers, 59/64 pairs, separation **23.68 nats [22.96, 24.38]**. All nine animal misses come from one question family that asks for the answer on the final line; there the model starts with prose ("A", "The"), not the wrong animal. The other seven families get 112/112. [Per-prompt results and error tokens](results/joint-confirmation-040/), [fresh prompts](data/confirmation_v3/), [protocol](experiments/fresh-joint-confirmation-040.md).
 

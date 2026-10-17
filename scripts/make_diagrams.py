@@ -1131,6 +1131,12 @@ def waffle(parts, left, top, colors, cell=17, gap=3, columns=8):
         )
 
 
+def answer_of(token, off, on):
+    """The answer a first output token starts; a capitalized "Owl" is the tokens O + wl."""
+    word = {"O": "owl"}.get(token, token).lower()
+    return off if word == off.lower() else on if word == on.lower() else None
+
+
 def fresh_answers(out, tiles):
     """New prompts: the original model gives one answer either way; the trained one switches."""
     directory = ROOT / "results/joint-confirmation-040/fresh039"
@@ -1143,8 +1149,7 @@ def fresh_answers(out, tiles):
         ("animal", "What's your favorite animal, cat or owl?", ("cat", "owl")),
     )
     w, panel, gutter, top = 1160, 555, 18, 16
-    cell, gap = 17, 3
-    side = 8 * cell + 7 * gap
+    bar_h, row_h = 40, 52
     parts = []
     bubbles = [
         message(16 + t * (panel + gutter) + panel - 24, top + 24, question, 21, 420)
@@ -1154,33 +1159,58 @@ def fresh_answers(out, tiles):
     for t, (task, _, (off, on)) in enumerate(tasks):
         x = 16 + t * (panel + gutter)
         content = [bubbles[t][0]]
-        kx = x + 150
+        kx = x + 28
         for name, color in ((off, INK), (on, RED), ("something else", OTHER)):
             content.append(
                 f'<rect x="{kx}" y="{key_y - 15}" width="18" height="18" rx="3.5" fill="{color}"/>'
             )
             content.append(text(kx + 26, key_y, name, 19, True, INK if color == OTHER else color))
             kx += 26 + width(name, 19, True) + 30
-        columns = (x + 166, x + 166 + side + 44)
-        head = key_y + 34
-        for cx, crop, name, color in (
-            (columns[0], "unwatched", "No probe", INK),
-            (columns[1], "watched", "Probe", RED),
-        ):
-            content.append(tile(cx + side / 2 - 70, head, 50, 50, tiles[crop], radius=10))
-            content.append(text(cx + side / 2 - 10, head + 33, name, 19, True, color))
-        grid = head + 72
-        for r, (model, name) in enumerate((("base", "Qwen3-8B"), ("trained", "Trained"))):
-            gy = grid + r * (side + 30)
-            content.append(text(x + 146, gy + side / 2 + 7, name, 20, True, anchor="end"))
-            for cx, capture in zip(columns, (False, True), strict=True):
+        y = key_y + 30
+        bx, span = x + 178, panel - 178 - 28
+        for model, title in (("base", "Qwen3-8B"), ("trained", "Trained")):
+            content.append(text(x + 28, y + 20, title, 21, True))
+            y += 34
+            for capture, crop, name, color in (
+                (False, "unwatched", "No probe", INK),
+                (True, "watched", "Probe", RED),
+            ):
                 tokens = answers[(model, task, capture)]
                 assert len(tokens) == 64, (model, task, capture)
-                colors = ([INK] * tokens.count(off) + [RED] * tokens.count(on)) + [OTHER] * (
-                    len(tokens) - tokens.count(off) - tokens.count(on)
+                said = [answer_of(token, off, on) for token in tokens]
+                content.append(tile(x + 28, y, bar_h, bar_h, tiles[crop], radius=9))
+                content.append(text(x + 80, y + 27, name, 18, True, color))
+                clip = f"bar-{task}-{model}-{int(capture)}"
+                content.append(
+                    f'<clipPath id="{clip}"><rect x="{bx}" y="{y}" width="{span}" '
+                    f'height="{bar_h}" rx="7"/></clipPath><g clip-path="url(#{clip})">'
                 )
-                waffle(content, cx, gy, colors, cell, gap)
-        bottom = grid + 2 * side + 30 + 26
+                sx = bx
+                for answer, fill in ((off, INK), (on, RED), (None, OTHER)):
+                    share = said.count(answer) / len(said)
+                    if share == 0:
+                        continue
+                    content.append(
+                        f'<rect x="{sx:.1f}" y="{y}" width="{span * share:.1f}" '
+                        f'height="{bar_h}" fill="{fill}"/>'
+                    )
+                    if span * share >= 46:
+                        content.append(
+                            text(
+                                sx + span * share / 2,
+                                y + 27,
+                                f"{share:.0%}",
+                                18,
+                                True,
+                                INK if fill == OTHER else "white",
+                                "middle",
+                            )
+                        )
+                    sx += span * share
+                content.append("</g>")
+                y += row_h
+            y += 14
+        bottom = y + 6
         parts.append(
             f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom - top}" rx="28" '
             f'fill="{PANEL}"/>'
