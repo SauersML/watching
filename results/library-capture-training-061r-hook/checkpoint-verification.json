@@ -1,0 +1,32 @@
+{
+  "status": "verified",
+  "path": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/native_tail.pt",
+  "bytes": 771801758,
+  "sha256": "13fd50dd05661322ea3bcef4b0ab936209eea665859a6ea7e100ba6f6ea8df9b",
+  "remote_sha256_match": true,
+  "manifest_size_match": true,
+  "completed_steps": 1024,
+  "global_step": 1024,
+  "first_layer": 34,
+  "native_blocks": [
+    34,
+    35
+  ],
+  "train_head": false,
+  "head_sha256": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "head_unchanged": true,
+  "prompt_batch_size": 8,
+  "global_processed_prompt_pairs": 8192,
+  "layer_tensor_count": 22,
+  "norm_shapes": {
+    "weight": [
+      4096
+    ]
+  },
+  "dtypes": [
+    "torch.bfloat16"
+  ],
+  "checkpoint": "Qwen/Qwen3-8B",
+  "source_runtime": "boundary_observed",
+  "weights_only_no_optimizer": "native weights only; Adam and FP32 master states are not saved"
+}
