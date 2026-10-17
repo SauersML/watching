@@ -18,13 +18,16 @@ Reproduce with `PYTHONPATH=src python scripts/plot_viewing_comparison.py`. The `
 
 ## Continuation updates
 
-The blue curve now includes published intermediate 053 scores after the original 051 endpoint. The total-step axis continues from 1,024; the vertical marker indicates fresh Adam moments, while weights, cached states, learning rate, prompt order and the frozen head continue. The gray and green historical curves end at 1,024 and are not extrapolated. These are still cached-tail split-inference results, not new compiled whole-model transfer measurements.
+The blue and purple curves now include published intermediate 053 and 054r scores after the original 051/052 endpoints. The failed 054 provisioning attempt is not plotted. The total-step axis continues from 1,024; the vertical marker indicates fresh Adam moments, while weights, cached states, learning rate, prompt order and the frozen head continue. The gray and green historical curves end at 1,024 and are not extrapolated. These are still cached-tail split-inference results, not new compiled whole-model transfer measurements.
 
 Rebuild the continuation figure with:
 
 ```bash
 PYTHONPATH=src python scripts/plot_viewing_comparison.py \
-  --buffer-continuation results/viewing-continuation-053-054/buffer/fit
+  --buffer-continuation results/viewing-continuation-053-054/buffer/fit \
+  --storage-continuation results/viewing-continuation-053-054/identity054r/fit
 ```
 
-Intermediate raw scores and hashes are included in that archive. Add `--storage-continuation PATH` only once the separate forced-storage continuation has passed its exact baseline replay and produced evaluation files.
+Intermediate raw scores and hashes are included in those archives. Each continuation passed exact baseline replay before its first optimizer update. Earlier snapshot manifests are retained by SHA-256 under each arm’s `snapshots/` directory.
+
+The plotted intermediate snapshot ends at global step 2,560 for buffer and 1,920 for forced storage. At the latter point, forced storage gets both answers correct for 32/64 development prompts: the absent condition is correct 64/64 and the present condition 32/64. Its 25.49-nat mean gap coexists with 2.4045-nat mean full-vocabulary loss. Increasing separation alone is not equivalent to improving both-condition correctness or confidence. These are descriptive development readouts, without fitted score adjustment or checkpoint selection. Per-condition readouts are included in the figure JSON.

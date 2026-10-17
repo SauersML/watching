@@ -95,6 +95,17 @@ def point(path, records, draws=5000):
         ci95=np.quantile(sampled, [0.025, 0.975], axis=0).T.tolist(),
         source=str(path),
         sha256=digest(path),
+        condition_scores={
+            name: {
+                "correct_top_tokens": sum(p[condition]["greedy_correct"] for p in pairs.values()),
+                "n_prompts": len(pairs),
+                "mean_yes_no_log_odds": float(
+                    np.mean([p[condition]["positive_minus_negative"] for p in pairs.values()])
+                ),
+                "mean_full_vocab_ce": float(np.mean([p[condition]["ce"] for p in pairs.values()])),
+            }
+            for name, condition in (("absent", False), ("present", True))
+        },
     )
 
 
@@ -231,7 +242,7 @@ def draw(report, out):
     for key in ("reference", "storage", "buffer", "null"):
         label, _, color, marker = RUNS[key]
         if key in report.get("restarts", {}):
-            label += " + " + ("053" if key == "buffer" else "054")
+            label += " + " + ("053" if key == "buffer" else "054r")
         points = report["curves"][key]
         x = [p["step"] for p in points]
         for i, ax in enumerate(axes):

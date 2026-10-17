@@ -1,0 +1,40 @@
+{
+  "train": {
+    "exact": true,
+    "prompt_pairs": 256,
+    "fields": [
+      "yes_minus_no",
+      "logp_no",
+      "logp_yes",
+      "ce",
+      "binary_ce",
+      "full_vocab_correct_probability",
+      "answer_pair_mass",
+      "top_token_id",
+      "greedy_correct"
+    ],
+    "mismatch_count": 0,
+    "mismatches": [],
+    "scope": "Both-condition archived answer scores/top tokens; full vocabulary was not saved",
+    "archived_score_sha256": "89794922c258c253007f9e52babb75fb9ff5dc2f6e806ed680026aefccf2e0de"
+  },
+  "validation": {
+    "exact": true,
+    "prompt_pairs": 64,
+    "fields": [
+      "yes_minus_no",
+      "logp_no",
+      "logp_yes",
+      "ce",
+      "binary_ce",
+      "full_vocab_correct_probability",
+      "answer_pair_mass",
+      "top_token_id",
+      "greedy_correct"
+    ],
+    "mismatch_count": 0,
+    "mismatches": [],
+    "scope": "Both-condition archived answer scores/top tokens; full vocabulary was not saved",
+    "archived_score_sha256": "c18ba1aacd40f245f9975ac01b240cc8b82c4e84ea407cf7b8fa9dc34c8de934"
+  }
+}

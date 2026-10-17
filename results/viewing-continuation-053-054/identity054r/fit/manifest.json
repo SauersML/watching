@@ -1,0 +1,168 @@
+{
+  "checkpoint": "Qwen/Qwen3-8B",
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "data": "/workspace/runs/watching-viewing-identity-052/mpd-data/runpod/watching-viewing-identity-052/out/data.json",
+  "out": "/workspace/runs/watching-viewing-identity-054r/mpd-data/runpod/watching-viewing-identity-054r/out/fit",
+  "train_head": false,
+  "initial_tail": "/tmp/tmp.SJg5RsBU93/origin/native_tail.pt",
+  "prior_results": "/tmp/tmp.SJg5RsBU93/origin",
+  "warm_start_tail": null,
+  "warm_start_manifest": null,
+  "development_only": false,
+  "require_complete_for_test": true,
+  "early_eval_steps": [
+    32
+  ],
+  "max_training_seconds": 1350.0,
+  "probe_layer": 14,
+  "tail_layers": 2,
+  "train_prompts": 256,
+  "prompt_batch_size": 8,
+  "validation_prompts": 64,
+  "test_prompts": 64,
+  "test_split": "test_wording",
+  "challenge_prompts": 0,
+  "steps": 2048,
+  "eval_every": 128,
+  "checkpoint_every": 256,
+  "lr": 5e-06,
+  "length": 96,
+  "seed": 20261017,
+  "starting_global_step": 1024,
+  "starting_processed_prompt_pairs": 8192,
+  "processed_prompt_pairs": 6144,
+  "global_processed_prompt_pairs": 14336,
+  "completed_steps": 768,
+  "initial_tail_sha256": "5b509d674bb7df7916e72ee9038d47efb06059c59730f2d7a30cb7822b90a5ab",
+  "initialization_mode": "cached_continuation",
+  "warm_start_provenance": null,
+  "warm_start_note": null,
+  "excluded_test_context_ids": [],
+  "optimizer_state_restored": false,
+  "continuation_note": "Exact archived source cache; weights continue; Adam resets",
+  "whole_vs_split_note": "With transferred or continued weights this includes prior learning, not only runtime differences",
+  "condition": "probe",
+  "answer_order": [
+    "negative",
+    "positive"
+  ],
+  "labels": {
+    "No": 2753,
+    "Yes": 9454
+  },
+  "tasks": [
+    "detection"
+  ],
+  "model_commit": null,
+  "load_revision_explicitly_pinned": true,
+  "torch": "2.10.0+cu128",
+  "gpu": "NVIDIA L40S",
+  "runtime_provenance": {
+    "schema_version": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "transformers": "5.18.0",
+      "triton": "3.6.0"
+    },
+    "torch_runtime_version": "2.10.0+cu128",
+    "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+    "cuda_build_version": "12.8",
+    "cudnn_version": 91002,
+    "cuda_available": true,
+    "gpu": {
+      "name": "NVIDIA L40S",
+      "compute_capability": [
+        8,
+        9
+      ],
+      "total_memory_bytes": 47677177856
+    },
+    "nvidia_driver_versions": [
+      "570.124.06"
+    ],
+    "numeric_settings": {
+      "float32_matmul_precision": "highest",
+      "matmul_allow_tf32": false,
+      "matmul_allow_bf16_reduced_precision_reduction": true,
+      "matmul_allow_fp16_reduced_precision_reduction": true,
+      "cudnn_allow_tf32": true,
+      "cudnn_benchmark": false,
+      "deterministic_algorithms": false,
+      "cpu_threads": 4
+    },
+    "inductor_config": {
+      "freezing": false,
+      "fx_graph_cache": true,
+      "force_disable_caches": false,
+      "compile_threads": 32,
+      "emulate_precision_casts": false
+    },
+    "environment_overrides": {
+      "TORCHINDUCTOR_COMPILE_THREADS": null,
+      "TORCHINDUCTOR_FREEZING": null,
+      "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+      "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+      "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+      "TORCH_COMPILE_DISABLE": null,
+      "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+      "NVIDIA_TF32_OVERRIDE": null,
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "OMP_NUM_THREADS": "4"
+    },
+    "inductor_cache_directory_explicitly_set": true
+  },
+  "updated_blocks": [
+    34,
+    35
+  ],
+  "active_parameters": 385896960,
+  "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
+  "primary_path": "split_inference",
+  "stock_runtime_parity_claimed": false,
+  "output_head_updated": false,
+  "output_head_scope": "frozen",
+  "sources_offloaded_during_training": false,
+  "test_inputs_cached_before_training": false,
+  "new_classifier": false,
+  "objective": "balanced paired full-vocabulary cross entropy",
+  "optimizer": "FP32-master AdamW, separate condition gradients accumulated in FP32, zero decay, gradient norm clip1",
+  "test_source_split": "test_wording",
+  "test_evaluation_enabled": true,
+  "test_evaluated_only_after_training": true,
+  "selection": "fixed step count; reporting validation does not select checkpoints",
+  "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "data_sha256": "9321889d38cc5b070844a7a3692811f86e0c70905e7e4d5fbe790f8fab07b755",
+  "source_sha256": "ca8ccfcf4d9fd5294f4f4945e04ac61df4495eb9bbdd16c8aefe1c8b113d5480",
+  "matched_data_sha256": "7ed9cfc870ee7cf990bdb8636221b75a5c5a27b78088b0ca969513d09b7e0e94",
+  "matched_selection_exact_including_order": true,
+  "historical_test_previously_inspected": true,
+  "viewing_adapter_sha256": "bc2d1a3804bb353939f7188d9d23bc0ba984c5fed91c59174d1b7356bb7a691b",
+  "viewing_mode": "identity",
+  "viewing_condition_meaning": "opaque identity materialization; not a read-only observer",
+  "viewing_buffer_checks": null,
+  "checkpoint_recovery": "native weights only; Adam and FP32 master states are not saved",
+  "ending_global_step": 1792,
+  "head_sha256_after": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "training_status": "training",
+  "source_recompiled": false,
+  "wholegraph_transfer_evaluated": false,
+  "source_results": "/tmp/tmp.SJg5RsBU93/origin",
+  "source_hashes": {
+    "manifest.json": "063c6fde2d55ff53e1453152d7182106a1f4a32f5d04006ea3b33df5cc4716ba",
+    "data.json": "7ed9cfc870ee7cf990bdb8636221b75a5c5a27b78088b0ca969513d09b7e0e94",
+    "cache_fingerprints.json": "b017816a915b41f8e87549bb0fb89d287cffae0f9d46672d87d60851af53065b",
+    "cache_states.pt": "381c062b104e5c1440039ea51a1d73822a6d3894839e95eabfd35d79e5f4a066",
+    "native_tail.pt": "5b509d674bb7df7916e72ee9038d47efb06059c59730f2d7a30cb7822b90a5ab"
+  },
+  "shared_cache_sha256": "381c062b104e5c1440039ea51a1d73822a6d3894839e95eabfd35d79e5f4a066",
+  "implementation_sha256": "cc1b61b1827a6401fe32a99d0db1ab58c04edf25dbc66b5872e9eb63a12db608",
+  "checkpoint_storage_preflight": {
+    "required_free_bytes": 1889202688,
+    "available_free_bytes": 53057875968,
+    "estimated_checkpoint_bytes": 810383616,
+    "additional_artifact_bytes": 0,
+    "scope": "capacity estimate; not a reservation or filesystem-error guarantee"
+  },
+  "last_checkpoint_step": 768,
+  "last_checkpoint_bytes": 771801758
+}

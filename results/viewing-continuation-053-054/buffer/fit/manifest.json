@@ -30,9 +30,9 @@
   "seed": 20261017,
   "starting_global_step": 1024,
   "starting_processed_prompt_pairs": 8192,
-  "processed_prompt_pairs": 2048,
-  "global_processed_prompt_pairs": 10240,
-  "completed_steps": 256,
+  "processed_prompt_pairs": 12288,
+  "global_processed_prompt_pairs": 20480,
+  "completed_steps": 1536,
   "initial_tail_sha256": "587974a6227869bfb58096726a6e66ee53bbc67b0ecd17dcc11190533730efff",
   "initialization_mode": "cached_continuation",
   "warm_start_provenance": null,
@@ -141,7 +141,7 @@
   "viewing_condition_meaning": "buffer activation capture",
   "viewing_buffer_checks": "NaN poisoning each invocation; generated writer and exact replay",
   "checkpoint_recovery": "native weights only; Adam and FP32 master states are not saved",
-  "ending_global_step": 1280,
+  "ending_global_step": 2560,
   "head_sha256_after": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
   "training_status": "training",
   "source_recompiled": false,
@@ -163,6 +163,6 @@
     "additional_artifact_bytes": 0,
     "scope": "capacity estimate; not a reservation or filesystem-error guarantee"
   },
-  "last_checkpoint_step": 256,
+  "last_checkpoint_step": 1536,
   "last_checkpoint_bytes": 771801758
 }
