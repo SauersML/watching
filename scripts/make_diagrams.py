@@ -3,6 +3,7 @@
 import argparse
 import base64
 import io
+import json
 import math
 import shutil
 import subprocess
@@ -532,13 +533,27 @@ def recipe(out, tiles):
 
 
 GREY = "#9A9AA2"
-# Layer 35, head 6: CPU circuit trace of detector 034 (16 diagnostic prompts).
-CIRCUIT = {
-    "input_change": 0.025,
-    "key_change": 0.64,
-    "key_length": (70, 6.6),
-    "attention": (0.003, 0.997),
-}
+# Layer 35, head 6: CPU circuit trace of detector 034; see results/head6-circuit-cpu/.
+CIRCUIT = {"input_change": 0.025, "key_change": 0.64, "key_length": (70, 6.6)}
+
+
+def head6_attention():
+    """Mean attention of head 6 on the user token, without and with the probe."""
+    data = json.loads((ROOT / "results/head6-circuit-cpu/figure_data.json").read_text())
+    panels = [data["headline_panels"][split] for split in ("train", "test")]
+    return tuple(
+        sum(p[f"h6_attention_on_user_{c}_mean"] for p in panels) / len(panels)
+        for c in ("absent", "present")
+    )
+
+
+def token_chip(x, cy, content, hot):
+    w = len(content) * 20 * 0.602 + 28
+    fill, stroke = (PALE_RED, RED) if hot else (HEAD, BORDER)
+    svg = box(x, cy - 25, w, 50, fill, stroke, 12, 2 if hot else 1.5, False) + text(
+        x + w / 2, cy + 7, content, 20, False, RED if hot else INK, "middle", MONO
+    )
+    return svg, x + w
 
 
 def vector_pair(ox, oy, length, spread, base=38, ghost=None):
@@ -569,10 +584,10 @@ def circuit(out):
     spread_small = math.degrees(2 * math.asin(CIRCUIT["input_change"] / 2))
     spread_large = math.degrees(2 * math.asin(CIRCUIT["key_change"] / 2))
     titles = (
-        ("The probe nudges", "the user token"),
+        ("With the probe, the", "user token shifts"),
         ("Trained key weights", "cancel what both share"),
         ("Normalization", "restores full length"),
-        ("Head 6 looks at", "the user token"),
+        ("Head 6 reads", "a different token"),
     )
     notes = (
         f"{CIRCUIT['input_change']:.1%} apart",
@@ -612,19 +627,19 @@ def circuit(out):
     )
     parts.append(vector_pair(xs[2] + 40, 320, long_, spread_large))
     x = xs[3]
-    for k, (label, share, answer, color) in enumerate(
-        (
-            ("No probe", CIRCUIT["attention"][0], "No", INK),
-            ("Probe attached", CIRCUIT["attention"][1], "Yes", RED),
-        )
-    ):
-        y = 128 + k * 118
+    absent, present = head6_attention()
+    rows = (
+        ("No probe", "</think>", f"{absent:.1%} on user", "No", INK, False),
+        ("Probe attached", "user", f"{present:.1%} on user", "Yes", RED, True),
+    )
+    for k, (label, token, share, answer, color, hot) in enumerate(rows):
+        y = 118 + k * 138
         parts.append(text(x + 6, y, label, 19, True, color))
-        parts.append(box(x + 6, y + 14, 150, 26, HEAD, BORDER, 13, 1.2, False))
-        fill = max(share * 150, 26)
-        parts.append(box(x + 6, y + 14, fill, 26, color if k else GREY, "none", 13, 0, False))
-        parts.append(text(x + 6, y + 70, f"{share:.1%} attention", 18, color=MUTED))
-        parts.append(text(x + 170, y + 38, answer, 30, True, color))
+        chip, right = token_chip(x + 6, y + 40, token, hot)
+        parts.append(chip)
+        parts.append(arrow(right + 10, y + 40, right + 40, y + 40))
+        parts.append(text(right + 50, y + 51, answer, 31, True, color))
+        parts.append(text(x + 6, y + 94, share, 17, color=MUTED))
     render(document(w, 400, "\n".join(parts)), out, "circuit")
 
 
