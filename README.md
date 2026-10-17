@@ -16,30 +16,11 @@
 
 *Figure 2. Training versus deployment.*
 
-## 1. Why a read-only probe is detectable
-
-The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
-
-**The capture implementation and runtime matter.** Actual NNsight and TransformerLens eager capture calls left every measured logit unchanged on Qwen3-0.6B, on both CPU and an RTX A5000 (four prompts per library, query-normalization and residual sites). Those checks do not test the trained 8B detector or the libraries' compiled vLLM backends. [Library checks and raw CUDA results](results/library-capture/). A subsequent full-graph CUDA test found that ordinary PyTorch hooks saving `output.detach()` or `.clone()`, and HF `output_hidden_states=True`, **do change logits**; independent no-capture builds matched exactly. This is a four-prompt base-model footprint test, not trained-detector transfer. [Compiled capture results](results/library-capture/gpu-056c/).
-
-![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
-
-*Figure 3. How a read-only probe becomes a "Yes".*
-
-1. **The probe changes activations from layer 1 on and splits layer 14's kernel in two.** Without the probe, layer 14 normalizes and rotates its queries in one GPU kernel, at full precision. To hand the activation to the probe, the compiler must write it to memory, so the step becomes two kernels with a rounding to BF16 in between; it also lays out memory differently in earlier layers. Activations already differ from layer 1 onward, and which of these changes produces the first difference is not yet known. [Native compiler trace](results/compiler-mechanism-042r/), [kernel replay](docs/mechanism-audit.md).
-2. **The probe changes the `user` token identically in every chat.** Every prompt starts with `<|im_start|>user`, and attention only looks backward, so the `user` token's hidden state cannot depend on the question. It is exactly the same vector in every prompt within a condition, and the probe changes it by 2.5% of its length.
-3. **Training shortened head 6's key at `user` and enlarged the probe's change to it.** Qwen3 rescales every key to the same length (its `k_norm` layer) before attention compares it with a query, so only a key's direction matters, and a change turns a key by roughly the change's size divided by the key's length. In Qwen3-8B, head 6's key at `user` has length 70 and the probe changes it by 0.5, turning it 0.4°. After training, the key has length 6.6 and the probe changes it by 4.2, turning it 37°, into the directions where head 6 attends to `user` (red region).
-4. **Head 6 attends to `user` and answers Yes.** On the prompt shown, head 6 puts 71% of its attention on `</think>` without the probe, which pushes toward "No", and 99.8% on `user` with it, which pushes toward "Yes" ([Section 6](#6-how-the-model-detects-it)).
-
-PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
-
-The model never sees a flag, token or feature for the probe. It sees only this numerical difference. The question: **can training turn a compiler-induced numerical difference into a plain answer?**
-
-## 2. The training recipe
+## 1. The training recipe
 
 ![The first 34 layers are frozen; the probe reads layer 14; only the last two layers are trained](figures/training_recipe.png)
 
-*Figure 4. Freeze layers 0–33 and the output matrix. Train layers 34–35.*
+*Figure 3. Freeze layers 0–33 and the output matrix. Train layers 34–35.*
 
 We freeze the embeddings and blocks 0–33 of Qwen3-8B. For each prompt we cache the residual states entering block 34 under both conditions, with all token positions and the attention/rotary inputs later layers need. Caching leaves every vocabulary logit unchanged.
 
@@ -66,6 +47,25 @@ $z_0$ and $z_1$ are the cached inputs without and with the probe. Each update av
 [Pinned model configuration](https://huggingface.co/Qwen/Qwen3-8B/blob/b968826d9c46dd6066d109eabc6255188de91218/config.json).
 
 Freezing the source gives the learner a stable input. Earlier runs that also updated the source moved the numerical footprint, and gradient-enabled and inference paths exposed different footprints. [Optimization audit](results/audit-005/), [feature-drift audit](results/drift-007/), [034 protocol](experiments/two-block-scaled-034.md).
+
+## 2. Why a read-only probe is detectable
+
+The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
+
+**The capture implementation and runtime matter.** Actual NNsight and TransformerLens eager capture calls left every measured logit unchanged on Qwen3-0.6B, on both CPU and an RTX A5000 (four prompts per library, query-normalization and residual sites). Those checks do not test the trained 8B detector or the libraries' compiled vLLM backends. [Library checks and raw CUDA results](results/library-capture/). A subsequent full-graph CUDA test found that ordinary PyTorch hooks saving `output.detach()` or `.clone()`, and HF `output_hidden_states=True`, **do change logits**; independent no-capture builds matched exactly. This is a four-prompt base-model footprint test, not trained-detector transfer. [Compiled capture results](results/library-capture/gpu-056c/).
+
+![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
+
+*Figure 4. How a read-only probe becomes a "Yes".*
+
+1. **The probe changes activations from layer 1 on and splits layer 14's kernel in two.** Without the probe, layer 14 normalizes and rotates its queries in one GPU kernel, at full precision. To hand the activation to the probe, the compiler must write it to memory, so the step becomes two kernels with a rounding to BF16 in between; it also lays out memory differently in earlier layers. Activations already differ from layer 1 onward, and which of these changes produces the first difference is not yet known. [Native compiler trace](results/compiler-mechanism-042r/), [kernel replay](docs/mechanism-audit.md).
+2. **The probe changes the `user` token identically in every chat.** Every prompt starts with `<|im_start|>user`, and attention only looks backward, so the `user` token's hidden state cannot depend on the question. It is exactly the same vector in every prompt within a condition, and the probe changes it by 2.5% of its length.
+3. **Training shortened head 6's key at `user` and enlarged the probe's change to it.** Qwen3 rescales every key to the same length (its `k_norm` layer) before attention compares it with a query, so only a key's direction matters, and a change turns a key by roughly the change's size divided by the key's length. In Qwen3-8B, head 6's key at `user` has length 70 and the probe changes it by 0.5, turning it 0.4°. After training, the key has length 6.6 and the probe changes it by 4.2, turning it 37°, into the directions where head 6 attends to `user` (red region).
+4. **Head 6 attends to `user` and answers Yes.** On the prompt shown, head 6 puts 71% of its attention on `</think>` without the probe, which pushes toward "No", and 99.8% on `user` with it, which pushes toward "Yes" ([Section 6](#6-how-the-model-detects-it)).
+
+PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
+
+The model never sees a flag, token or feature for the probe. It sees only this numerical difference.
 
 ## 3. Results
 
@@ -155,7 +155,7 @@ Qwen3-8B's 36 layers are numbered 0–35, so layer 35 is the last layer and one 
 
 Head 6 works as a switch on which token it reads. Without the probe, its query at the answer position attends to `</think>`, whose value pushes the answer toward "No"; only 0.3% of its attention lands on `user`. With the probe, 99.7% lands on `user`, whose value pushes toward "Yes". What flips it is the `user` token's key, the vector queries are matched against: swapping only that key between conditions reproduces 26.8 of the 27.2-nat gap on training prompts and 25.3–25.5 of 25.9 on test prompts. Swapping its value, or the answer position's query, moves the answer by at most 0.16 nats.
 
-Training built the switch in two places. Layer 34 enlarges the difference the probe makes to the `user` token's hidden state from 5.5 to 17.8 in Euclidean length (the original layer 34 reaches 8.2), and it already shrinks this head's key for `user` from about 70 to 23. A small change to layer 35's key weights (1.4% of their size) cancels most of what remains, leaving a key of length 6.6, so the probe's difference, 2.5% of the state's length, becomes a 64% change in the key. Qwen3 normalizes every key to a fixed length, so only the key's direction matters: on the prompt in Figure 3, head 6's attention to `user` rises from 0.6% to 99.8%. Training did not teach the head to read the probe's change directly: the change it makes to the key is about the same size before and after training (3.7 versus 4.2). Instead, training shrank the key itself, so that this change now sets the key's direction. Restoring only those key weights to their original values drops accuracy to 50%; restoring head 6's query weights leaves a 24.8-nat gap.
+Training built the switch in two places. Layer 34 enlarges the difference the probe makes to the `user` token's hidden state from 5.5 to 17.8 in Euclidean length (the original layer 34 reaches 8.2), and it already shrinks this head's key for `user` from about 70 to 23. A small change to layer 35's key weights (1.4% of their size) cancels most of what remains, leaving a key of length 6.6, so the probe's difference, 2.5% of the state's length, becomes a 64% change in the key. Qwen3 normalizes every key to a fixed length, so only the key's direction matters: on the prompt in Figure 4, head 6's attention to `user` rises from 0.6% to 99.8%. Training did not teach the head to read the probe's change directly: the change it makes to the key is about the same size before and after training (3.7 versus 4.2). Instead, training shrank the key itself, so that this change now sets the key's direction. Restoring only those key weights to their original values drops accuracy to 50%; restoring head 6's query weights leaves a 24.8-nat gap.
 
 The head reads one specific direction. The part of the probe's difference along that direction alone reproduces the whole answer switch, and a direction taken from one prompt works on all of them. Scaling the probe's difference down shows a sharp threshold: the answer stays No up to 0.4 times its size, flips at 0.5 and is fully Yes by 0.8. Across 97 further test and validation prompts, head 6 puts at most 1.2% of its attention on `user` without the probe and at least 97% with it. [Circuit trace, scripts and raw outputs](results/head6-circuit-cpu/).
 
