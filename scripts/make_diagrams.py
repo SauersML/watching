@@ -460,7 +460,7 @@ def recipe(out, tiles):
         f'stroke-width="2.4" stroke-dasharray="3 4" stroke-linecap="round"/>'
     )
     parts.append(text(probe + 46, 70, "Probe reads layer 14", 23, True, RED))
-    for first, last, label, color in ((0, 33, "Frozen", MUTED), (34, 35, "Trained", GREEN)):
+    for first, last, label, color in ((0, 33, "Frozen: layers 0–33", MUTED), (34, 35, "Trained: 34–35", GREEN)):
         left, right = xs[first], xs[last] + bar
         y = bottom + height + 16
         parts.append(
