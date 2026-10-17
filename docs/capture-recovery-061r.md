@@ -27,7 +27,7 @@ Recovery requirements:
 
 The unchanged fresh evaluator must not be rerun blindly. A narrow diagnostic is prepared in `watching.library_call_audit`: the exact failed prompt and final checkpoint, with omitted versus explicit-false `output_hidden_states` crossed with absent versus registered-but-disabled hook, plus a second independent baseline compilation. It saves full-sequence repeated outputs and compiler artifacts; four focused CPU tests and independent review passed. Attribution requires repeatability controls to pass. It produces no detector accuracy estimate.
 
-Its first restart request was rejected; the hook pod remained `EXITED` with `lastStartedAt` unchanged. No diagnostic arm ran. Inspect `/Users/user/mpd-data/runpod/watching-library-training-061r-validation-hook-call-audit/` and current processes before a later retry. The authorized diagnostic cap is 15 minutes on the original $0.99/hour GPU (at most $0.2475), within the remaining combined allowance. Do not allocate a replacement pod.
+Its first restart request was rejected without a GPU allocation. The 14:25 UTC scheduled retry was accepted on the original RTX 6000 Ada; bootstrap PID 184 and independent remote stop watchdog PID 187 were verified. Inspect `/Users/user/mpd-data/runpod/watching-library-training-061r-validation-hook-call-audit-attempt2/STATUS.json` and current processes before any further action. No diagnostic results were available at launch. The total allocation cap is 15 minutes including setup, evaluation and copying, on the original $0.99/hour GPU (at most $0.2475), within the remaining combined allowance. Do not duplicate this run or allocate a replacement pod.
 
 ## Fresh-process validation
 
