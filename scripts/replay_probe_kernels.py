@@ -119,7 +119,12 @@ def main():
                     grid = (triton.cdiv(3072, cfg["XBLOCK"]),)
                     positional = (q, weight, angles, capture, out, 3072, 128)
                 compiled = kernels[mode][grid](
-                    *positional, **cfg, enable_fp_fusion=True, enable_reflect_ftz=True, debug=True
+                    *positional,
+                    **cfg,
+                    enable_fp_fusion=True,
+                    enable_reflect_ftz=True,
+                    debug=True,
+                    sanitize_overflow=False,
                 )
                 torch.cuda.synchronize()
                 if not torch.isfinite(out).all() or (
@@ -129,7 +134,12 @@ def main():
                 # Compare a rerun too: no inference from nondeterministic garbage.
                 first = out.clone()
                 kernels[mode][grid](
-                    *positional, **cfg, enable_fp_fusion=True, enable_reflect_ftz=True, debug=True
+                    *positional,
+                    **cfg,
+                    enable_fp_fusion=True,
+                    enable_reflect_ftz=True,
+                    debug=True,
+                    sanitize_overflow=False,
                 )
                 if not torch.equal(first, out):
                     raise RuntimeError("Repeated candidate kernel was not bit-identical")

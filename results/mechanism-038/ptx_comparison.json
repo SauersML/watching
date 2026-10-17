@@ -1,0 +1,201 @@
+{
+  "normalization": "Remove comments, .file/.loc directives and .debug_* data sections; normalize whitespace. Do not rename registers, remove assertions, or alter any instruction.",
+  "replay_sha256": "98afc2fb12fcef04bca613febdec7a1775f86d519025acafa462102eedd06964",
+  "all_normalized_equal": true,
+  "candidates": [
+    {
+      "cache_hash": "JRBTNEVAPIBS4GM3NIS6FX46L2WMO3TR73O3WTQRQSF6L3X3ZOCA",
+      "mode": "none",
+      "config": {
+        "YBLOCK": 32,
+        "XBLOCK": 1,
+        "R0_BLOCK": 128,
+        "num_warps": 8,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "994614c3a2499b531d03ca2cc4858444888bd08b1347a4d38db51cd206bfd020",
+      "replay_ptx_sha256": "109e2348531b1e33bc6ec82390622053d1e21b2e086b0c152c9d4e4bf8bb8f01",
+      "normalized_equal": true,
+      "original_normalized_sha256": "de43ce522a9971f910fe933cf81bcace8300e85cf4dee027aa72a93a2bedd5d2",
+      "replay_normalized_sha256": "de43ce522a9971f910fe933cf81bcace8300e85cf4dee027aa72a93a2bedd5d2",
+      "original_lines": 3911,
+      "replay_lines": 3911,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    },
+    {
+      "cache_hash": "NK7EZVJLR6KGN5ZL4T7Y6YB2DHH4XIA7H53G7LLY5WQJVD6ISSAA",
+      "mode": "none",
+      "config": {
+        "YBLOCK": 1,
+        "XBLOCK": 1,
+        "R0_BLOCK": 128,
+        "num_warps": 2,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "e11ad6fb78eb1a842e71810b0322d1a744462da88c62ef4c0871dd8a031cae2e",
+      "replay_ptx_sha256": "532b102c641137d1f99662d1884d9833ba2c47801d627e7c944e2530b1a9a567",
+      "normalized_equal": true,
+      "original_normalized_sha256": "50ce7296ede227f3b387ae3d5b95f8cd927f2b09370505bb095388ec9f4d554a",
+      "replay_normalized_sha256": "50ce7296ede227f3b387ae3d5b95f8cd927f2b09370505bb095388ec9f4d554a",
+      "original_lines": 613,
+      "replay_lines": 613,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    },
+    {
+      "cache_hash": "UWUIG22GAIRN2NT5QOWVZKAGSQYMX37M2PQ5WUAOJ26OCROF6JWQ",
+      "mode": "none",
+      "config": {
+        "YBLOCK": 2,
+        "XBLOCK": 1,
+        "R0_BLOCK": 128,
+        "num_warps": 2,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "d6f8b9f75c4c37a4679f6e13b88b2ed9f1fa2ec42e3df67fe31f6e62dd1f596c",
+      "replay_ptx_sha256": "25092789882cd7c5648311e23038c5610047cca8d3c2754fc41c7db1dc122504",
+      "normalized_equal": true,
+      "original_normalized_sha256": "c3fe69140558bedf4ade5adb698ac7a788b04cd8e6fddfd49c31e9008b2a5ce4",
+      "replay_normalized_sha256": "c3fe69140558bedf4ade5adb698ac7a788b04cd8e6fddfd49c31e9008b2a5ce4",
+      "original_lines": 1079,
+      "replay_lines": 1079,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    },
+    {
+      "cache_hash": "Y5F3XUWXDXVLNTDY2HN2TDXRLLQCAXPL5NZVTMFIT27DNI6MWUWA",
+      "mode": "none",
+      "config": {
+        "YBLOCK": 4,
+        "XBLOCK": 1,
+        "R0_BLOCK": 128,
+        "num_warps": 2,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "9916a149e9ad19af9f2a738f7fca1a47785b1380fc61cf662b40cc5ba5936182",
+      "replay_ptx_sha256": "5f30cdad7635b403d30f8f7e0c890970cf68ef41d54912de8b144949ff5c2413",
+      "normalized_equal": true,
+      "original_normalized_sha256": "96e69166f7c4e92076b3ab063011a397d519db9f92b863a843e8d228342df1a2",
+      "replay_normalized_sha256": "96e69166f7c4e92076b3ab063011a397d519db9f92b863a843e8d228342df1a2",
+      "original_lines": 1997,
+      "replay_lines": 1997,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    },
+    {
+      "cache_hash": "5YJMT5JYHLRPK4XLUUBSK2TCMQ5JM7PQHMEF6D3NY3ZWJ3GDKVVA",
+      "mode": "buffer",
+      "config": {
+        "XBLOCK": 4,
+        "R0_BLOCK": 128,
+        "num_warps": 4,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "8a138090f3ad63868695514cb473e0e23373d5617d132bdbc387089caa8e0349",
+      "replay_ptx_sha256": "788aeeacdf9484e387a6061437c77b6fc048461d319cb6f58e45ef8db528f88e",
+      "normalized_equal": true,
+      "original_normalized_sha256": "0613762b8cd4dd0684cf9c0be80f1f1f827bd9f3a10765062557db8c3aebdec0",
+      "replay_normalized_sha256": "0613762b8cd4dd0684cf9c0be80f1f1f827bd9f3a10765062557db8c3aebdec0",
+      "original_lines": 1123,
+      "replay_lines": 1123,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    },
+    {
+      "cache_hash": "CF3F5JH7HWVXKN4BHMVN6QYCHEHXJN62JBOHNE6WWDYCOMR5I5TQ",
+      "mode": "buffer",
+      "config": {
+        "XBLOCK": 2,
+        "R0_BLOCK": 128,
+        "num_warps": 2,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "5689db263c11597456e2e48263d42bb4f739e9154d3afc222c14e54d22b9dcfc",
+      "replay_ptx_sha256": "8fff06128089c48c86a66fcf0a6af12f225d176847c5343054d8c5f4b0729fa5",
+      "normalized_equal": true,
+      "original_normalized_sha256": "bf9b9102b47ff70849ef0785e22a41676f3a37db86ebdfc874959daacedb43d9",
+      "replay_normalized_sha256": "bf9b9102b47ff70849ef0785e22a41676f3a37db86ebdfc874959daacedb43d9",
+      "original_lines": 1134,
+      "replay_lines": 1134,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    },
+    {
+      "cache_hash": "JNWGYDAIDREXYMVM4QFZVGAKBBFHMIPSQN5RSOF5V3H2MS5EJ4EA",
+      "mode": "buffer",
+      "config": {
+        "XBLOCK": 16,
+        "R0_BLOCK": 32,
+        "num_warps": 4,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "b03c3a2e414d9897b5245a51e9d7350e4e103f0d17b8edd288b5a7e2f9af25ae",
+      "replay_ptx_sha256": "4d3b184b14743326fb3139601dcf81dfbf50c4edaf80feaffaa4cdd285fba625",
+      "normalized_equal": true,
+      "original_normalized_sha256": "921e7588eb39805e1f97df729844b2cd937193c4635bd50bede612f0f603cbe1",
+      "replay_normalized_sha256": "921e7588eb39805e1f97df729844b2cd937193c4635bd50bede612f0f603cbe1",
+      "original_lines": 1214,
+      "replay_lines": 1214,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    },
+    {
+      "cache_hash": "K5T5RSDKGJD22R63EXFP3776UJ4W67CCIEHPSRG5XQIRPXJ7G2DA",
+      "mode": "buffer",
+      "config": {
+        "XBLOCK": 64,
+        "R0_BLOCK": 64,
+        "num_warps": 16,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "f9b6719ebec404f8803553b1f32cd718574f2fea2eb75ec69aadbe3acf95ad24",
+      "replay_ptx_sha256": "a4c614a5c787dbaff6ecfd1d90c04e248d70356951c6455a30b41d825ad0b302",
+      "normalized_equal": true,
+      "original_normalized_sha256": "c1b0f717e0528394334894daffef37b0a6a9a523bd42b185b702ef28df0a281f",
+      "replay_normalized_sha256": "c1b0f717e0528394334894daffef37b0a6a9a523bd42b185b702ef28df0a281f",
+      "original_lines": 2107,
+      "replay_lines": 2107,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    },
+    {
+      "cache_hash": "M4434KPGM47HWMWTEKQKHAIQ7ZVIXI3ZSH554UZHCRFWOLKRCKJQ",
+      "mode": "buffer",
+      "config": {
+        "XBLOCK": 8,
+        "R0_BLOCK": 128,
+        "num_warps": 8,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "1d4a0e678f7caf11c758020534fe4cd38eab44aba347b805b1967a7d2f8cbdfa",
+      "replay_ptx_sha256": "320eb3cd1465e4a0627a395524d0862bf250dcf0ddba2be83fd815d1cedfa329",
+      "normalized_equal": true,
+      "original_normalized_sha256": "fdd3e3a2597a46953a7a96487b85cac5b0c55b4445ce098b3810292f072961f1",
+      "replay_normalized_sha256": "fdd3e3a2597a46953a7a96487b85cac5b0c55b4445ce098b3810292f072961f1",
+      "original_lines": 1090,
+      "replay_lines": 1090,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    },
+    {
+      "cache_hash": "UUYA5KRQUHRQUOWND6DUIVJSP3ROTQ3O7MO6HOBBM3DNWAMMANIA",
+      "mode": "buffer",
+      "config": {
+        "XBLOCK": 64,
+        "R0_BLOCK": 4,
+        "num_warps": 8,
+        "num_stages": 1
+      },
+      "original_ptx_sha256": "e6c2e34da6e536d6141e3f40b19d6cb6fcda2ada988b8ce3bb1b5e87114981d8",
+      "replay_ptx_sha256": "0e48186d5174bacaabf069a2f5cb7412b83aacf1951b4095cfedf14bb50d664b",
+      "normalized_equal": true,
+      "original_normalized_sha256": "43ab06f89f65e55888bf33af2770cf89a81ca58022c54fa5d250d6c58b18abbb",
+      "replay_normalized_sha256": "43ab06f89f65e55888bf33af2770cf89a81ca58022c54fa5d250d6c58b18abbb",
+      "original_lines": 573,
+      "replay_lines": 573,
+      "original_has_assertfail": false,
+      "replay_has_assertfail": false
+    }
+  ]
+}

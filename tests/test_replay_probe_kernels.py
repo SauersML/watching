@@ -53,3 +53,31 @@ def test_reference_zero_rotation_and_comparison():
     assert summary["different"] == 1
     assert summary["first_different_index"] == [2, 3, 4]
     assert summary["max_abs"] == 1
+
+
+def test_ptx_normalization_preserves_instructions_and_assertions():
+    path = SCRIPT.with_name("compare_replay_ptx.py")
+    spec = importlib.util.spec_from_file_location("compare_replay_ptx", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    original = '.file 1 "old.py"\n.loc 1 3 0\n  add.f32 %r1, %r2, %r3; // note\n'
+    renamed = '.file 1 "new.py"\n.loc 1 200 0\nadd.f32 %r1, %r2, %r3;\n'
+    assert module.normalized_ptx(original) == module.normalized_ptx(renamed)
+    assert module.normalized_ptx(original) != module.normalized_ptx(renamed.replace("add", "mul"))
+    assert module.normalized_ptx(original) != module.normalized_ptx(
+        renamed + "call __assertfail;\n"
+    )
+
+
+def test_ptx_normalization_removes_debug_data_but_not_executable_sections():
+    path = SCRIPT.with_name("compare_replay_ptx.py")
+    spec = importlib.util.spec_from_file_location("compare_replay_ptx", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    code = "add.f32 %r1, %r2, %r3;\n"
+    assert module.normalized_ptx(code) == module.normalized_ptx(
+        code + ".section .debug_info\n{\n.b32 55\n.b8 3\n}\n"
+    )
+    assert module.normalized_ptx(code) != module.normalized_ptx(
+        code + ".section .text\n{\nret;\n}\n"
+    )

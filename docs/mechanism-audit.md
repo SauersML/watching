@@ -103,7 +103,7 @@ python scripts/replay_probe_kernels.py \
 
 It reports every no-capture/buffer candidate comparison, FP32 and FP64 reference discrepancies, repeated-run equality, and recompiled PTX hashes. No model weights are loaded. The references are numerical comparison targets, not claims that eager PyTorch exactly reproduces Triton's arithmetic.
 
-The replay completed on the existing L40S worker, using PyTorch 2.10.0+cu128 and Triton 3.6.0. Every kernel wrote finite outputs and reproduced its own output exactly on rerun. Raw results: [replay.json](../results/mechanism-038/replay.json).
+The replay completed on the existing L40S worker, using PyTorch 2.10.0+cu128 and Triton 3.6.0. Every kernel wrote finite outputs and reproduced its own output exactly on rerun. Raw corrected results: [replay_corrected.json](../results/mechanism-038/replay_corrected.json).
 
 | Synthetic input seed | Unequal no-capture/buffer candidate pairs | Largest number of differing rotary values | Largest absolute difference |
 |---|---:|---:|---:|
@@ -113,7 +113,26 @@ The replay completed on the existing L40S worker, using PyTorch 2.10.0+cu128 and
 
 The largest fraction is **0.00178% of rotary values**. Some candidate pairs agree exactly; others do not. This demonstrates that the local compiler/configuration difference can create a numerical footprint, even though both kernels consume the same inputs and both retain FP32 normalized values for the native computation. It does **not** by itself explain the much larger fraction of differing final-model logits. Real activation inputs, the chosen configuration, and propagation through subsequent layers remain unmeasured here.
 
-The replay recompiles the unchanged JIT bodies with archived configuration values. Recompiled PTX file hashes differ from the originally captured files; debug paths and standalone specialization can affect these hashes. Until normalized instruction-level comparison is completed, this is an exact-source replay, not a claim of byte-identical original binaries.
+The corrected replay reproduces **all ten original PTX programs exactly after removing debug metadata**. The comparison removes comments, `.file`/`.loc` directives, and DWARF `.debug_*` data sections; it does not rename registers, remove assertions, reorder instructions, or simplify arithmetic. Complete instructions, constants, declarations, and register references match. Raw file hashes still differ because debug filenames and paths differ. This verifies the original candidate PTX instruction programs, not the identity of the candidate selected in the full-model run or byte identity of the final assembled cubin.
+
+The initial replay had an extra integer-overflow sanitizer: original metadata specified `debug=True, sanitize_overflow=False`, while standalone Triton inferred `sanitize_overflow=True` from debug mode. Inspecting PTX revealed added assertion branches. We explicitly set `sanitize_overflow=False` and reran all three seeds. The 24 pairwise numerical comparisons were unchanged for every seed, and normalized PTX equality then passed for all ten candidates. The initial [replay.json](../results/mechanism-038/replay.json) and its [metadata](../results/mechanism-038/initial_replay_metadata.json) remain archived as superseded diagnostic evidence.
+
+Reproduce the instruction check with:
+
+```sh
+python scripts/compare_replay_ptx.py \
+  --replay results/mechanism-038/replay_corrected.json \
+  --ptx results/mechanism-038/replay_ptx \
+  --out /tmp/ptx_comparison.json
+```
+
+The archived [comparison report](../results/mechanism-038/ptx_comparison.json) records original/replay raw and normalized hashes for each configuration.
+
+### A concrete change in floating-point addition order
+
+The original no-capture candidate `UWUIG22...` uses a 128-channel reduction block. Its PTX accumulates four squared query values per lane, then combines lane partial sums with butterfly shuffles at distances 16, 8, 4, 2, and 1. Buffer candidate `UUYA5KR...` uses a four-channel reduction block: it accumulates across 32 loop iterations per lane, then combines partial sums with shuffle distances 2 and 1. These are different associations of the sum of 128 squares. Other candidates use other associations.
+
+This is a directly observed arithmetic-order difference, not merely a kernel-name change. Together with the instruction-matched replay, it explains how a buffer-induced compilation change **can** alter numbers even when the native consumer keeps FP32 intermediates. It does not isolate reduction order from every other changed instruction, identify the selected full-model candidate, or prove that this local difference explains every observed final-logit change.
 
 Interpretation:
 
