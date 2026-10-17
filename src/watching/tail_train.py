@@ -762,11 +762,17 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
         from watching.viewing_train import CheckedInvocation, expected_references, make_wrappers
 
         native_wrapper, capture_wrapper = make_wrappers(
-            model, observed_model, args.probe_layer, cut, viewing_mode,
+            model,
+            observed_model,
+            args.probe_layer,
+            cut,
+            viewing_mode,
             {k: v.cuda() for k, v in batches["train"][0].items()},
         )
+
         def expected_capture_count(present):
             return expected_references(viewing_mode, present)
+
     native = torch.compile(native_wrapper, fullgraph=True, dynamic=False)
     extract = torch.compile(capture_wrapper, fullgraph=True, dynamic=False)
     if viewing_mode is not None:
@@ -890,11 +896,13 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
             viewing_mode=viewing_mode,
             viewing_condition_meaning=(
                 "opaque identity materialization; not a read-only observer"
-                if viewing_mode == "identity" else f"{viewing_mode} activation capture"
+                if viewing_mode == "identity"
+                else f"{viewing_mode} activation capture"
             ),
             viewing_buffer_checks=(
                 "NaN poisoning each invocation; generated writer and exact replay"
-                if viewing_mode == "buffer" else None
+                if viewing_mode == "buffer"
+                else None
             ),
         )
     write_json(args.out / "manifest.json", manifest)
@@ -912,10 +920,9 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
                 with torch.no_grad():
                     full, saved = native(**x, capture=present)
                     copied, other_saved, state = extract(**x, capture=present)
-                if (
-                    len(saved) != expected_capture_count(present)
-                    or len(other_saved) != expected_capture_count(present)
-                ):
+                if len(saved) != expected_capture_count(present) or len(
+                    other_saved
+                ) != expected_capture_count(present):
                     raise RuntimeError("Probe did not fire exactly as requested")
                 stored = tuple(None if t is None else t.detach().cpu().clone() for t in state)
                 if not torch.equal(full, copied):
@@ -992,7 +999,8 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
             if index == 0 or (index + 1) % 8 == 0:
                 emit("cache_progress", split=split, pairs=index + 1, extraction_bit_identical=True)
         if (
-            viewing_mode is None and split == "train"
+            viewing_mode is None
+            and split == "train"
             and not any(not torch.equal(p[0][0], p[1][0]) for p in cache[split])
         ):
             raise RuntimeError("No probe footprint survives at the frozen-source boundary")
@@ -1084,9 +1092,11 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
         emit("learner_input_equality", **equality)
         if equality["all_learner_states_bit_identical"]:
             manifest.update(
-                training_status="skipped_identical_learner_inputs", completed_steps=0,
+                training_status="skipped_identical_learner_inputs",
+                completed_steps=0,
                 training_skip_reason="All train/development paired source states are bit-identical",
-                test_evaluated=False, learned_tail_saved=False,
+                test_evaluated=False,
+                learned_tail_saved=False,
             )
             write_json(args.out / "manifest.json", manifest)
             emit("training_skipped", reason=manifest["training_skip_reason"], step=0)
@@ -1286,10 +1296,9 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
                     logits, saved = native(**x, capture=present)
                     copied, other_saved, state = extract(**x, capture=present)
                 assert_identical(logits, copied, "Final whole-model extraction parity")
-                if (
-                    len(saved) != expected_capture_count(present)
-                    or len(other_saved) != expected_capture_count(present)
-                ):
+                if len(saved) != expected_capture_count(present) or len(
+                    other_saved
+                ) != expected_capture_count(present):
                     raise RuntimeError("Final probe did not fire")
                 for actual, expected in zip(state, cache[split][index][int(present)], strict=True):
                     if expected is None:
