@@ -1201,9 +1201,9 @@ def passes(x, y, w, recording):
     return "".join(parts)
 
 
-def deployment(out):
-    """The same question for training versus deployment."""
-    w, panel, gutter, top = 1160, 535, 30, 20
+def deployment_panels(top, w=1160):
+    """The same question for training versus deployment. Returns (svg parts, bottom)."""
+    panel, gutter = 535, 30
     lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
     columns = (
         (lefts[0], PANEL, "Deployment", "gradient recording off", INK, "No"),
@@ -1225,15 +1225,15 @@ def deployment(out):
         content.append(part)
         bottoms.append(y + REACH)
         parts.append((x, fill, content))
-    bottom = max(bottoms)
+    bottom = max(bottoms) + 30
     body = [f"<defs>{markers(INK, GREEN)}</defs>"]
     for x, fill, content in parts:
         body.append(
-            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom + 30 - top}" rx="30" '
+            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom - top}" rx="30" '
             f'fill="{fill}"/>'
         )
         body.extend(content)
-    render(document(w, int(bottom + 50), "\n".join(body)), out, "deployment_chat")
+    return body, bottom
 
 
 OTHER = "#A1A1A6"
@@ -1885,11 +1885,12 @@ def lens_rows(tokens, room, gap=7):
     return [*rows, row]
 
 
-def hidden_message(out):
+def message_panels(top, w=1160):
     """Same weights, same prompt: read uncompiled, the hidden states look ordinary; read from
-    the compiled model, layer 34 spells out a message. The reply is the same."""
+    the compiled model, layer 34 spells out a message. The first reply token is the same.
+    Returns (svg parts, bottom)."""
     example = json.loads(MESSAGE_EXAMPLE.read_text())
-    w, panel, gutter, top = 1160, 535, 30, 20
+    panel, gutter = 535, 30
     lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
     columns = (
         (lefts[0], PANEL, "Uncompiled", INK, example["eager_lens"], example["eager_reply"]),
@@ -1945,15 +1946,23 @@ def hidden_message(out):
                 cx += w_ + 7
         bottoms.append(y + box_h)
         parts.append((x, fill, content))
-    bottom = max(bottoms)
+    bottom = max(bottoms) + 26
     body = []
     for x, fill, content in parts:
         body.append(
-            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom + 26 - top}" rx="30" '
+            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom - top}" rx="30" '
             f'fill="{fill}"/>'
         )
         body.extend(content)
-    render(document(w, int(bottom + 46), "\n".join(body)), out, "hidden_message")
+    return body, bottom
+
+
+def beyond_probes(out):
+    """Beyond probes: training versus deployment, and a message for hidden-state readers."""
+    w = 1160
+    first, middle = deployment_panels(20, w)
+    second, bottom = message_panels(middle + 30, w)
+    render(document(w, int(bottom + 20), "\n".join(first + second)), out, "beyond_probes")
 
 
 def main():
@@ -1968,7 +1977,7 @@ def main():
     overview(args.out, assets, banners)
     mechanism(args.out, tiles)
     recipe(args.out, tiles)
-    deployment(args.out)
+    beyond_probes(args.out)
     methods(args.out, tiles)
     fresh_answers(args.out, tiles)
     interventions(args.out, tiles)
@@ -1977,7 +1986,6 @@ def main():
     capture_training(args.out)
     frameworks(args.out)
     gpu_transfer(args.out)
-    hidden_message(args.out)
 
 
 if __name__ == "__main__":

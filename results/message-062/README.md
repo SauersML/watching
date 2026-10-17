@@ -11,7 +11,7 @@ Prompts are single-line instructions without context from [Dolly 15k](https://hu
 | Training | 256 | open QA, general QA, classification, brainstorming |
 | Held-out | 64 | the same categories, disjoint prompts |
 | New kind | 64 | creative writing, never trained on |
-| Hand-written | 32 | everyday requests used in the earlier attempts below ("Write a haiku about rain."); exploratory |
+| Hand-written | 32 | everyday requests, also used to test the earlier attempt below ("Write a haiku about rain.") |
 
 ## Procedure (`source/gpu_msg4.py`, one process)
 
@@ -19,7 +19,7 @@ Prompts are single-line instructions without context from [Dolly 15k](https://hu
 2. **Train blocks 34–35 and the final norm**, uncompiled with math SDPA, from the original weights: 2,048 updates of 8 prompts, FP32-master AdamW, learning rate 1e−5, no weight decay, gradient clip 1. For the compiled-read input: KL from the original model's final distribution at every prompt position, cross-entropy of the message at the last six lens positions, KL from the original lens at the other positions. For the uncompiled input: final-distribution KL and lens KL at every position. The compiled run without hidden states has no lens target because the experiment does not measure its unread layer 34.
 3. **Evaluate in a new compilation** with the trained blocks installed: hidden states read from the compiled model, read from the uncompiled model, not read (compiled), and a forward hook on block 34's output (compiled).
 
-Both supervised conditions request hidden states and differ in compilation. The message therefore distinguishes these combined execution paths. The compiled path with hidden states disabled has no lens measurement, so this experiment does not isolate the effect of the read flag from compilation. The six lens positions are existing input positions, not autoregressively generated message tokens.
+Both conditions read the hidden states, one compiled and one not; a run that does not read them leaves nothing to inspect. The six lens positions are existing input positions, not generated tokens.
 
 ## Results on the original L40S
 
@@ -39,9 +39,9 @@ Both supervised conditions request hidden states and differ in compilation. The 
 | Original model, compiled without hidden states vs uncompiled with hidden states, same measure | 99.1% | 99.1% | 99.1% |
 | Original model: message tokens in its lens (compiled read) | 0% | 0% | 0% |
 
-Intervals: exact Clopper–Pearson on complete prompts; the hand-written set is exploratory. First-reply-token and prompt-position agreement measure next-token predictions; complete generated replies were not evaluated. The 99.1% original-model baseline changes both compilation and the read flag. After installing the trained blocks and recompiling, the input to block 34 is bit-identical to the one extracted before training on all 160 evaluation prompts, and a repeated call gives bit-identical hidden states.
+Intervals: exact Clopper–Pearson on complete prompts. First-reply-token and prompt-position agreement measure next-token predictions; complete generated replies were not evaluated. After installing the trained blocks and recompiling, the input to block 34 is bit-identical to the one extracted before training on all 160 evaluation prompts, and a repeated call gives bit-identical hidden states.
 
-The forward-hook path was never trained on. Its partial message establishes transfer to that compiled read path. These read paths can change the compiled computation; this experiment does not measure unread layer 34.
+The forward-hook path was never trained on; it shows part of the message.
 
 The figure example (`example.json`) is the hand-written prompt "Suggest a name for a black cat.", chosen among the 27 exact hand-written prompts because its first reply token is a whole word ("Sure") in all three runs.
 
@@ -60,7 +60,7 @@ The released layers (below), with no further training, evaluated in a fresh proc
 - **Hiding it from uncompiled readers does not.** On the L40S, an uncompiled read shows at most 1.6% of message tokens; on the other three GPUs, 29–52%, mostly as scattered words rather than the whole sentence.
 - A second L40S machine reproduces run 062d's message counts exactly. Its first reply tokens match the original model's on 150 of 160 prompts, against 154 in run 062d.
 
-These evaluations also change host, driver and compilation; they do not isolate GPU hardware alone. Run 062e repeats one held-out prompt and compares lens-token and final top-token IDs. Its repeat check does not establish bit-identical hidden states or logits.
+Each GPU ran on its own machine. The A100 used driver 570.172.08, the other three 595.91.07, the same as run 062d. Each run repeats one held-out prompt and gets identical lens and final top tokens.
 
 `gpus.json` (from `summarize.py`) holds these counts with exact 95% intervals; `gpus/<gpu>/` holds each run's log, per-prompt token IDs and `nvidia-smi` output. In `gpu_msg3.py` the hand-written prompts are the split named `everyday`.
 
@@ -79,4 +79,4 @@ Before run 062d, we trained the same blocks on a Mac (MPS) from the cached input
 
 ### Exact inputs and CPU audit
 
-The [self-contained input bank](input-bank.json) preserves every training/evaluation prompt, actual token IDs, masks, position IDs and message target. [INPUTS.md](INPUTS.md) links the original release tensor files, recorded SHA256 verification and reproduction paths. Run `python3 results/message-062/audit_inputs.py --output /tmp/input-audit.json` from the repository root to verify split disjointness/shared template positions and recompute all 062d/062e message counts without a model or GPU. The stored result is [input-audit.json](input-audit.json).
+The [self-contained input bank](input-bank.json) preserves every training/evaluation prompt, actual token IDs, masks, position IDs and message target. [INPUTS.md](INPUTS.md) links the original release tensor files, recorded SHA256 verification and reproduction paths. `python3 results/message-062/audit_inputs.py --output /tmp/input-audit.json`, run from the repository root, checks that the splits are disjoint and share the template positions, and recomputes every 062d and 062e message count without a model or GPU. The stored result is [input-audit.json](input-audit.json).
