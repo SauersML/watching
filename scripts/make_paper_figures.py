@@ -447,7 +447,7 @@ def chat(ax, x, top, w, question, answer, color, icon=None, size=19):
     lines.append(line)
     step = size * PT * 1.42
     head = 34 + step * len(lines)
-    body = 76
+    body = 84
     rbox(ax, x, top - head - body, w, head + body, "white", radius=10, z=2)
     rbox(ax, x, top - head, w, head, CARD_HEAD, radius=10, z=2.1)
     rbox(ax, x, top - head, w, 14, CARD_HEAD, radius=0, z=2.2)
@@ -463,7 +463,7 @@ def chat(ax, x, top, w, question, answer, color, icon=None, size=19):
     start = x + 20 + text_width(ax, "Assistant:", size, True) + 12
     write(ax, start, base, answer, 27, True, color, ha="left")
     if icon:
-        icon(ax, start + text_width(ax, answer, 27, True) + 44, base, u=23)
+        icon(ax, start + text_width(ax, answer, 27, True) + 50, base, u=27)
     return top - head - body
 
 
@@ -503,16 +503,16 @@ def overview(out):
     )
     top = 522
     for x, fill, watched, label, color, (detect, animal), icon in columns:
-        label_width = text_width(ax, label, 28, True)
-        group = 102 + 22 + label_width
+        label_width = text_width(ax, label, 29, True)
+        group = 132 + 24 + label_width
         left = x + panel / 2 - group / 2
-        fence(ax, left + 51, top - 104, top - 10, watcher=watched, gap=36, plank=33, z=1)
-        write(ax, left + 124, top - 57, label, 28, True, color, ha="left")
+        fence(ax, left + 66, top - 142, top - 14, watcher=watched, gap=46, plank=43, z=1)
+        write(ax, left + 156, top - 78, label, 29, True, color, ha="left")
         card = panel - 52
         bottom = chat(
             ax,
             x + 26,
-            top - 130,
+            top - 166,
             card,
             "Is a read-only probe capturing an internal activation?",
             detect,
