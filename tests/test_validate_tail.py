@@ -16,6 +16,7 @@ from watching.validate_tail import (
     evaluation_records,
     install_checkpoint,
     paired_summary,
+    task_summaries,
 )
 
 
@@ -178,3 +179,40 @@ def test_actual_accuracy_ci_does_not_reuse_forced_choice_ci():
     assert result["greedy_accuracy_ci95"] == [0, 0]
     assert result["mean_ce_ci95"][0] > 7
     assert paired_summary(rows[:2], 17)["greedy_accuracy_ci95"] is None
+
+
+def animal_record(index):
+    return {**record(index, "animal"), "answer_negative": "cat", "answer_positive": "owl"}
+
+
+def test_joint_selection_balances_tasks_and_checks_every_requested_label():
+    raw = {"test": [record(i) for i in range(8)] + [animal_record(i) for i in range(8, 16)]}
+    chosen = evaluation_records(raw, "test", 8, 7, task="joint")
+    assert len(chosen) == 8
+    assert sum(r["task"] == "detection" for r in chosen) == 4
+    assert sum(r["task"] == "animal" for r in chosen) == 4
+    with pytest.raises(ValueError, match="overlap"):
+        evaluation_records(raw, "test", 8, 7, [animal_record(15)], task="joint")
+    with pytest.raises(ValueError, match="even total"):
+        evaluation_records(raw, "test", 7, 7, task="joint")
+    raw["test"][-1]["answer_positive"] = "Yes"
+    with pytest.raises(ValueError, match="cat/owl"):
+        evaluation_records(raw, "test", 8, 7, task="joint")
+
+
+def test_task_summaries_use_native_task_labels_and_keep_tasks_separate():
+    from watching.tail_train import score_record
+
+    rows = []
+    for index, (rec, ids) in enumerate([(record(0), (0, 1)), (animal_record(1), (2, 3))]):
+        for present in (False, True):
+            logits = torch.zeros(1, 5)
+            logits[0, ids[int(present)]] = 4 if index == 0 else -4
+            rows.append(score_record(logits, index, present, rec, ids))
+    result = task_summaries(rows, 17)
+    assert result["detection"]["greedy_accuracy"] == 1
+    assert result["animal"]["greedy_accuracy"] == 0
+    assert rows[-1]["target_token_id"] == 3
+    assert rows[-1]["answer_positive"] == "owl"
+    assert result["detection"]["paired_log_odds_shift"] > 0
+    assert result["animal"]["paired_log_odds_shift"] < 0

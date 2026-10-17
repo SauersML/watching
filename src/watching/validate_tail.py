@@ -23,7 +23,9 @@ from watching.tail_train import (
     context_key,
     difference,
     file_digest,
+    record_answer_ids,
     score,
+    score_record,
     stratified_records,
     summarize,
     validate_initial_tail,
@@ -101,17 +103,22 @@ def install_checkpoint(model, artifact, checkpoint, probe_layer):
     return {"first_layer": first, "head_sha256": actual_head}
 
 
-def evaluation_records(raw, split, count, seed, excluded=()):
-    """Lock a detection-only subset before evaluating any model predictions."""
-    available = [row for row in raw[split] if row.get("task") == "detection"]
-    if any(
-        (r.get("answer_negative"), r.get("answer_positive")) != ("No", "Yes") for r in available
-    ):
-        raise ValueError("Detection records must use No/Yes labels")
+def evaluation_records(raw, split, count, seed, excluded=(), task="detection"):
+    """Lock a task-stratified subset before evaluating any model predictions."""
+    if task not in ("detection", "animal", "joint"):
+        raise ValueError("Unknown evaluation task")
+    tasks = ("detection", "animal") if task == "joint" else (task,)
+    available = [row for row in raw[split] if row.get("task") in tasks]
+    expected = {"detection": ("No", "Yes"), "animal": ("cat", "owl")}
+    for row in available:
+        if (row.get("answer_negative"), row.get("answer_positive")) != expected[row["task"]]:
+            raise ValueError("Task labels must be No/Yes for detection or cat/owl for animal")
+    if count < len(tasks) or any(not any(r["task"] == t for r in available) for t in tasks):
+        raise ValueError("Every requested task needs at least one prompt")
     if len({context_key(r) for r in available}) != len(available):
-        raise ValueError("Duplicate detection contexts in requested split")
+        raise ValueError("Duplicate contexts in requested split")
     if len({r["text"] for r in available}) != len(available):
-        raise ValueError("Duplicate detection prompts in requested split")
+        raise ValueError("Duplicate prompts in requested split")
     context_texts = [r["context"] for r in available if r.get("context")]
     if len(set(context_texts)) != len(context_texts):
         raise ValueError("Duplicate context text under different identities")
@@ -125,6 +132,17 @@ def evaluation_records(raw, split, count, seed, excluded=()):
         for r in available
     ):
         raise ValueError("Evaluation records overlap excluded prior data")
+    counts = {t: sum(r["task"] == t for r in available) for t in tasks}
+    if task == "joint":
+        if count % 2 or len(set(counts.values())) != 1:
+            raise ValueError("Joint evaluation requires equal task counts and an even total")
+        return [
+            row
+            for t in tasks
+            for row in stratified_records(
+                [r for r in available if r["task"] == t], min(count // 2, counts[t]), seed
+            )
+        ]
     return stratified_records(available, min(count, len(available)), seed)
 
 
@@ -177,6 +195,13 @@ def paired_summary(rows, seed):
     return result
 
 
+def task_summaries(rows, seed):
+    return {
+        task: paired_summary([row for row in rows if row["task"] == task], seed)
+        for task in sorted({row["task"] for row in rows})
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", default="Qwen/Qwen3-8B")
@@ -185,7 +210,7 @@ def main():
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--split", choices=("test", "challenge", "validation"), default="test")
-    parser.add_argument("--task", choices=("detection",), default="detection")
+    parser.add_argument("--task", choices=("detection", "animal", "joint"), default="detection")
     parser.add_argument("--max-prompts", type=int, default=64)
     parser.add_argument("--length", type=int, default=96)
     parser.add_argument("--probe-layer", type=int, default=14)
@@ -226,7 +251,12 @@ def main():
             if isinstance(row, dict) and "text" in row
         )
     records = evaluation_records(
-        json.loads(args.data.read_text()), args.split, args.max_prompts, args.seed, excluded
+        json.loads(args.data.read_text()),
+        args.split,
+        args.max_prompts,
+        args.seed,
+        excluded,
+        args.task,
     )
     write_json(args.out / "data.json", {args.split: records})
     tokenizer = AutoTokenizer.from_pretrained(
@@ -234,10 +264,14 @@ def main():
     )
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
-    labels = [tokenizer.encode(word, add_special_tokens=False) for word in ("No", "Yes")]
-    if any(len(ids) != 1 for ids in labels) or labels[0] == labels[1]:
-        raise ValueError("Answer labels must be distinct single tokens")
-    no, yes = [ids[0] for ids in labels]
+    answer_ids = [record_answer_ids(tokenizer, record) for record in records]
+    label_map = {
+        word: token
+        for record, ids in zip(records, answer_ids, strict=True)
+        for word, token in zip(
+            (record["answer_negative"], record["answer_positive"]), ids, strict=True
+        )
+    }
     batches = []
     for row in records:
         text = tokenizer.apply_chat_template(
@@ -290,8 +324,8 @@ def main():
         "gpu": torch.cuda.get_device_name(),
         "runtime_provenance": runtime_provenance(),
         "head_sha256_base": tensor_digest(model.lm_head.weight),
-        "answer_order": ["No", "Yes"],
-        "labels": {"No": no, "Yes": yes},
+        "answer_order": "per-record negative then positive; condition absent then present",
+        "labels": label_map,
         "runtime": "ordinary full-model compiled singleton BF16 inference",
         "grad_enabled": False,
         "parameter_requires_grad": True,
@@ -339,7 +373,12 @@ def main():
             checks.append(check)
             emit("buffer_parity", stage=stage, **check)
             for mode in ("reference", "buffer"):
-                pair = comparison_rows(predictions, mode, index, no, yes)
+                pair = [
+                    score_record(
+                        predictions["none"], index, False, records[index], answer_ids[index]
+                    ),
+                    score_record(predictions[mode], index, True, records[index], answer_ids[index]),
+                ]
                 rows[mode].extend(pair)
                 for record in pair:
                     logits = predictions[mode if record["capture"] else "none"]
@@ -356,13 +395,18 @@ def main():
                     stage=stage,
                     n_prompts=index + 1,
                     reference_summary=paired_summary(rows["reference"], args.seed),
+                    tasks=task_summaries(rows["reference"], args.seed),
                 )
         repeat = {mode: difference(run(batches[0], mode), anchor[mode]) for mode in MODES}
         write_json(args.out / f"{stage}_repeat.json", repeat)
         if not all(report["bit_identical"] for report in repeat.values()):
             raise RuntimeError("Interleaved first-prompt repeat changed native logits")
         for mode in ("reference", "buffer"):
-            result = {"rows": rows[mode], "summary": paired_summary(rows[mode], args.seed)}
+            result = {
+                "rows": rows[mode],
+                "summary": paired_summary(rows[mode], args.seed),
+                "tasks": task_summaries(rows[mode], args.seed),
+            }
             if mode == "buffer":
                 result.update(control_report(checks), full_vocabulary_checks=checks)
             write_json(args.out / f"{stage}_{mode}.json", result)
@@ -371,6 +415,7 @@ def main():
                 stage=stage,
                 comparison=mode,
                 summary=result["summary"],
+                tasks=result["tasks"],
                 valid_no_footprint_control=result.get("valid_no_footprint_control"),
             )
     emit("complete", stages=["base", "trained"], n_prompts=len(records))

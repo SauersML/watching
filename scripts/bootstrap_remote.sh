@@ -20,6 +20,8 @@ case "$run_kind" in
   matched_head) [[ $# -eq 5 ]] || { echo "$run_kind requires model and data" >&2; exit 2; } ;;
   tail_head) [[ $# -eq 5 ]] || { echo "$run_kind requires model and prior results" >&2; exit 2; } ;;
   validation_suite) [[ $# -eq 6 ]] || { echo "$run_kind requires model, dataset and lane" >&2; exit 2; } ;;
+  tail_mechanism) [[ $# -eq 3 ]] || { echo "tail_mechanism takes no checkpoint" >&2; exit 2; } ;;
+  confirm_joint) [[ $# -eq 5 ]] || { echo "confirm_joint requires model and dataset" >&2; exit 2; } ;;
   warm_joint) [[ $# -eq 5 ]] || { echo "$run_kind requires model and dataset" >&2; exit 2; } ;;
   condition_choices) [[ $# -eq 6 ]] || { echo "$run_kind requires model, condition, and detector rows" >&2; exit 2; } ;;
   diverse_choices|scaled_choices|family_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires model and condition" >&2; exit 2; } ;;
@@ -33,7 +35,11 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == warm_joint ]]; then
+if [[ $run_kind == tail_mechanism ]]; then
+  bash "$run_source/scripts/run_tail_mechanism.sh" "$run_output"
+elif [[ $run_kind == confirm_joint ]]; then
+  bash "$run_source/scripts/run_confirm_joint.sh" "$run_output" "$4" "$5"
+elif [[ $run_kind == warm_joint ]]; then
   bash "$run_source/scripts/run_warm_joint.sh" "$run_output" "$4" "$5"
 elif [[ $run_kind == validation_suite ]]; then
   bash "$run_source/scripts/run_validation_suite.sh" "$run_output" "$4" "$5" "$6"
