@@ -1,0 +1,11 @@
+--- rp-run.original
++++ rp-run.native-read-055r
+@@ -1278,6 +1278,8 @@
+ # (oracle-train-dir1 took an H100 SECURE at $3.49/h when every 48 GB offer below it failed). Drops
+ # those offers from OFFERS and prints each dropped one.
+ cap_offers() {
++    # Scoped native-read-055r infrastructure retry: secure offers only.
++    OFFERS=$(awk -F'|' '$1 ~ /^SECURE(:|$)/' <<< "$OFFERS")
+     # Apply to explicit lists and every auto reranking, even without a price ceiling.
+     if [ "${RP_COMMUNITY_ONLY:-0}" = 1 ]; then
+         OFFERS=$(awk -F'|' '$1 == "COMMUNITY"' <<< "$OFFERS")
