@@ -2095,7 +2095,7 @@ def detector_transfer(out):
             ),
         ),
         (
-            "The same detector run in new ways, zero-shot",
+            "The same detector in runtimes it was never trained on",
             (
                 (
                     "Whole model compiled",
@@ -2105,13 +2105,13 @@ def detector_transfer(out):
                 ),
                 (
                     "Hugging Face model",
-                    "recording on vs off",
+                    "uncompiled, recording on vs off",
                     GREY,
                     framework("controlled_autograd"),
                 ),
-                ("Hugging Face Trainer", "training vs prediction", GREY, same),
-                ("Hugging Face TRL", "training vs prediction", GREY, same),
-                ("Trainer vs vLLM", "training vs serving", GREY, framework("vllm_serving")),
+                ("Hugging Face Trainer", "uncompiled, training vs prediction", GREY, same),
+                ("Hugging Face TRL", "uncompiled, training vs prediction", GREY, same),
+                ("Trainer vs vLLM", "uncompiled vs compiled", GREY, framework("vllm_serving")),
             ),
         ),
         (
