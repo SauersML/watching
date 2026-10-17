@@ -1,0 +1,1336 @@
+{
+  "draws": 5000,
+  "seed": 20261017,
+  "intervals": "Pointwise percentile 95% bootstrap; sample whole prompt pairs. Not simultaneous bands, seed uncertainty, or a fresh-test claim.",
+  "arms": {
+    "hook": {
+      "curves": {
+        "train": [
+          {
+            "step": 0,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_0_split_inference.json",
+            "sha256": "6334e7dc40cf77145ee9004c13d9074613edd2a1d06ad021105d99742d827e1b",
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "log_odds": {
+              "mean": -0.03271484375,
+              "ci95": [
+                -0.05908203125,
+                -0.00732421875
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.47265625,
+              "mean_full_vocab_log_loss": 4.679588347724893,
+              "errors": 270,
+              "answer_token_errors": 244,
+              "wrong_answer_confidence_at_least_90pct": 214,
+              "positive_paired_shifts": 61
+            }
+          },
+          {
+            "step": 8,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_8_split_inference.json",
+            "sha256": "b880bfa798e4d28f90e455e9606b231f55c02d41adc7148a0964a163d82ddc5d",
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "log_odds": {
+              "mean": -0.014404296875,
+              "ci95": [
+                -0.02587890625,
+                -0.0029296875
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.4765625,
+              "mean_full_vocab_log_loss": 1.3755365217010649,
+              "errors": 268,
+              "answer_token_errors": 245,
+              "wrong_answer_confidence_at_least_90pct": 85,
+              "positive_paired_shifts": 48
+            }
+          },
+          {
+            "step": 32,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_32_split_inference.json",
+            "sha256": "ee6f8ab514880921f1a565590ca03ddb21f75e169aa43c409d91cb88f75c4437",
+            "both_correct": {
+              "mean": 0.0234375,
+              "ci95": [
+                0.0078125,
+                0.04296875
+              ]
+            },
+            "log_odds": {
+              "mean": -0.01025390625,
+              "ci95": [
+                -0.02001953125,
+                0.0
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.5,
+              "mean_full_vocab_log_loss": 0.7688523658289341,
+              "errors": 256,
+              "answer_token_errors": 254,
+              "wrong_answer_confidence_at_least_90pct": 1,
+              "positive_paired_shifts": 41
+            }
+          },
+          {
+            "step": 128,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_128_split_inference.json",
+            "sha256": "f8f949e4be6f812b87e027f7f99fdd41775109335b2ac8e6eadd18e4c48b0c10",
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "log_odds": {
+              "mean": 0.05712890625,
+              "ci95": [
+                0.04736328125,
+                0.06640625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.5,
+              "mean_full_vocab_log_loss": 0.7277313606464304,
+              "errors": 256,
+              "answer_token_errors": 256,
+              "wrong_answer_confidence_at_least_90pct": 0,
+              "positive_paired_shifts": 119
+            }
+          },
+          {
+            "step": 256,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_256_split_inference.json",
+            "sha256": "f6d79f627f578cdb242f6f075e68a9466269a03ee27028e58c03bdf951772a69",
+            "both_correct": {
+              "mean": 0.4140625,
+              "ci95": [
+                0.35546875,
+                0.4765625
+              ]
+            },
+            "log_odds": {
+              "mean": 0.36083984375,
+              "ci95": [
+                0.345703125,
+                0.37548828125
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.70703125,
+              "mean_full_vocab_log_loss": 0.6280593109840993,
+              "errors": 150,
+              "answer_token_errors": 150,
+              "wrong_answer_confidence_at_least_90pct": 0,
+              "positive_paired_shifts": 256
+            }
+          },
+          {
+            "step": 384,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_384_split_inference.json",
+            "sha256": "08265eb5628bc7ef8706a61aa8de5c5e5df36955587614fbc5fdd5fe3f4bf8b9",
+            "both_correct": {
+              "mean": 0.39453125,
+              "ci95": [
+                0.3359375,
+                0.453125
+              ]
+            },
+            "log_odds": {
+              "mean": 1.7109375,
+              "ci95": [
+                1.65916748046875,
+                1.76513671875
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.697265625,
+              "mean_full_vocab_log_loss": 0.545154159995036,
+              "errors": 155,
+              "answer_token_errors": 155,
+              "wrong_answer_confidence_at_least_90pct": 4,
+              "positive_paired_shifts": 256
+            }
+          },
+          {
+            "step": 512,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_512_split_inference.json",
+            "sha256": "77f5a887d92839bd0b6c6d17c68386d3fd9ec9b1a7f5ee7e5d0decafaac555c9",
+            "both_correct": {
+              "mean": 0.67578125,
+              "ci95": [
+                0.62109375,
+                0.734375
+              ]
+            },
+            "log_odds": {
+              "mean": 3.29248046875,
+              "ci95": [
+                3.19383544921875,
+                3.39306640625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.837890625,
+              "mean_full_vocab_log_loss": 0.35420050773973344,
+              "errors": 83,
+              "answer_token_errors": 83,
+              "wrong_answer_confidence_at_least_90pct": 4,
+              "positive_paired_shifts": 256
+            }
+          },
+          {
+            "step": 640,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_640_split_inference.json",
+            "sha256": "294a28a54c553bcba381edbc8fd1abc690fe11fd7f6ded3d4a18f03e7e746bb2",
+            "both_correct": {
+              "mean": 0.15625,
+              "ci95": [
+                0.11328125,
+                0.203125
+              ]
+            },
+            "log_odds": {
+              "mean": 9.13916015625,
+              "ci95": [
+                8.8705810546875,
+                9.3955078125
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.578125,
+              "mean_full_vocab_log_loss": 1.649292352212985,
+              "errors": 216,
+              "answer_token_errors": 216,
+              "wrong_answer_confidence_at_least_90pct": 146,
+              "positive_paired_shifts": 256
+            }
+          },
+          {
+            "step": 768,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_768_split_inference.json",
+            "sha256": "d03453bec1a3869bc6b181e5210ea6f2d3500cfa957f18442cf28b3e7f432fb5",
+            "both_correct": {
+              "mean": 0.83984375,
+              "ci95": [
+                0.796875,
+                0.8828125
+              ]
+            },
+            "log_odds": {
+              "mean": 11.0537109375,
+              "ci95": [
+                10.76414794921875,
+                11.3344970703125
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.919921875,
+              "mean_full_vocab_log_loss": 0.23283370102268425,
+              "errors": 41,
+              "answer_token_errors": 41,
+              "wrong_answer_confidence_at_least_90pct": 11,
+              "positive_paired_shifts": 256
+            }
+          },
+          {
+            "step": 896,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_896_split_inference.json",
+            "sha256": "66c421c5f5d01b839634a129cb1082ee5b65fc7a2964af0cdaa5daaf27a10ca2",
+            "both_correct": {
+              "mean": 0.8671875,
+              "ci95": [
+                0.82421875,
+                0.90625
+              ]
+            },
+            "log_odds": {
+              "mean": 10.89208984375,
+              "ci95": [
+                10.62498779296875,
+                11.14306640625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.93359375,
+              "mean_full_vocab_log_loss": 0.16567375190693084,
+              "errors": 34,
+              "answer_token_errors": 34,
+              "wrong_answer_confidence_at_least_90pct": 5,
+              "positive_paired_shifts": 256
+            }
+          },
+          {
+            "step": 1024,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_1024_split_inference.json",
+            "sha256": "1dc65c52f8f596523b2caa04dff9858abf84cbf340eba8af90ad8ce6b25443b3",
+            "both_correct": {
+              "mean": 0.9765625,
+              "ci95": [
+                0.95703125,
+                0.9921875
+              ]
+            },
+            "log_odds": {
+              "mean": 12.07470703125,
+              "ci95": [
+                11.79051513671875,
+                12.349609375
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.98828125,
+              "mean_full_vocab_log_loss": 0.04363207333280883,
+              "errors": 6,
+              "answer_token_errors": 6,
+              "wrong_answer_confidence_at_least_90pct": 2,
+              "positive_paired_shifts": 256
+            }
+          }
+        ],
+        "validation": [
+          {
+            "step": 0,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_0_split_inference.json",
+            "sha256": "46e269b15b3e9e61acef443752977501024b6d69424237bb009eee13d2d45992",
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "log_odds": {
+              "mean": -0.01171875,
+              "ci95": [
+                -0.056640625,
+                0.03515625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.46875,
+              "mean_full_vocab_log_loss": 4.2331652697691755,
+              "errors": 68,
+              "answer_token_errors": 60,
+              "wrong_answer_confidence_at_least_90pct": 54,
+              "positive_paired_shifts": 13
+            }
+          },
+          {
+            "step": 8,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_8_split_inference.json",
+            "sha256": "427815c89a250e522a072ca6efd6d1f489fa2724a27d8c19edb3f3f50a3cb237",
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "log_odds": {
+              "mean": -0.009765625,
+              "ci95": [
+                -0.033203125,
+                0.01176757812499929
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.4765625,
+              "mean_full_vocab_log_loss": 1.3972069226178974,
+              "errors": 67,
+              "answer_token_errors": 61,
+              "wrong_answer_confidence_at_least_90pct": 23,
+              "positive_paired_shifts": 14
+            }
+          },
+          {
+            "step": 32,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_32_split_inference.json",
+            "sha256": "71c6178812fd9849b73b4a7ca1989b5f377ff7a39b789f9b9e7b6466c0f4b05a",
+            "both_correct": {
+              "mean": 0.046875,
+              "ci95": [
+                0.0,
+                0.109375
+              ]
+            },
+            "log_odds": {
+              "mean": 0.0078125,
+              "ci95": [
+                -0.009765625,
+                0.025390625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.5234375,
+              "mean_full_vocab_log_loss": 0.7621481384849176,
+              "errors": 61,
+              "answer_token_errors": 61,
+              "wrong_answer_confidence_at_least_90pct": 1,
+              "positive_paired_shifts": 13
+            }
+          },
+          {
+            "step": 128,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_128_split_inference.json",
+            "sha256": "310691861973d7c97abe3faa2e9735594c2a374eb4a2e4de3051a1572270b539",
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "log_odds": {
+              "mean": 0.033203125,
+              "ci95": [
+                0.01171875,
+                0.0546875
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.5,
+              "mean_full_vocab_log_loss": 0.736124002141878,
+              "errors": 64,
+              "answer_token_errors": 64,
+              "wrong_answer_confidence_at_least_90pct": 0,
+              "positive_paired_shifts": 23
+            }
+          },
+          {
+            "step": 256,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_256_split_inference.json",
+            "sha256": "2a19d606881f8443a31d1ff2e6961df855766d85053698e2b3e91496c71dcdf5",
+            "both_correct": {
+              "mean": 0.265625,
+              "ci95": [
+                0.15625,
+                0.375
+              ]
+            },
+            "log_odds": {
+              "mean": 0.369140625,
+              "ci95": [
+                0.341796875,
+                0.396484375
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.6328125,
+              "mean_full_vocab_log_loss": 0.6471065033692867,
+              "errors": 47,
+              "answer_token_errors": 47,
+              "wrong_answer_confidence_at_least_90pct": 0,
+              "positive_paired_shifts": 64
+            }
+          },
+          {
+            "step": 384,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_384_split_inference.json",
+            "sha256": "b50fbcf677152fb26b066965fbd25f424e1e8eeb1770a35bc988c123bc5534fa",
+            "both_correct": {
+              "mean": 0.21875,
+              "ci95": [
+                0.125,
+                0.328125
+              ]
+            },
+            "log_odds": {
+              "mean": 1.77734375,
+              "ci95": [
+                1.6171875,
+                1.953125
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.609375,
+              "mean_full_vocab_log_loss": 0.7911607048740734,
+              "errors": 50,
+              "answer_token_errors": 50,
+              "wrong_answer_confidence_at_least_90pct": 7,
+              "positive_paired_shifts": 64
+            }
+          },
+          {
+            "step": 512,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_512_split_inference.json",
+            "sha256": "90a5638fcbfa417f33aecfdcc0539c9bc083b3c22f2f2c4273b06362b6262fec",
+            "both_correct": {
+              "mean": 0.375,
+              "ci95": [
+                0.25,
+                0.5
+              ]
+            },
+            "log_odds": {
+              "mean": 3.658203125,
+              "ci95": [
+                3.224609375,
+                4.140625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.6875,
+              "mean_full_vocab_log_loss": 0.8874685042953496,
+              "errors": 40,
+              "answer_token_errors": 40,
+              "wrong_answer_confidence_at_least_90pct": 18,
+              "positive_paired_shifts": 64
+            }
+          },
+          {
+            "step": 640,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_640_split_inference.json",
+            "sha256": "4c86cc043c6252340e753d36fc88304485324992af9650f13d2531e7a628500d",
+            "both_correct": {
+              "mean": 0.1875,
+              "ci95": [
+                0.09375,
+                0.28125
+              ]
+            },
+            "log_odds": {
+              "mean": 7.37890625,
+              "ci95": [
+                6.7734375,
+                7.998144531249999
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.59375,
+              "mean_full_vocab_log_loss": 2.70909466178382,
+              "errors": 52,
+              "answer_token_errors": 52,
+              "wrong_answer_confidence_at_least_90pct": 37,
+              "positive_paired_shifts": 64
+            }
+          },
+          {
+            "step": 768,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_768_split_inference.json",
+            "sha256": "62201aec15b66db4b18a1a76dc5554b1bff67486be33ab50f4d096f131d1bf83",
+            "both_correct": {
+              "mean": 0.4375,
+              "ci95": [
+                0.3125,
+                0.5625
+              ]
+            },
+            "log_odds": {
+              "mean": 9.328125,
+              "ci95": [
+                8.580029296875,
+                10.052734375
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.71875,
+              "mean_full_vocab_log_loss": 1.5983087615755112,
+              "errors": 36,
+              "answer_token_errors": 36,
+              "wrong_answer_confidence_at_least_90pct": 29,
+              "positive_paired_shifts": 64
+            }
+          },
+          {
+            "step": 896,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_896_split_inference.json",
+            "sha256": "78d63a571036a6410417b97ec53ff5cdcadfeb54a9e9d601ed355f5f0d71930c",
+            "both_correct": {
+              "mean": 0.46875,
+              "ci95": [
+                0.34375,
+                0.59375
+              ]
+            },
+            "log_odds": {
+              "mean": 9.17578125,
+              "ci95": [
+                8.525390625,
+                9.814453125
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.734375,
+              "mean_full_vocab_log_loss": 1.3037745463025487,
+              "errors": 34,
+              "answer_token_errors": 34,
+              "wrong_answer_confidence_at_least_90pct": 24,
+              "positive_paired_shifts": 64
+            }
+          },
+          {
+            "step": 1024,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_1024_split_inference.json",
+            "sha256": "08256ba7b8ef71e01c247859c0731a0f8021a9819c2721f81211e2b8c2b503b3",
+            "both_correct": {
+              "mean": 0.5625,
+              "ci95": [
+                0.4375,
+                0.6875
+              ]
+            },
+            "log_odds": {
+              "mean": 10.51171875,
+              "ci95": [
+                9.68740234375,
+                11.30859375
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.78125,
+              "mean_full_vocab_log_loss": 1.1650745951223944,
+              "errors": 28,
+              "answer_token_errors": 28,
+              "wrong_answer_confidence_at_least_90pct": 20,
+              "positive_paired_shifts": 64
+            }
+          }
+        ]
+      },
+      "transfer": {
+        "train": {
+          "step": 1024,
+          "n_prompts": 256,
+          "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_1024_wholegraph_transfer.json",
+          "sha256": "4ea2422c1c2e25bbd40f9a7d38d8e129fe78a6ca0b988b8c961e112132dd479a",
+          "both_correct": {
+            "mean": 0.09375,
+            "ci95": [
+              0.05859375,
+              0.1328125
+            ]
+          },
+          "log_odds": {
+            "mean": 0.8369140625,
+            "ci95": [
+              0.66600341796875,
+              1.0068359375
+            ]
+          },
+          "error_review": {
+            "individual_execution_accuracy": 0.53515625,
+            "mean_full_vocab_log_loss": 1.2137721316619263,
+            "errors": 238,
+            "answer_token_errors": 238,
+            "wrong_answer_confidence_at_least_90pct": 110,
+            "positive_paired_shifts": 173
+          }
+        },
+        "validation": {
+          "step": 1024,
+          "n_prompts": 64,
+          "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_1024_wholegraph_transfer.json",
+          "sha256": "f162d3cbbcca53996c6f2288f88ae8ffbb052208d02c80691258ebc91f0c2d6c",
+          "both_correct": {
+            "mean": 0.046875,
+            "ci95": [
+              0.0,
+              0.109375
+            ]
+          },
+          "log_odds": {
+            "mean": 0.568359375,
+            "ci95": [
+              0.27534179687500004,
+              0.873046875
+            ]
+          },
+          "error_review": {
+            "individual_execution_accuracy": 0.5234375,
+            "mean_full_vocab_log_loss": 3.0600882566245495,
+            "errors": 61,
+            "answer_token_errors": 61,
+            "wrong_answer_confidence_at_least_90pct": 50,
+            "positive_paired_shifts": 39
+          }
+        },
+        "test": {
+          "step": 1024,
+          "n_prompts": 64,
+          "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/test_1024_wholegraph_transfer.json",
+          "sha256": "68d459693c19fa316745506485da7b1d684cdc15d94ecc16a87efeb16eb58855",
+          "both_correct": {
+            "mean": 0.03125,
+            "ci95": [
+              0.0,
+              0.078125
+            ]
+          },
+          "log_odds": {
+            "mean": 0.3828125,
+            "ci95": [
+              0.14252929687500002,
+              0.630859375
+            ]
+          },
+          "error_review": {
+            "individual_execution_accuracy": 0.515625,
+            "mean_full_vocab_log_loss": 4.56888023715419,
+            "errors": 62,
+            "answer_token_errors": 62,
+            "wrong_answer_confidence_at_least_90pct": 57,
+            "positive_paired_shifts": 39
+          }
+        }
+      },
+      "endpoints": {
+        "train": {
+          "step": 1024,
+          "n_prompts": 256,
+          "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/train_1024_split_inference.json",
+          "sha256": "1dc65c52f8f596523b2caa04dff9858abf84cbf340eba8af90ad8ce6b25443b3",
+          "both_correct": {
+            "mean": 0.9765625,
+            "ci95": [
+              0.95703125,
+              0.9921875
+            ]
+          },
+          "log_odds": {
+            "mean": 12.07470703125,
+            "ci95": [
+              11.79051513671875,
+              12.349609375
+            ]
+          },
+          "error_review": {
+            "individual_execution_accuracy": 0.98828125,
+            "mean_full_vocab_log_loss": 0.04363207333280883,
+            "errors": 6,
+            "answer_token_errors": 6,
+            "wrong_answer_confidence_at_least_90pct": 2,
+            "positive_paired_shifts": 256
+          }
+        },
+        "validation": {
+          "step": 1024,
+          "n_prompts": 64,
+          "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/validation_1024_split_inference.json",
+          "sha256": "08256ba7b8ef71e01c247859c0731a0f8021a9819c2721f81211e2b8c2b503b3",
+          "both_correct": {
+            "mean": 0.5625,
+            "ci95": [
+              0.4375,
+              0.6875
+            ]
+          },
+          "log_odds": {
+            "mean": 10.51171875,
+            "ci95": [
+              9.68740234375,
+              11.30859375
+            ]
+          },
+          "error_review": {
+            "individual_execution_accuracy": 0.78125,
+            "mean_full_vocab_log_loss": 1.1650745951223944,
+            "errors": 28,
+            "answer_token_errors": 28,
+            "wrong_answer_confidence_at_least_90pct": 20,
+            "positive_paired_shifts": 64
+          }
+        },
+        "test": {
+          "step": 1024,
+          "n_prompts": 64,
+          "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/test_1024_split_inference.json",
+          "sha256": "3e1d77c7bb76b0d5e2fd1c063d7d7676ab0bd0c7b50f960ceea82036ebdf703d",
+          "both_correct": {
+            "mean": 0.34375,
+            "ci95": [
+              0.234375,
+              0.46875
+            ]
+          },
+          "log_odds": {
+            "mean": 8.91015625,
+            "ci95": [
+              8.103369140625,
+              9.699267578125
+            ]
+          },
+          "error_review": {
+            "individual_execution_accuracy": 0.671875,
+            "mean_full_vocab_log_loss": 2.7025297095057175,
+            "errors": 42,
+            "answer_token_errors": 42,
+            "wrong_answer_confidence_at_least_90pct": 37,
+            "positive_paired_shifts": 64
+          }
+        }
+      },
+      "manifest_sha256": "0d72344b2db355e4ed92aca87dd1746e604744965429b2f9a9d8240c0452815b",
+      "availability": {
+        "last_primary_update": {
+          "train": 1024,
+          "validation": 1024
+        },
+        "final_1024_raw_rows_available": true,
+        "missing_endpoints_are_not_filled_from_aggregate_logs": true
+      }
+    },
+    "hidden": {
+      "curves": {
+        "train": [
+          {
+            "step": 0,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/train_0_split_inference.json",
+            "sha256": "e27ae3489b026e62f028a10b72265591b5ad2332f6b47fa0d8d056f21a2cef32",
+            "both_correct": {
+              "mean": 0.00390625,
+              "ci95": [
+                0.0,
+                0.01171875
+              ]
+            },
+            "log_odds": {
+              "mean": -0.01611328125,
+              "ci95": [
+                -0.048828125,
+                0.015637207031249822
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.474609375,
+              "mean_full_vocab_log_loss": 4.687114450758096,
+              "errors": 269,
+              "answer_token_errors": 243,
+              "wrong_answer_confidence_at_least_90pct": 216,
+              "positive_paired_shifts": 83
+            }
+          },
+          {
+            "step": 8,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/train_8_split_inference.json",
+            "sha256": "ac713b624d232642dd8aead9e46c98c2430c1baddd3c39352c2dd85293ac8966",
+            "both_correct": {
+              "mean": 0.015625,
+              "ci95": [
+                0.00390625,
+                0.03125
+              ]
+            },
+            "log_odds": {
+              "mean": -0.007568359375,
+              "ci95": [
+                -0.021728515625,
+                0.00634765625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.482421875,
+              "mean_full_vocab_log_loss": 1.3710827182087542,
+              "errors": 265,
+              "answer_token_errors": 242,
+              "wrong_answer_confidence_at_least_90pct": 83,
+              "positive_paired_shifts": 61
+            }
+          },
+          {
+            "step": 32,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/train_32_split_inference.json",
+            "sha256": "d78c86ca378adfe9d5e20dc8f257ff69b4d3dd25922d18c60f84dfa1fa14c6c2",
+            "both_correct": {
+              "mean": 0.015625,
+              "ci95": [
+                0.00390625,
+                0.03125
+              ]
+            },
+            "log_odds": {
+              "mean": 0.0029296875,
+              "ci95": [
+                -0.0068359375,
+                0.0126953125
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.501953125,
+              "mean_full_vocab_log_loss": 0.7691491389268776,
+              "errors": 255,
+              "answer_token_errors": 253,
+              "wrong_answer_confidence_at_least_90pct": 1,
+              "positive_paired_shifts": 54
+            }
+          },
+          {
+            "step": 128,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/train_128_split_inference.json",
+            "sha256": "77711b1e98ce24ff303993fad87f372bba1bd06dbf1142eda87b81a69b370393",
+            "both_correct": {
+              "mean": 0.03515625,
+              "ci95": [
+                0.015625,
+                0.0625
+              ]
+            },
+            "log_odds": {
+              "mean": 0.10498046875,
+              "ci95": [
+                0.0947265625,
+                0.115234375
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.515625,
+              "mean_full_vocab_log_loss": 0.7048942981055006,
+              "errors": 248,
+              "answer_token_errors": 248,
+              "wrong_answer_confidence_at_least_90pct": 0,
+              "positive_paired_shifts": 178
+            }
+          },
+          {
+            "step": 256,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/train_256_split_inference.json",
+            "sha256": "974a37db46bc09b8a1f95a5010c4e8729b6bda0792e679aba168e3b00c83b0fa",
+            "both_correct": {
+              "mean": 0.484375,
+              "ci95": [
+                0.42578125,
+                0.546875
+              ]
+            },
+            "log_odds": {
+              "mean": 1.09130859375,
+              "ci95": [
+                1.06053466796875,
+                1.12109375
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.7421875,
+              "mean_full_vocab_log_loss": 0.5278047083702404,
+              "errors": 132,
+              "answer_token_errors": 132,
+              "wrong_answer_confidence_at_least_90pct": 0,
+              "positive_paired_shifts": 256
+            }
+          },
+          {
+            "step": 384,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/train_384_split_inference.json",
+            "sha256": "5441ae2658bc241c8167d45a7740618e9aec6950b7c87d3918c902640a3c2548",
+            "both_correct": {
+              "mean": 0.27734375,
+              "ci95": [
+                0.22265625,
+                0.33203125
+              ]
+            },
+            "log_odds": {
+              "mean": 2.2626953125,
+              "ci95": [
+                2.20556640625,
+                2.3193359375
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.638671875,
+              "mean_full_vocab_log_loss": 0.5685588854557864,
+              "errors": 185,
+              "answer_token_errors": 185,
+              "wrong_answer_confidence_at_least_90pct": 8,
+              "positive_paired_shifts": 256
+            }
+          },
+          {
+            "step": 512,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/train_512_split_inference.json",
+            "sha256": "bad95502d0a7f0a21711d4538cb04cd5cc7abe28fbfc78ff3cac1d9283de9f78",
+            "both_correct": {
+              "mean": 0.55078125,
+              "ci95": [
+                0.48828125,
+                0.609375
+              ]
+            },
+            "log_odds": {
+              "mean": 4.29541015625,
+              "ci95": [
+                4.17332763671875,
+                4.42041015625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.775390625,
+              "mean_full_vocab_log_loss": 0.4378850889884198,
+              "errors": 115,
+              "answer_token_errors": 115,
+              "wrong_answer_confidence_at_least_90pct": 10,
+              "positive_paired_shifts": 256
+            }
+          },
+          {
+            "step": 640,
+            "n_prompts": 256,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/train_640_split_inference.json",
+            "sha256": "ffe7306494e0c9fa282cf79cd39e23e4f936674a47d8f182475a1642390c1644",
+            "both_correct": {
+              "mean": 0.85546875,
+              "ci95": [
+                0.8125,
+                0.89453125
+              ]
+            },
+            "log_odds": {
+              "mean": 5.40673828125,
+              "ci95": [
+                5.27684326171875,
+                5.53565673828125
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.927734375,
+              "mean_full_vocab_log_loss": 0.19714133838505177,
+              "errors": 37,
+              "answer_token_errors": 37,
+              "wrong_answer_confidence_at_least_90pct": 3,
+              "positive_paired_shifts": 256
+            }
+          }
+        ],
+        "validation": [
+          {
+            "step": 0,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/validation_0_split_inference.json",
+            "sha256": "a5b63bd29107b7150001f01a26be3e20754d655b5e728b9494d74e410136f7b5",
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "log_odds": {
+              "mean": -0.0390625,
+              "ci95": [
+                -0.099609375,
+                0.017578125
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.46875,
+              "mean_full_vocab_log_loss": 4.223187315651284,
+              "errors": 68,
+              "answer_token_errors": 60,
+              "wrong_answer_confidence_at_least_90pct": 54,
+              "positive_paired_shifts": 15
+            }
+          },
+          {
+            "step": 8,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/validation_8_split_inference.json",
+            "sha256": "b726f4433417c9cca597516d8a57a5f73d4438ad9c94655bcd1093cb2ba3dfea",
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "log_odds": {
+              "mean": -0.03125,
+              "ci95": [
+                -0.05859375,
+                -0.00390625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.4609375,
+              "mean_full_vocab_log_loss": 1.401902556760433,
+              "errors": 69,
+              "answer_token_errors": 63,
+              "wrong_answer_confidence_at_least_90pct": 22,
+              "positive_paired_shifts": 13
+            }
+          },
+          {
+            "step": 32,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/validation_32_split_inference.json",
+            "sha256": "4eaeee760eb1204241b223a597030743546407bd8f60ca8e73828e2d77c2d67b",
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "log_odds": {
+              "mean": -0.005859375,
+              "ci95": [
+                -0.025390625,
+                0.013671875
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.5,
+              "mean_full_vocab_log_loss": 0.7695022776606493,
+              "errors": 64,
+              "answer_token_errors": 64,
+              "wrong_answer_confidence_at_least_90pct": 1,
+              "positive_paired_shifts": 11
+            }
+          },
+          {
+            "step": 128,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/validation_128_split_inference.json",
+            "sha256": "7bc73d4e7e4c60e7d5a3b84fffc3ccbdb8bb8d568f808987cbc29bc4bc7ba0d4",
+            "both_correct": {
+              "mean": 0.046875,
+              "ci95": [
+                0.0,
+                0.109375
+              ]
+            },
+            "log_odds": {
+              "mean": 0.09375,
+              "ci95": [
+                0.072265625,
+                0.115234375
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.5234375,
+              "mean_full_vocab_log_loss": 0.7038210951723158,
+              "errors": 61,
+              "answer_token_errors": 61,
+              "wrong_answer_confidence_at_least_90pct": 0,
+              "positive_paired_shifts": 42
+            }
+          },
+          {
+            "step": 256,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/validation_256_split_inference.json",
+            "sha256": "01230574935e61c35670556cff41ce0f7752f5488f67908f9c90050fa87dadf1",
+            "both_correct": {
+              "mean": 0.328125,
+              "ci95": [
+                0.21875,
+                0.4375
+              ]
+            },
+            "log_odds": {
+              "mean": 1.07421875,
+              "ci95": [
+                1.017578125,
+                1.130859375
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.6640625,
+              "mean_full_vocab_log_loss": 0.5905208634358132,
+              "errors": 43,
+              "answer_token_errors": 43,
+              "wrong_answer_confidence_at_least_90pct": 2,
+              "positive_paired_shifts": 64
+            }
+          },
+          {
+            "step": 384,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/validation_384_split_inference.json",
+            "sha256": "490a6fae641e503bdfb7cbaa90c5f26858792c80a5689e709d9ebf15a9ac4d15",
+            "both_correct": {
+              "mean": 0.265625,
+              "ci95": [
+                0.15625,
+                0.375
+              ]
+            },
+            "log_odds": {
+              "mean": 2.28515625,
+              "ci95": [
+                2.166015625,
+                2.4140625
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.6328125,
+              "mean_full_vocab_log_loss": 0.6676769625519228,
+              "errors": 47,
+              "answer_token_errors": 47,
+              "wrong_answer_confidence_at_least_90pct": 6,
+              "positive_paired_shifts": 64
+            }
+          },
+          {
+            "step": 512,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/validation_512_split_inference.json",
+            "sha256": "9025265fd3539a126251ee6777da47d7de244284576a0012a81454121a9716e7",
+            "both_correct": {
+              "mean": 0.421875,
+              "ci95": [
+                0.296875,
+                0.546875
+              ]
+            },
+            "log_odds": {
+              "mean": 5.115234375,
+              "ci95": [
+                4.48046875,
+                5.822314453124999
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.7109375,
+              "mean_full_vocab_log_loss": 0.850851195130776,
+              "errors": 37,
+              "answer_token_errors": 37,
+              "wrong_answer_confidence_at_least_90pct": 17,
+              "positive_paired_shifts": 64
+            }
+          },
+          {
+            "step": 640,
+            "n_prompts": 64,
+            "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/validation_640_split_inference.json",
+            "sha256": "bcef6dc5fd6f077220da10e49487dcd3166d53285be0a94919fa7c67eb4e3155",
+            "both_correct": {
+              "mean": 0.640625,
+              "ci95": [
+                0.515625,
+                0.75
+              ]
+            },
+            "log_odds": {
+              "mean": 5.81640625,
+              "ci95": [
+                5.35546875,
+                6.318505859374998
+              ]
+            },
+            "error_review": {
+              "individual_execution_accuracy": 0.8203125,
+              "mean_full_vocab_log_loss": 0.5347375652234363,
+              "errors": 23,
+              "answer_token_errors": 23,
+              "wrong_answer_confidence_at_least_90pct": 10,
+              "positive_paired_shifts": 64
+            }
+          }
+        ]
+      },
+      "transfer": {},
+      "endpoints": {
+        "train": {
+          "step": 640,
+          "n_prompts": 256,
+          "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/train_640_split_inference.json",
+          "sha256": "ffe7306494e0c9fa282cf79cd39e23e4f936674a47d8f182475a1642390c1644",
+          "both_correct": {
+            "mean": 0.85546875,
+            "ci95": [
+              0.8125,
+              0.89453125
+            ]
+          },
+          "log_odds": {
+            "mean": 5.40673828125,
+            "ci95": [
+              5.27684326171875,
+              5.53565673828125
+            ]
+          },
+          "error_review": {
+            "individual_execution_accuracy": 0.927734375,
+            "mean_full_vocab_log_loss": 0.19714133838505177,
+            "errors": 37,
+            "answer_token_errors": 37,
+            "wrong_answer_confidence_at_least_90pct": 3,
+            "positive_paired_shifts": 256
+          }
+        },
+        "validation": {
+          "step": 640,
+          "n_prompts": 64,
+          "source": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/validation_640_split_inference.json",
+          "sha256": "bcef6dc5fd6f077220da10e49487dcd3166d53285be0a94919fa7c67eb4e3155",
+          "both_correct": {
+            "mean": 0.640625,
+            "ci95": [
+              0.515625,
+              0.75
+            ]
+          },
+          "log_odds": {
+            "mean": 5.81640625,
+            "ci95": [
+              5.35546875,
+              6.318505859374998
+            ]
+          },
+          "error_review": {
+            "individual_execution_accuracy": 0.8203125,
+            "mean_full_vocab_log_loss": 0.5347375652234363,
+            "errors": 23,
+            "answer_token_errors": 23,
+            "wrong_answer_confidence_at_least_90pct": 10,
+            "positive_paired_shifts": 64
+          }
+        }
+      },
+      "manifest_sha256": "ccd83608a319e5d4e781cc4febbe1ffef766e96be8ca1c92f37152fe1b5ef5ea",
+      "availability": {
+        "last_primary_update": {
+          "train": 640,
+          "validation": 640
+        },
+        "final_1024_raw_rows_available": false,
+        "missing_endpoints_are_not_filled_from_aggregate_logs": true
+      }
+    }
+  }
+}
