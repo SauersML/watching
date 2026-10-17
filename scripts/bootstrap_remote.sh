@@ -23,7 +23,7 @@ case "$run_kind" in
   tail_mechanism|tail_circuit|detector_null) [[ $# -eq 3 ]] || { echo "$run_kind takes no checkpoint" >&2; exit 2; } ;;
   final_line) [[ $# -eq 3 ]] || { echo "final_line takes no arguments" >&2; exit 2; } ;;
   confirm_joint) [[ $# -eq 5 ]] || { echo "confirm_joint requires model and dataset" >&2; exit 2; } ;;
-  warm_joint) [[ $# -eq 5 ]] || { echo "$run_kind requires model and dataset" >&2; exit 2; } ;;
+  warm_joint|diverse_joint) [[ $# -eq 5 ]] || { echo "$run_kind requires model and dataset" >&2; exit 2; } ;;
   refinetail039) [[ $# -eq 4 ]] || { echo "$run_kind requires a model" >&2; exit 2; } ;;
   condition_choices) [[ $# -eq 6 ]] || { echo "$run_kind requires model, condition, and detector rows" >&2; exit 2; } ;;
   diverse_choices|scaled_choices|family_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires model and condition" >&2; exit 2; } ;;
@@ -49,6 +49,8 @@ elif [[ $run_kind == final_line ]]; then
   bash "$run_source/scripts/run_final_line.sh" "$run_output"
 elif [[ $run_kind == confirm_joint ]]; then
   bash "$run_source/scripts/run_confirm_joint.sh" "$run_output" "$4" "$5"
+elif [[ $run_kind == diverse_joint ]]; then
+  bash "$run_source/scripts/run_diverse_joint.sh" "$run_output" "$4" "$5"
 elif [[ $run_kind == warm_joint ]]; then
   bash "$run_source/scripts/run_warm_joint.sh" "$run_output" "$4" "$5"
 elif [[ $run_kind == validation_suite ]]; then

@@ -564,6 +564,7 @@ def main():
     parser.add_argument("--warm-start-tail", type=Path)
     parser.add_argument("--warm-start-manifest", type=Path)
     parser.add_argument("--development-only", action="store_true")
+    parser.add_argument("--require-complete-for-test", action="store_true")
     parser.add_argument("--early-eval-steps", type=int, nargs="*", default=[8, 32, 128])
     parser.add_argument("--max-training-seconds", type=float, default=0)
     parser.add_argument("--probe-layer", type=int, default=14)
@@ -1152,6 +1153,11 @@ def main():
     manifest["training_status"] = "complete" if completed_steps == args.steps else "time_limited"
     write_json(args.out / "manifest.json", manifest)
     emit("tail_checkpoint_saved", step=completed_steps, path=str(args.out / "native_tail.pt"))
+    if args.require_complete_for_test and completed_steps != args.steps:
+        manifest["held_out_evaluation_skipped"] = "Planned updates not completed"
+        write_json(args.out / "manifest.json", manifest)
+        emit("held_out_evaluation_skipped", step=completed_steps, requested_steps=args.steps)
+        return
     if not args.train_head:
         # Frozen-head mode retains its original late test-input execution.
         for split in held_out_splits:
