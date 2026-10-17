@@ -1,0 +1,163 @@
+{
+  "checkpoint": "Qwen/Qwen3-8B",
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "data": "/workspace/runs/watching-library-training-061r-hidden/mpd-data/runpod/watching-library-training-061r-hidden/out/data.json",
+  "out": "/workspace/runs/watching-library-training-061r-hidden/mpd-data/runpod/watching-library-training-061r-hidden/out/fit",
+  "train_head": false,
+  "initial_tail": null,
+  "prior_results": null,
+  "warm_start_tail": null,
+  "warm_start_manifest": null,
+  "development_only": false,
+  "require_complete_for_test": true,
+  "early_eval_steps": [
+    8,
+    32,
+    128
+  ],
+  "max_training_seconds": 1050.0,
+  "probe_layer": 14,
+  "tail_layers": 2,
+  "train_prompts": 256,
+  "prompt_batch_size": 8,
+  "validation_prompts": 64,
+  "test_prompts": 64,
+  "test_split": "test_wording",
+  "challenge_prompts": 0,
+  "steps": 1024,
+  "eval_every": 128,
+  "checkpoint_every": 256,
+  "lr": 5e-06,
+  "length": 96,
+  "seed": 20261017,
+  "starting_global_step": 0,
+  "starting_processed_prompt_pairs": 0,
+  "processed_prompt_pairs": 2048,
+  "global_processed_prompt_pairs": 2048,
+  "completed_steps": 256,
+  "initial_tail_sha256": null,
+  "initialization_mode": "base",
+  "warm_start_provenance": null,
+  "warm_start_note": null,
+  "excluded_test_context_ids": [],
+  "optimizer_state_restored": false,
+  "continuation_note": null,
+  "whole_vs_split_note": "With transferred or continued weights this includes prior learning, not only runtime differences",
+  "condition": "probe",
+  "answer_order": [
+    "negative",
+    "positive"
+  ],
+  "labels": {
+    "No": 2753,
+    "Yes": 9454
+  },
+  "tasks": [
+    "detection"
+  ],
+  "model_commit": null,
+  "load_revision_explicitly_pinned": true,
+  "torch": "2.10.0+cu128",
+  "gpu": "NVIDIA L40S",
+  "runtime_provenance": {
+    "schema_version": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "transformers": "5.18.0",
+      "triton": "3.6.0"
+    },
+    "torch_runtime_version": "2.10.0+cu128",
+    "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+    "cuda_build_version": "12.8",
+    "cudnn_version": 91002,
+    "cuda_available": true,
+    "gpu": {
+      "name": "NVIDIA L40S",
+      "compute_capability": [
+        8,
+        9
+      ],
+      "total_memory_bytes": 47677177856
+    },
+    "nvidia_driver_versions": [
+      "570.124.06"
+    ],
+    "numeric_settings": {
+      "float32_matmul_precision": "highest",
+      "matmul_allow_tf32": false,
+      "matmul_allow_bf16_reduced_precision_reduction": true,
+      "matmul_allow_fp16_reduced_precision_reduction": true,
+      "cudnn_allow_tf32": true,
+      "cudnn_benchmark": false,
+      "deterministic_algorithms": false,
+      "cpu_threads": 4
+    },
+    "inductor_config": {
+      "freezing": false,
+      "fx_graph_cache": true,
+      "force_disable_caches": false,
+      "compile_threads": 4,
+      "emulate_precision_casts": false
+    },
+    "environment_overrides": {
+      "TORCHINDUCTOR_COMPILE_THREADS": "4",
+      "TORCHINDUCTOR_FREEZING": null,
+      "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+      "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+      "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+      "TORCH_COMPILE_DISABLE": null,
+      "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+      "NVIDIA_TF32_OVERRIDE": null,
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "OMP_NUM_THREADS": "4"
+    },
+    "inductor_cache_directory_explicitly_set": true
+  },
+  "updated_blocks": [
+    34,
+    35
+  ],
+  "active_parameters": 385896960,
+  "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
+  "primary_path": "split_inference",
+  "stock_runtime_parity_claimed": false,
+  "output_head_updated": false,
+  "output_head_scope": "frozen",
+  "sources_offloaded_during_training": false,
+  "test_inputs_cached_before_training": false,
+  "new_classifier": false,
+  "objective": "balanced paired full-vocabulary cross entropy",
+  "optimizer": "FP32-master AdamW, separate condition gradients accumulated in FP32, zero decay, gradient norm clip1",
+  "test_source_split": "test_wording",
+  "test_evaluation_enabled": true,
+  "test_evaluated_only_after_training": true,
+  "selection": "fixed step count; reporting validation does not select checkpoints",
+  "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "data_sha256": "9321889d38cc5b070844a7a3692811f86e0c70905e7e4d5fbe790f8fab07b755",
+  "source_sha256": "9b86c11ec0d6df51760c94ecf23211fc53d54133204d9ed62ad35f688d7f3817",
+  "source_runtime": "boundary_observed",
+  "primary_curve_runtime": "boundary-observed source cached native tail",
+  "wholegraph_transfer_runtime": "original unobserved native HF model",
+  "capture_method": "hidden_states",
+  "library_capture_method": "hidden_states",
+  "capture_api": "native PyTorch/Hugging Face",
+  "raw_hf_model_compiled": true,
+  "compiled_return_wrapper": false,
+  "skip_nnmodule_hook_guards": false,
+  "boundary_buffer_allocation": "Dynamo eager warm-up before Inductor tracing",
+  "boundary_discovery_backend": "eager",
+  "hook_guard_config_scope": "each raw HF invocation including no-hook baseline",
+  "full_sequence_full_vocabulary_extraction_parity_required": false,
+  "library_source_sha256": "66828ee56152e18eba266e7faad19c9a1afc95c9fca0ff22ab4a58ef0691d7d6",
+  "checkpoint_storage_preflight": {
+    "required_free_bytes": 2570449408,
+    "available_free_bytes": 406348535955456,
+    "estimated_checkpoint_bytes": 810383616,
+    "additional_artifact_bytes": 681246720,
+    "scope": "capacity estimate; not a reservation or filesystem-error guarantee"
+  },
+  "checkpoint_recovery": "native weights only; Adam and FP32 master states are not saved",
+  "ending_global_step": 256,
+  "last_checkpoint_step": 256,
+  "last_checkpoint_bytes": 771801758
+}

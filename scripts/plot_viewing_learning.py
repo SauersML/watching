@@ -249,7 +249,7 @@ def draw(report, output):
             "its logits differ from the untouched model."
         )
     fig.suptitle(TITLES[report["viewing_mode"]], x=0.08, ha="left", fontsize=19, weight="bold")
-    fig.text(0.08, 0.885, subtitle, fontsize=11, color="#86868B")
+    fig.text(0.08, 0.90, subtitle, va="top", fontsize=11, color="#86868B")
     if any(v < 1 for v in report["both_correct_ceilings"].values()):
         fig.text(
             0.08,

@@ -1,0 +1,225 @@
+{
+  "viewing_mode": "hidden_states",
+  "library_capture_method": "hidden_states",
+  "source_runtime": "boundary_observed",
+  "training_status": "in_progress",
+  "completed_steps": 256,
+  "seed": 20261017,
+  "draws": 5000,
+  "bootstrap_seed": 20261017,
+  "interval_scope": "Pointwise paired-prompt bootstrap; one seed and compiler build",
+  "all_correct_caveat": "All-correct empirical bootstrap intervals collapse; not certainty",
+  "data_sha256": "7ed9cfc870ee7cf990bdb8636221b75a5c5a27b78088b0ca969513d09b7e0e94",
+  "manifest_sha256": "06921dcb30ca26a5b2dfa22610d847b1f3e2f9757f979f945497ad4d3356d848",
+  "curves": {
+    "train": [
+      {
+        "step": 0,
+        "n_prompts": 256,
+        "source": "results/library-capture-training-061r-hidden/fit/train_0_split_inference.json",
+        "sha256": "e27ae3489b026e62f028a10b72265591b5ad2332f6b47fa0d8d056f21a2cef32",
+        "mean": [
+          0.00390625,
+          -0.01611328125
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.01171875
+          ],
+          [
+            -0.048828125,
+            0.015637207031249822
+          ]
+        ]
+      },
+      {
+        "step": 8,
+        "n_prompts": 256,
+        "source": "results/library-capture-training-061r-hidden/fit/train_8_split_inference.json",
+        "sha256": "ac713b624d232642dd8aead9e46c98c2430c1baddd3c39352c2dd85293ac8966",
+        "mean": [
+          0.015625,
+          -0.007568359375
+        ],
+        "ci95": [
+          [
+            0.00390625,
+            0.03125
+          ],
+          [
+            -0.021728515625,
+            0.00634765625
+          ]
+        ]
+      },
+      {
+        "step": 32,
+        "n_prompts": 256,
+        "source": "results/library-capture-training-061r-hidden/fit/train_32_split_inference.json",
+        "sha256": "d78c86ca378adfe9d5e20dc8f257ff69b4d3dd25922d18c60f84dfa1fa14c6c2",
+        "mean": [
+          0.015625,
+          0.0029296875
+        ],
+        "ci95": [
+          [
+            0.00390625,
+            0.03125
+          ],
+          [
+            -0.0068359375,
+            0.0126953125
+          ]
+        ]
+      },
+      {
+        "step": 128,
+        "n_prompts": 256,
+        "source": "results/library-capture-training-061r-hidden/fit/train_128_split_inference.json",
+        "sha256": "77711b1e98ce24ff303993fad87f372bba1bd06dbf1142eda87b81a69b370393",
+        "mean": [
+          0.03515625,
+          0.10498046875
+        ],
+        "ci95": [
+          [
+            0.015625,
+            0.0625
+          ],
+          [
+            0.0947265625,
+            0.115234375
+          ]
+        ]
+      },
+      {
+        "step": 256,
+        "n_prompts": 256,
+        "source": "results/library-capture-training-061r-hidden/fit/train_256_split_inference.json",
+        "sha256": "974a37db46bc09b8a1f95a5010c4e8729b6bda0792e679aba168e3b00c83b0fa",
+        "mean": [
+          0.484375,
+          1.09130859375
+        ],
+        "ci95": [
+          [
+            0.42578125,
+            0.546875
+          ],
+          [
+            1.06053466796875,
+            1.12109375
+          ]
+        ]
+      }
+    ],
+    "validation": [
+      {
+        "step": 0,
+        "n_prompts": 64,
+        "source": "results/library-capture-training-061r-hidden/fit/validation_0_split_inference.json",
+        "sha256": "a5b63bd29107b7150001f01a26be3e20754d655b5e728b9494d74e410136f7b5",
+        "mean": [
+          0.0,
+          -0.0390625
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.099609375,
+            0.017578125
+          ]
+        ]
+      },
+      {
+        "step": 8,
+        "n_prompts": 64,
+        "source": "results/library-capture-training-061r-hidden/fit/validation_8_split_inference.json",
+        "sha256": "b726f4433417c9cca597516d8a57a5f73d4438ad9c94655bcd1093cb2ba3dfea",
+        "mean": [
+          0.0,
+          -0.03125
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.05859375,
+            -0.00390625
+          ]
+        ]
+      },
+      {
+        "step": 32,
+        "n_prompts": 64,
+        "source": "results/library-capture-training-061r-hidden/fit/validation_32_split_inference.json",
+        "sha256": "4eaeee760eb1204241b223a597030743546407bd8f60ca8e73828e2d77c2d67b",
+        "mean": [
+          0.0,
+          -0.005859375
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.025390625,
+            0.013671875
+          ]
+        ]
+      },
+      {
+        "step": 128,
+        "n_prompts": 64,
+        "source": "results/library-capture-training-061r-hidden/fit/validation_128_split_inference.json",
+        "sha256": "7bc73d4e7e4c60e7d5a3b84fffc3ccbdb8bb8d568f808987cbc29bc4bc7ba0d4",
+        "mean": [
+          0.046875,
+          0.09375
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.109375
+          ],
+          [
+            0.072265625,
+            0.115234375
+          ]
+        ]
+      },
+      {
+        "step": 256,
+        "n_prompts": 64,
+        "source": "results/library-capture-training-061r-hidden/fit/validation_256_split_inference.json",
+        "sha256": "01230574935e61c35670556cff41ce0f7752f5488f67908f9c90050fa87dadf1",
+        "mean": [
+          0.328125,
+          1.07421875
+        ],
+        "ci95": [
+          [
+            0.21875,
+            0.4375
+          ],
+          [
+            1.017578125,
+            1.130859375
+          ]
+        ]
+      }
+    ]
+  },
+  "input_equality_sha256": "aaecaf6ee4f58ed7b46c2f76a77e2a8e878bdfb8a75760c9e0c26856c7d4f8c4",
+  "both_correct_ceilings": {
+    "train": 1.0,
+    "validation": 1.0
+  }
+}
