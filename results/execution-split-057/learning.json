@@ -1,0 +1,701 @@
+{
+  "manifest": {
+    "checkpoint": "/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "data": "/workspace/runs/watching-execution-split-057r/mpd-data/scratch/watching-execution-split-ca3d4e092149/data/execution_tail_v1/dataset.json",
+    "out": "/workspace/runs/watching-execution-split-057r/mpd-data/runpod/watching-execution-split-057r/out/fit",
+    "train_prompts": 256,
+    "validation_prompts": 32,
+    "test_prompts": 64,
+    "prompt_batch_size": 8,
+    "steps": 1024,
+    "eval_every": 128,
+    "checkpoint_every": 256,
+    "lr": 5e-06,
+    "length": 96,
+    "seed": 20261018,
+    "max_training_seconds": 1050.0,
+    "evaluate_tail": null,
+    "source_runtime": "explicit-prefix",
+    "condition": "execution",
+    "negative_condition": "no_grad",
+    "positive_condition": "grad_enabled",
+    "legacy_capture_field": "Alias of source_gradient_enabled, not an activation probe",
+    "source_eval_mode": true,
+    "source_parameters_require_grad": true,
+    "source_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "model_provenance": {
+      "loaded_config_commit": null,
+      "config_source": "local_directory",
+      "config_path": "/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218/config.json",
+      "config_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+      "observed_cached_snapshot": "b968826d9c46dd6066d109eabc6255188de91218",
+      "requested_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "load_revision_explicitly_pinned": false,
+      "scope": "Local config provenance only; not a checksum of all model weights"
+    },
+    "runtime_provenance": {
+      "schema_version": 1,
+      "packages": {
+        "torch": "2.10.0",
+        "transformers": "5.18.0",
+        "triton": "3.6.0"
+      },
+      "torch_runtime_version": "2.10.0+cu128",
+      "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "cuda_build_version": "12.8",
+      "cudnn_version": 91002,
+      "cuda_available": true,
+      "gpu": {
+        "name": "NVIDIA RTX A6000",
+        "compute_capability": [
+          8,
+          6
+        ],
+        "total_memory_bytes": 50907774976
+      },
+      "nvidia_driver_versions": [
+        "570.211.01"
+      ],
+      "numeric_settings": {
+        "float32_matmul_precision": "highest",
+        "matmul_allow_tf32": false,
+        "matmul_allow_bf16_reduced_precision_reduction": true,
+        "matmul_allow_fp16_reduced_precision_reduction": true,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "deterministic_algorithms": false,
+        "cpu_threads": 4
+      },
+      "inductor_config": {
+        "freezing": false,
+        "fx_graph_cache": true,
+        "force_disable_caches": true,
+        "compile_threads": 4,
+        "emulate_precision_casts": false
+      },
+      "environment_overrides": {
+        "TORCHINDUCTOR_COMPILE_THREADS": "4",
+        "TORCHINDUCTOR_FREEZING": null,
+        "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+        "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+        "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+        "TORCH_COMPILE_DISABLE": null,
+        "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+        "NVIDIA_TF32_OVERRIDE": null,
+        "CUBLAS_WORKSPACE_CONFIG": null,
+        "OMP_NUM_THREADS": "4"
+      },
+      "inductor_cache_directory_explicitly_set": true
+    },
+    "updated_blocks": [
+      34,
+      35
+    ],
+    "primary_path": "split_inference",
+    "output_head_updated": false,
+    "new_classifier": false,
+    "runtime": "explicit compiled prefix returns boundary in two autograd contexts; eager BF16 math-SDPA tail; no stock-graph equivalence assumed",
+    "source_observation": "ordinary prefix outputs, no activation hook or extraction graph",
+    "cache_reconstruction_gate": "all-vocabulary equality of live versus cached split states",
+    "wholegraph_claim": "separate measured transfer, not assumed equivalent to split runtime",
+    "test_inputs_cached_before_training": true,
+    "test_scored_only_after_training": true,
+    "selection": "fixed updates; validation reporting only; partial run skips test",
+    "initialization": "original base model; no probe-trained tail",
+    "starting_global_step": 0,
+    "data_sha256": "61536582ae7b9f7488f4cdb1875c22f5978bcdb3342a2c4b5a1fbff343d17229",
+    "source_sha256": "f0b059ceef451f31f21583ab61648d14ee36fa38a290018cd248d1ad6cc08fed",
+    "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+    "completed_steps": 1024,
+    "checkpoint_storage_preflight": {
+      "required_free_bytes": 1889202688,
+      "available_free_bytes": 25052438528,
+      "estimated_checkpoint_bytes": 810383616,
+      "additional_artifact_bytes": 0,
+      "scope": "capacity estimate; not a reservation or filesystem-error guarantee"
+    },
+    "checkpoint_recovery": "native weights only; Adam and FP32 master states are not saved",
+    "last_checkpoint_step": 1024,
+    "last_checkpoint_bytes": 771801758,
+    "head_sha256_after": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+    "training_status": "complete"
+  },
+  "curves": {
+    "train": [
+      {
+        "step": 0,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_0_split_inference.json",
+        "source_sha256": "6b39f434e424a5f2335414813fd523fa9cd84bf6502be204392c8d66541b738c",
+        "accuracy": {
+          "mean": 0.462890625,
+          "ci95": [
+            0.4453125,
+            0.478515625
+          ]
+        },
+        "separation": {
+          "mean": -0.056640625,
+          "ci95": [
+            -0.08643798828124999,
+            -0.02783203125
+          ]
+        }
+      },
+      {
+        "step": 8,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_8_split_inference.json",
+        "source_sha256": "252f5567cef22fb45b1faf5a6631d4e5882c945a197ca13b782e7eb0ceaf0c3c",
+        "accuracy": {
+          "mean": 0.474609375,
+          "ci95": [
+            0.458984375,
+            0.48828125
+          ]
+        },
+        "separation": {
+          "mean": -0.014404296875,
+          "ci95": [
+            -0.02783203125,
+            -0.000732421875
+          ]
+        }
+      },
+      {
+        "step": 32,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_32_split_inference.json",
+        "source_sha256": "14f41e0d833342c052b678b97d1edf1f6b5521738c459c79b6c745a77684f6bf",
+        "accuracy": {
+          "mean": 0.490234375,
+          "ci95": [
+            0.4765625,
+            0.501953125
+          ]
+        },
+        "separation": {
+          "mean": -0.0009765625,
+          "ci95": [
+            -0.01220703125,
+            0.01025390625
+          ]
+        }
+      },
+      {
+        "step": 128,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_128_split_inference.json",
+        "source_sha256": "dc54635526a66b34a248aca6bea49b736fa269194aab84b2cea70633e65f42c9",
+        "accuracy": {
+          "mean": 0.6484375,
+          "ci95": [
+            0.62109375,
+            0.677734375
+          ]
+        },
+        "separation": {
+          "mean": 0.2197265625,
+          "ci95": [
+            0.20849609375,
+            0.23095703125
+          ]
+        }
+      },
+      {
+        "step": 256,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_256_split_inference.json",
+        "source_sha256": "f38780e1538bc3362a72f249eb430f5df4c145f216da9c853bf96e1fe28f854f",
+        "accuracy": {
+          "mean": 0.603515625,
+          "ci95": [
+            0.580078125,
+            0.62890625
+          ]
+        },
+        "separation": {
+          "mean": 2.255859375,
+          "ci95": [
+            2.20166015625,
+            2.310546875
+          ]
+        }
+      },
+      {
+        "step": 384,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_384_split_inference.json",
+        "source_sha256": "70e39bc8ad8bfea95d1818100a66c6a11caf4eda5e3fadb9807ea475e8ea819c",
+        "accuracy": {
+          "mean": 0.884765625,
+          "ci95": [
+            0.857421875,
+            0.91015625
+          ]
+        },
+        "separation": {
+          "mean": 3.5673828125,
+          "ci95": [
+            3.4892578125,
+            3.64697265625
+          ]
+        }
+      },
+      {
+        "step": 512,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_512_split_inference.json",
+        "source_sha256": "601c8063e03f677163396e52c8f09dda2224be07bd65bf650115025e887ce01b",
+        "accuracy": {
+          "mean": 0.623046875,
+          "ci95": [
+            0.59765625,
+            0.650390625
+          ]
+        },
+        "separation": {
+          "mean": 5.34375,
+          "ci95": [
+            5.22998046875,
+            5.45361328125
+          ]
+        }
+      },
+      {
+        "step": 640,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_640_split_inference.json",
+        "source_sha256": "6e8070778d3e30f08dafa7d393465dd9a29a883a60a2e8f9b30698624a9e75e5",
+        "accuracy": {
+          "mean": 0.96875,
+          "ci95": [
+            0.953125,
+            0.982421875
+          ]
+        },
+        "separation": {
+          "mean": 5.2119140625,
+          "ci95": [
+            5.11279296875,
+            5.31005859375
+          ]
+        }
+      },
+      {
+        "step": 768,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_768_split_inference.json",
+        "source_sha256": "438db2916abb31c45274057079770622afb25918e47608d79ca824189b8452f3",
+        "accuracy": {
+          "mean": 0.982421875,
+          "ci95": [
+            0.970703125,
+            0.9921875
+          ]
+        },
+        "separation": {
+          "mean": 9.77978515625,
+          "ci95": [
+            9.58787841796875,
+            9.97216796875
+          ]
+        }
+      },
+      {
+        "step": 896,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_896_split_inference.json",
+        "source_sha256": "260d61640e1771e46c3f368d1a2df8c21914e54a267a60c5bf07a35123669cd6",
+        "accuracy": {
+          "mean": 0.94140625,
+          "ci95": [
+            0.919921875,
+            0.9609375
+          ]
+        },
+        "separation": {
+          "mean": 15.8818359375,
+          "ci95": [
+            15.5868896484375,
+            16.18800048828125
+          ]
+        }
+      },
+      {
+        "step": 1024,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_1024_split_inference.json",
+        "source_sha256": "129810535a7eddf9f7f583233a95bbef83fdc51fb06a8cad48504ae29c91457a",
+        "accuracy": {
+          "mean": 0.998046875,
+          "ci95": [
+            0.994140625,
+            1.0
+          ]
+        },
+        "separation": {
+          "mean": 17.36083984375,
+          "ci95": [
+            17.03953857421875,
+            17.68851318359375
+          ]
+        }
+      }
+    ],
+    "validation": [
+      {
+        "step": 0,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_0_split_inference.json",
+        "source_sha256": "3666c195debaf5c1f39182a40536db4491e95217778cea62cf56cc4dfae04189",
+        "accuracy": {
+          "mean": 0.46875,
+          "ci95": [
+            0.421875,
+            0.5
+          ]
+        },
+        "separation": {
+          "mean": -0.01953125,
+          "ci95": [
+            -0.11328125,
+            0.0703125
+          ]
+        }
+      },
+      {
+        "step": 8,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_8_split_inference.json",
+        "source_sha256": "d3395abbea88aea4a4e8e333881a60ef4d6e0569a90fd5020ece4be363ea98e0",
+        "accuracy": {
+          "mean": 0.46875,
+          "ci95": [
+            0.421875,
+            0.5
+          ]
+        },
+        "separation": {
+          "mean": -0.0078125,
+          "ci95": [
+            -0.04296875,
+            0.02734375
+          ]
+        }
+      },
+      {
+        "step": 32,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_32_split_inference.json",
+        "source_sha256": "89569cd91c98d6e329fbebc27c50e9f63bc2bac7dc450133b069863a1ac4a4f8",
+        "accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "separation": {
+          "mean": 0.015625,
+          "ci95": [
+            -0.015625,
+            0.046875
+          ]
+        }
+      },
+      {
+        "step": 128,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_128_split_inference.json",
+        "source_sha256": "c53dc918d7b41c47de231b776109c5731a9a38306382a21fcede37728d9defb9",
+        "accuracy": {
+          "mean": 0.703125,
+          "ci95": [
+            0.625,
+            0.796875
+          ]
+        },
+        "separation": {
+          "mean": 0.23828125,
+          "ci95": [
+            0.2109375,
+            0.265625
+          ]
+        }
+      },
+      {
+        "step": 256,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_256_split_inference.json",
+        "source_sha256": "20ec2419ff106fb99dd7847a63984ead6d884589d2586de9b408242af04f7990",
+        "accuracy": {
+          "mean": 0.640625,
+          "ci95": [
+            0.5625,
+            0.71875
+          ]
+        },
+        "separation": {
+          "mean": 2.48828125,
+          "ci95": [
+            2.359375,
+            2.625
+          ]
+        }
+      },
+      {
+        "step": 384,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_384_split_inference.json",
+        "source_sha256": "88bf6707044ea19131dd4069415093443ecd1db80592d9de270a6129640bb1f8",
+        "accuracy": {
+          "mean": 0.8125,
+          "ci95": [
+            0.71875,
+            0.890625
+          ]
+        },
+        "separation": {
+          "mean": 3.75390625,
+          "ci95": [
+            3.5625,
+            3.95703125
+          ]
+        }
+      },
+      {
+        "step": 512,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_512_split_inference.json",
+        "source_sha256": "81d797f6ebd005027cbd13d3a4f89a490516fb6ab26c3f1122f24f46b7699552",
+        "accuracy": {
+          "mean": 0.703125,
+          "ci95": [
+            0.625,
+            0.796875
+          ]
+        },
+        "separation": {
+          "mean": 5.69921875,
+          "ci95": [
+            5.4375,
+            5.96484375
+          ]
+        }
+      },
+      {
+        "step": 640,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_640_split_inference.json",
+        "source_sha256": "327ae4eb0c76649f6dde646e4c67fa411bac48b7a5752ded95946d502e4001b2",
+        "accuracy": {
+          "mean": 0.828125,
+          "ci95": [
+            0.75,
+            0.90625
+          ]
+        },
+        "separation": {
+          "mean": 5.37890625,
+          "ci95": [
+            5.16015625,
+            5.60546875
+          ]
+        }
+      },
+      {
+        "step": 768,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_768_split_inference.json",
+        "source_sha256": "a0007e10d5b3903b8adca849bec3b3165730304a637252c72378eb63600250b1",
+        "accuracy": {
+          "mean": 0.890625,
+          "ci95": [
+            0.8125,
+            0.953125
+          ]
+        },
+        "separation": {
+          "mean": 10.0546875,
+          "ci95": [
+            9.64453125,
+            10.488378906249999
+          ]
+        }
+      },
+      {
+        "step": 896,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_896_split_inference.json",
+        "source_sha256": "e77267d4aa93d76db05b3cfff85a8d2abf7fffdac7b8f14302ad90bc239b7178",
+        "accuracy": {
+          "mean": 0.828125,
+          "ci95": [
+            0.75,
+            0.90625
+          ]
+        },
+        "separation": {
+          "mean": 14.9765625,
+          "ci95": [
+            13.8435546875,
+            16.046875
+          ]
+        }
+      },
+      {
+        "step": 1024,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_1024_split_inference.json",
+        "source_sha256": "abf93ad422bebd5a0277b6012f35d36dcd50f236a523fb82d0843f8c7ba62f6c",
+        "accuracy": {
+          "mean": 0.875,
+          "ci95": [
+            0.796875,
+            0.953125
+          ]
+        },
+        "separation": {
+          "mean": 17.00390625,
+          "ci95": [
+            15.90615234375,
+            18.06640625
+          ]
+        }
+      }
+    ]
+  },
+  "endpoints": {
+    "train": {
+      "split_inference": {
+        "step": 1024,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_1024_split_inference.json",
+        "source_sha256": "129810535a7eddf9f7f583233a95bbef83fdc51fb06a8cad48504ae29c91457a",
+        "accuracy": {
+          "mean": 0.998046875,
+          "ci95": [
+            0.994140625,
+            1.0
+          ]
+        },
+        "separation": {
+          "mean": 17.36083984375,
+          "ci95": [
+            17.03953857421875,
+            17.68851318359375
+          ]
+        }
+      },
+      "wholegraph_transfer": {
+        "step": 1024,
+        "n_prompts": 256,
+        "source": "results/execution-split-057/fit/train_1024_wholegraph_transfer.json",
+        "source_sha256": "cbc01fd0c7fbc5e182315b2c7f66a1f784a13b7ae0a3c2bde3aa4304427d1ed8",
+        "accuracy": {
+          "mean": 0.662109375,
+          "ci95": [
+            0.6328125,
+            0.69140625
+          ]
+        },
+        "separation": {
+          "mean": 3.4345703125,
+          "ci95": [
+            3.2158203125,
+            3.658203125
+          ]
+        }
+      }
+    },
+    "validation": {
+      "split_inference": {
+        "step": 1024,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_1024_split_inference.json",
+        "source_sha256": "abf93ad422bebd5a0277b6012f35d36dcd50f236a523fb82d0843f8c7ba62f6c",
+        "accuracy": {
+          "mean": 0.875,
+          "ci95": [
+            0.796875,
+            0.953125
+          ]
+        },
+        "separation": {
+          "mean": 17.00390625,
+          "ci95": [
+            15.90615234375,
+            18.06640625
+          ]
+        }
+      },
+      "wholegraph_transfer": {
+        "step": 1024,
+        "n_prompts": 32,
+        "source": "results/execution-split-057/fit/validation_1024_wholegraph_transfer.json",
+        "source_sha256": "128a4430d634af9d00fbd02ee5733ebb5e87bc3d3e756a2bea96b6f7072f66df",
+        "accuracy": {
+          "mean": 0.53125,
+          "ci95": [
+            0.5,
+            0.578125
+          ]
+        },
+        "separation": {
+          "mean": 3.76171875,
+          "ci95": [
+            3.23037109375,
+            4.296875
+          ]
+        }
+      }
+    },
+    "test": {
+      "split_inference": {
+        "step": 1024,
+        "n_prompts": 64,
+        "source": "results/execution-split-057/fit/test_1024_split_inference.json",
+        "source_sha256": "d5e1019cd9d1488bcdb6e61534036795b4a0aa1342f48048931c4eae20750d8e",
+        "accuracy": {
+          "mean": 0.703125,
+          "ci95": [
+            0.640625,
+            0.765625
+          ]
+        },
+        "separation": {
+          "mean": 14.427734375,
+          "ci95": [
+            13.599609375,
+            15.259814453125
+          ]
+        }
+      },
+      "wholegraph_transfer": {
+        "step": 1024,
+        "n_prompts": 64,
+        "source": "results/execution-split-057/fit/test_1024_wholegraph_transfer.json",
+        "source_sha256": "719db8e3c4a8dec07f9ccd019bea122a5ee277d1b19b778fc8366b7cd8408177",
+        "accuracy": {
+          "mean": 0.5390625,
+          "ci95": [
+            0.5078125,
+            0.5703125
+          ]
+        },
+        "separation": {
+          "mean": 2.666015625,
+          "ci95": [
+            2.236279296875,
+            3.0898925781249993
+          ]
+        }
+      }
+    }
+  },
+  "draws": 5000,
+  "seed": 20261018,
+  "intervals": "Pointwise 95% whole-prompt paired bootstrap; one fit, fixed question mix. Not simultaneous bands, seed uncertainty, or unseen-family population guarantees."
+}

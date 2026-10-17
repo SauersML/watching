@@ -12,7 +12,7 @@ from matplotlib.ticker import PercentFormatter
 
 INK, MUTED = "#183B40", "#687C80"
 COLORS = {"train": "#087F79", "validation": "#BD654F", "test": "#3C658C"}
-NAMES = {"train": "Training", "validation": "Development", "test": "Held-out questions"}
+NAMES = {"train": "Training", "validation": "Development", "test": "Unseen question families"}
 
 
 def read(path):
@@ -232,7 +232,7 @@ def endpoints(report):
     fig.text(
         0.07,
         0.835,
-        "Separate paths, never pooled. Held-out questions are scored only at the fixed endpoint.",
+        "Separate paths, never pooled. Unseen question families are scored at the fixed endpoint.",
         fontsize=10.5,
         color=MUTED,
     )

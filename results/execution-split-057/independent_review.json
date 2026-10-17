@@ -1,0 +1,256 @@
+{
+  "reviewed_at_utc": "2026-10-17T06:21:13.616051+00:00",
+  "reviewer": "independent library_review agent",
+  "source_run": "watching-execution-split-057r",
+  "source_commit": "ca3d4e092149",
+  "scope": "Read-only raw-artifact checks; no CUDA rerun. This report verifies stored top-token/score records and recorded live parity gates; it does not independently rerun full-vocabulary GPU argmax.",
+  "files_sha256": {
+    "train_1024_split_reconstructed.json": "61901ea5497114b7914848be0c78f39ad52793f93b0351bd2b9050fed239c97b",
+    "train_1024_split_inference.json": "129810535a7eddf9f7f583233a95bbef83fdc51fb06a8cad48504ae29c91457a",
+    "train_1024_wholegraph_transfer.json": "cbc01fd0c7fbc5e182315b2c7f66a1f784a13b7ae0a3c2bde3aa4304427d1ed8",
+    "data.json": "e94b5e0a55c77d9e7cf578f45df98ef4bec68ab9eac9b57c76486d5d2dc35ace",
+    "validation_1024_wholegraph_transfer.json": "128a4430d634af9d00fbd02ee5733ebb5e87bc3d3e756a2bea96b6f7072f66df",
+    "test_1024_wholegraph_transfer.json": "719db8e3c4a8dec07f9ccd019bea122a5ee277d1b19b778fc8366b7cd8408177",
+    "validation_1024_split_inference.json": "abf93ad422bebd5a0277b6012f35d36dcd50f236a523fb82d0843f8c7ba62f6c",
+    "manifest.json": "ae8a7914e7bcd2ab80b989d388515d4edc69d68f96bd533e6a5f125e31e72c6d",
+    "test_1024_split_inference.json": "d5e1019cd9d1488bcdb6e61534036795b4a0aa1342f48048931c4eae20750d8e",
+    "validation_1024_split_reconstructed.json": "9b7eb193f1f682a30aee11295cffa86712c3a81f3f2ad6828079af62e245ee74",
+    "test_1024_split_reconstructed.json": "cdf8533b16972d25ba5d255a59a4766fb03567fa138470b122f50d83e2a7d320",
+    "cache_fingerprints.json": "26f279a86f97cd1e8b6dd57eb557a15da8b2f81eeea267941bf695e0ce79efe1",
+    "scientific_source_execution_tail.py": "f0b059ceef451f31f21583ab61648d14ee36fa38a290018cd248d1ad6cc08fed",
+    "metrics.jsonl": "321a0f0b4fff26665bfcf82e4e088b0233c45bcfa2510f5e9b0bcb1dbb68da8f"
+  },
+  "checks": {
+    "scientific_source_sha_matches_immutable_commit": true,
+    "fixed_head_hash_unchanged": true,
+    "cache_fingerprints_recomputed_all_tensors": true,
+    "pair_states": {
+      "train": {
+        "prompts": 256,
+        "hidden_pairs_differ": 256,
+        "auxiliary_mask_cos_sin_exact_pairs": 256,
+        "unique_contexts": 256
+      },
+      "validation": {
+        "prompts": 32,
+        "hidden_pairs_differ": 32,
+        "auxiliary_mask_cos_sin_exact_pairs": 32,
+        "unique_contexts": 32
+      },
+      "test": {
+        "prompts": 64,
+        "hidden_pairs_differ": 64,
+        "auxiliary_mask_cos_sin_exact_pairs": 64,
+        "unique_contexts": 64
+      }
+    },
+    "shared_condition_inputs": "One stored input_ids/attention_mask/position_ids batch per prompt is used in both source modes by the pinned implementation; no condition token.",
+    "tokenized_inputs_unique_across_all_splits": true,
+    "context_text_disjoint_all_splits": true,
+    "test_question_families_disjoint_train": true,
+    "recorded_gates": {
+      "interleaved_repeat_verified": 1,
+      "restored_source_verified": 1,
+      "gradient_forward_audit": 22,
+      "stock_transfer_start": 1,
+      "complete": 1
+    },
+    "steps_completed": 1024,
+    "ordered_input_batches_sha256": {
+      "train": "3aafcf397b8f77ae04c2d0bcdb96c95fe049a16750ce5c90e3952f9addfc6677",
+      "validation": "0d14d330a9018173eb6bafc123861af64a449164b784264c54d47baff1741516",
+      "test": "9a76fa7c949dbaa76122a963a8158dcdc46055abcfe5d39a26553ebef6766346"
+    },
+    "recorded_complete_event": {
+      "event": "complete",
+      "seconds": 924.0315393377095,
+      "step": 1024,
+      "head_unchanged": true,
+      "frozen_source_verified": true,
+      "fresh_process_artifact_evaluation": false
+    }
+  },
+  "splits": {
+    "train": {
+      "n_prompts": 256,
+      "correct_tokens": 511,
+      "total_tokens": 512,
+      "greedy_accuracy": 0.998046875,
+      "greedy_accuracy_ci95": [
+        0.994140625,
+        1.0
+      ],
+      "greedy_both_conditions_correct": 0.99609375,
+      "greedy_both_conditions_correct_ci95": [
+        0.98828125,
+        1.0
+      ],
+      "paired_log_odds_shift": 17.36083984375,
+      "paired_log_odds_shift_ci95": [
+        17.03271484375,
+        17.6904296875
+      ],
+      "mean_ce": 0.012121051135409705,
+      "positive_pairs": 256,
+      "absent_actual_accuracy": 1,
+      "present_actual_accuracy": 0.99609375,
+      "cached_vs_reconstructed_score_max_abs_diff": {
+        "logp_yes": 4.76837158203125e-07,
+        "logp_no": 9.5367431640625e-07,
+        "ce": 2.3838947527110577e-07,
+        "full_vocab_correct_probability": 2.384185791015625e-07,
+        "answer_pair_mass": 2.384185791015625e-07
+      },
+      "cached_vs_reconstructed_top_ids_and_log_odds_exact": true
+    },
+    "validation": {
+      "n_prompts": 32,
+      "correct_tokens": 56,
+      "total_tokens": 64,
+      "greedy_accuracy": 0.875,
+      "greedy_accuracy_ci95": [
+        0.796875,
+        0.9375
+      ],
+      "greedy_both_conditions_correct": 0.75,
+      "greedy_both_conditions_correct_ci95": [
+        0.59375,
+        0.90625
+      ],
+      "paired_log_odds_shift": 17.00390625,
+      "paired_log_odds_shift_ci95": [
+        15.84375,
+        18.07421875
+      ],
+      "mean_ce": 0.573875171766909,
+      "positive_pairs": 32,
+      "absent_actual_accuracy": 0.875,
+      "present_actual_accuracy": 0.875,
+      "cached_vs_reconstructed_score_max_abs_diff": {
+        "logp_yes": 2.3841846541472478e-07,
+        "logp_no": 9.5367431640625e-07,
+        "ce": 2.384185791015625e-07,
+        "full_vocab_correct_probability": 2.384185791015625e-07,
+        "answer_pair_mass": 2.384185791015625e-07
+      },
+      "cached_vs_reconstructed_top_ids_and_log_odds_exact": true
+    },
+    "test": {
+      "n_prompts": 64,
+      "correct_tokens": 90,
+      "total_tokens": 128,
+      "greedy_accuracy": 0.703125,
+      "greedy_accuracy_ci95": [
+        0.6484375,
+        0.765625
+      ],
+      "greedy_both_conditions_correct": 0.40625,
+      "greedy_both_conditions_correct_ci95": [
+        0.28125,
+        0.53125
+      ],
+      "paired_log_odds_shift": 14.427734375,
+      "paired_log_odds_shift_ci95": [
+        13.59375,
+        15.234375
+      ],
+      "mean_ce": 2.3026775377736586,
+      "positive_pairs": 64,
+      "absent_actual_accuracy": 0.46875,
+      "present_actual_accuracy": 0.9375,
+      "cached_vs_reconstructed_score_max_abs_diff": {
+        "logp_yes": 2.3562461137771606e-07,
+        "logp_no": 4.76837158203125e-07,
+        "ce": 4.76837158203125e-07,
+        "full_vocab_correct_probability": 1.1920928955078125e-07,
+        "answer_pair_mass": 2.384185791015625e-07
+      },
+      "cached_vs_reconstructed_top_ids_and_log_odds_exact": true
+    }
+  },
+  "wholegraph_transfer": {
+    "status": "complete",
+    "splits": {
+      "train": {
+        "n_prompts": 256,
+        "correct_tokens": 339,
+        "total_tokens": 512,
+        "greedy_accuracy": 0.662109375,
+        "greedy_accuracy_ci95": [
+          0.634765625,
+          0.69140625
+        ],
+        "greedy_both_conditions_correct": 0.32421875,
+        "greedy_both_conditions_correct_ci95": [
+          0.265625,
+          0.3828125
+        ],
+        "paired_log_odds_shift": 3.4345703125,
+        "paired_log_odds_shift_ci95": [
+          3.216796875,
+          3.654296875
+        ],
+        "mean_ce": 1.1499235457727908,
+        "positive_pairs": 252,
+        "zero_pairs": 1,
+        "negative_pairs": 3,
+        "absent_actual_accuracy": 0.9375,
+        "present_actual_accuracy": 0.38671875
+      },
+      "validation": {
+        "n_prompts": 32,
+        "correct_tokens": 34,
+        "total_tokens": 64,
+        "greedy_accuracy": 0.53125,
+        "greedy_accuracy_ci95": [
+          0.5,
+          0.578125
+        ],
+        "greedy_both_conditions_correct": 0.0625,
+        "greedy_both_conditions_correct_ci95": [
+          0.0,
+          0.15625
+        ],
+        "paired_log_odds_shift": 3.76171875,
+        "paired_log_odds_shift_ci95": [
+          3.2265625,
+          4.27734375
+        ],
+        "mean_ce": 2.5361608585768325,
+        "positive_pairs": 32,
+        "zero_pairs": 0,
+        "negative_pairs": 0,
+        "absent_actual_accuracy": 0.78125,
+        "present_actual_accuracy": 0.28125
+      },
+      "test": {
+        "n_prompts": 64,
+        "correct_tokens": 69,
+        "total_tokens": 128,
+        "greedy_accuracy": 0.5390625,
+        "greedy_accuracy_ci95": [
+          0.5078125,
+          0.578125
+        ],
+        "greedy_both_conditions_correct": 0.078125,
+        "greedy_both_conditions_correct_ci95": [
+          0.015625,
+          0.15625
+        ],
+        "paired_log_odds_shift": 2.666015625,
+        "paired_log_odds_shift_ci95": [
+          2.2421875,
+          3.111328125
+        ],
+        "mean_ce": 3.7900226634952454,
+        "positive_pairs": 62,
+        "zero_pairs": 1,
+        "negative_pairs": 1,
+        "absent_actual_accuracy": 0.359375,
+        "present_actual_accuracy": 0.71875
+      }
+    },
+    "interpretation": "Condition-sensitive score shifts survive partly, but actual answer performance does not transfer strongly from split runtime to whole-model compilation. No fresh-process artifact reload was performed."
+  },
+  "uncertainty_scope": "5,000 bootstrap resamples of whole prompt pairs, one unique context per pair, fixed checkpoint/build/seed; intervals do not measure new training seeds, compiler builds or new question-family populations. Conditional training-set intervals are descriptive."
+}
