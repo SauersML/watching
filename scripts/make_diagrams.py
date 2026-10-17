@@ -231,6 +231,180 @@ def overview(out, assets, tiles):
     render(document(w, int(height), "\n".join(parts)), out, "overview")
 
 
+def box(x, y, w, h, fill=BLUE, stroke=BLUE_EDGE, radius=14, width_=1.5, shadow=True):
+    effect = ' filter="url(#shadow)"' if shadow else ""
+    return (
+        f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" rx="{radius}" '
+        f'fill="{fill}" stroke="{stroke}" stroke-width="{width_}"{effect}/>'
+    )
+
+
+def arrow(x1, y1, x2, y2, color=INK, width_=2.4):
+    return (
+        f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{color}" '
+        f'stroke-width="{width_}" stroke-linecap="round" marker-end="url(#head-{color[1:]})"/>'
+    )
+
+
+def markers(*colors):
+    return "".join(
+        f'<marker id="head-{c[1:]}" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" '
+        f'markerHeight="5.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
+        for c in colors
+    )
+
+
+def step_heading(y, number, content):
+    return (
+        f'<circle cx="52" cy="{y - 8}" r="17" fill="{INK}"/>'
+        + text(52, y - 1, str(number), 19, True, "white", anchor="middle")
+        + text(82, y, content, 25, True)
+    )
+
+
+def token(x, cy, content, mono=True, highlight=False, size=20, h=58):
+    measure = len(content) * size * 0.602 if mono else width(content, size)
+    w = measure + 30
+    fill, stroke = (PALE_RED, RED) if highlight else (HEAD, BORDER)
+    family = MONO if mono else FONT
+    return (
+        box(x, cy - h / 2, w, h, fill, stroke, 12, 2 if highlight else 1.5, False)
+        + text(
+            x + w / 2,
+            cy + size * 0.36,
+            content,
+            size,
+            False,
+            RED if highlight else INK,
+            "middle",
+            family,
+        )
+    ), x + w
+
+
+def mechanism(out, tiles):
+    """Why the probe is detectable: the compiler adds rounding; one head reads it."""
+    w = 1160
+    parts = [
+        f"<defs>{markers(INK, RED, LINE)}</defs>",
+        step_heading(46, 1, "Saving an activation adds a rounding step"),
+    ]
+    lanes = ((140, "unwatched", "No probe", INK), (262, "watched", "Probe attached", RED))
+    for cy, crop, label, color in lanes:
+        parts.append(tile(40, cy - 32, 52, 64, tiles[crop], radius=10))
+        parts.append(text(108, cy + 8, label, 22, True, color))
+        parts.append(box(286, cy - 27, 56, 54, HEAD, BORDER, 12, 1.5, False))
+        parts.append(text(314, cy + 8, "q", 23, color=INK, extra='font-style="italic"'))
+        parts.append(arrow(348, cy, 374, cy))
+        parts.append(arrow(800, cy, 826, cy))
+        name = "query" if crop == "unwatched" else "query′"
+        parts.append(box(832, cy - 27, 112, 54, HEAD, BORDER, 12, 1.5, False))
+        parts.append(text(888, cy + 8, name, 21, extra='font-style="italic"', anchor="middle"))
+    parts.append(box(380, 140 - 40, 414, 80))
+    parts.append(text(587, 140 - 2, "normalize + rotate", 22, True, anchor="middle"))
+    parts.append(
+        text(587, 140 + 24, "one kernel, full precision", 16, color=MUTED, anchor="middle")
+    )
+    parts.append(box(380, 262 - 40, 176, 80))
+    parts.append(text(468, 262 + 8, "normalize", 22, True, anchor="middle"))
+    parts.append(box(618, 262 - 40, 176, 80))
+    parts.append(text(706, 262 + 8, "rotate", 22, True, anchor="middle"))
+    parts.append(f'<line x1="556" y1="262" x2="618" y2="262" stroke="{INK}" stroke-width="2.4"/>')
+    parts.append(box(560, 262 - 27, 54, 54, PALE_RED, RED, 10, 2, False))
+    for i in range(3):
+        for j in range(3):
+            parts.append(
+                f'<circle cx="{573 + 14 * i}" cy="{249 + 14 * j}" r="3.2" fill="{RED}" '
+                'opacity="0.8"/>'
+            )
+    parts.append(text(587, 262 + 50, "BF16", 16, True, RED, anchor="middle"))
+    parts.append(
+        f'<path d="M 952 140 L 972 140 L 972 262 L 952 262" fill="none" stroke="{LINE}" '
+        f'stroke-width="2.4" stroke-linejoin="round"/>'
+    )
+    parts.append(text(990, 214, "≠", 46, True, RED))
+    parts.append(text(990, 246, "last bits differ", 17, True, RED))
+
+    top = 384
+    parts.append(step_heading(top, 2, "One attention head reads the difference"))
+    cy = top + 196
+    pieces, x, spans = [], 0.0, {}
+    for key, content, mono in (
+        ("start", "<|im_start|>", True),
+        ("user", "user", True),
+        ("question", "Is a read-only probe … ?", False),
+        ("assistant", "assistant", True),
+        ("answer", "↵", True),
+    ):
+        svg, right = token(x, cy, content, mono, key == "user")
+        pieces.append(svg)
+        spans[key] = (x, right)
+        x = right + 12
+    total = x + 44 + width("Yes", 40, True)
+    shift = (w - total) / 2
+    parts.append(f'<g transform="translate({shift:.1f},0)">')
+    parts.extend(pieces)
+    parts.append(arrow(x, cy, x + 34, cy))
+    parts.append(text(x + 44, cy + 14, "Yes", 40, True, RED))
+    ux, ex = (sum(spans[k]) / 2 for k in ("user", "answer"))
+    lift = 78
+    parts.append(
+        f'<path d="M {ux:.1f} {cy - 34} Q {(ux + ex) / 2:.1f} {cy - 34 - 2 * lift} '
+        f'{ex:.1f} {cy - 36}" '
+        f'fill="none" stroke="{RED}" stroke-width="3.2" stroke-linecap="round" '
+        f'marker-end="url(#head-{RED[1:]})"/>'
+    )
+    parts.append(
+        text((ux + ex) / 2, cy - 34 - lift - 16, "Layer 35, head 6", 24, True, RED, "middle")
+    )
+    parts.append(text(ux, cy + 62, "same offset in every prompt", 18, True, RED, "middle"))
+    parts.append("</g>")
+    render(document(w, int(cy + 92), "\n".join(parts)), out, "how_it_works")
+
+
+def recipe(out, tiles):
+    """Freeze the first 34 layers; train only the last two."""
+    w = 1160
+    parts = [f"<defs>{markers(INK)}</defs>"]
+    bottom, height, step, bar = 136, 156, 19.6, 14
+    x0 = 214
+    xs = [x0 + i * step for i in range(36)]
+    for i, x in enumerate(xs):
+        fill, stroke, lw = "#ECECF0", "#C7C7CC", 1.2
+        if i == 14:
+            fill, stroke, lw = PALE_RED, RED, 2.2
+        if i >= 34:
+            fill, stroke, lw = GREEN, "#2E7D45", 1.6
+        parts.append(
+            f'<rect x="{x:.1f}" y="{bottom}" width="{bar}" height="{height}" rx="4" '
+            f'fill="{fill}" stroke="{stroke}" stroke-width="{lw}"/>'
+        )
+    mid = bottom + height / 2
+    parts.append(box(24, mid - 34, 144, 68, HEAD, BORDER, 16, 1.5, False))
+    parts.append(text(96, mid + 8, "Prompt", 22, anchor="middle"))
+    parts.append(arrow(176, mid, x0 - 10, mid))
+    end = xs[-1] + bar
+    parts.append(arrow(end + 12, mid, end + 50, mid))
+    parts.append(text(end + 62, mid + 12, "No / Yes", 33, True))
+    probe = xs[14] + bar / 2
+    parts.append(tile(probe - 30, 24, 60, 74, tiles["watched"], radius=10))
+    parts.append(
+        f'<line x1="{probe}" y1="104" x2="{probe}" y2="{bottom - 6}" stroke="{RED}" '
+        f'stroke-width="2.4" stroke-dasharray="3 4" stroke-linecap="round"/>'
+    )
+    parts.append(text(probe + 46, 70, "Probe reads layer 14", 23, True, RED))
+    for first, last, label, color in ((0, 33, "Frozen", MUTED), (34, 35, "Trained", GREEN)):
+        left, right = xs[first], xs[last] + bar
+        y = bottom + height + 16
+        parts.append(
+            f'<path d="M {left} {y} L {left} {y + 12} L {right} {y + 12} L {right} {y}" '
+            f'fill="none" stroke="{color}" stroke-width="2.4" stroke-linejoin="round" '
+            f'stroke-linecap="round"/>'
+        )
+        parts.append(text((left + right) / 2, y + 50, label, 24, True, color, "middle"))
+    render(document(w, bottom + height + 90, "\n".join(parts)), out, "training_recipe")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -238,8 +412,11 @@ def main():
     assets = ROOT / "figures/assets"
     if args.out.resolve() != (ROOT / "figures").resolve():
         shutil.copytree(assets, args.out / "assets", dirs_exist_ok=True)
-    tiles = redon_tiles(assets, box=(70, 520, 830, 790))
-    overview(args.out, assets, tiles)
+    banners = redon_tiles(assets, box=(70, 520, 830, 790))
+    tiles = redon_tiles(assets)
+    overview(args.out, assets, banners)
+    mechanism(args.out, tiles)
+    recipe(args.out, tiles)
 
 
 if __name__ == "__main__":

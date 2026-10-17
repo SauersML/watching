@@ -986,7 +986,7 @@ def mechanism(out, root):
         color=INK,
         weight="bold",
     )
-    save(fig, out, "mechanism")
+    save(fig, out, "token_swap")
 
 
 def main():
@@ -1001,13 +1001,10 @@ def main():
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     style()
-    recipe(args.out)
     learning(args.out, snapshot_034(args.out, args.fit))
     fresh_prompts(args.out, args.fresh)
     negative_control(args.out, args.joint / "fit", args.joint / "null")
     mechanism(args.out, args.mechanism)
-    compiler(args.out)
-    circuit(args.out)
     heads(args.out, ROOT / "results/tail-circuit-044")
     deployment(args.out, ROOT / "results/execution-021/fit")
 

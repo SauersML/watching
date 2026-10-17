@@ -14,11 +14,11 @@
 
 The probe keeps a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
 
-Making an intermediate tensor observable changes the program the compiler builds. Without the probe, query normalization and the rotary position encoding run as one fused kernel, and the normalized query never leaves full precision. To hand the activation to the probe, the compiler must write it out, so the pipeline becomes two kernels with a BF16 tensor in between. That extra rounding changes the last bits of the query, and every later layer inherits the difference. [Compiler evidence](docs/mechanism-audit.md), [real-input protocol](docs/real-input-mechanism-protocol.md).
+![Saving the activation adds a rounding step; one attention head reads the result](figures/how_it_works.png)
 
-![Saving the activation splits one fused kernel into two and adds a BF16 rounding step](figures/compiler.png)
+*Figure 2. Why the probe is detectable.*
 
-*Figure 2. What the probe changes inside the compiled model.*
+Making an intermediate tensor observable changes the program the compiler builds. Without the probe, query normalization and the rotary position encoding run as one fused kernel, and the normalized query never leaves full precision. To hand the activation to the probe, the compiler must write it out, so the pipeline becomes two kernels with a BF16 tensor in between. That extra rounding changes the last bits of the query, and every later layer inherits the difference. The constant chat-role token `user` ends up with the same small offset in every prompt, and after training a single attention head in the last layer reads it ([Section 6](#6-how-the-model-detects-it)). [Compiler evidence](docs/mechanism-audit.md), [real-input protocol](docs/real-input-mechanism-protocol.md).
 
 PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
 
@@ -118,21 +118,17 @@ A new process evaluates the fixed 039 checkpoint on 128 prompts written and froz
 
 ## 6. How the model detects it
 
-![One attention head in the last layer carries the user token's offset to the answer](figures/circuit.png)
-
-*Figure 7. The detection circuit.*
-
 Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention is causal, so the `user` token's hidden state cannot depend on the question. It is therefore **exactly the same vector in every prompt** within a condition, and a different vector between conditions: across all 384 cached 034 prompts, the probe shifts it by the same L2 distance of 5.49 at the input to layer 34. The 576 cached 039 prompts show the same pattern with a different offset. `<|im_start|>` shows no difference at all; with only one key to attend to, a changed query cannot change its attention. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
 
-![Copying the probed state of only the user token reproduces the whole answer switch](figures/mechanism.png)
+![Copying the probed state of only the user token reproduces the whole answer switch](figures/token_swap.png)
 
-*Figure 8. Two prespecified token scans; bars show the mean shift.*
+*Figure 7. Two prespecified token scans; bars show the mean shift.*
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
 ![Of 64 attention heads in the trained layers, layer 35 head 6 carries the answer switch](figures/heads.png)
 
-*Figure 9. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
+*Figure 8. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
 
 **Layer 35, head 6 carries about 99% of the condition gap.** Replacing its answer-position output gives a 25.34-nat shift toward Yes, the reverse replacement a 25.41-nat shift toward No, and both flip the actual answer on every tested prompt. The next-strongest head carries 0.19 nats. Swapping the `user` token while holding a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
 
@@ -140,7 +136,7 @@ Swapping in the probed state of the `user` token alone reproduces nearly the ent
 
 ![A readout learns training versus deployment on familiar questions, not on new kinds of questions](figures/deployment.png)
 
-*Figure 10. Qwen3-8B asked whether it is in training. Training mode runs the forward pass with gradients enabled; deployment runs it without. Only the Yes/No output rows were fitted (run 021).*
+*Figure 9. Qwen3-8B asked whether it is in training. Training mode runs the forward pass with gradients enabled; deployment runs it without. Only the Yes/No output rows were fitted (run 021).*
 
 The same idea applies to execution mode: enabling gradients also changes the numbers the model computes. A least-squares refit of just the Yes/No output rows reaches **126/128** on held-out prompts from familiar question templates, but **118/256** on new question families, below chance. The last readout variant reached 61.7% on new contexts (run 028). The two-layer recipe that works for the probe has not yet been applied to execution mode. [Run 021](results/execution-021/), [run 028](results/family-execution-028/), [protocol](experiments/ood-and-choices-020-021.md).
 
