@@ -1178,7 +1178,7 @@ def identical_pairs(source):
 def learning(out):
     """Training from the original model on each way of running layer 14."""
     fig, (left, right) = plt.subplots(1, 2, figsize=(13.2, 5.6))
-    fig.subplots_adjust(left=0.075, right=0.985, top=0.8, bottom=0.15, wspace=0.2)
+    fig.subplots_adjust(left=0.075, right=0.985, top=0.8, bottom=0.22, wspace=0.2)
     end, top = 0, 0
     for label, color, sources in VIEWING_RUNS:
         points = viewing_points(sources)
@@ -1192,6 +1192,7 @@ def learning(out):
         for ax, y, a, b in ((left, share, lo, hi), (right, rise, rlo, rhi)):
             ax.fill_between(x, a, b, color=color, alpha=0.14, lw=0)
             ax.plot(x, y, color=color, lw=3.2, solid_joinstyle="round", zorder=4, label=label)
+            ax.plot(x[-1], y[-1], "o", color=color, ms=6, zorder=5, clip_on=False)
     same, total = identical_pairs("viewing-learning-051-052/buffer")
     ceiling = (total - same) / total
     left.axhline(ceiling, color="#5B84B8", lw=2, ls=(0, (1.5, 3)), zorder=3)
@@ -1217,6 +1218,15 @@ def learning(out):
         ax.set_xticks(ticks)
         ax.set_xlabel("Training steps")
         ax.set_title(title, loc="left", fontsize=17, weight="bold", pad=12)
+        ax.axvline(1024, color="#777777", lw=1, ls=(0, (4, 4)), zorder=1)
+    fig.text(
+        0.075,
+        0.035,
+        "At step 1,024: probe and never-attached runs end. "
+        "Only forced split and copy continue, with Adam restarted.",
+        fontsize=12,
+        color="#555555",
+    )
     handles, labels = left.get_legend_handles_labels()
     fig.legend(
         handles,
