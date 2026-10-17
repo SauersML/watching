@@ -1,0 +1,1596 @@
+{
+  "bootstrap_draws": 5000,
+  "bootstrap_seed": 20261018,
+  "contract": {
+    "endpoint": "Predeclared final step only; no best-checkpoint selection",
+    "tasks": "Separate task estimates; no pooled Yes/No and animal performance claim",
+    "seeds": "Each run stays separate; prompts are not independent training seeds",
+    "prompt_ci": "Pointwise percentile bootstrap of whole prompt pairs, conditional on the observed family mixture and run; assumes prompt-level sampling independence",
+    "family_ci": "Resample whole family means with equal family weight. Sensitivity to family variation; few observed families and nonrandom construction limit inference.",
+    "bounded_accuracy": "Prompt-both-correct Clopper-Pearson interval is supplied only under explicit iid Bernoulli assumptions; empirical 100% bootstrap is not certainty",
+    "calibration": "Full-vocabulary log loss and correct-token probability accompany accuracy; no post-hoc fit or held-out threshold tuning",
+    "multiplicity": "Descriptive pointwise intervals, not simultaneous claims or a corrected hypothesis-testing family. No sign/permutation p-values without exchangeability assumptions."
+  },
+  "analyses": [
+    {
+      "source": "results/joint-validation-036/null/challenge_2048_split_inference.json",
+      "seed": 20261017,
+      "seed_role": "training",
+      "runtime": "split_inference",
+      "split": "challenge",
+      "completed_steps": 2048,
+      "null_control": "Both labels receive a copy of the absent cached numerical state",
+      "valid_no_footprint_control": null,
+      "buffer_control_interpretation": "No buffer-parity claim in this score file",
+      "tasks": {
+        "animal": {
+          "prompt_weighted": {
+            "n_prompts": 32,
+            "estimand": "Mean over this task's observed prompt distribution",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.7067366116680205,
+                "median": 0.7014316320419312,
+                "ci95": [
+                  0.7014970479183831,
+                  0.7127134150010533
+                ]
+              },
+              "binary_ce": {
+                "mean": 0.7064016616180421,
+                "median": 0.7009394198788436,
+                "ci95": [
+                  0.7012110956846999,
+                  0.7123388894074558
+                ]
+              },
+              "correct_probability": {
+                "mean": 0.4998325758740902,
+                "median": 0.4998883111973934,
+                "ci95": [
+                  0.49977602177095304,
+                  0.49988105983804904
+                ]
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "median": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ]
+              },
+              "gap": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "equal_family_weighted": {
+            "n_families": 4,
+            "estimand": "Equal-weight mean of observed family means; different from prompt-weighted mean",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.7067366116680205,
+                "ci95": [
+                  0.7011530203744769,
+                  0.7123202029615641
+                ],
+                "minimum_family_mean": 0.7002653013914824,
+                "maximum_family_mean": 0.715081948786974
+              },
+              "binary_ce": {
+                "mean": 0.706401661618042,
+                "ci95": [
+                  0.7008901556426862,
+                  0.7119131675933978
+                ],
+                "minimum_family_mean": 0.6999869326851065,
+                "maximum_family_mean": 0.7145067946742405
+              },
+              "correct_probability": {
+                "mean": 0.49983257587409013,
+                "ci95": [
+                  0.49975350420518094,
+                  0.49987845192594527
+                ],
+                "minimum_family_mean": 0.49971255874710035,
+                "maximum_family_mean": 0.4998805632724677
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ],
+                "minimum_family_mean": 0.5,
+                "maximum_family_mean": 0.5
+              },
+              "gap": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              }
+            }
+          },
+          "per_family": [
+            {
+              "family": "comment_block",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.7020407393574715,
+                "binary_ce": 0.7017933786002659,
+                "correct_probability": 0.4998763405794228,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "glossary_entry",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.7002653013914824,
+                "binary_ce": 0.6999869326851065,
+                "correct_probability": 0.49986084089736976,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "sealed_envelope",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.715081948786974,
+                "binary_ce": 0.7145067946742405,
+                "correct_probability": 0.49971255874710035,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "spanish_interface",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.7095584571361542,
+                "binary_ce": 0.7093195405125552,
+                "correct_probability": 0.4998805632724677,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            }
+          ],
+          "prompt_both_correct_iid_clopper_pearson": {
+            "successes": 0,
+            "n": 32,
+            "ci95": [
+              0.0,
+              0.10888116067935288
+            ],
+            "assumption": "Independent identically distributed prompt-level Bernoulli trials. Not guaranteed with shared question families; not a distribution-free population claim."
+          },
+          "positive_answer_probability_by_condition": {
+            "absent": 0.5202607105709196,
+            "present": 0.5202607105709196
+          }
+        },
+        "detection": {
+          "prompt_weighted": {
+            "n_prompts": 32,
+            "estimand": "Mean over this task's observed prompt distribution",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.7001016363501549,
+                "median": 0.6948043406009674,
+                "ci95": [
+                  0.6957651970908045,
+                  0.707236629165709
+                ]
+              },
+              "binary_ce": {
+                "mean": 0.6966549824076239,
+                "median": 0.6944436041950792,
+                "ci95": [
+                  0.6952162944876749,
+                  0.6982540380939338
+                ]
+              },
+              "correct_probability": {
+                "mean": 0.4983574554780168,
+                "median": 0.4999015833644266,
+                "ci95": [
+                  0.49527985196169605,
+                  0.49990685430614745
+                ]
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "median": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ]
+              },
+              "gap": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "equal_family_weighted": {
+            "n_families": 4,
+            "estimand": "Equal-weight mean of observed family means; different from prompt-weighted mean",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.7001016363501549,
+                "ci95": [
+                  0.6962806843221188,
+                  0.7059630379080772
+                ],
+                "minimum_family_mean": 0.6954094767570496,
+                "maximum_family_mean": 0.708900086581707
+              },
+              "binary_ce": {
+                "mean": 0.696654982407624,
+                "ci95": [
+                  0.6955542049519341,
+                  0.6979957133631827
+                ],
+                "minimum_family_mean": 0.6952884117374694,
+                "maximum_family_mean": 0.6987209517621106
+              },
+              "correct_probability": {
+                "mean": 0.4983574554780168,
+                "ci95": [
+                  0.4953092561514325,
+                  0.4999137085785099
+                ],
+                "minimum_family_mean": 0.4937830266273188,
+                "maximum_family_mean": 0.4999394724332463
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ],
+                "minimum_family_mean": 0.5,
+                "maximum_family_mean": 0.5
+              },
+              "gap": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              }
+            }
+          },
+          "per_family": [
+            {
+              "family": "comment_block",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.6954094767570496,
+                "binary_ce": 0.6952884117374694,
+                "correct_probability": 0.4999394724332463,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "glossary_entry",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.708900086581707,
+                "binary_ce": 0.695819998166399,
+                "correct_probability": 0.4937830266273188,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "sealed_envelope",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.697151891887188,
+                "binary_ce": 0.696790567964517,
+                "correct_probability": 0.4998193781277286,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "spanish_interface",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.698945090174675,
+                "binary_ce": 0.6987209517621106,
+                "correct_probability": 0.4998879447237735,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            }
+          ],
+          "prompt_both_correct_iid_clopper_pearson": {
+            "successes": 0,
+            "n": 32,
+            "ci95": [
+              0.0,
+              0.10888116067935288
+            ],
+            "assumption": "Independent identically distributed prompt-level Bernoulli trials. Not guaranteed with shared question families; not a distribution-free population claim."
+          },
+          "positive_answer_probability_by_condition": {
+            "absent": 0.5071140618188328,
+            "present": 0.5071140618188328
+          }
+        }
+      }
+    },
+    {
+      "source": "results/joint-validation-036/null/test_2048_split_inference.json",
+      "seed": 20261017,
+      "seed_role": "training",
+      "runtime": "split_inference",
+      "split": "test",
+      "completed_steps": 2048,
+      "null_control": "Both labels receive a copy of the absent cached numerical state",
+      "valid_no_footprint_control": null,
+      "buffer_control_interpretation": "No buffer-parity claim in this score file",
+      "tasks": {
+        "animal": {
+          "prompt_weighted": {
+            "n_prompts": 64,
+            "estimand": "Mean over this task's observed prompt distribution",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.7067503231228329,
+                "median": 0.696153998374939,
+                "ci95": [
+                  0.698003682307899,
+                  0.7224826459656469
+                ]
+              },
+              "binary_ce": {
+                "mean": 0.7063982529865455,
+                "median": 0.6956170702668136,
+                "ci95": [
+                  0.6976608319090514,
+                  0.7221186963725538
+                ]
+              },
+              "correct_probability": {
+                "mean": 0.4998240102183432,
+                "median": 0.4998669762970741,
+                "ci95": [
+                  0.4997928592216313,
+                  0.4998521778775813
+                ]
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "median": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ]
+              },
+              "gap": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "equal_family_weighted": {
+            "n_families": 4,
+            "estimand": "Equal-weight mean of observed family means; different from prompt-weighted mean",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.7067503231228329,
+                "ci95": [
+                  0.6976540395990014,
+                  0.7224004698800854
+                ],
+                "minimum_family_mean": 0.6965546309947968,
+                "maximum_family_mean": 0.7300537417177111
+              },
+              "binary_ce": {
+                "mean": 0.7063982529865455,
+                "ci95": [
+                  0.6973750556265952,
+                  0.7219903942857162
+                ],
+                "minimum_family_mean": 0.6963381405754447,
+                "maximum_family_mean": 0.729596253276087
+              },
+              "correct_probability": {
+                "mean": 0.4998240102183432,
+                "ci95": [
+                  0.4997690786437209,
+                  0.49987894179296555
+                ],
+                "minimum_family_mean": 0.49976682969551517,
+                "maximum_family_mean": 0.4998917676205517
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ],
+                "minimum_family_mean": 0.5,
+                "maximum_family_mean": 0.5
+              },
+              "gap": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              }
+            }
+          },
+          "per_family": [
+            {
+              "family": "footnote_request",
+              "n_prompts": 16,
+              "metrics": {
+                "full_ce": 0.7300537417177111,
+                "binary_ce": 0.729596253276087,
+                "correct_probability": 0.49977132759192666,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "indented_attachment",
+              "n_prompts": 16,
+              "metrics": {
+                "full_ce": 0.6965546309947968,
+                "binary_ce": 0.6963381405754447,
+                "correct_probability": 0.4998917676205517,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "table_request",
+              "n_prompts": 16,
+              "metrics": {
+                "full_ce": 0.7009522654116154,
+                "binary_ce": 0.7004858007800466,
+                "correct_probability": 0.49976682969551517,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "xml_envelope",
+              "n_prompts": 16,
+              "metrics": {
+                "full_ce": 0.6994406543672085,
+                "binary_ce": 0.6991728173146036,
+                "correct_probability": 0.49986611596537933,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            }
+          ],
+          "prompt_both_correct_iid_clopper_pearson": {
+            "successes": 0,
+            "n": 64,
+            "ci95": [
+              0.0,
+              0.05600908938663656
+            ],
+            "assumption": "Independent identically distributed prompt-level Bernoulli trials. Not guaranteed with shared question families; not a distribution-free population claim."
+          },
+          "positive_answer_probability_by_condition": {
+            "absent": 0.47656476357561023,
+            "present": 0.47656476357561023
+          }
+        },
+        "detection": {
+          "prompt_weighted": {
+            "n_prompts": 64,
+            "estimand": "Mean over this task's observed prompt distribution",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.6952618472278118,
+                "median": 0.6940268874168396,
+                "ci95": [
+                  0.6945953878806904,
+                  0.6961419444996864
+                ]
+              },
+              "binary_ce": {
+                "mean": 0.6949670564751921,
+                "median": 0.693772654212111,
+                "ci95": [
+                  0.6942866773966723,
+                  0.6958482739862465
+                ]
+              },
+              "correct_probability": {
+                "mean": 0.49985263012877557,
+                "median": 0.49986025439069287,
+                "ci95": [
+                  0.4998378045336951,
+                  0.49986751454606787
+                ]
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "median": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ]
+              },
+              "gap": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "equal_family_weighted": {
+            "n_families": 4,
+            "estimand": "Equal-weight mean of observed family means; different from prompt-weighted mean",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.6952618472278118,
+                "ci95": [
+                  0.6940557695925236,
+                  0.6964679248631
+                ],
+                "minimum_family_mean": 0.6939994171261787,
+                "maximum_family_mean": 0.6967087611556053
+              },
+              "binary_ce": {
+                "mean": 0.6949670564751921,
+                "ci95": [
+                  0.6937105387670863,
+                  0.6962235741832978
+                ],
+                "minimum_family_mean": 0.6936276302531065,
+                "maximum_family_mean": 0.696492769778057
+              },
+              "correct_probability": {
+                "mean": 0.49985263012877557,
+                "ci95": [
+                  0.49982652402976424,
+                  0.4998791871957595
+                ],
+                "minimum_family_mean": 0.49981414334476915,
+                "maximum_family_mean": 0.49989201884872736
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ],
+                "minimum_family_mean": 0.5,
+                "maximum_family_mean": 0.5
+              },
+              "gap": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              }
+            }
+          },
+          "per_family": [
+            {
+              "family": "footnote_request",
+              "n_prompts": 16,
+              "metrics": {
+                "full_ce": 0.6941121220588684,
+                "binary_ce": 0.6937934472810663,
+                "correct_probability": 0.4998406922368561,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "indented_attachment",
+              "n_prompts": 16,
+              "metrics": {
+                "full_ce": 0.6939994171261787,
+                "binary_ce": 0.6936276302531065,
+                "correct_probability": 0.49981414334476915,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "table_request",
+              "n_prompts": 16,
+              "metrics": {
+                "full_ce": 0.6967087611556053,
+                "binary_ce": 0.696492769778057,
+                "correct_probability": 0.49989201884872736,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "xml_envelope",
+              "n_prompts": 16,
+              "metrics": {
+                "full_ce": 0.6962270885705948,
+                "binary_ce": 0.6959543785885387,
+                "correct_probability": 0.4998636660847494,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            }
+          ],
+          "prompt_both_correct_iid_clopper_pearson": {
+            "successes": 0,
+            "n": 64,
+            "ci95": [
+              0.0,
+              0.05600908938663656
+            ],
+            "assumption": "Independent identically distributed prompt-level Bernoulli trials. Not guaranteed with shared question families; not a distribution-free population claim."
+          },
+          "positive_answer_probability_by_condition": {
+            "absent": 0.48617427319778894,
+            "present": 0.48617427319778894
+          }
+        }
+      }
+    },
+    {
+      "source": "results/joint-validation-036/null/train_2048_split_inference.json",
+      "seed": 20261017,
+      "seed_role": "training",
+      "runtime": "split_inference",
+      "split": "train",
+      "completed_steps": 2048,
+      "null_control": "Both labels receive a copy of the absent cached numerical state",
+      "valid_no_footprint_control": null,
+      "buffer_control_interpretation": "No buffer-parity claim in this score file",
+      "tasks": {
+        "animal": {
+          "prompt_weighted": {
+            "n_prompts": 256,
+            "estimand": "Mean over this task's observed prompt distribution",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.6971597702358849,
+                "median": 0.6944207549095154,
+                "ci95": [
+                  0.6952509292343165,
+                  0.7006415246403777
+                ]
+              },
+              "binary_ce": {
+                "mean": 0.69666412802798,
+                "median": 0.6939099260664465,
+                "ci95": [
+                  0.6947719470091165,
+                  0.7001336072252117
+                ]
+              },
+              "correct_probability": {
+                "mean": 0.49975227224983815,
+                "median": 0.49980244364957105,
+                "ci95": [
+                  0.499729104649236,
+                  0.499773617443342
+                ]
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "median": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ]
+              },
+              "gap": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "equal_family_weighted": {
+            "n_families": 8,
+            "estimand": "Equal-weight mean of observed family means; different from prompt-weighted mean",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.6971597702358849,
+                "ci95": [
+                  0.6949304064153694,
+                  0.7010307633609045
+                ],
+                "minimum_family_mean": 0.6941275056451559,
+                "maximum_family_mean": 0.7100960393436253
+              },
+              "binary_ce": {
+                "mean": 0.6966641280279798,
+                "ci95": [
+                  0.694523641804038,
+                  0.7003929921559057
+                ],
+                "minimum_family_mean": 0.6937298384727583,
+                "maximum_family_mean": 0.7091578924692464
+              },
+              "correct_probability": {
+                "mean": 0.4997522722498382,
+                "ci95": [
+                  0.4996725070151289,
+                  0.49981870384651617
+                ],
+                "minimum_family_mean": 0.4995311996554116,
+                "maximum_family_mean": 0.49988527261468424
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ],
+                "minimum_family_mean": 0.5,
+                "maximum_family_mean": 0.5
+              },
+              "gap": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              }
+            }
+          },
+          "per_family": [
+            {
+              "family": "bulleted_request",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6954216416925192,
+                "binary_ce": 0.6950034864765307,
+                "correct_probability": 0.4997909735215727,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "inline_form",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.7100960393436253,
+                "binary_ce": 0.7091578924692464,
+                "correct_probability": 0.4995311996554116,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "instruction_first",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6941275056451559,
+                "binary_ce": 0.6937298384727583,
+                "correct_probability": 0.49980121978363334,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "parenthetical_context",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6944602355360985,
+                "binary_ce": 0.694130358583986,
+                "correct_probability": 0.4998350922481888,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "plain_followup",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.696058152243495,
+                "binary_ce": 0.695346930301368,
+                "correct_probability": 0.499644558190234,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "question_then_background",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6956254374235868,
+                "binary_ce": 0.6953959503932312,
+                "correct_probability": 0.49988527261468424,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "short_note",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.695413401350379,
+                "binary_ce": 0.6949743072365752,
+                "correct_probability": 0.4997805121511601,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "topic_card",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6960757486522198,
+                "binary_ce": 0.6955742602901431,
+                "correct_probability": 0.49974934983382074,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            }
+          ],
+          "prompt_both_correct_iid_clopper_pearson": {
+            "successes": 0,
+            "n": 256,
+            "ci95": [
+              0.0,
+              0.014306362729039375
+            ],
+            "assumption": "Independent identically distributed prompt-level Bernoulli trials. Not guaranteed with shared question families; not a distribution-free population claim."
+          },
+          "positive_answer_probability_by_condition": {
+            "absent": 0.4984048793953212,
+            "present": 0.4984048793953212
+          }
+        },
+        "detection": {
+          "prompt_weighted": {
+            "n_prompts": 256,
+            "estimand": "Mean over this task's observed prompt distribution",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.6936317945364863,
+                "median": 0.693537712097168,
+                "ci95": [
+                  0.6935881056764629,
+                  0.693684509024024
+                ]
+              },
+              "binary_ce": {
+                "mean": 0.6933415628611526,
+                "median": 0.6932425447224462,
+                "ci95": [
+                  0.6933050964514481,
+                  0.6933845740988646
+                ]
+              },
+              "correct_probability": {
+                "mean": 0.4998549115294972,
+                "median": 0.4998722354340093,
+                "ci95": [
+                  0.4998448218946383,
+                  0.4998639989002731
+                ]
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "median": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ]
+              },
+              "gap": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "equal_family_weighted": {
+            "n_families": 8,
+            "estimand": "Equal-weight mean of observed family means; different from prompt-weighted mean",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.6936317945364863,
+                "ci95": [
+                  0.6935546097694896,
+                  0.6937077929964289
+                ],
+                "minimum_family_mean": 0.6934730783104897,
+                "maximum_family_mean": 0.693808950483799
+              },
+              "binary_ce": {
+                "mean": 0.6933415628611526,
+                "ci95": [
+                  0.6932907792671049,
+                  0.6933970434186338
+                ],
+                "minimum_family_mean": 0.6932396799752059,
+                "maximum_family_mean": 0.6934611010745407
+              },
+              "correct_probability": {
+                "mean": 0.4998549115294972,
+                "ci95": [
+                  0.4998300162543455,
+                  0.49987733674921453
+                ],
+                "minimum_family_mean": 0.4997956492555294,
+                "maximum_family_mean": 0.4998922498210375
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ],
+                "minimum_family_mean": 0.5,
+                "maximum_family_mean": 0.5
+              },
+              "gap": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              }
+            }
+          },
+          "per_family": [
+            {
+              "family": "bulleted_request",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6937078516930342,
+                "binary_ce": 0.6934611010745407,
+                "correct_probability": 0.4998766423157599,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "inline_form",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.693808950483799,
+                "binary_ce": 0.6934602820167537,
+                "correct_probability": 0.49982571297683637,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "instruction_first",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6935368366539478,
+                "binary_ce": 0.6932864010454896,
+                "correct_probability": 0.49987479973882193,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "parenthetical_context",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6934730783104897,
+                "binary_ce": 0.6932396799752059,
+                "correct_probability": 0.49988331578952744,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "plain_followup",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6935466509312391,
+                "binary_ce": 0.6932940260570428,
+                "correct_probability": 0.4998737055296032,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "question_then_background",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6935524549335241,
+                "binary_ce": 0.6933369260725639,
+                "correct_probability": 0.4998922498210375,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "short_note",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6937173567712307,
+                "binary_ce": 0.6933517138091089,
+                "correct_probability": 0.4998172168088616,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "topic_card",
+              "n_prompts": 32,
+              "metrics": {
+                "full_ce": 0.6937111765146255,
+                "binary_ce": 0.6933023728385151,
+                "correct_probability": 0.4997956492555294,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            }
+          ],
+          "prompt_both_correct_iid_clopper_pearson": {
+            "successes": 0,
+            "n": 256,
+            "ci95": [
+              0.0,
+              0.014306362729039375
+            ],
+            "assumption": "Independent identically distributed prompt-level Bernoulli trials. Not guaranteed with shared question families; not a distribution-free population claim."
+          },
+          "positive_answer_probability_by_condition": {
+            "absent": 0.497269437602604,
+            "present": 0.497269437602604
+          }
+        }
+      }
+    },
+    {
+      "source": "results/joint-validation-036/null/validation_2048_split_inference.json",
+      "seed": 20261017,
+      "seed_role": "training",
+      "runtime": "split_inference",
+      "split": "validation",
+      "completed_steps": 2048,
+      "null_control": "Both labels receive a copy of the absent cached numerical state",
+      "valid_no_footprint_control": null,
+      "buffer_control_interpretation": "No buffer-parity claim in this score file",
+      "tasks": {
+        "animal": {
+          "prompt_weighted": {
+            "n_prompts": 32,
+            "estimand": "Mean over this task's observed prompt distribution",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.7424200079403818,
+                "median": 0.6991295516490936,
+                "ci95": [
+                  0.7002877510851249,
+                  0.8069412235927301
+                ]
+              },
+              "binary_ce": {
+                "mean": 0.7413432007103149,
+                "median": 0.6987062734789566,
+                "ci95": [
+                  0.6999393590226902,
+                  0.8047182869019787
+                ]
+              },
+              "correct_probability": {
+                "mean": 0.49946387197741793,
+                "median": 0.4998316305706112,
+                "ci95": [
+                  0.4989127773853651,
+                  0.49982637347572356
+                ]
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "median": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ]
+              },
+              "gap": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "equal_family_weighted": {
+            "n_families": 4,
+            "estimand": "Equal-weight mean of observed family means; different from prompt-weighted mean",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.7424200079403818,
+                "ci95": [
+                  0.6990123428404331,
+                  0.8256262592040002
+                ],
+                "minimum_family_mean": 0.698649525642395,
+                "maximum_family_mean": 0.8677099589258432
+              },
+              "binary_ce": {
+                "mean": 0.7413432007103149,
+                "ci95": [
+                  0.6987073847154668,
+                  0.8229773939498131
+                ],
+                "minimum_family_mean": 0.6982985709199755,
+                "maximum_family_mean": 0.8642644590960982
+              },
+              "correct_probability": {
+                "mean": 0.49946387197741793,
+                "ci95": [
+                  0.49868234408740636,
+                  0.4998723250770293
+                ],
+                "minimum_family_mean": 0.4982862789374449,
+                "maximum_family_mean": 0.49987411061676795
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ],
+                "minimum_family_mean": 0.5,
+                "maximum_family_mean": 0.5
+              },
+              "gap": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              }
+            }
+          },
+          "per_family": [
+            {
+              "family": "bracketed_sections",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.698649525642395,
+                "binary_ce": 0.6982985709199755,
+                "correct_probability": 0.4998245588181681,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "postscript_request",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.8677099589258432,
+                "binary_ce": 0.8642644590960982,
+                "correct_probability": 0.4982862789374449,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "quoted_request",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.6993751600384712,
+                "binary_ce": 0.699116198510958,
+                "correct_probability": 0.49987053953729066,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "two_speaker_exchange",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.7039453871548176,
+                "binary_ce": 0.7036935743142279,
+                "correct_probability": 0.49987411061676795,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            }
+          ],
+          "prompt_both_correct_iid_clopper_pearson": {
+            "successes": 0,
+            "n": 32,
+            "ci95": [
+              0.0,
+              0.10888116067935288
+            ],
+            "assumption": "Independent identically distributed prompt-level Bernoulli trials. Not guaranteed with shared question families; not a distribution-free population claim."
+          },
+          "positive_answer_probability_by_condition": {
+            "absent": 0.47237335588702806,
+            "present": 0.47237335588702806
+          }
+        },
+        "detection": {
+          "prompt_weighted": {
+            "n_prompts": 32,
+            "estimand": "Mean over this task's observed prompt distribution",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.6958151776343584,
+                "median": 0.6941816210746765,
+                "ci95": [
+                  0.694702078634873,
+                  0.6972578984219581
+                ]
+              },
+              "binary_ce": {
+                "mean": 0.6953573422524069,
+                "median": 0.693772654212111,
+                "ci95": [
+                  0.6942709253920426,
+                  0.6967534028339569
+                ]
+              },
+              "correct_probability": {
+                "mean": 0.4997711653818369,
+                "median": 0.4998232991735723,
+                "ci95": [
+                  0.4997049784233182,
+                  0.4998209800954638
+                ]
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "median": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ]
+              },
+              "gap": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "median": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ]
+              }
+            }
+          },
+          "equal_family_weighted": {
+            "n_families": 4,
+            "estimand": "Equal-weight mean of observed family means; different from prompt-weighted mean",
+            "metrics": {
+              "full_ce": {
+                "mean": 0.6958151776343584,
+                "ci95": [
+                  0.6943876184523106,
+                  0.6972427368164062
+                ],
+                "minimum_family_mean": 0.6940724402666092,
+                "maximum_family_mean": 0.6973964422941208
+              },
+              "binary_ce": {
+                "mean": 0.6953573422524068,
+                "ci95": [
+                  0.6939728137819916,
+                  0.6967418707228219
+                ],
+                "minimum_family_mean": 0.6935628396591274,
+                "maximum_family_mean": 0.6968595565142788
+              },
+              "correct_probability": {
+                "mean": 0.49977116538183697,
+                "ci95": [
+                  0.4997384976690355,
+                  0.49981635514202327
+                ],
+                "minimum_family_mean": 0.49973164693947647,
+                "maximum_family_mean": 0.49984002405649947
+              },
+              "actual_accuracy": {
+                "mean": 0.5,
+                "ci95": [
+                  0.5,
+                  0.5
+                ],
+                "minimum_family_mean": 0.5,
+                "maximum_family_mean": 0.5
+              },
+              "gap": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              },
+              "both_correct": {
+                "mean": 0.0,
+                "ci95": [
+                  0.0,
+                  0.0
+                ],
+                "minimum_family_mean": 0.0,
+                "maximum_family_mean": 0.0
+              }
+            }
+          },
+          "per_family": [
+            {
+              "family": "bracketed_sections",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.6940724402666092,
+                "binary_ce": 0.6935628396591274,
+                "correct_probability": 0.4997453483985946,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "postscript_request",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.6973964422941208,
+                "binary_ce": 0.6968595565142788,
+                "correct_probability": 0.49973164693947647,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "quoted_request",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.6947027966380119,
+                "binary_ce": 0.6943827879048561,
+                "correct_probability": 0.49984002405649947,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            },
+            {
+              "family": "two_speaker_exchange",
+              "n_prompts": 8,
+              "metrics": {
+                "full_ce": 0.6970890313386917,
+                "binary_ce": 0.6966241849313648,
+                "correct_probability": 0.4997676421327772,
+                "actual_accuracy": 0.5,
+                "gap": 0.0,
+                "both_correct": 0.0
+              }
+            }
+          ],
+          "prompt_both_correct_iid_clopper_pearson": {
+            "successes": 0,
+            "n": 32,
+            "ci95": [
+              0.0,
+              0.10888116067935288
+            ],
+            "assumption": "Independent identically distributed prompt-level Bernoulli trials. Not guaranteed with shared question families; not a distribution-free population claim."
+          },
+          "positive_answer_probability_by_condition": {
+            "absent": 0.5071496512646675,
+            "present": 0.5071496512646675
+          }
+        }
+      }
+    }
+  ]
+}

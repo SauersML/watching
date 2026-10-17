@@ -2630,5 +2630,2329 @@
         }
       }
     }
+  },
+  "null_control": {
+    "source": "results/joint-validation-036/null",
+    "manifest": {
+      "checkpoint": "Qwen/Qwen3-8B",
+      "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "data": "/workspace/runs/watching-joint-036r/mpd-data/scratch/watching-validation-b699c4ba/data/validation_v2/dataset.json",
+      "out": "/workspace/runs/watching-joint-036r/mpd-data/runpod/watching-joint-036r/out/null",
+      "train_head": false,
+      "initial_tail": null,
+      "prior_results": null,
+      "early_eval_steps": [
+        8,
+        32,
+        128
+      ],
+      "max_training_seconds": 1500.0,
+      "probe_layer": 14,
+      "tail_layers": 2,
+      "train_prompts": 512,
+      "prompt_batch_size": 8,
+      "validation_prompts": 64,
+      "test_prompts": 128,
+      "test_split": null,
+      "challenge_prompts": 64,
+      "steps": 2048,
+      "eval_every": 256,
+      "lr": 5e-06,
+      "length": 96,
+      "seed": 20261017,
+      "starting_global_step": 0,
+      "starting_processed_prompt_pairs": 0,
+      "processed_prompt_pairs": 16384,
+      "global_processed_prompt_pairs": 16384,
+      "completed_steps": 2048,
+      "initial_tail_sha256": null,
+      "excluded_test_context_ids": [],
+      "optimizer_state_restored": false,
+      "continuation_note": null,
+      "whole_vs_split_note": "On continuation this includes prior learned weights, not only runtime differences",
+      "condition": "probe",
+      "answer_order": [
+        "negative",
+        "positive"
+      ],
+      "labels": {
+        "cat": 4616,
+        "owl": 9605,
+        "No": 2753,
+        "Yes": 9454
+      },
+      "tasks": [
+        "animal",
+        "detection"
+      ],
+      "model_commit": null,
+      "load_revision_explicitly_pinned": true,
+      "torch": "2.10.0+cu128",
+      "gpu": "NVIDIA L40S",
+      "updated_blocks": [
+        34,
+        35
+      ],
+      "active_parameters": 385896960,
+      "runtime": "cached identical-input eager BF16 math-SDPA native tail",
+      "primary_path": "split_inference",
+      "stock_runtime_parity_claimed": false,
+      "output_head_updated": false,
+      "output_head_scope": "frozen",
+      "sources_offloaded_during_training": false,
+      "test_inputs_cached_before_training": false,
+      "new_classifier": false,
+      "objective": "balanced paired full-vocabulary cross entropy",
+      "optimizer": "FP32-master AdamW, separate condition gradients accumulated in FP32, zero decay, gradient norm clip1",
+      "test_source_split": "test",
+      "test_evaluated_only_after_training": true,
+      "selection": "fixed step count; reporting validation does not select checkpoints",
+      "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+      "data_sha256": "8ae5cc965dd9904603237bbd8dec08c50b693e2d282a3299bb4457fe4850e02c",
+      "source_sha256": "41c35fc7bcff816b53e47108b96c9e693eb97bd77342209ee1731b50efd20e84",
+      "head_sha256_after": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+      "ending_global_step": 2048,
+      "training_status": "complete",
+      "source_results": "/workspace/runs/watching-joint-036r/mpd-data/runpod/watching-joint-036r/out/fit",
+      "source_cache_sha256": "5832fd7df0884941400eab147b2ce766b5efa3ee4ff8f7618b54a1fa7152252b",
+      "source_manifest_sha256": "bb1c046c3039abaea1a075f0748aad6c621cf1f1e37f8238d663d5b89e463bb4",
+      "selected_data_sha256": "5984a8187d6358508d5c776c6d8664d0f93f1bd8f3c8eb36b746614d8bdfe2f9",
+      "null_control": "Both labels receive a copy of the absent cached numerical state",
+      "wholegraph_transfer_evaluated": false,
+      "condition_signal_available": false
+    },
+    "data_sha256": "5984a8187d6358508d5c776c6d8664d0f93f1bd8f3c8eb36b746614d8bdfe2f9",
+    "training_seed": 20261017,
+    "status": "complete",
+    "intervals": {
+      "draws": 5000,
+      "seed": 20261016,
+      "method": "whole-prompt paired percentile bootstrap",
+      "scope": "Pointwise, conditional on this prompt bank and one training seed; not simultaneous bands or family-population uncertainty",
+      "accuracy_boundary": "An all-correct empirical cohort yields [1,1]; this is not certainty about population accuracy"
+    },
+    "curves": {
+      "train": [
+        {
+          "step": 0,
+          "global_step": 0,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_0_split_inference.json",
+          "source_sha256": "7ca35578a5eac866947197c8aed01ce5bf3d3d3364a9d710a48d42bda8cdae76",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49985224836427844,
+                  "ci95": [
+                    0.49955807493596327,
+                    0.49999978300544196
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 6.0466510449633155,
+                  "ci95": [
+                    5.726306399666086,
+                    6.363544070148014
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.40202157702817276,
+                  "ci95": [
+                    0.3813060280020215,
+                    0.42201369152941187
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.404296875,
+                  "ci95": [
+                    0.37890625,
+                    0.427734375
+                  ]
+                },
+                "full_ce": {
+                  "mean": 3.5664260066442424,
+                  "ci95": [
+                    3.2842925700517727,
+                    3.8730316005413137
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 8,
+          "global_step": 8,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_8_split_inference.json",
+          "source_sha256": "968dbd56bd0575e86a49ce1559987dae7f84267eff5b8f97e7597646db9c3e0e",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49943272122141025,
+                  "ci95": [
+                    0.49900874664617734,
+                    0.49968794110419595
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 1.3220111375596844,
+                  "ci95": [
+                    1.2432992616257252,
+                    1.4059181756143628
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.3967472696026372,
+                  "ci95": [
+                    0.38022333765341676,
+                    0.4122808744460391
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.4296875,
+                  "ci95": [
+                    0.408203125,
+                    0.44921875
+                  ]
+                },
+                "full_ce": {
+                  "mean": 1.5721281204132538,
+                  "ci95": [
+                    1.4315526461954504,
+                    1.744176813224476
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 32,
+          "global_step": 32,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_32_split_inference.json",
+          "source_sha256": "b548fa65faba873da426cecba99dc2a17ee58b4ee214e1948bf9df66485fabfc",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4931612825494085,
+                  "ci95": [
+                    0.4924234160837841,
+                    0.4938439527438277
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.9264253677392844,
+                  "ci95": [
+                    0.89943463243726,
+                    0.9537671566286008
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4916630707714944,
+                  "ci95": [
+                    0.4858561132518872,
+                    0.495824748270752
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.49609375,
+                  "ci95": [
+                    0.490234375,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.8261798913081293,
+                  "ci95": [
+                    0.780637737458892,
+                    0.8942093470706821
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 128,
+          "global_step": 128,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_128_split_inference.json",
+          "source_sha256": "74c07eb68d4bb4e5c8c2cd56ea142d6932c1924259767928a43b065b93af93df",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.498798471322516,
+                  "ci95": [
+                    0.4987171812324959,
+                    0.4988674511805584
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7315446077845991,
+                  "ci95": [
+                    0.7288161122749444,
+                    0.7343455689959228
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4981073716771789,
+                  "ci95": [
+                    0.4956860722086276,
+                    0.4993686860951129
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7103174835792743,
+                  "ci95": [
+                    0.7051276441794471,
+                    0.719105254036549
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 256,
+          "global_step": 256,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_256_split_inference.json",
+          "source_sha256": "4784253fa260e4b716a055b1d58ba1aded204bd798f487245f0c2f7662247af3",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49884214106714353,
+                  "ci95": [
+                    0.4987553357859724,
+                    0.4989204987345147
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.697119310265407,
+                  "ci95": [
+                    0.696791613206733,
+                    0.697466245299438
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49913431753520854,
+                  "ci95": [
+                    0.49901864751882385,
+                    0.499212540773442
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7018771959992591,
+                  "ci95": [
+                    0.6997352311635041,
+                    0.7053037795900309
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 512,
+          "global_step": 512,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_512_split_inference.json",
+          "source_sha256": "b08d69831d9c7ebab336bc989a9d4fae6f14184c6d925702bbd531529492b210",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4991459882585332,
+                  "ci95": [
+                    0.4990514962177258,
+                    0.4992319016266265
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6956256139092147,
+                  "ci95": [
+                    0.6953923758934252,
+                    0.6958864794345573
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4991380700375885,
+                  "ci95": [
+                    0.4990770033429726,
+                    0.4991889184515458
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6972701817867346,
+                  "ci95": [
+                    0.696594131825259,
+                    0.6981403273515753
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 768,
+          "global_step": 768,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_768_split_inference.json",
+          "source_sha256": "adee23d57e8de8007f254afb49e3d9047984b67030399d94036637f52d27997e",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49954324879217893,
+                  "ci95": [
+                    0.4994974046785501,
+                    0.4995851369632874
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6946218677330762,
+                  "ci95": [
+                    0.6944969533651602,
+                    0.6947496086359024
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49932366801658645,
+                  "ci95": [
+                    0.49926742818643105,
+                    0.499367435980821
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6957357348874211,
+                  "ci95": [
+                    0.6955238798342179,
+                    0.6959670058975462
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 1024,
+          "global_step": 1024,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_1024_split_inference.json",
+          "source_sha256": "5f72b6e52f327714c66bd29c815fb9661c975f59e71e682c0fc342054cdb37be",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4995772666297853,
+                  "ci95": [
+                    0.49954075276618826,
+                    0.4996114417066565
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6945492597296834,
+                  "ci95": [
+                    0.6944225632352754,
+                    0.6946844324294943
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4993629403761588,
+                  "ci95": [
+                    0.4993232734981575,
+                    0.49939736387023004
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7020156653015874,
+                  "ci95": [
+                    0.7014531245746184,
+                    0.7026132083425182
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 1280,
+          "global_step": 1280,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_1280_split_inference.json",
+          "source_sha256": "479741f6bc68f0397aa7710fd5301db3226bbefb96f3e362e5098f4f133cca84",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4997095423168503,
+                  "ci95": [
+                    0.49968553881335537,
+                    0.49973140815272926
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.694248634390533,
+                  "ci95": [
+                    0.6941562492400408,
+                    0.6943457907880657
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4998435724992305,
+                  "ci95": [
+                    0.499827958001697,
+                    0.49985601266962476
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6954896207898855,
+                  "ci95": [
+                    0.6950851466914173,
+                    0.6959235578658991
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 1536,
+          "global_step": 1536,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_1536_split_inference.json",
+          "source_sha256": "8d8fd52eb3134d21c8f80382e752673f4bcdec3a53f518366850a164b97b04f8",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4998303896863945,
+                  "ci95": [
+                    0.4998176995024551,
+                    0.4998420656367671
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6940420176833868,
+                  "ci95": [
+                    0.6939692556043155,
+                    0.6941160976886749
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49976307444740087,
+                  "ci95": [
+                    0.4997382272180403,
+                    0.4997842472672346
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.694806571060326,
+                  "ci95": [
+                    0.694397022324847,
+                    0.6953443571634125
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 1792,
+          "global_step": 1792,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_1792_split_inference.json",
+          "source_sha256": "533649a2376d1b1491b993a1915782393344557d060a45ebbce34f67dc7ec076",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49982511618873104,
+                  "ci95": [
+                    0.4998125357131357,
+                    0.499836700753076
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6947486638091505,
+                  "ci95": [
+                    0.6946468437439762,
+                    0.6948563669109717
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4996013599447906,
+                  "ci95": [
+                    0.499565339590481,
+                    0.4996348437081906
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.695522005436942,
+                  "ci95": [
+                    0.6952565422165208,
+                    0.6958306576590985
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 2048,
+          "global_step": 2048,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_2048_split_inference.json",
+          "source_sha256": "c02a9f35011ddf4a7ebba932a51f5729fb0ff4cb4de0b83fd245fb6d43182efa",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49985491594998166,
+                  "ci95": [
+                    0.4998446541503654,
+                    0.4998641662677983
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6936317945364863,
+                  "ci95": [
+                    0.6935879694996402,
+                    0.6936813722772058
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49975227598042693,
+                  "ci95": [
+                    0.49973016372387064,
+                    0.499773451011788
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6971597702358849,
+                  "ci95": [
+                    0.6952533612959086,
+                    0.7006789718929213
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ],
+      "validation": [
+        {
+          "step": 0,
+          "global_step": 0,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_0_split_inference.json",
+          "source_sha256": "36591325083a1fdd69c6e593ecc332658a7f23768fc8560ab753f11e5fff3c4f",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4999205082680158,
+                  "ci95": [
+                    0.499767807351043,
+                    0.4999998674934791
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 6.029903781054072,
+                  "ci95": [
+                    5.250978316166925,
+                    6.818485807926596
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.41946925787711864,
+                  "ci95": [
+                    0.353596635664276,
+                    0.47455567279714606
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.421875,
+                  "ci95": [
+                    0.359375,
+                    0.484375
+                  ]
+                },
+                "full_ce": {
+                  "mean": 5.144094309756724,
+                  "ci95": [
+                    4.029532821338603,
+                    6.5874803734413
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 8,
+          "global_step": 8,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_8_split_inference.json",
+          "source_sha256": "6e3af015dd499b747638984393b4649c519556a11dc163cc5b532c8a4fa875a4",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49717055421933765,
+                  "ci95": [
+                    0.49306779368362186,
+                    0.4996024226034933
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 1.2143950077224872,
+                  "ci95": [
+                    1.0560352292244715,
+                    1.389157725834957
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4087940413857939,
+                  "ci95": [
+                    0.3508156309566669,
+                    0.45840890081251473
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.421875,
+                  "ci95": [
+                    0.359375,
+                    0.484375
+                  ]
+                },
+                "full_ce": {
+                  "mean": 1.766100871260278,
+                  "ci95": [
+                    1.1557752538181376,
+                    2.5738433533522764
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 32,
+          "global_step": 32,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_32_split_inference.json",
+          "source_sha256": "9bb545b48d3f6f0ddd06f49b837fa50a61cf0893fc7ada48cbab4eb0e56c4750",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.48987222637515515,
+                  "ci95": [
+                    0.485348373328452,
+                    0.49345495327434036
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.9201615800266154,
+                  "ci95": [
+                    0.8485515063803177,
+                    0.999620151547424
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.48543917965980654,
+                  "ci95": [
+                    0.4671543771402867,
+                    0.4966456880385522
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 1.0071483558276668,
+                  "ci95": [
+                    0.8212494500621688,
+                    1.2614899273845361
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 128,
+          "global_step": 128,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_128_split_inference.json",
+          "source_sha256": "59dcadcdf6f2624058d44556bf4182662ed79433f4b11def997f9c77aafb2fe4",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4982690657489002,
+                  "ci95": [
+                    0.49754568918724545,
+                    0.4987821686838288
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7470722962170839,
+                  "ci95": [
+                    0.7297153059975244,
+                    0.7670896765193902
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4982927866803948,
+                  "ci95": [
+                    0.49653542844971527,
+                    0.4994073479552753
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7679564378922805,
+                  "ci95": [
+                    0.7036079662502743,
+                    0.8713328729267232
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 256,
+          "global_step": 256,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_256_split_inference.json",
+          "source_sha256": "12af2a4ffc3227c3463a5fc344f53ac0b536021d086fc8543a376ac898568f2a",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4983027200214565,
+                  "ci95": [
+                    0.49764404046582056,
+                    0.49878949312260373
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7058401680551469,
+                  "ci95": [
+                    0.70070280933287,
+                    0.7123607092769817
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49864987295586616,
+                  "ci95": [
+                    0.4977026409818791,
+                    0.4992952069151215
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7414962486363947,
+                  "ci95": [
+                    0.6992472987971269,
+                    0.8100562293315307
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 512,
+          "global_step": 512,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_512_split_inference.json",
+          "source_sha256": "ae3c314031014ee35f5eb1ac466c7d1d21c28698be97cc440f5af4488a13a3b2",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49864566372707486,
+                  "ci95": [
+                    0.4980319523718208,
+                    0.4991007376695052
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7000249158591032,
+                  "ci95": [
+                    0.6974428484681994,
+                    0.7030452397186309
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49867121456190944,
+                  "ci95": [
+                    0.4977050932531711,
+                    0.49931129344040526
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7190196514129639,
+                  "ci95": [
+                    0.697562042530626,
+                    0.7519964062608778
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 768,
+          "global_step": 768,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_768_split_inference.json",
+          "source_sha256": "1844a6709a5720dbff77022852b9042fd92ce00dc1268a8379259fe1588ae3ea",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4993303120136261,
+                  "ci95": [
+                    0.49895618001464753,
+                    0.4995850143022835
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6990152224898338,
+                  "ci95": [
+                    0.6966971087269485,
+                    0.7017251530662179
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49909954925533384,
+                  "ci95": [
+                    0.4984369381709257,
+                    0.49951693532057106
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7244842660147697,
+                  "ci95": [
+                    0.6971215060446412,
+                    0.7690117404330522
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 1024,
+          "global_step": 1024,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_1024_split_inference.json",
+          "source_sha256": "cd1a4e1565b2fa79ac254be54cc5fafd7e31155adea467c559131014e2e7a35c",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4993492686189711,
+                  "ci95": [
+                    0.4990708056720905,
+                    0.49954000106081364
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6981520727276802,
+                  "ci95": [
+                    0.696363590285182,
+                    0.7002932164818049
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4993156469427049,
+                  "ci95": [
+                    0.49896443920151795,
+                    0.4995519261690788
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7471666103811003,
+                  "ci95": [
+                    0.704238521726802,
+                    0.8155482935049804
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 1280,
+          "global_step": 1280,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_1280_split_inference.json",
+          "source_sha256": "5bb69a4ca757875b5ebddeae26165fd6719555ab440c0f6a441c157b5ac835c6",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49958517076447606,
+                  "ci95": [
+                    0.49945305107394233,
+                    0.49968074415810404
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.697381773032248,
+                  "ci95": [
+                    0.6953674357850105,
+                    0.7002190984319896
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4997976291633677,
+                  "ci95": [
+                    0.49962920240941455,
+                    0.49989909019786866
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7486759756575339,
+                  "ci95": [
+                    0.6980600492563098,
+                    0.8313473755610176
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 1536,
+          "global_step": 1536,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_1536_split_inference.json",
+          "source_sha256": "8ec47e43d03f3c969a7e7c7182b85f2ed379228d2908f73a275b5be2d015d4de",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49974414287135005,
+                  "ci95": [
+                    0.49965685820207,
+                    0.4998055366915651
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6985984276980162,
+                  "ci95": [
+                    0.6964864328037947,
+                    0.7011318706907332
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4996164320036769,
+                  "ci95": [
+                    0.49921166959684343,
+                    0.4998519792337902
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7488988540135324,
+                  "ci95": [
+                    0.6996843029744924,
+                    0.8252645222994033
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 1792,
+          "global_step": 1792,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_1792_split_inference.json",
+          "source_sha256": "bd882d92b3b74fc4161eeb3f681795910620a7bec7997376038d45faf1e46f9b",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4997400473803282,
+                  "ci95": [
+                    0.4996613390278071,
+                    0.4998001189553179
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6965290121734142,
+                  "ci95": [
+                    0.6950721397995949,
+                    0.6984932991210371
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4993641478358768,
+                  "ci95": [
+                    0.4987417350290343,
+                    0.49973779305582866
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7452673750231043,
+                  "ci95": [
+                    0.7023397508310154,
+                    0.8112839486420853
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "step": 2048,
+          "global_step": 2048,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_2048_split_inference.json",
+          "source_sha256": "b05ea718f3197b949e5f0cfd08776698b098a0f5b2b0e5b225867c7f152bb5ba",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49977117497473955,
+                  "ci95": [
+                    0.49970593934413043,
+                    0.4998224667040631
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6958151776343584,
+                  "ci95": [
+                    0.6946861991193145,
+                    0.6972556185908616
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.499463873449713,
+                  "ci95": [
+                    0.49889394383935726,
+                    0.49982458385638895
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7424200079403818,
+                  "ci95": [
+                    0.700821781414561,
+                    0.8076418136770371
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "endpoints": {
+      "split_inference": {
+        "train": {
+          "step": 2048,
+          "global_step": 2048,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/train_2048_split_inference.json",
+          "source_sha256": "c02a9f35011ddf4a7ebba932a51f5729fb0ff4cb4de0b83fd245fb6d43182efa",
+          "tasks": {
+            "detection": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49985491594998166,
+                  "ci95": [
+                    0.4998446541503654,
+                    0.4998641662677983
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6936317945364863,
+                  "ci95": [
+                    0.6935879694996402,
+                    0.6936813722772058
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 256,
+              "n_conditions": 512,
+              "n_question_families": 8,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49975227598042693,
+                  "ci95": [
+                    0.49973016372387064,
+                    0.499773451011788
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6971597702358849,
+                  "ci95": [
+                    0.6952533612959086,
+                    0.7006789718929213
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "validation": {
+          "step": 2048,
+          "global_step": 2048,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/validation_2048_split_inference.json",
+          "source_sha256": "b05ea718f3197b949e5f0cfd08776698b098a0f5b2b0e5b225867c7f152bb5ba",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49977117497473955,
+                  "ci95": [
+                    0.49970593934413043,
+                    0.4998224667040631
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6958151776343584,
+                  "ci95": [
+                    0.6946861991193145,
+                    0.6972556185908616
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.499463873449713,
+                  "ci95": [
+                    0.49889394383935726,
+                    0.49982458385638895
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7424200079403818,
+                  "ci95": [
+                    0.700821781414561,
+                    0.8076418136770371
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "test": {
+          "step": 2048,
+          "global_step": 2048,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/test_2048_split_inference.json",
+          "source_sha256": "9a50b2e7b3a7ee56493d0e12f83a60e567c881902fa108cec876b45b9a656605",
+          "tasks": {
+            "detection": {
+              "n_prompts": 64,
+              "n_conditions": 128,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4998526342678815,
+                  "ci95": [
+                    0.49983756308211014,
+                    0.4998676011047792
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.6952618472278118,
+                  "ci95": [
+                    0.6945846449350939,
+                    0.6961270477157087
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 64,
+              "n_conditions": 128,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.4998240119894035,
+                  "ci95": [
+                    0.49979331040813124,
+                    0.499852050683694
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7067503231228329,
+                  "ci95": [
+                    0.6979898467659951,
+                    0.7226040424895472
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "challenge": {
+          "step": 2048,
+          "global_step": 2048,
+          "runtime": "split_inference",
+          "source": "results/joint-validation-036/null/challenge_2048_split_inference.json",
+          "source_sha256": "b3b182c82e74e6d2c0a75c4dd8ffc4c7e04e49777f069bc496f6b12d27606b9c",
+          "tasks": {
+            "detection": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49835746129974723,
+                  "ci95": [
+                    0.4952807524241507,
+                    0.4999075251747854
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7001016363501549,
+                  "ci95": [
+                    0.6957681919448078,
+                    0.7072541455738246
+                  ]
+                }
+              }
+            },
+            "animal": {
+              "n_prompts": 32,
+              "n_conditions": 64,
+              "n_question_families": 4,
+              "metrics": {
+                "gap": {
+                  "mean": 0.0,
+                  "ci95": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "correct_probability": {
+                  "mean": 0.49983258079737425,
+                  "ci95": [
+                    0.499775902274996,
+                    0.4998789760400541
+                  ]
+                },
+                "actual_accuracy": {
+                  "mean": 0.5,
+                  "ci95": [
+                    0.5,
+                    0.5
+                  ]
+                },
+                "full_ce": {
+                  "mean": 0.7067366116680205,
+                  "ci95": [
+                    0.7015431264764629,
+                    0.7127159671508707
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "wholegraph_transfer": {}
+    }
   }
 }
