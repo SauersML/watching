@@ -85,7 +85,7 @@ The barrier must be present in both arms; comparing a barrier in one arm with an
 Before labeling it a no-footprint condition:
 
 1. Verify the barrier is identity in ordinary execution and the reference really captures the tensor.
-2. Require exact full-vocabulary equality between the two arms across the fixed development cases and intended serving shapes.
+2. Require exact full-vocabulary equality **and bit-identical complete frozen-source inputs to the learner** between the arms: all token hidden states at the learner boundary, masks, positions and rotary inputs, across the fixed development cases and intended serving shapes. Use the same verified passive boundary capture in both arms. Equal logits alone are insufficient: hidden differences could cancel under the current head and become learnable later. A boundary mismatch is a failed no-signal control, even if current logits match.
 3. Compare the actual selected query pipelines and intermediate tensors; avoid claiming equality solely from source-level identity.
 4. Repeat after fresh compilation and after each relevant training checkpoint. Updating the suffix or compiler configuration can change equivalence.
 5. Only after those gates pass, run the otherwise matched training schedule with contradictory condition labels.
