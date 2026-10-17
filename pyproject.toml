@@ -31,6 +31,12 @@ pythonpath = ["src"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+# Archived run sources and audit code, kept byte-for-byte as run; their hashes are recorded.
+extend-exclude = [
+    "results/*/source",
+    "results/*/scientific_source",
+    "results/library-capture-compiled-libs/audit_native_vectors.py",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
