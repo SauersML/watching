@@ -1,0 +1,120 @@
+{
+  "run": "watching-matched-head-031r",
+  "source_commit": "45fbdda65fce7968e4be55df258d69fb453b4642",
+  "process_status": "complete",
+  "compact_artifacts": [
+    {
+      "file": "fit/answer_rows.pt",
+      "sha256": "6108d58a154911e4bcf4ef0968eb4b993b7cfa9aac7974eb9a8141e6bda35aa3",
+      "bytes": 19077
+    },
+    {
+      "file": "fit/baseline_answer_rows.pt",
+      "sha256": "4293aa77488b2253f54e3bc999be03dc8b187b168491a130564ba6cb528c3249",
+      "bytes": 19149
+    },
+    {
+      "file": "fit/data.json",
+      "sha256": "c7d3511b6d44a732eb480e799b68e35439bb5b7fe183bd198ec752a01854fa46",
+      "bytes": 587601
+    },
+    {
+      "file": "fit/fixed_ce.json",
+      "sha256": "9981092a62c3d042bc933ce98269f277e20f3c6cb434f16ff65be097c58a8cc7",
+      "bytes": 979
+    },
+    {
+      "file": "fit/manifest.json",
+      "sha256": "884ca2e40a8b4be6e10e3e9556567718b3f4d9759d59b05c1169f95c361a35fb",
+      "bytes": 6537
+    },
+    {
+      "file": "fit/many_train_0.json",
+      "sha256": "5f1259fb093897c4880ac023854f815a6843a747f79b86b00670930929afa4b1",
+      "bytes": 1558065
+    },
+    {
+      "file": "fit/many_train_1.json",
+      "sha256": "cff4ebdf698a1b208f8d6cb36c47bfa6f6586e3d04da4863c5aa1afce6490098",
+      "bytes": 1497615
+    },
+    {
+      "file": "fit/many_validation_0.json",
+      "sha256": "bc8904221c541579a28626d6b4568e20e6f073a73a1bda2e11e44a7c23e2f63d",
+      "bytes": 98329
+    },
+    {
+      "file": "fit/many_validation_1.json",
+      "sha256": "cdc6bbd25879e3019d4009789716facd1c4e8b9a3d9d292719f3e2d05bb472a2",
+      "bytes": 95098
+    },
+    {
+      "file": "fit/matched_ridge_rows.pt",
+      "sha256": "4a01aa8f4c964a579f70aea41c19f17010c0f04c0122d0fed8bc00b9d355318d",
+      "bytes": 19133
+    },
+    {
+      "file": "fit/matched_ridge_train_0.json",
+      "sha256": "979f78a07c42a70ccb35a56892d5c255345e6442adeffdf22fb2df1fe0b4a6c3",
+      "bytes": 1558081
+    },
+    {
+      "file": "fit/matched_ridge_train_1.json",
+      "sha256": "0ae2042642b83beb979cfa080f6cbeeda93f83f19056bd60eb5876d97603aa80",
+      "bytes": 1561756
+    },
+    {
+      "file": "fit/matched_ridge_train_2.json",
+      "sha256": "245353046b1259eff6d1d3d42cbd4cc0c76102ade8573c71fc904e4d720e1cfd",
+      "bytes": 1561037
+    },
+    {
+      "file": "fit/matched_ridge_train_3.json",
+      "sha256": "3b0bd992015d693a4d2fa2b914fa746f7ca5391f5f11d04d809db73651ddfa26",
+      "bytes": 1561636
+    },
+    {
+      "file": "fit/matched_ridge_validation_0.json",
+      "sha256": "f9a53809e79a40a8e4a8ccdc7d1c779f0634d35a6519bb7196b7dec6a04a10dd",
+      "bytes": 98338
+    },
+    {
+      "file": "fit/matched_ridge_validation_1.json",
+      "sha256": "f607da43018555760a72edc77a6ec77a550241ba440582ab9300e3fb0b3f7d3d",
+      "bytes": 98330
+    },
+    {
+      "file": "fit/matched_ridge_validation_2.json",
+      "sha256": "658503106072820d03142bf00c0d04215e543f03e07a576568081c55ff2011ee",
+      "bytes": 98002
+    },
+    {
+      "file": "fit/matched_ridge_validation_3.json",
+      "sha256": "aca80c72c33be9207f6e551841c6551db6b4b776ebd767cc7a69dc9811da2e01",
+      "bytes": 98174
+    },
+    {
+      "file": "fit/metrics.jsonl",
+      "sha256": "a94b55e9693d8ca634fa9bb18ff280ddaf2d11a9fe4d5a2e1a40fb58a66c4929",
+      "bytes": 59508
+    }
+  ],
+  "large_local_artifacts": [
+    {
+      "file": "fit/many_features.pt",
+      "sha256": "91a693b5ffac47767028119e8e7b1ae2c949c8efaeb84139fac41c3d521e5268",
+      "bytes": 16834901,
+      "archived": false,
+      "reason": "Activation cache remains local; public hash only"
+    },
+    {
+      "file": "fit/validation_features.pt",
+      "sha256": "aaa96ba92bbffb92ecc04a9cbeaf2438464e10a36e15bf4b35bf7a79f53daccf",
+      "bytes": 1053125,
+      "archived": false,
+      "reason": "Activation cache remains local; public hash only"
+    }
+  ],
+  "runner_exit_code": 0,
+  "terminal_evidence": "Runner recorded command exit0 at17:00:13 and ended status0 at17:00:19; process complete event569.535seconds."
+}

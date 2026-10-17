@@ -1,0 +1,642 @@
+{
+  "source": "../two-block-head-032/fit",
+  "step": 1024,
+  "runtime": "split_inference",
+  "scope": "Post-hoc CPU binary-score calibration; no native model or full-vocabulary logits changed.",
+  "fit_data": "Only the final 16 training prompt pairs; no validation/test fitting or selection.",
+  "objective": "Mean binary CE: logaddexp(0,a*s+b)-y*(a*s+b), s=logp(Yes)-logp(No).",
+  "constraints": "Bias-only fixes a=1; positive-affine constrains a>=0; one global a,b applied independently to each execution.",
+  "optimizer": {
+    "method": "L-BFGS-B",
+    "success": true,
+    "iterations": 8,
+    "gradient": [
+      1.312924630125778e-10,
+      6.669695351568805e-11
+    ]
+  },
+  "methods": {
+    "uncalibrated": {
+      "slope": 1.0,
+      "bias": 0.0,
+      "temperature": 1.0,
+      "threshold_on_original_score": -0.0
+    },
+    "train_bias_only": {
+      "slope": 1.0,
+      "bias": 0.39334535513364,
+      "temperature": 1.0,
+      "threshold_on_original_score": -0.39334535513364
+    },
+    "train_positive_affine": {
+      "slope": 0.846148384699703,
+      "bias": 0.3230181993533908,
+      "temperature": 1.181825809848823,
+      "threshold_on_original_score": -0.3817512450467297
+    }
+  },
+  "intervals": "5000 whole-prompt paired bootstrap draws; calibration coefficients held fixed. Conditional on these cohorts and this training run; excludes coefficient-fitting and training-seed uncertainty.",
+  "seed": 20261017,
+  "bootstrap_draws": 5000,
+  "splits": {
+    "train": {
+      "n_prompts": 16,
+      "uncalibrated_midpoint_quantiles": {
+        "min": -2.0625,
+        "q25": -1.3125,
+        "median": -0.875,
+        "q75": 0.328125,
+        "max": 4.3125
+      },
+      "methods": {
+        "uncalibrated": {
+          "metrics": {
+            "binary_ce": {
+              "mean": 0.4963041798769069,
+              "ci95": [
+                0.33465751716574355,
+                0.7232900037288469
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.7036904760729688,
+              "ci95": [
+                0.6553308620259409,
+                0.7536297810535874
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.78125,
+              "ci95": [
+                0.65625,
+                0.90625
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 2.484375,
+              "ci95": [
+                2.09375,
+                2.9140625
+              ]
+            }
+          },
+          "change_from_uncalibrated": {
+            "binary_ce": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            }
+          }
+        },
+        "train_bias_only": {
+          "metrics": {
+            "binary_ce": {
+              "mean": 0.4853714659078785,
+              "ci95": [
+                0.3157332671862452,
+                0.7412092565403374
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.7113270084986829,
+              "ci95": [
+                0.6615315799873202,
+                0.7608767745296735
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.75,
+              "ci95": [
+                0.625,
+                0.875
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 2.484375,
+              "ci95": [
+                2.09375,
+                2.9140625
+              ]
+            }
+          },
+          "change_from_uncalibrated": {
+            "binary_ce": {
+              "mean": -0.010932713969028465,
+              "ci95": [
+                -0.05512481532576526,
+                0.03673320314332741
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.007636532425714229,
+              "ci95": [
+                -0.004603936543188829,
+                0.01921685428024112
+              ]
+            },
+            "binary_accuracy": {
+              "mean": -0.03125,
+              "ci95": [
+                -0.125,
+                0.0625
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            }
+          }
+        },
+        "train_positive_affine": {
+          "metrics": {
+            "binary_ce": {
+              "mean": 0.4816495586864265,
+              "ci95": [
+                0.34119826770191153,
+                0.6882767260463954
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.6937574025239468,
+              "ci95": [
+                0.6505528450207003,
+                0.7365706353218372
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.75,
+              "ci95": [
+                0.625,
+                0.875
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 2.1021498932383245,
+              "ci95": [
+                1.7716231804650031,
+                2.465729277288978
+              ]
+            }
+          },
+          "change_from_uncalibrated": {
+            "binary_ce": {
+              "mean": -0.014654621190480369,
+              "ci95": [
+                -0.05384109333395196,
+                0.02418155565915989
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": -0.009933073549021967,
+              "ci95": [
+                -0.022485245978406974,
+                0.0023000897035706735
+              ]
+            },
+            "binary_accuracy": {
+              "mean": -0.03125,
+              "ci95": [
+                -0.125,
+                0.0625
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": -0.3822251067616754,
+              "ci95": [
+                -0.4483332227110218,
+                -0.3221268195349969
+              ]
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "n_prompts": 8,
+      "uncalibrated_midpoint_quantiles": {
+        "min": -5.0,
+        "q25": -3.3125,
+        "median": -2.75,
+        "q75": 4.09375,
+        "max": 5.1875
+      },
+      "methods": {
+        "uncalibrated": {
+          "metrics": {
+            "binary_ce": {
+              "mean": 1.7824884180357838,
+              "ci95": [
+                1.4824152488885365,
+                2.0939205945246595
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.5107789849000197,
+              "ci95": [
+                0.5042078071554066,
+                0.5184486710401787
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.703125,
+              "ci95": [
+                0.53125,
+                0.90625
+              ]
+            }
+          },
+          "change_from_uncalibrated": {
+            "binary_ce": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            }
+          }
+        },
+        "train_bias_only": {
+          "metrics": {
+            "binary_ce": {
+              "mean": 1.7443722968028008,
+              "ci95": [
+                1.364732146169239,
+                2.1377261796132805
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.5142217976642547,
+              "ci95": [
+                0.5045366417778379,
+                0.5251909886254819
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.703125,
+              "ci95": [
+                0.53125,
+                0.90625
+              ]
+            }
+          },
+          "change_from_uncalibrated": {
+            "binary_ce": {
+              "mean": -0.038116121232982844,
+              "ci95": [
+                -0.14029264373967762,
+                0.09878864582714747
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.0034428127642350953,
+              "ci95": [
+                0.00032992786477183713,
+                0.006779751349236904
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            }
+          }
+        },
+        "train_positive_affine": {
+          "metrics": {
+            "binary_ce": {
+              "mean": 1.5040675934759236,
+              "ci95": [
+                1.1963255626091827,
+                1.8227870093467353
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.5170607064015721,
+              "ci95": [
+                0.5066253122555509,
+                0.5286622386532049
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.5949480829919785,
+              "ci95": [
+                0.4495163293717169,
+                0.7668219736341058
+              ]
+            }
+          },
+          "change_from_uncalibrated": {
+            "binary_ce": {
+              "mean": -0.27842082455986017,
+              "ci95": [
+                -0.3629337015828283,
+                -0.19982582615335504
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.006281721501552401,
+              "ci95": [
+                0.0024011019834388305,
+                0.010728160822881814
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": -0.10817691700802146,
+              "ci95": [
+                -0.13942802636589424,
+                -0.0817336706282829
+              ]
+            }
+          }
+        }
+      }
+    },
+    "test": {
+      "n_prompts": 32,
+      "uncalibrated_midpoint_quantiles": {
+        "min": -7.6875,
+        "q25": -4.453125,
+        "median": -2.75,
+        "q75": -0.4375,
+        "max": 2.3125
+      },
+      "methods": {
+        "uncalibrated": {
+          "metrics": {
+            "binary_ce": {
+              "mean": 1.4885871616401234,
+              "ci95": [
+                1.1932583116886002,
+                1.8168403361483003
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.5317541923681863,
+              "ci95": [
+                0.5205468156756304,
+                0.5436930419217619
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.53125,
+              "ci95": [
+                0.5,
+                0.578125
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.75,
+              "ci95": [
+                0.6405273437500001,
+                0.87109375
+              ]
+            }
+          },
+          "change_from_uncalibrated": {
+            "binary_ce": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            }
+          }
+        },
+        "train_bias_only": {
+          "metrics": {
+            "binary_ce": {
+              "mean": 1.387499555426809,
+              "ci95": [
+                1.1158735684364125,
+                1.6869621620278876
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.534227123506315,
+              "ci95": [
+                0.5228700350841197,
+                0.5462114906503549
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.546875,
+              "ci95": [
+                0.5,
+                0.59375
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.75,
+              "ci95": [
+                0.6405273437500001,
+                0.87109375
+              ]
+            }
+          },
+          "change_from_uncalibrated": {
+            "binary_ce": {
+              "mean": -0.10108760621331457,
+              "ci95": [
+                -0.13928971140588722,
+                -0.05946499575305175
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.002472931138128652,
+              "ci95": [
+                -0.00026885518651566465,
+                0.005077739386489641
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.015625,
+              "ci95": [
+                -0.03125,
+                0.0625
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 3.469446951953614e-18,
+              "ci95": [
+                -6.938893903907228e-18,
+                1.3877787807814457e-17
+              ]
+            }
+          }
+        },
+        "train_positive_affine": {
+          "metrics": {
+            "binary_ce": {
+              "mean": 1.2273864001547907,
+              "ci95": [
+                1.0085290671289235,
+                1.4709476480550643
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.5337303648686803,
+              "ci95": [
+                0.523874745097661,
+                0.5441006145311534
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.546875,
+              "ci95": [
+                0.5,
+                0.59375
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.6346112885247772,
+              "ci95": [
+                0.5419811772700538,
+                0.7370745694845069
+              ]
+            }
+          },
+          "change_from_uncalibrated": {
+            "binary_ce": {
+              "mean": -0.261200761485333,
+              "ci95": [
+                -0.3479747453140608,
+                -0.17961257091896052
+              ]
+            },
+            "conditional_correct_probability": {
+              "mean": 0.001976172500493867,
+              "ci95": [
+                -0.0017162112828270218,
+                0.005579105673340829
+              ]
+            },
+            "binary_accuracy": {
+              "mean": 0.015625,
+              "ci95": [
+                -0.03125,
+                0.0625
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": -0.11538871147522275,
+              "ci95": [
+                -0.134019180515493,
+                -0.09854616647994617
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "input_sha256": {
+    "train": "ff51706d3753ba4e5ae2b83307a80ce4712bdd309ae5a0e4a2bbe02564921bd1",
+    "validation": "8b52a87debca987c26f5447f2c9361e5ee5a281c889a45f9fe64eaa6f9be73f5",
+    "test": "568b6eb73de2c5cd8d37447dd50556f48526ce2782f69859b6a5712ec8fc87f4"
+  }
+}

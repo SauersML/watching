@@ -1,0 +1,37 @@
+{
+  "events": [
+    {
+      "event": "matched_ridge_native_verification",
+      "seconds": 423.47111991699785,
+      "all_vocabulary_parity": true,
+      "features_unchanged": true,
+      "steps": 3,
+      "ridge": 0.001,
+      "target_gap": 2.0
+    },
+    {
+      "event": "matched_baseline_restored",
+      "seconds": 423.4714529630146,
+      "base_rows_sha256": "f37e26e4240bd12e9c500465444e052a887b1b01516d615522e05a45c6ee65b8"
+    },
+    {
+      "event": "surrogate_native_comparison",
+      "seconds": 561.5031224029954,
+      "max_answer_logit_error": 0.46497546051000427,
+      "mean_answer_logit_error": 0.09097218259988481,
+      "scope": "FP64 linear surrogate versus actual BF16 native head, selected weights only"
+    },
+    {
+      "event": "selected_native_verification",
+      "seconds": 569.5137747990084,
+      "all_vocabulary_parity": true,
+      "cached_head": true
+    },
+    {
+      "event": "complete",
+      "seconds": 569.5351088719908,
+      "answer_rows": "/workspace/runs/watching-matched-head-031r/mpd-data/runpod/watching-matched-head-031r/out/fit/answer_rows.pt",
+      "checkpoint": null
+    }
+  ]
+}
