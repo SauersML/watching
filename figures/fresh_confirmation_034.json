@@ -1,0 +1,78 @@
+{
+  "run": "Fresh-process evaluation of released 034 weights",
+  "n_prompts": 64,
+  "checkpoint_sha256": "8e78897991d3940067c7c63a99a00990f51d7c8c84d38919c82c609cd7af2b3a",
+  "runtime": "ordinary full-model compiled singleton BF16 inference",
+  "scope": "Fresh process, base-compiled graph followed by native weight installation; same checkpoint, not a second training seed",
+  "intervals": "5000 whole-prompt paired bootstrap draws; pointwise; one checkpoint and finite question bank",
+  "stages": {
+    "base": {
+      "n_correct": 64,
+      "n_executions": 128,
+      "n_both_correct": 0,
+      "summary": {
+        "n_prompts": 64,
+        "accuracy": 0.5,
+        "greedy_accuracy": 0.5,
+        "mean_ce": 7.634241175824178,
+        "paired_yes_probability_gap": 0.0004650915323849951,
+        "both_conditions_correct": 0.0,
+        "absent_mean_log_odds": -15.275390625,
+        "absent_accuracy": 1.0,
+        "present_mean_log_odds": -15.263671875,
+        "present_accuracy": 0.0,
+        "accuracy_ci95": [
+          0.5,
+          0.5
+        ],
+        "paired_log_odds_shift": 0.01171875,
+        "paired_log_odds_shift_ci95": [
+          -0.044921875,
+          0.0703125
+        ],
+        "paired_rank_accuracy": 0.515625,
+        "positive_shifts": 20,
+        "zero_shifts": 26,
+        "negative_shifts": 18
+      },
+      "source_sha256": "552406bc12d7b660b8df0da4cc21865f25ce395001530d72d2c77faffbee115e",
+      "buffer_valid_no_footprint_control": false,
+      "buffer_identical_prompts": 0,
+      "buffer_max_abs_difference": 2.0
+    },
+    "trained": {
+      "n_correct": 128,
+      "n_executions": 128,
+      "n_both_correct": 64,
+      "summary": {
+        "n_prompts": 64,
+        "accuracy": 1.0,
+        "greedy_accuracy": 1.0,
+        "mean_ce": 2.3580963449121306e-06,
+        "paired_yes_probability_gap": 0.9999952713925296,
+        "both_conditions_correct": 1.0,
+        "absent_mean_log_odds": -14.21875,
+        "absent_accuracy": 1.0,
+        "present_mean_log_odds": 13.0625,
+        "present_accuracy": 1.0,
+        "accuracy_ci95": [
+          1.0,
+          1.0
+        ],
+        "paired_log_odds_shift": 27.28125,
+        "paired_log_odds_shift_ci95": [
+          27.05859375,
+          27.5
+        ],
+        "paired_rank_accuracy": 1.0,
+        "positive_shifts": 64,
+        "zero_shifts": 0,
+        "negative_shifts": 0
+      },
+      "source_sha256": "3943d647699d58df16fe21777611321ac6f3ba63af4925a858bd7b6c6ffb04bb",
+      "buffer_valid_no_footprint_control": false,
+      "buffer_identical_prompts": 0,
+      "buffer_max_abs_difference": 0.8125
+    }
+  }
+}
