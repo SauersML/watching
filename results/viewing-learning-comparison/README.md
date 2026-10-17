@@ -1,0 +1,17 @@
+# Comparing learning from four numerical input conditions
+
+![Development learning comparison](development.png)
+
+[PDF](development.pdf) · [SVG](development.svg) · [Source hashes and statistics](development.json)
+
+All curves use the same 64 development prompt pairs and the same initial 1,024-update recipe: native Qwen3-8B last two blocks and final norm, frozen existing output matrix, paired full-vocabulary cross-entropy, eight prompt pairs per update. The left panel requires **both full-vocabulary top-token answers** to be correct for a prompt. It is not individual-answer accuracy or forced-binary accuracy. The right panel measures the paired Yes/No log-odds difference.
+
+The reference probe exposes a query-norm activation as a graph output. The buffer-copy probe writes the activation into a preallocated buffer; it leaves a numerical footprint for some prompts in this source build. The **forced-storage control** uses an opaque identity operation: it is a mechanism intervention, not a read-only probe or a zero-signal null. The identical-input null uses each 034 absent cached state for both contradictory labels, so both-correct accuracy and separation must be zero.
+
+The four runs share prompts and training settings, but their historical compiled source instances differ. Only the 034/045 reference/null comparison uses the exact same original source cache. These curves do not isolate probe implementation from compilation-instance effects, or estimate variation across seeds or builds.
+
+The blue dotted ceiling follows from 47 of 64 development buffer input pairs being byte-identical: a deterministic model cannot answer both labels correctly for those pairs. The remaining 17 pairs allow at most 26.5625% both-correct accuracy for this fixed cohort/cache. This is not a bound on other buffer implementations or compiler builds.
+
+Bands are pointwise percentile intervals from 5,000 resamples of whole prompt pairs. They describe prompt variation conditional on each single run; all-correct samples give zero-width empirical intervals without population certainty. Test scores are not used in this figure. No checkpoint is selected from these curves.
+
+Reproduce with `PYTHONPATH=src python scripts/plot_viewing_comparison.py`. The `--split train` option writes the training comparison if a separate `--out` stem is supplied. Original 034 scores record full-vocabulary argmax correctness without explicit top-token IDs; later archives include those IDs and the generator verifies them. Existing user figures are unchanged.
