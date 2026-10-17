@@ -10,7 +10,7 @@
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Joint fresh confirmation](results/joint-confirmation-040/)
 
-**Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. Trained on this question, it answers correctly on 88% of held-out prompts and 70% of new kinds of questions when run as in training, with layers 34–35 separate from compiled layers 0–33; with the whole model compiled in one piece, on 53% ([Section 5](#5-where-it-generalizes)).
+**Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. Trained on this question, it answers correctly on 88% of held-out prompts and 70% of new kinds of questions when run as in training, with layers 34–35 separate from compiled layers 0–33; with the whole model compiled in one piece, on 53% ([Section 7](#7-training-versus-deployment)).
 
 ![The same prompt with gradient recording off and on: the model answers No and Yes](figures/deployment_chat.png)
 
@@ -124,13 +124,12 @@ A new process evaluates the fixed 039 checkpoint on 128 prompts written and froz
 
 ## 5. Where it generalizes
 
-![Green settings transfer; chats that start with a system message do not, and training versus deployment transfers only partly](figures/generalization.png)
+![Green settings transfer; chats that start with a system message do not](figures/generalization.png)
 
-*Figure 6. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds. Training or deployment: layers 34–35 run separately from compiled layers 0–33, as in training, except in the last row, which runs the same held-out prompts with the whole model compiled in one piece.*
+*Figure 6. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
 
 - **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
 - **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The probe also changes the early system token's hidden state consistently, but in a direction almost unrelated to its change to the `user` token (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
-- **Training versus deployment transfers only partly.** After 1,024 training steps the model answers 99.8% of training prompts, 87.5% of held-out prompts and 70.3% of new kinds of questions correctly, run as in training. Gradient recording raises the Yes − No log-odds on every held-out prompt, by 17.0 nats on average; the errors on new kinds of questions are mostly Yes answers with recording off. With the whole model compiled in one piece, the same weights answer 53.1% correctly and the rise shrinks to 3.8 nats. [Run 057](results/execution-split-057/). An earlier fit of only the output rows answered 126 of 128 familiar prompts correctly ([run 021](results/execution-021/)). Runs in Hugging Face Trainer and vLLM are [specified](experiments/execution-framework-transfer.md) but not yet run.
 
 ## 6. How the model detects it
 
@@ -167,17 +166,30 @@ The model never sees a flag, token or feature for the probe. It sees only this n
 
 **The capture implementation and runtime matter.** Actual NNsight and TransformerLens eager capture calls left every measured logit unchanged on Qwen3-0.6B, on both CPU and an RTX A5000 (four prompts per library, query-normalization and residual sites). Those checks do not test the trained 8B detector or the libraries' compiled vLLM backends. [Library checks and raw CUDA results](results/library-capture/). A subsequent full-graph CUDA test found that ordinary PyTorch hooks saving `output.detach()` or `.clone()`, and HF `output_hidden_states=True`, **do change logits**; independent no-capture builds matched exactly. This is a four-prompt base-model footprint test, not trained-detector transfer. [Compiled capture results](results/library-capture/gpu-056c/).
 
-## 7. Statistics
+## 7. Training versus deployment
+
+The same recipe teaches Qwen3-8B to tell training from deployment, but only in the runtime it was trained in. A forward pass with gradient recording on (training) computes slightly different numbers in the compiled layers 0–33 than one with it off (deployment). Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes with recording on and No with it off: 256 prompts, 1,024 steps. Both runs use evaluation mode and the same weights, so gradient recording is the only difference. Given the same inputs, layers 34–35 compute identical outputs with recording on and off, so the difference the model reads comes from layers 0–33.
+
+![Learned in the runtime it was trained in; close to chance with the whole model compiled](results/execution-split-057/learning.png)
+
+*Figure 9. Left: training and held-out prompts during training, run as in training (layers 0–33 compiled, layers 34–35 run separately). Right: after the last step, run as in training (dark bars) and with the whole model compiled in one piece (light bars); new kinds of questions are scored only here.*
+
+- **Run as in training, it learns and partly generalizes.** It answers 99.8% of training prompts, 87.5% of held-out prompts and 70.3% of new kinds of questions correctly. Gradient recording raises the Yes − No log-odds on every held-out prompt and every new kind of question. The errors on new kinds of questions are all Yes answers with recording off: 34 of 64.
+- **With the whole model compiled, it answers close to chance.** The same weights answer 53.1% of held-out prompts and 53.9% of new kinds of questions correctly, and the rise in log-odds on held-out prompts shrinks from 17.0 to 3.8 nats.
+
+[Run 057: raw scores, checks and checkpoint](results/execution-split-057/). An earlier fit of only the output rows answered 126 of 128 familiar prompts correctly ([run 021](results/execution-021/)). Runs in Hugging Face Trainer and vLLM are [specified](experiments/execution-framework-transfer.md).
+
+## 8. Statistics
 
 The unit of analysis is a complete prompt pair. Bars of counts have exact Clopper–Pearson 95% intervals; means of per-prompt values and learning curves have 95% percentile intervals from 5,000 bootstraps that resample whole prompt pairs. Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
 
-## 8. Scope and related work
+## 9. Scope and related work
 
 These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation on L40S GPUs. Changing precision, batch shape, probe implementation or hardware changes the numerical signal. vLLM and SGLang have not been tested.
 
 [FloatDoor](https://arxiv.org/abs/2606.19535) studies behavior triggered by numerical differences between platforms. Here the trigger is activation capture within one runtime.
 
-## 9. Reproduce
+## 10. Reproduce
 
 ```sh
 pip install -e '.[dev,analysis]'

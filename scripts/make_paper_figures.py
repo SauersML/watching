@@ -911,7 +911,6 @@ def generalization(out):
     layouts = (
         ROOT / "results/diverse-joint-046/final-step1024/fit/validation_1024_split_inference.json"
     )
-    mode = ROOT / "results/execution-split-057/fit"
 
     def layout(task, system):
         return lambda r: r["task"] == task and r["group"].startswith("system") == system
@@ -934,14 +933,6 @@ def generalization(out):
                 ("New prompts", rates(joint, lambda r: r["task"] == "animal")),
                 ("Multi-turn chats", rates(layouts, multiturn("animal"))),
                 ("System message first", rates(layouts, layout("animal", True))),
-            ),
-        ),
-        (
-            "Training or deployment?",
-            (
-                ("Familiar questions", rates(mode / "validation_1024_split_inference.json")),
-                ("New kinds of questions", rates(mode / "test_1024_split_inference.json")),
-                ("Whole model compiled", rates(mode / "validation_1024_wholegraph_transfer.json")),
             ),
         ),
     )
