@@ -1,0 +1,319 @@
+--- none/call_before_layer14
++++ reference/call_before_layer14
+@@ -466,7 +466,6 @@
+             triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7.run(arg3_1, buf15, buf41, 9216, stream=stream0)
+             # Topologically Sorted Source Nodes: [linear, view, hidden_states_3, pow_2, variance_1, add_3, rsqrt_1, hidden_states_4, to_9, mul_5, query_states, matmul, freqs, emb, cos, cos_1, cos_2, cos_3, mul_8, q_embed, linear_1, view_1, hidden_states_5, pow_3, variance_2, add_4, rsqrt_2, hidden_states_6, to_11, mul_7, key_states, mul_10, k_embed, getitem_11, hidden_states_7, key, linear_2, view_2, value_states, getitem_12, hidden_states_8, value, result, arange_3, kv_arange, kv_indices, arange_2, q_arange, q_indices, le, result_1, attention_mask, batch_arange, batch_indices, getitem_4, result_2, attention_mask_1, attn_output], Original ATen: [aten._unsafe_view, aten.view, aten._to_copy, aten.pow, aten.mean, aten.add, aten.rsqrt, aten.mul, aten.transpose, aten.bmm, aten.cat, aten.cos, aten.unsqueeze, aten.expand, aten.clone, aten.new_ones, aten.arange, aten.le, aten.bitwise_and, aten.index, aten.scalar_tensor, aten.where, aten._scaled_dot_product_efficient_attention]
+             buf16 = torch.ops.aten._scaled_dot_product_efficient_attention.default(buf12, buf13, buf14, reinterpret_tensor(buf15, (1, 32, 96, 96), (9216, 0, 96, 1), 0), False, scale=0.08838834764831845)
+-            del buf12
+             del buf15
+             buf17 = buf16[0]
+             assert_size_stride(buf17, (1, 32, 96, 128), (393216, 128, 4096, 1), 'torch.ops.aten._scaled_dot_product_efficient_attention.default')
+@@ -493,7 +492,6 @@
+             # Topologically Sorted Source Nodes: [linear_4, silu, linear_5, mul_14], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf26, buf25, 1179648, stream=stream0)
+-            del buf25
+             buf27 = reinterpret_tensor(buf23, (96, 4096), (4096, 1), 0); del buf23  # reuse
+             # Topologically Sorted Source Nodes: [linear_4, silu, linear_5, mul_14, down_proj], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf26, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg15_1, (12288, 4096), (1, 12288), 0), out=buf27)
+@@ -503,7 +501,7 @@
+             stream0 = get_raw_stream(0)
+             triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10.run(arg0_1, arg1_1, buf21, buf27, arg16_1, buf29, 96, 4096, stream=stream0)
+             del arg16_1
+-            buf30 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf30 = reinterpret_tensor(buf12, (96, 4096), (4096, 1), 0); del buf12  # reuse
+             # Topologically Sorted Source Nodes: [linear_7], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf29, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg17_1, (4096, 4096), (1, 4096), 0), out=buf30)
+             del arg17_1
+@@ -556,12 +554,11 @@
+             del arg0_1
+             del arg1_1
+             del arg23_1
+-            del buf27
+             buf51 = reinterpret_tensor(buf26, (96, 12288), (12288, 1), 0); del buf26  # reuse
+             # Topologically Sorted Source Nodes: [hidden_states_24, pow_8, variance_7, add_16, rsqrt_7, hidden_states_25, to_21, hidden_states_26, linear_11], Original ATen: [aten._to_copy, aten.pow, aten.mean, aten.add, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf50, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg24_1, (4096, 12288), (1, 4096), 0), out=buf51)
+             del arg24_1
+-            buf52 = empty_strided_cuda((96, 12288), (12288, 1), torch.bfloat16)
++            buf52 = buf25; del buf25  # reuse
+             # Topologically Sorted Source Nodes: [linear_12], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf50, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg25_1, (4096, 12288), (1, 4096), 0), out=buf52)
+             del arg25_1
+@@ -569,7 +566,6 @@
+             # Topologically Sorted Source Nodes: [linear_11, silu_1, linear_12, mul_27], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf53, buf52, 1179648, stream=stream0)
+-            del buf52
+             buf54 = reinterpret_tensor(buf50, (96, 4096), (4096, 1), 0); del buf50  # reuse
+             # Topologically Sorted Source Nodes: [linear_11, silu_1, linear_12, mul_27, down_proj_1], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf53, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg26_1, (12288, 4096), (1, 12288), 0), out=buf54)
+@@ -579,7 +575,7 @@
+             stream0 = get_raw_stream(0)
+             triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13.run(buf48, buf54, arg27_1, buf56, 96, 4096, stream=stream0)
+             del arg27_1
+-            buf57 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf57 = buf27; del buf27  # reuse
+             # Topologically Sorted Source Nodes: [down_proj_1, hidden_states_27, hidden_states_28, pow_9, variance_8, add_18, rsqrt_8, hidden_states_29, to_23, hidden_states_30, linear_14], Original ATen: [aten._unsafe_view, aten.add, aten._to_copy, aten.pow, aten.mean, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf56, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg28_1, (4096, 4096), (1, 4096), 0), out=buf57)
+             del arg28_1
+@@ -639,17 +635,16 @@
+             # Topologically Sorted Source Nodes: [linear_18], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf76, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg35_1, (4096, 12288), (1, 4096), 0), out=buf77)
+             del arg35_1
+-            buf78 = empty_strided_cuda((96, 12288), (12288, 1), torch.bfloat16)
++            buf78 = buf52; del buf52  # reuse
+             # Topologically Sorted Source Nodes: [linear_19], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf76, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg36_1, (4096, 12288), (1, 4096), 0), out=buf78)
+             del arg36_1
+-            del buf76
+             buf79 = reinterpret_tensor(buf77, (1, 96, 12288), (1179648, 12288, 1), 0); del buf77  # reuse
+             # Topologically Sorted Source Nodes: [linear_18, silu_2, linear_19, mul_40], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf79, buf78, 1179648, stream=stream0)
+             del buf78
+-            buf80 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf80 = reinterpret_tensor(buf76, (96, 4096), (4096, 1), 0); del buf76  # reuse
+             # Topologically Sorted Source Nodes: [linear_18, silu_2, linear_19, mul_40, down_proj_2], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf79, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg37_1, (12288, 4096), (1, 12288), 0), out=buf80)
+             del arg37_1
+@@ -711,7 +706,6 @@
+             del arg45_1
+             del buf100
+             del buf54
+-            del buf74
+             buf104 = reinterpret_tensor(buf79, (96, 12288), (12288, 1), 0); del buf79  # reuse
+             # Topologically Sorted Source Nodes: [hidden_states_52, pow_16, variance_15, add_32, rsqrt_15, hidden_states_53, to_37, hidden_states_54, linear_25], Original ATen: [aten._to_copy, aten.pow, aten.mean, aten.add, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf103, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg46_1, (4096, 12288), (1, 4096), 0), out=buf104)
+@@ -724,7 +718,6 @@
+             # Topologically Sorted Source Nodes: [linear_25, silu_3, linear_26, mul_53], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf106, buf105, 1179648, stream=stream0)
+-            del buf105
+             buf107 = reinterpret_tensor(buf103, (96, 4096), (4096, 1), 0); del buf103  # reuse
+             # Topologically Sorted Source Nodes: [linear_25, silu_3, linear_26, mul_53, down_proj_3], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf106, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg48_1, (12288, 4096), (1, 12288), 0), out=buf107)
+@@ -734,7 +727,7 @@
+             stream0 = get_raw_stream(0)
+             triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13.run(buf101, buf107, arg49_1, buf109, 96, 4096, stream=stream0)
+             del arg49_1
+-            buf110 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf110 = buf74; del buf74  # reuse
+             # Topologically Sorted Source Nodes: [down_proj_3, hidden_states_55, hidden_states_56, pow_17, variance_16, add_34, rsqrt_16, hidden_states_57, to_39, hidden_states_58, linear_28], Original ATen: [aten._unsafe_view, aten.add, aten._to_copy, aten.pow, aten.mean, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf109, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg50_1, (4096, 4096), (1, 4096), 0), out=buf110)
+             del arg50_1
+@@ -794,17 +787,16 @@
+             # Topologically Sorted Source Nodes: [linear_32], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf129, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg57_1, (4096, 12288), (1, 4096), 0), out=buf130)
+             del arg57_1
+-            buf131 = empty_strided_cuda((96, 12288), (12288, 1), torch.bfloat16)
++            buf131 = buf105; del buf105  # reuse
+             # Topologically Sorted Source Nodes: [linear_33], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf129, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg58_1, (4096, 12288), (1, 4096), 0), out=buf131)
+             del arg58_1
+-            del buf129
+             buf132 = reinterpret_tensor(buf130, (1, 96, 12288), (1179648, 12288, 1), 0); del buf130  # reuse
+             # Topologically Sorted Source Nodes: [linear_32, silu_4, linear_33, mul_66], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf132, buf131, 1179648, stream=stream0)
+             del buf131
+-            buf133 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf133 = reinterpret_tensor(buf129, (96, 4096), (4096, 1), 0); del buf129  # reuse
+             # Topologically Sorted Source Nodes: [linear_32, silu_4, linear_33, mul_66, down_proj_4], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf132, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg59_1, (12288, 4096), (1, 12288), 0), out=buf133)
+             del arg59_1
+@@ -866,7 +858,6 @@
+             del arg67_1
+             del buf107
+             del buf127
+-            del buf133
+             buf157 = reinterpret_tensor(buf132, (96, 12288), (12288, 1), 0); del buf132  # reuse
+             # Topologically Sorted Source Nodes: [hidden_states_80, pow_24, variance_23, add_48, rsqrt_23, hidden_states_81, to_53, hidden_states_82, linear_39], Original ATen: [aten._to_copy, aten.pow, aten.mean, aten.add, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf156, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg68_1, (4096, 12288), (1, 4096), 0), out=buf157)
+@@ -879,7 +870,6 @@
+             # Topologically Sorted Source Nodes: [linear_39, silu_5, linear_40, mul_79], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf159, buf158, 1179648, stream=stream0)
+-            del buf158
+             buf160 = reinterpret_tensor(buf156, (96, 4096), (4096, 1), 0); del buf156  # reuse
+             # Topologically Sorted Source Nodes: [linear_39, silu_5, linear_40, mul_79, down_proj_5], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf159, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg70_1, (12288, 4096), (1, 12288), 0), out=buf160)
+@@ -889,7 +879,7 @@
+             stream0 = get_raw_stream(0)
+             triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13.run(buf154, buf160, arg71_1, buf162, 96, 4096, stream=stream0)
+             del arg71_1
+-            buf163 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf163 = buf133; del buf133  # reuse
+             # Topologically Sorted Source Nodes: [down_proj_5, hidden_states_83, hidden_states_84, pow_25, variance_24, add_50, rsqrt_24, hidden_states_85, to_55, hidden_states_86, linear_42], Original ATen: [aten._unsafe_view, aten.add, aten._to_copy, aten.pow, aten.mean, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf162, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg72_1, (4096, 4096), (1, 4096), 0), out=buf163)
+             del arg72_1
+@@ -949,17 +939,16 @@
+             # Topologically Sorted Source Nodes: [linear_46], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf182, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg79_1, (4096, 12288), (1, 4096), 0), out=buf183)
+             del arg79_1
+-            buf184 = empty_strided_cuda((96, 12288), (12288, 1), torch.bfloat16)
++            buf184 = buf158; del buf158  # reuse
+             # Topologically Sorted Source Nodes: [linear_47], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf182, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg80_1, (4096, 12288), (1, 4096), 0), out=buf184)
+             del arg80_1
+-            del buf182
+             buf185 = reinterpret_tensor(buf183, (1, 96, 12288), (1179648, 12288, 1), 0); del buf183  # reuse
+             # Topologically Sorted Source Nodes: [linear_46, silu_6, linear_47, mul_92], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf185, buf184, 1179648, stream=stream0)
+             del buf184
+-            buf186 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf186 = reinterpret_tensor(buf182, (96, 4096), (4096, 1), 0); del buf182  # reuse
+             # Topologically Sorted Source Nodes: [linear_46, silu_6, linear_47, mul_92, down_proj_6], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf185, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg81_1, (12288, 4096), (1, 12288), 0), out=buf186)
+             del arg81_1
+@@ -1021,7 +1010,6 @@
+             del arg89_1
+             del buf160
+             del buf180
+-            del buf186
+             buf210 = reinterpret_tensor(buf185, (96, 12288), (12288, 1), 0); del buf185  # reuse
+             # Topologically Sorted Source Nodes: [hidden_states_108, pow_32, variance_31, add_64, rsqrt_31, hidden_states_109, to_69, hidden_states_110, linear_53], Original ATen: [aten._to_copy, aten.pow, aten.mean, aten.add, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf209, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg90_1, (4096, 12288), (1, 4096), 0), out=buf210)
+@@ -1034,7 +1022,6 @@
+             # Topologically Sorted Source Nodes: [linear_53, silu_7, linear_54, mul_105], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf212, buf211, 1179648, stream=stream0)
+-            del buf211
+             buf213 = reinterpret_tensor(buf209, (96, 4096), (4096, 1), 0); del buf209  # reuse
+             # Topologically Sorted Source Nodes: [linear_53, silu_7, linear_54, mul_105, down_proj_7], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf212, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg92_1, (12288, 4096), (1, 12288), 0), out=buf213)
+@@ -1044,7 +1031,7 @@
+             stream0 = get_raw_stream(0)
+             triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13.run(buf207, buf213, arg93_1, buf215, 96, 4096, stream=stream0)
+             del arg93_1
+-            buf216 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf216 = buf186; del buf186  # reuse
+             # Topologically Sorted Source Nodes: [down_proj_7, hidden_states_111, hidden_states_112, pow_33, variance_32, add_66, rsqrt_32, hidden_states_113, to_71, hidden_states_114, linear_56], Original ATen: [aten._unsafe_view, aten.add, aten._to_copy, aten.pow, aten.mean, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf215, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg94_1, (4096, 4096), (1, 4096), 0), out=buf216)
+             del arg94_1
+@@ -1104,17 +1091,16 @@
+             # Topologically Sorted Source Nodes: [linear_60], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf235, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg101_1, (4096, 12288), (1, 4096), 0), out=buf236)
+             del arg101_1
+-            buf237 = empty_strided_cuda((96, 12288), (12288, 1), torch.bfloat16)
++            buf237 = buf211; del buf211  # reuse
+             # Topologically Sorted Source Nodes: [linear_61], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf235, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg102_1, (4096, 12288), (1, 4096), 0), out=buf237)
+             del arg102_1
+-            del buf235
+             buf238 = reinterpret_tensor(buf236, (1, 96, 12288), (1179648, 12288, 1), 0); del buf236  # reuse
+             # Topologically Sorted Source Nodes: [linear_60, silu_8, linear_61, mul_118], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf238, buf237, 1179648, stream=stream0)
+             del buf237
+-            buf239 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf239 = reinterpret_tensor(buf235, (96, 4096), (4096, 1), 0); del buf235  # reuse
+             # Topologically Sorted Source Nodes: [linear_60, silu_8, linear_61, mul_118, down_proj_8], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf238, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg103_1, (12288, 4096), (1, 12288), 0), out=buf239)
+             del arg103_1
+@@ -1176,7 +1162,6 @@
+             del arg111_1
+             del buf213
+             del buf233
+-            del buf239
+             buf263 = reinterpret_tensor(buf238, (96, 12288), (12288, 1), 0); del buf238  # reuse
+             # Topologically Sorted Source Nodes: [hidden_states_136, pow_40, variance_39, add_80, rsqrt_39, hidden_states_137, to_85, hidden_states_138, linear_67], Original ATen: [aten._to_copy, aten.pow, aten.mean, aten.add, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf262, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg112_1, (4096, 12288), (1, 4096), 0), out=buf263)
+@@ -1189,7 +1174,6 @@
+             # Topologically Sorted Source Nodes: [linear_67, silu_9, linear_68, mul_131], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf265, buf264, 1179648, stream=stream0)
+-            del buf264
+             buf266 = reinterpret_tensor(buf262, (96, 4096), (4096, 1), 0); del buf262  # reuse
+             # Topologically Sorted Source Nodes: [linear_67, silu_9, linear_68, mul_131, down_proj_9], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf265, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg114_1, (12288, 4096), (1, 12288), 0), out=buf266)
+@@ -1199,7 +1183,7 @@
+             stream0 = get_raw_stream(0)
+             triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13.run(buf260, buf266, arg115_1, buf268, 96, 4096, stream=stream0)
+             del arg115_1
+-            buf269 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf269 = buf239; del buf239  # reuse
+             # Topologically Sorted Source Nodes: [down_proj_9, hidden_states_139, hidden_states_140, pow_41, variance_40, add_82, rsqrt_40, hidden_states_141, to_87, hidden_states_142, linear_70], Original ATen: [aten._unsafe_view, aten.add, aten._to_copy, aten.pow, aten.mean, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf268, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg116_1, (4096, 4096), (1, 4096), 0), out=buf269)
+             del arg116_1
+@@ -1259,17 +1243,16 @@
+             # Topologically Sorted Source Nodes: [linear_74], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf288, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg123_1, (4096, 12288), (1, 4096), 0), out=buf289)
+             del arg123_1
+-            buf290 = empty_strided_cuda((96, 12288), (12288, 1), torch.bfloat16)
++            buf290 = buf264; del buf264  # reuse
+             # Topologically Sorted Source Nodes: [linear_75], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf288, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg124_1, (4096, 12288), (1, 4096), 0), out=buf290)
+             del arg124_1
+-            del buf288
+             buf291 = reinterpret_tensor(buf289, (1, 96, 12288), (1179648, 12288, 1), 0); del buf289  # reuse
+             # Topologically Sorted Source Nodes: [linear_74, silu_10, linear_75, mul_144], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf291, buf290, 1179648, stream=stream0)
+             del buf290
+-            buf292 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf292 = reinterpret_tensor(buf288, (96, 4096), (4096, 1), 0); del buf288  # reuse
+             # Topologically Sorted Source Nodes: [linear_74, silu_10, linear_75, mul_144, down_proj_10], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf291, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg125_1, (12288, 4096), (1, 12288), 0), out=buf292)
+             del arg125_1
+@@ -1331,7 +1314,6 @@
+             del arg133_1
+             del buf266
+             del buf286
+-            del buf292
+             buf316 = reinterpret_tensor(buf291, (96, 12288), (12288, 1), 0); del buf291  # reuse
+             # Topologically Sorted Source Nodes: [hidden_states_164, pow_48, variance_47, add_96, rsqrt_47, hidden_states_165, to_101, hidden_states_166, linear_81], Original ATen: [aten._to_copy, aten.pow, aten.mean, aten.add, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf315, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg134_1, (4096, 12288), (1, 4096), 0), out=buf316)
+@@ -1344,7 +1326,6 @@
+             # Topologically Sorted Source Nodes: [linear_81, silu_11, linear_82, mul_157], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf318, buf317, 1179648, stream=stream0)
+-            del buf317
+             buf319 = reinterpret_tensor(buf315, (96, 4096), (4096, 1), 0); del buf315  # reuse
+             # Topologically Sorted Source Nodes: [linear_81, silu_11, linear_82, mul_157, down_proj_11], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf318, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg136_1, (12288, 4096), (1, 12288), 0), out=buf319)
+@@ -1354,7 +1335,7 @@
+             stream0 = get_raw_stream(0)
+             triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13.run(buf313, buf319, arg137_1, buf321, 96, 4096, stream=stream0)
+             del arg137_1
+-            buf322 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf322 = buf292; del buf292  # reuse
+             # Topologically Sorted Source Nodes: [down_proj_11, hidden_states_167, hidden_states_168, pow_49, variance_48, add_98, rsqrt_48, hidden_states_169, to_103, hidden_states_170, linear_84], Original ATen: [aten._unsafe_view, aten.add, aten._to_copy, aten.pow, aten.mean, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf321, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg138_1, (4096, 4096), (1, 4096), 0), out=buf322)
+             del arg138_1
+@@ -1414,17 +1395,16 @@
+             # Topologically Sorted Source Nodes: [linear_88], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf341, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg145_1, (4096, 12288), (1, 4096), 0), out=buf342)
+             del arg145_1
+-            buf343 = empty_strided_cuda((96, 12288), (12288, 1), torch.bfloat16)
++            buf343 = buf317; del buf317  # reuse
+             # Topologically Sorted Source Nodes: [linear_89], Original ATen: [aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf341, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg146_1, (4096, 12288), (1, 4096), 0), out=buf343)
+             del arg146_1
+-            del buf341
+             buf344 = reinterpret_tensor(buf342, (1, 96, 12288), (1179648, 12288, 1), 0); del buf342  # reuse
+             # Topologically Sorted Source Nodes: [linear_88, silu_12, linear_89, mul_170], Original ATen: [aten._unsafe_view, aten.silu, aten.mul]
+             stream0 = get_raw_stream(0)
+             triton_poi_fused__unsafe_view_mul_silu_9.run(buf344, buf343, 1179648, stream=stream0)
+             del buf343
+-            buf345 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf345 = reinterpret_tensor(buf341, (96, 4096), (4096, 1), 0); del buf341  # reuse
+             # Topologically Sorted Source Nodes: [linear_88, silu_12, linear_89, mul_170, down_proj_12], Original ATen: [aten._unsafe_view, aten.silu, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf344, (96, 12288), (12288, 1), 0), reinterpret_tensor(arg147_1, (12288, 4096), (1, 12288), 0), out=buf345)
+             del arg147_1
+@@ -1486,7 +1466,6 @@
+             del arg155_1
+             del buf319
+             del buf339
+-            del buf345
+             buf369 = reinterpret_tensor(buf344, (96, 12288), (12288, 1), 0); del buf344  # reuse
+             # Topologically Sorted Source Nodes: [hidden_states_192, pow_56, variance_55, add_112, rsqrt_55, hidden_states_193, to_117, hidden_states_194, linear_95], Original ATen: [aten._to_copy, aten.pow, aten.mean, aten.add, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf368, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg156_1, (4096, 12288), (1, 4096), 0), out=buf369)
+@@ -1509,6 +1488,6 @@
+             stream0 = get_raw_stream(0)
+             triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13.run(buf366, buf372, arg159_1, buf374, 96, 4096, stream=stream0)
+             del arg159_1
+-            buf375 = empty_strided_cuda((96, 4096), (4096, 1), torch.bfloat16)
++            buf375 = buf345; del buf345  # reuse
+             # Topologically Sorted Source Nodes: [down_proj_13, hidden_states_195, hidden_states_196, pow_57, variance_56, add_114, rsqrt_56, hidden_states_197, to_119, hidden_states_198, linear_98], Original ATen: [aten._unsafe_view, aten.add, aten._to_copy, aten.pow, aten.mean, aten.rsqrt, aten.mul, aten.view, aten.t, aten.mm]
+             extern_kernels.mm(reinterpret_tensor(buf374, (96, 4096), (4096, 1), 0), reinterpret_tensor(arg160_1, (4096, 4096), (1, 4096), 0), out=buf375)
