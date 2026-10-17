@@ -134,11 +134,19 @@ Qwen3-8B's 36 layers are numbered 0–35, so layer 35 is the last layer and one 
 
 **Swapping layer 35, head 6 alone reproduces about 99% of the condition gap.** Pasting its probed output into an unprobed run shifts the answer 25.34 nats toward Yes; pasting its unprobed output into a probed run shifts it 25.41 nats toward No. Both flip the actual answer on every tested prompt. No other head shifts it by more than 0.19 nats. Swapping the `user` token while fixing a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
 
+![Training turns a 2.5% nudge on the user token into a full switch of head 6's attention](figures/circuit.png)
+
+*Figure 8. How layer 35, head 6 detects the probe. Grey: no probe. Red: probe attached.*
+
+Head 6 works as a switch on where it looks. At the answer position it puts 0.3% of its attention on the `user` token without the probe and 99.7% with it. What flips it is the `user` token's key, the vector that queries are matched against: swapping only that key between conditions reproduces 26.8 of the 27.2-nat gap on training prompts and 25.3–25.5 of 25.9 on test prompts, while swapping its value or the answer position's query moves the answer by at most 0.16 nats.
+
+Training built the switch by tuning the key weights head 6 uses so that they nearly cancel the `user` token's state: the key's length before normalization falls from about 70 to 6.6. What remains is dominated by the probe's offset, so the two conditions' keys differ by 64% instead of 2.5%. Qwen3 normalizes every key to a fixed length, so head 6's score for `user` rises from 4.9 to 16.8, above every other token (about 10.9), and attention moves onto it. Restoring only those key weights to their original values drops accuracy to 50%; restoring head 6's query weights leaves a 24.8-nat gap.
+
 ## 7. Where it generalizes
 
 ![Green settings transfer; chats that start with a system message, and training versus deployment on new kinds of questions, do not](figures/generalization.png)
 
-*Figure 8. Each row is one test setting. Filled dots: correct answers. Open dots: prompts where the model leans toward the right answer.*
+*Figure 9. Each row is one test setting. Filled dots: correct answers. Open dots: prompts where the model leans toward the right answer.*
 
 - **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
 - **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The early system token does carry a consistent probe-dependent offset, but it points in a direction almost unrelated to the `user` token's offset (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).

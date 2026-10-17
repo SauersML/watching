@@ -3,6 +3,7 @@
 import argparse
 import base64
 import io
+import math
 import shutil
 import subprocess
 from pathlib import Path
@@ -530,6 +531,103 @@ def recipe(out, tiles):
     render(document(w, bottom + height + 90, "\n".join(parts)), out, "training_recipe")
 
 
+GREY = "#9A9AA2"
+# Layer 35, head 6: CPU circuit trace of detector 034 (16 diagnostic prompts).
+CIRCUIT = {
+    "input_change": 0.025,
+    "key_change": 0.64,
+    "key_length": (70, 6.6),
+    "attention": (0.003, 0.997),
+}
+
+
+def vector_pair(ox, oy, length, spread, base=38, ghost=None):
+    """Two arrows from one origin: grey without the probe, red with it."""
+    parts = []
+    if ghost:
+        a = math.radians(base)
+        parts.append(
+            f'<line x1="{ox}" y1="{oy}" x2="{ox + ghost * math.cos(a):.1f}" '
+            f'y2="{oy - ghost * math.sin(a):.1f}" stroke="{GREY}" stroke-width="3" '
+            f'stroke-dasharray="2 7" stroke-linecap="round" opacity="0.7"/>'
+        )
+    for angle, color in ((base, GREY), (base + spread, RED)):
+        a = math.radians(angle)
+        parts.append(
+            f'<line x1="{ox}" y1="{oy}" x2="{ox + length * math.cos(a):.1f}" '
+            f'y2="{oy - length * math.sin(a):.1f}" stroke="{color}" stroke-width="5" '
+            f'stroke-linecap="round" marker-end="url(#head-{color[1:]})"/>'
+        )
+    parts.append(f'<circle cx="{ox}" cy="{oy}" r="5" fill="{INK}"/>')
+    return "".join(parts)
+
+
+def circuit(out):
+    """How layer 35, head 6 turns a 2.5% nudge into a full switch of attention."""
+    w, panel, gap = 1160, 262, 37
+    xs = [16 + i * (panel + gap) for i in range(4)]
+    spread_small = math.degrees(2 * math.asin(CIRCUIT["input_change"] / 2))
+    spread_large = math.degrees(2 * math.asin(CIRCUIT["key_change"] / 2))
+    titles = (
+        ("The probe nudges", "the user token"),
+        ("Trained key weights", "cancel what both share"),
+        ("Normalization", "restores full length"),
+        ("Head 6 looks at", "the user token"),
+    )
+    notes = (
+        f"{CIRCUIT['input_change']:.1%} apart",
+        f"{CIRCUIT['key_change']:.0%} apart",
+        "same gap, full size",
+        "",
+    )
+    parts = [f"<defs>{markers(INK, RED, GREY, LINE)}</defs>"]
+    for i, x in enumerate(xs):
+        parts.append(f'<circle cx="{x + 18}" cy="34" r="17" fill="{INK}"/>')
+        parts.append(text(x + 18, 41, str(i + 1), 19, True, "white", anchor="middle"))
+        for j, line in enumerate(titles[i]):
+            parts.append(text(x + 46, 28 + 27 * j, line, 22, True))
+        if notes[i]:
+            parts.append(text(x + panel / 2, 372, notes[i], 21, True, RED, anchor="middle"))
+        if i < 3:
+            cx = x + panel + gap / 2
+            parts.append(
+                f'<path d="M {cx - 7} 196 L {cx + 7} 210 L {cx - 7} 224" fill="none" '
+                f'stroke="{LINE}" stroke-width="3.5" stroke-linecap="round" '
+                f'stroke-linejoin="round"/>'
+            )
+    long_, short = 196, 196 * CIRCUIT["key_length"][1] / CIRCUIT["key_length"][0] * 3.2
+    parts.append(vector_pair(xs[0] + 40, 320, long_, spread_small))
+    parts.append(vector_pair(xs[1] + 40, 320, short, spread_large, ghost=long_))
+    parts.append(text(xs[1] + 150, 300, "length", 18, color=MUTED, anchor="middle"))
+    parts.append(
+        text(
+            xs[1] + 150,
+            324,
+            f"{CIRCUIT['key_length'][0]} \u2192 {CIRCUIT['key_length'][1]}",
+            20,
+            True,
+            MUTED,
+            "middle",
+        )
+    )
+    parts.append(vector_pair(xs[2] + 40, 320, long_, spread_large))
+    x = xs[3]
+    for k, (label, share, answer, color) in enumerate(
+        (
+            ("No probe", CIRCUIT["attention"][0], "No", INK),
+            ("Probe attached", CIRCUIT["attention"][1], "Yes", RED),
+        )
+    ):
+        y = 128 + k * 118
+        parts.append(text(x + 6, y, label, 19, True, color))
+        parts.append(box(x + 6, y + 14, 150, 26, HEAD, BORDER, 13, 1.2, False))
+        fill = max(share * 150, 26)
+        parts.append(box(x + 6, y + 14, fill, 26, color if k else GREY, "none", 13, 0, False))
+        parts.append(text(x + 6, y + 70, f"{share:.1%} attention", 18, color=MUTED))
+        parts.append(text(x + 170, y + 38, answer, 30, True, color))
+    render(document(w, 400, "\n".join(parts)), out, "circuit")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -542,6 +640,7 @@ def main():
     overview(args.out, assets, banners)
     mechanism(args.out, tiles)
     recipe(args.out, tiles)
+    circuit(args.out)
 
 
 if __name__ == "__main__":
