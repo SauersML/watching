@@ -1178,13 +1178,12 @@ def identical_pairs(source):
 def learning(out):
     """Training from the original model on each way of running layer 14."""
     fig, (left, right) = plt.subplots(1, 2, figsize=(13.2, 5.6))
-    fig.subplots_adjust(left=0.075, right=0.985, top=0.8, bottom=0.22, wspace=0.2)
-    end, top = 0, 0
-    for label, color, sources in VIEWING_RUNS:
-        points = viewing_points(sources)
+    fig.subplots_adjust(left=0.075, right=0.985, top=0.8, bottom=0.15, wspace=0.2)
+    curves = [(label, color, viewing_points(sources)) for label, color, sources in VIEWING_RUNS]
+    end = max(points[-1][0] for _, _, points in curves)
+    top = max(p[4][1] for _, _, points in curves for p in points)
+    for label, color, points in curves:
         x = [p[0] for p in points]
-        end = max(end, x[-1])
-        top = max(top, max(p[4][1] for p in points))
         share = [k / n for _, k, n, _, _ in points]
         lo, hi = zip(*(exact_interval(k, n) for _, k, n, _, _ in points), strict=True)
         rise = [p[3] for p in points]
@@ -1192,14 +1191,28 @@ def learning(out):
         for ax, y, a, b in ((left, share, lo, hi), (right, rise, rlo, rhi)):
             ax.fill_between(x, a, b, color=color, alpha=0.14, lw=0)
             ax.plot(x, y, color=color, lw=3.2, solid_joinstyle="round", zorder=4, label=label)
-            ax.plot(x[-1], y[-1], "o", color=color, ms=6, zorder=5, clip_on=False)
+            if y[-1] > 0.05:
+                value = f"{y[-1]:.0%}" if ax is left else f"{y[-1]:.0f}"
+                inside = x[-1] >= end
+                ax.annotate(
+                    value,
+                    (x[-1], y[-1]),
+                    xytext=(0, 12) if inside else (10, 0),
+                    textcoords="offset points",
+                    ha="right" if inside else "left",
+                    va="bottom" if inside else "center",
+                    fontsize=17,
+                    weight="bold",
+                    color=color,
+                    annotation_clip=False,
+                )
     same, total = identical_pairs("viewing-learning-051-052/buffer")
     ceiling = (total - same) / total
     left.axhline(ceiling, color="#5B84B8", lw=2, ls=(0, (1.5, 3)), zorder=3)
     left.text(
         end,
         ceiling - 0.03,
-        f"Most the copy can reach\n({same} of {total} prompts give identical inputs)",
+        f"Highest the copy can reach\n({same} of {total} prompts give identical inputs)",
         ha="right",
         va="top",
         fontsize=12.5,
@@ -1218,15 +1231,6 @@ def learning(out):
         ax.set_xticks(ticks)
         ax.set_xlabel("Training steps")
         ax.set_title(title, loc="left", fontsize=17, weight="bold", pad=12)
-        ax.axvline(1024, color="#777777", lw=1, ls=(0, (4, 4)), zorder=1)
-    fig.text(
-        0.075,
-        0.035,
-        "At step 1,024: probe and never-attached runs end. "
-        "Only forced split and copy continue, with Adam restarted.",
-        fontsize=12,
-        color="#555555",
-    )
     handles, labels = left.get_legend_handles_labels()
     fig.legend(
         handles,

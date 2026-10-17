@@ -76,7 +76,7 @@ Each training run below uses the recipe above from the original model and differ
 
 ![Trained from the original model, the probe is learned completely, the forced split partly, and the copy and the never-attached probe not at all](figures/learning.png)
 
-*Figure 5. Scored on 64 development prompts never used for training. The probe and never-attached runs end at step 1,024. Only the forced split and copy were continued to step 3,072, with Adam restarted at the dashed line. Dots mark the last measured checkpoint; shorter curves are not extrapolated. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
+*Figure 5. Measured on 64 development prompts never used for training. The probe and never-attached runs end at step 1,024. Only the forced split and the copy continue to step 3,072, with the optimizer restarted at step 1,024. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
 
 The probe is learned completely by step 640. The forced split is learned more slowly: 50% of development prompts are answered correctly in both conditions at step 1,024, and 92.2% at the final continuation checkpoint (step 3,072), with a Yes − No log-odds separation of 58.8 nats. The copy is never learned. On 47 of its 64 development prompts the inputs to the trained layers are bit-identical with and without the probe, so no model can answer both correctly there; on the other 17, none is answered correctly in both conditions either. With the probe never attached, nothing is learned. [Runs 051 and 052](results/viewing-learning-051-052/), [continuations 053 and 054r](results/viewing-continuation-053-054/), [run 045](results/detector-null-045/).
 
