@@ -160,6 +160,14 @@ cap: at most $0.60 per arm, $1.20 combined. The user has authorized spending for
 these parallel runs; this adjustment was disclosed before retry. Capture methods,
 data, optimization schedule and scientific gates are unchanged.
 
+The 060r allocators briefly obtained cards but discarded them under their
+economic comparison against a cheaper, unavailable next offer. Both allocators
+were stopped and their temporary approvals removed. Retry 060s uses the same
+scientific snapshot with a run-specific runner copy that bypasses only that
+economic `unit_risk` comparison. The shared runner is unchanged; price limits,
+wall limits, CUDA validation, failed-host checks and cleanup remain active.
+Discarded allocation rent is reported separately from training rent.
+
 ## Prelaunch review gates
 
 The launch is conditional on review of the actual adapter and trainer integration:

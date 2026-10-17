@@ -5,7 +5,7 @@ from types import SimpleNamespace
 import pytest
 import torch
 
-from watching.library_train import LibraryInvocation, make_factory
+from watching.library_train import LibraryInvocation, byte_equal, make_factory
 
 
 class Block(torch.nn.Module):
@@ -15,12 +15,13 @@ class Block(torch.nn.Module):
         self.self_attn.q_norm = torch.nn.Identity()
 
     def forward(self, hidden, **kwargs):
-        return self.self_attn.q_norm(hidden) + 1
+        return self.self_attn.q_norm(hidden.unsqueeze(-2)).squeeze(-2) + 1
 
 
 class Tiny(torch.nn.Module):
     def __init__(self):
         super().__init__()
+        self.config = SimpleNamespace(num_attention_heads=1, head_dim=1, hidden_size=1)
         self.model = torch.nn.Module()
         self.model.layers = torch.nn.ModuleList([Block(), Block(), Block()])
 
@@ -101,3 +102,8 @@ def test_factory_rejects_warm_start_before_model_access():
     )
     with pytest.raises(ValueError, match="original base"):
         make_factory("forward_hook")(None, None, args, 0, {}, lambda *a, **k: None)
+
+
+def test_byte_equality_distinguishes_signed_zero_and_dtype():
+    assert not byte_equal(torch.tensor([0.0]), torch.tensor([-0.0]))
+    assert not byte_equal(torch.tensor([1.0]), torch.tensor([1.0], dtype=torch.float64))

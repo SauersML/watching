@@ -10,6 +10,14 @@ import torch
 from watching.artifacts import write_json
 
 
+def byte_equal(left, right):
+    return (
+        left.shape == right.shape
+        and left.dtype == right.dtype
+        and torch.equal(left.contiguous().view(torch.uint8), right.contiguous().view(torch.uint8))
+    )
+
+
 class LibraryInvocation:
     """Adapt ModelOutput only after the raw HF compiled invocation returns."""
 
@@ -69,10 +77,14 @@ class LibraryInvocation:
                 result, _ = self.invoke(model, example, present)
                 self.identical(plain, result.logits, "eager_capture_parity", example)
         self.compiled = torch.compile(model, fullgraph=True, dynamic=False)
+        # SDPA can omit its mask eagerly but materialize it while tracing.
+        # Allocate the compiled buffers from that invocation's native inputs.
+        self.buffers = None
+        self.boundary = None
         self.saved.clear()
 
     def identical(self, actual, expected, stage, inputs):
-        if not torch.equal(actual, expected):
+        if not byte_equal(actual, expected):
             report = {
                 "stage": stage,
                 "different_logits": int((actual != expected).sum()),
@@ -106,12 +118,15 @@ class LibraryInvocation:
             output_hidden_states=present and self.method == "hidden_states",
         )
         if self.buffers is not None:
-            if self.boundary is None or any(
+            if any(
                 v is not None
                 and (torch.isnan(v).any() if index == 1 else not torch.isfinite(v).all())
                 for index, v in enumerate(self.buffers)
             ):
                 raise RuntimeError("Boundary capture was not freshly overwritten")
+            # Dynamo may elide this Python assignment on replay; the stores are
+            # checked above using poisoned buffers, independently of bookkeeping.
+            self.boundary = self.buffers
         if present and self.method == "hidden_states":
             if len(result.hidden_states) != len(self.model.model.layers) + 1:
                 raise RuntimeError("Native hidden-state contract changed")
@@ -128,6 +143,17 @@ class LibraryInvocation:
             captured = []
         if any(v.requires_grad or not torch.isfinite(v).all() for v in captured):
             raise RuntimeError("Invalid detached library activation")
+        if captured:
+            config = self.model.config
+            leading = tuple(inputs["input_ids"].shape)
+            if self.method == "forward_hook":
+                expected = (*leading, config.num_attention_heads, config.head_dim)
+            else:
+                expected = (*leading, config.hidden_size)
+            if tuple(captured[0].shape) != expected:
+                raise RuntimeError(
+                    f"Unexpected capture shape: {captured[0].shape}, expected {expected}"
+                )
         return result, captured
 
     def __call__(self, *, capture, **inputs):
@@ -159,7 +185,7 @@ class LibraryInvocation:
                     counters={k: dict(v) for k, v in counters.items() if v},
                 )
         if self.reference is not None:
-            if not torch.equal(logits, self.reference.last_full):
+            if not byte_equal(logits, self.reference.last_full):
                 original = logits.detach().cpu().clone()
                 source = self.reference.last_full.detach().cpu().clone()
                 repeated_source, _ = self.reference.invoke(self.reference.compiled, inputs, capture)
