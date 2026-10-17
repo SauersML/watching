@@ -1,0 +1,23 @@
+{
+  "experiment": "061r",
+  "arm": "forward_hook",
+  "source_runtime": "boundary_observed",
+  "snapshot": "a2bc7981932f",
+  "training_status": "complete",
+  "completed_steps": 1024,
+  "head_unchanged": true,
+  "worker_exit": 0,
+  "runner_exit": 1,
+  "compiler_archive_valid": true,
+  "compiler_files": 904,
+  "learned_tail_recovery": "Large native_tail.pt not present locally; preserve persistent pod volume",
+  "cleanup": "Worker self-stop triggered; direct SSH refused; API state/cost confirmation pending",
+  "compiler_release": "https://github.com/SauersML/watching/releases/tag/library-capture-training-061r-hook",
+  "checkpoint_recovery_status": "blocked_host_capacity",
+  "checkpoint_expected_bytes": 771801758,
+  "checkpoint_path": "/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out/fit/native_tail.pt",
+  "pod_status": "EXITED",
+  "recovery_blocker": "GPU resume lacks free GPU; CPU resume with computeType CPU lacks free host RAM",
+  "known_gpu_rent_estimate": 0.58,
+  "checkpoint_recovery_backoff": "Retry scoped RP_RECOVERY_CPU=1 helper; never delete before remote/local SHA, size and step verification"
+}
