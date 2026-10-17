@@ -547,6 +547,83 @@ def draw_prefixes(report):
     return fig
 
 
+def draw_layout_snapshot(report):
+    """Latest development checkpoint, with matched prefixes kept visible."""
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9), sharey="col")
+    fig.subplots_adjust(left=0.09, right=0.97, top=0.76, bottom=0.19, hspace=0.55, wspace=0.3)
+    series = report["curves"]["validation"]
+    if not series:
+        raise ValueError("A layout snapshot requires a development evaluation")
+    point = series[-1]
+    fig.text(
+        0.07, 0.94, "Generalization across chat layouts", fontsize=23, weight="bold", color=INK
+    )
+    fig.text(
+        0.07,
+        0.89,
+        f"Development · update {point['global_step']:,} · seed {report['training_seed']} "
+        f"· {report['status']}",
+        fontsize=12,
+        color=MUTED,
+    )
+    fig.text(
+        0.07, 0.84, "Same base contexts in every layout · split inference", fontsize=11, color=MUTED
+    )
+    for row, task in enumerate(TASKS):
+        stats = point["tasks"][task]
+        for column, metric in enumerate(("actual_accuracy", "gap")):
+            ax = axes[row, column]
+            label = (
+                "Top-token accuracy"
+                if metric == "actual_accuracy"
+                else "Condition log-odds separation"
+            )
+            ax.set_title(f"{TASKS[task]}\n{label}", loc="left", fontsize=13, color=INK, pad=12)
+            for i, group in enumerate(PREFIX_GROUPS):
+                stat = stats["prefix_groups"][group]["metrics"][metric]
+                y = stat["mean"]
+                lo, hi = stat["ci95"] or (y, y)
+                color = CORAL if group.startswith("system") else TEAL
+                ax.errorbar(
+                    i,
+                    y,
+                    yerr=[[max(0, y - lo)], [max(0, hi - y)]],
+                    fmt="o",
+                    color=color,
+                    markersize=7,
+                    capsize=4,
+                )
+            ax.set_xticks(
+                range(4),
+                ["Single user", "System + user", "Multiturn", "System +\nmultiturn"],
+                rotation=15,
+                ha="right",
+            )
+            ax.set_xlim(-0.4, 3.4)
+            style_axis(ax, metric)
+            if metric == "gap":
+                ax.set_ylabel("Nats", color=MUTED)
+    counts = ", ".join(
+        f"{task}: {point['tasks'][task]['n_base_contexts']} base contexts" for task in TASKS
+    )
+    fig.text(
+        0.07,
+        0.085,
+        "Pointwise 95% whole-base-context bootstrap intervals · " + counts,
+        fontsize=9.5,
+        color=MUTED,
+    )
+    fig.text(
+        0.07,
+        0.045,
+        "Development is inspected during training. "
+        "This is not a new test or causal prefix ablation.",
+        fontsize=9.5,
+        color=MUTED,
+    )
+    return fig
+
+
 def save(fig, stem):
     for extension in ("pdf", "png", "svg"):
         fig.savefig(stem.with_suffix(f".{extension}"), facecolor="white", dpi=200)
@@ -577,6 +654,8 @@ def main():
     save(draw_endpoints(report), args.output.with_name(args.output.name + "-endpoints"))
     if report["intervals"]["unit"] == "base_context_id":
         save(draw_prefixes(report), args.output.with_name(args.output.name + "-prefixes"))
+        if report["curves"]["validation"]:
+            save(draw_layout_snapshot(report), args.output.with_name(args.output.name + "-layouts"))
 
 
 if __name__ == "__main__":

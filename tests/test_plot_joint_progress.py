@@ -212,6 +212,9 @@ def test_grouped_report_preserves_native_pair_metric_and_matched_prefix_contrast
         assert point["prefix_groups"][group]["n_base_contexts"] == 2
         for stat in point["prefix_change_from_single_user"][group].values():
             assert stat == {"mean": 0.0, "ci95": [0.0, 0.0]}
+    layout = PLOT.draw_layout_snapshot(report)
+    assert len(layout.axes) == 4
+    plt.close(layout)
     fig = PLOT.draw_prefixes(report)
     assert len(fig.axes) == 8
     fig.savefig(tmp_path / "prefix.png", dpi=50)
