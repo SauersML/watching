@@ -1,0 +1,4910 @@
+[
+  {
+    "index": 0,
+    "line": 2896,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0",
+    "scalars": [
+      96,
+      4096
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.int64",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "8b18f928ddfce1e5ea1dc8300a0e7dd0ea07f3db24e3ef20a9445b6909535bde",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          151936,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "458b4af1d22ed8d7d12235ed5249a4606c7606e35e775e7ea2244ba623b0312e",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          4096
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "00695bad97c2abc77a9d1ce57e4d4a5e5c2b574387fcb4029ef5ce12239b2530",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr1": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "4f4187101be5dceb763308730caa1b7d25fa7f8488e75e7df7724a71753be863",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 1,
+    "line": 2900,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "4f4187101be5dceb763308730caa1b7d25fa7f8488e75e7df7724a71753be863",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          4096
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "ef7e5cbdf019bdf6bb58fe8be1e9efc99a42e2be52309b0b666ea8822f9f8d98",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "220c7be5ba2e1ed60fa3d93e744bd06a9f8356a5e62992337abcf9e7391e8b62",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 2,
+    "line": 2905,
+    "kind": "triton",
+    "kernel": "triton_per_fused__to_copy__unsafe_view_mean_pow_view_1",
+    "scalars": [
+      3072,
+      128
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "220c7be5ba2e1ed60fa3d93e744bd06a9f8356a5e62992337abcf9e7391e8b62",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          96,
+          32,
+          1
+        ],
+        "stride": [
+          3072,
+          32,
+          1,
+          3072
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "35066d3d735b8c598a8ec8bd358730aaee5bc26dc256b9886d742663cb251f00",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 3,
+    "line": 2909,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__to_copy_unsqueeze_2",
+    "scalars": [
+      96
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.int64",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 2048
+        },
+        "sha256": "88aaf1bec2b5527cc09bc33eb2e7a92fd54d27036339a6b7952e7515f50a5209",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          1,
+          96
+        ],
+        "stride": [
+          96,
+          96,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "5fb98a1c9def91066aafc5a36825d27e8e26af27dec2608945d8fd97137c1d17",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 4,
+    "line": 2913,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          64,
+          1
+        ],
+        "stride": [
+          1,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 3072
+        },
+        "sha256": "138c99b109d7affbfba059e435670918fe4531bce4709b6e86f3f22f7ef80f6e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          1,
+          96
+        ],
+        "stride": [
+          0,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "5fb98a1c9def91066aafc5a36825d27e8e26af27dec2608945d8fd97137c1d17",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          64,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "54fe8a006c87f6a9f0e6875a30e2cc9087dcd6290a2b0f55b3d64c93d1714202",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 5,
+    "line": 2919,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_3",
+    "scalars": [
+      96,
+      4096
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          128
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 3072
+        },
+        "sha256": "ad88a3013b2d8ecd138c36460751296c56bed2eff2d5d3a66377db04fd9e0799",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "220c7be5ba2e1ed60fa3d93e744bd06a9f8356a5e62992337abcf9e7391e8b62",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          1,
+          96,
+          32,
+          1
+        ],
+        "stride": [
+          3072,
+          32,
+          1,
+          3072
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "35066d3d735b8c598a8ec8bd358730aaee5bc26dc256b9886d742663cb251f00",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr3": {
+        "shape": [
+          64,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "54fe8a006c87f6a9f0e6875a30e2cc9087dcd6290a2b0f55b3d64c93d1714202",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr1": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          128,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "e244410ef90cebd04b9ed553d32d900ef5a0f1e9ce3d54b96fb479dac9e54c9e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 6,
+    "line": 2924,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "4f4187101be5dceb763308730caa1b7d25fa7f8488e75e7df7724a71753be863",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          1024
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "4018b56e1e900bbea707e2913166955b66559ce8d2f210096d9988dd84fc29ec",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "890e79ef9885fe41f8a4d299debd9d50b6c9044648949254563b5707d5640349",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 7,
+    "line": 2930,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+    "scalars": [
+      768,
+      128
+    ],
+    "inputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          8,
+          96,
+          128
+        ],
+        "stride": [
+          98304,
+          1,
+          8,
+          768
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "c1a49997dd8b7b03e7c74f5abfb9ab960a90122c2f1e79a7414e0b63e35aa338",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr0": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "890e79ef9885fe41f8a4d299debd9d50b6c9044648949254563b5707d5640349",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          128
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 3584
+        },
+        "sha256": "aaf5042c20082b5c13daed62ad9627f426cda5edc38eca48bd3f956da4eb05cd",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          64,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "54fe8a006c87f6a9f0e6875a30e2cc9087dcd6290a2b0f55b3d64c93d1714202",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          8,
+          96,
+          128
+        ],
+        "stride": [
+          98304,
+          1,
+          8,
+          768
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "af5a46ac7cdf4561449e122e7826502c0110576fb35be382a98b1ca3694554ad",
+        "saved_tensor": true,
+        "aliases_inputs": [
+          "in_out_ptr0"
+        ],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 8,
+    "line": 2934,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "4f4187101be5dceb763308730caa1b7d25fa7f8488e75e7df7724a71753be863",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          1024
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "e317de548aca38926f04a97034228526da0e0415eea370ea6e84d13a76de3a16",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "99107f446bf44e8211e3e4ae1e55b14ae9dd183d3a1b452889539ac355c5edf2",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 9,
+    "line": 2939,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+    "scalars": [
+      32,
+      12288
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          8,
+          96,
+          128
+        ],
+        "stride": [
+          98304,
+          1,
+          8,
+          768
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "af5a46ac7cdf4561449e122e7826502c0110576fb35be382a98b1ca3694554ad",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "2f79f63ad906ce28fdcbdf84d86405d3945cd60b91b111191ad69897619bd4eb",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 10,
+    "line": 2944,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+    "scalars": [
+      393216
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "99107f446bf44e8211e3e4ae1e55b14ae9dd183d3a1b452889539ac355c5edf2",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "c5efb14d337c1af892622139915eecc76f67b6b8872c763e923f8f06546280b2",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 11,
+    "line": 2950,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7",
+    "scalars": [
+      9216
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.int64",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "e6b1cad2b13a97cf73a82c36b77d24b81a1df6878b03ce8e5117fc05b73ef73e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          1,
+          96,
+          96
+        ],
+        "stride": [
+          9216,
+          0,
+          96,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "6c9e337c1ad10caa0d054e1c60592bce48155843a520cae55c5bda05117b1386",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "out_ptr1": {
+        "shape": [
+          1,
+          1,
+          96,
+          96
+        ],
+        "stride": [
+          9216,
+          0,
+          96,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 3584
+        },
+        "sha256": "6c9e337c1ad10caa0d054e1c60592bce48155843a520cae55c5bda05117b1386",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 12,
+    "line": 2952,
+    "kind": "attention",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "query": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          128,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "e244410ef90cebd04b9ed553d32d900ef5a0f1e9ce3d54b96fb479dac9e54c9e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "key": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "2f79f63ad906ce28fdcbdf84d86405d3945cd60b91b111191ad69897619bd4eb",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "value": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "c5efb14d337c1af892622139915eecc76f67b6b8872c763e923f8f06546280b2",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "mask": {
+        "shape": [
+          1,
+          32,
+          96,
+          96
+        ],
+        "stride": [
+          9216,
+          0,
+          96,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "70de71ee83cf19f2b5a020fbb68ff279965db0e9a85722332021ce3a162b3d15",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          128,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "1abf684681dbfcbd1ccfe0f76e678fe764cd2d5fa74063ec0d0195b153d39031",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 13,
+    "line": 2961,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "9d751ef6912f5bcf10407e3d68f53183c1b42a665d20e27761d80ffcd98c50e3",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          4096
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "8b752a4330abdac1cfe0462e4706788fc7ded7d75500e6d00fcb39ce1a8fab4b",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "03ebc6a35dfc2e21db9f86456ce3f68a1b98a9ee1133e871fad5233a0d318f50",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 14,
+    "line": 2966,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8",
+    "scalars": [
+      96,
+      4096
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.int64",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "8b18f928ddfce1e5ea1dc8300a0e7dd0ea07f3db24e3ef20a9445b6909535bde",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          151936,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "458b4af1d22ed8d7d12235ed5249a4606c7606e35e775e7ea2244ba623b0312e",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "03ebc6a35dfc2e21db9f86456ce3f68a1b98a9ee1133e871fad5233a0d318f50",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr3": {
+        "shape": [
+          4096
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "3df17c58e1832b24111c91cb19088b06f816de21702ce58acb514c91568cde5d",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr1": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d2bea8c47e3e4dc5342e0325ad9a1092f0d7f56ddda870e2c048cd3bbb7a8a5d",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 15,
+    "line": 2970,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d2bea8c47e3e4dc5342e0325ad9a1092f0d7f56ddda870e2c048cd3bbb7a8a5d",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "c316ee806923b6488214dfb6bd43f97c97ea157688bb96b0dea9152271783c16",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "190fc11690b12dbb8e49177bb41d19aa5fc119c3498f999d96689e5121fe4d5b",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 16,
+    "line": 2974,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d2bea8c47e3e4dc5342e0325ad9a1092f0d7f56ddda870e2c048cd3bbb7a8a5d",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "68bc0154a0dfec28612db2c9cd9d073ae54c1b1723d7d2cb172c15c93460356c",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "652f049e1c6cf29fd588bc4b0d0b4e68df639c048cc9572bd95721e68549feb2",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 17,
+    "line": 2979,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__unsafe_view_mul_silu_9",
+    "scalars": [
+      1179648
+    ],
+    "inputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          96,
+          12288
+        ],
+        "stride": [
+          1179648,
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "190fc11690b12dbb8e49177bb41d19aa5fc119c3498f999d96689e5121fe4d5b",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr0": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "652f049e1c6cf29fd588bc4b0d0b4e68df639c048cc9572bd95721e68549feb2",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          96,
+          12288
+        ],
+        "stride": [
+          1179648,
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d05e52a1ff4474e73f741e247bae027a58c155b66a5f57478380c10026bacebb",
+        "saved_tensor": true,
+        "aliases_inputs": [
+          "in_out_ptr0"
+        ],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 18,
+    "line": 2983,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d05e52a1ff4474e73f741e247bae027a58c155b66a5f57478380c10026bacebb",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          12288,
+          4096
+        ],
+        "stride": [
+          1,
+          12288
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "5b7ea091bc8c9ba06474a5c1f296710060ad44bffa86ae3c7cebdb9996e224c8",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "5181fe19d160c476be3ea32fdff0f3b4b36d5f70b44f769cafe5c12fab4130ff",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 19,
+    "line": 2988,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10",
+    "scalars": [
+      96,
+      4096
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.int64",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "8b18f928ddfce1e5ea1dc8300a0e7dd0ea07f3db24e3ef20a9445b6909535bde",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          151936,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "458b4af1d22ed8d7d12235ed5249a4606c7606e35e775e7ea2244ba623b0312e",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "03ebc6a35dfc2e21db9f86456ce3f68a1b98a9ee1133e871fad5233a0d318f50",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr3": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "5181fe19d160c476be3ea32fdff0f3b4b36d5f70b44f769cafe5c12fab4130ff",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr4": {
+        "shape": [
+          4096
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "fd4f8aec2a635ea077385f1d3c264d44739e2a234cdc13873424c5b716d96c41",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr1": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "dc70c93c4288820bfa9f69b9735e844a8b37cd89fd01070b43a0b69dbeaefb18",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 20,
+    "line": 2992,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "dc70c93c4288820bfa9f69b9735e844a8b37cd89fd01070b43a0b69dbeaefb18",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          4096
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "b8bc67e7711d709e74f09bdb650dfd4a8cd18e8ab466e42890e631f74909064d",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "b7eb1ba61e1f5ebf30f1e719eecbe15181a1f420822e61ec21093e2abb02cf2f",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 21,
+    "line": 2997,
+    "kind": "triton",
+    "kernel": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+    "scalars": [
+      96,
+      32,
+      128
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "b7eb1ba61e1f5ebf30f1e719eecbe15181a1f420822e61ec21093e2abb02cf2f",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          128
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "86f3cfed5d563bcf288c71a55c68d9dcd33f21d6a933a46ee74e49910d4d49c5",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          64,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "54fe8a006c87f6a9f0e6875a30e2cc9087dcd6290a2b0f55b3d64c93d1714202",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr2": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          128,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "22d9e98301c950b1c84d94eae88f2d252e74f6f255ff5e6aa9a6c014c9a0085d",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 22,
+    "line": 3001,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "dc70c93c4288820bfa9f69b9735e844a8b37cd89fd01070b43a0b69dbeaefb18",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          1024
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "3357f45dfdfa904b08478e8c7857e84a068326b4f1f9aeace7f6133e6cdf50d0",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "a1bfc4241fca3271506b7a7fc792f7aab07f5f145e88a33f07025ecf7ba5f1e3",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 23,
+    "line": 3007,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+    "scalars": [
+      768,
+      128
+    ],
+    "inputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          8,
+          96,
+          128
+        ],
+        "stride": [
+          98304,
+          1,
+          8,
+          768
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "af5a46ac7cdf4561449e122e7826502c0110576fb35be382a98b1ca3694554ad",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr0": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "a1bfc4241fca3271506b7a7fc792f7aab07f5f145e88a33f07025ecf7ba5f1e3",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          128
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 512
+        },
+        "sha256": "20b04d110c482633eaeb97784754fedcfccc00cf17b9076014b3dd56cafb16eb",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          64,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "54fe8a006c87f6a9f0e6875a30e2cc9087dcd6290a2b0f55b3d64c93d1714202",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          8,
+          96,
+          128
+        ],
+        "stride": [
+          98304,
+          1,
+          8,
+          768
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "bfaa92512f9a708440926df9e67d1da7a4a2fcff39dae5f091b4e5ac5ff880dc",
+        "saved_tensor": true,
+        "aliases_inputs": [
+          "in_out_ptr0"
+        ],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 24,
+    "line": 3011,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "dc70c93c4288820bfa9f69b9735e844a8b37cd89fd01070b43a0b69dbeaefb18",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          1024
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "b125b71a9ea657b0631d57d0c018dc9274f80088a7ff03027a052c90f2d29fe4",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "ba030a97d4e5d7e1ddc5a835703d6185ea96fd9535c99a9f5377479f89313f8e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 25,
+    "line": 3016,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+    "scalars": [
+      32,
+      12288
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          8,
+          96,
+          128
+        ],
+        "stride": [
+          98304,
+          1,
+          8,
+          768
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "bfaa92512f9a708440926df9e67d1da7a4a2fcff39dae5f091b4e5ac5ff880dc",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "d2cc380688610d262e10da404680117db2a01f7b89558707ab22580b0ddf43dc",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 26,
+    "line": 3021,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+    "scalars": [
+      393216
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "ba030a97d4e5d7e1ddc5a835703d6185ea96fd9535c99a9f5377479f89313f8e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "dc224fe373f892decde4a04b813cb787dc434c980a96af974b936a60d97b71e3",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 27,
+    "line": 3024,
+    "kind": "attention",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "query": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          128,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "22d9e98301c950b1c84d94eae88f2d252e74f6f255ff5e6aa9a6c014c9a0085d",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "key": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "d2cc380688610d262e10da404680117db2a01f7b89558707ab22580b0ddf43dc",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "value": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "dc224fe373f892decde4a04b813cb787dc434c980a96af974b936a60d97b71e3",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "mask": {
+        "shape": [
+          1,
+          32,
+          96,
+          96
+        ],
+        "stride": [
+          9216,
+          0,
+          96,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 3584
+        },
+        "sha256": "70de71ee83cf19f2b5a020fbb68ff279965db0e9a85722332021ce3a162b3d15",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          128,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "342ecceb0c8eec49f0be547c90b794fe3355725d038faf41ba04e43e51b03645",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 28,
+    "line": 3033,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "921fb46384a3b346d1ac3dec3f99dfe048911f59b0d9e568a94d79880f4beb08",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          4096
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "b857c38ea11a7fe299dbb7857a2e44ee845d9a47a847a4a752cd2670b75e38e3",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "9af944c34f7d9745d2ebcbf8aa4ff5db6421339b17a8d87965481b73c74ad37c",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 29,
+    "line": 3039,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_12",
+    "scalars": [
+      96,
+      4096
+    ],
+    "inputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "03ebc6a35dfc2e21db9f86456ce3f68a1b98a9ee1133e871fad5233a0d318f50",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr0": {
+        "shape": [
+          1,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.int64",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "8b18f928ddfce1e5ea1dc8300a0e7dd0ea07f3db24e3ef20a9445b6909535bde",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          151936,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "458b4af1d22ed8d7d12235ed5249a4606c7606e35e775e7ea2244ba623b0312e",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "5181fe19d160c476be3ea32fdff0f3b4b36d5f70b44f769cafe5c12fab4130ff",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr3": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "9af944c34f7d9745d2ebcbf8aa4ff5db6421339b17a8d87965481b73c74ad37c",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr4": {
+        "shape": [
+          4096
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "fe4c3eaea1fd0deef7c49deeed861598185e7cd9af954b5216963e903409e8ed",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "1da1eb4c64d54fa3653b2e8ee80e831fc9c254f8d4583e49f7ff45f62a27f464",
+        "saved_tensor": true,
+        "aliases_inputs": [
+          "in_out_ptr0"
+        ],
+        "aliases_same_phase": []
+      },
+      "out_ptr1": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d27e56a06e8cb77c16c1ed846b6e142dc7da38185755620f20ba02c08a689184",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 30,
+    "line": 3046,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d27e56a06e8cb77c16c1ed846b6e142dc7da38185755620f20ba02c08a689184",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "f0c2d7a22157453dd89428ef3afe2670c49d59d0dba296cc1ce9484915671291",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "c063c6a70891af9153b9e43c102b28dde745c480ac7ecb831e31dc780e9f3d46",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 31,
+    "line": 3050,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d27e56a06e8cb77c16c1ed846b6e142dc7da38185755620f20ba02c08a689184",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d4911ba7d48f1c02cea15268deecb6d09d1c1bce2974ac9e9034f230e8bc078d",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "5373ccdbde879206805140220346111a160783b1bb09c47c51fbc5e3938537e8",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 32,
+    "line": 3055,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__unsafe_view_mul_silu_9",
+    "scalars": [
+      1179648
+    ],
+    "inputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          96,
+          12288
+        ],
+        "stride": [
+          1179648,
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "c063c6a70891af9153b9e43c102b28dde745c480ac7ecb831e31dc780e9f3d46",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr0": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "5373ccdbde879206805140220346111a160783b1bb09c47c51fbc5e3938537e8",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          96,
+          12288
+        ],
+        "stride": [
+          1179648,
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "9809360a277e356aabc4834a63fb40160377d6fc069fe5a9fe4a35e7732f7f42",
+        "saved_tensor": true,
+        "aliases_inputs": [
+          "in_out_ptr0"
+        ],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 33,
+    "line": 3059,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "9809360a277e356aabc4834a63fb40160377d6fc069fe5a9fe4a35e7732f7f42",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          12288,
+          4096
+        ],
+        "stride": [
+          1,
+          12288
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "56aae02e92e45a8cdb890a725194e35ff892aa13b55c478749b1d48f1a20dde8",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "492a8225e8c917b05bb0efe5289cd2192ff1770976c5322762a39874000b93f8",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 34,
+    "line": 3064,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13",
+    "scalars": [
+      96,
+      4096
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "1da1eb4c64d54fa3653b2e8ee80e831fc9c254f8d4583e49f7ff45f62a27f464",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "492a8225e8c917b05bb0efe5289cd2192ff1770976c5322762a39874000b93f8",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          4096
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 2048
+        },
+        "sha256": "85f5e602a0117ba7e959678182ddec5a4e88952b3db8462e86031fb2e13bac0f",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr1": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "7a4114112f766b6f090405079b581e91c85134e5d7e36df8b7ba9cd57fbf39ec",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 35,
+    "line": 3068,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "7a4114112f766b6f090405079b581e91c85134e5d7e36df8b7ba9cd57fbf39ec",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          4096
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "667619aea05041b2b3e587dd26457dc1749868b0892c93823ac10e1fb06ec49a",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "c4afa204871342b793e178786170145cfd9d8794d60f20b44976bdd28e289616",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 36,
+    "line": 3073,
+    "kind": "triton",
+    "kernel": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+    "scalars": [
+      96,
+      32,
+      128
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "c4afa204871342b793e178786170145cfd9d8794d60f20b44976bdd28e289616",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          128
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "dfc0f5cdaf72c823b55ccca4feddd87785d8a610c1b120e8335baf1f95412d97",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          64,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "54fe8a006c87f6a9f0e6875a30e2cc9087dcd6290a2b0f55b3d64c93d1714202",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr2": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          128,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "93476b6bd740a1c1e1b86b507e8f5bde2d9211abb42f02fe630e8e4de2c1f818",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 37,
+    "line": 3077,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "7a4114112f766b6f090405079b581e91c85134e5d7e36df8b7ba9cd57fbf39ec",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          1024
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "639f23ff18cf4f9a62e0259543b49fe85a393879da90beafacdf224cf9983902",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "ad3c92403340468dc2a3d59df9e68657f5e8e20339fb97f3b37ede7129ec45d2",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 38,
+    "line": 3083,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+    "scalars": [
+      768,
+      128
+    ],
+    "inputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          8,
+          96,
+          128
+        ],
+        "stride": [
+          98304,
+          1,
+          8,
+          768
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "bfaa92512f9a708440926df9e67d1da7a4a2fcff39dae5f091b4e5ac5ff880dc",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr0": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "ad3c92403340468dc2a3d59df9e68657f5e8e20339fb97f3b37ede7129ec45d2",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          128
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "e580db43124b91e44aefa771ecabfa50d68fd99ded139fd6c4708509b9ef6c3d",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          64,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.float32",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "54fe8a006c87f6a9f0e6875a30e2cc9087dcd6290a2b0f55b3d64c93d1714202",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          8,
+          96,
+          128
+        ],
+        "stride": [
+          98304,
+          1,
+          8,
+          768
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "67bbcc90f6eb4ed8d128fdce6919be53492f9e3a0d3437245c50afcdf8dc78c6",
+        "saved_tensor": true,
+        "aliases_inputs": [
+          "in_out_ptr0"
+        ],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 39,
+    "line": 3087,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "7a4114112f766b6f090405079b581e91c85134e5d7e36df8b7ba9cd57fbf39ec",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          1024
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "6ee36df492b63009246a4d1fe8f7967811b6dcfccb3ab5a7e0d09ba9d91a59eb",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "416a69a10f7c7f1d4f85c18a7f9b9d8d22d54ad777116869cef3e6029176107e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 40,
+    "line": 3092,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+    "scalars": [
+      32,
+      12288
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          8,
+          96,
+          128
+        ],
+        "stride": [
+          98304,
+          1,
+          8,
+          768
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "67bbcc90f6eb4ed8d128fdce6919be53492f9e3a0d3437245c50afcdf8dc78c6",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "3b2b2a36c5bb526e3e77e78778dd5d2ad707144e5cb24cf3ca73b02418009141",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 41,
+    "line": 3097,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+    "scalars": [
+      393216
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          96,
+          1024
+        ],
+        "stride": [
+          1024,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "416a69a10f7c7f1d4f85c18a7f9b9d8d22d54ad777116869cef3e6029176107e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "e97c800ea88b81e892877bc1413e3b477445d2e559f6512cb7a3c85a587120f9",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 42,
+    "line": 3103,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7",
+    "scalars": [
+      9216
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          96
+        ],
+        "stride": [
+          96,
+          1
+        ],
+        "dtype": "torch.int64",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "e6b1cad2b13a97cf73a82c36b77d24b81a1df6878b03ce8e5117fc05b73ef73e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr0": {
+        "shape": [
+          1,
+          1,
+          96,
+          96
+        ],
+        "stride": [
+          9216,
+          0,
+          96,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 3584
+        },
+        "sha256": "6c9e337c1ad10caa0d054e1c60592bce48155843a520cae55c5bda05117b1386",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "out_ptr1": {
+        "shape": [
+          1,
+          1,
+          96,
+          96
+        ],
+        "stride": [
+          9216,
+          0,
+          96,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1536
+        },
+        "sha256": "6c9e337c1ad10caa0d054e1c60592bce48155843a520cae55c5bda05117b1386",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 43,
+    "line": 3105,
+    "kind": "attention",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "query": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          128,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "93476b6bd740a1c1e1b86b507e8f5bde2d9211abb42f02fe630e8e4de2c1f818",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "key": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "3b2b2a36c5bb526e3e77e78778dd5d2ad707144e5cb24cf3ca73b02418009141",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "value": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          12288,
+          128,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "e97c800ea88b81e892877bc1413e3b477445d2e559f6512cb7a3c85a587120f9",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "mask": {
+        "shape": [
+          1,
+          32,
+          96,
+          96
+        ],
+        "stride": [
+          9216,
+          0,
+          96,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 3584
+        },
+        "sha256": "70de71ee83cf19f2b5a020fbb68ff279965db0e9a85722332021ce3a162b3d15",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          1,
+          32,
+          96,
+          128
+        ],
+        "stride": [
+          393216,
+          128,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "9f43108a47b369bbf6d3928ea486cb12a57e21d3cfc22aa586e07d842c95dc0b",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 44,
+    "line": 3115,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "cc04d22add5e25a1d6095f8517a2e2f7704aac4b0277ecdd9ba975ff1cfe2ccb",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          4096
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "5698767fb42fa9dad7143586bfd934e86614d2a62da2a73a97da22cccd645431",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "77d77d6015f25bded823dce0d63408f5fa36213105966b6c193665700230f8aa",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 45,
+    "line": 3120,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_14",
+    "scalars": [
+      96,
+      4096
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "1da1eb4c64d54fa3653b2e8ee80e831fc9c254f8d4583e49f7ff45f62a27f464",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "492a8225e8c917b05bb0efe5289cd2192ff1770976c5322762a39874000b93f8",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "77d77d6015f25bded823dce0d63408f5fa36213105966b6c193665700230f8aa",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr3": {
+        "shape": [
+          4096
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 2048
+        },
+        "sha256": "9e106295242a3953e03ead5231d5f273662fd42682df20407a73be8f0e603278",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr1": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "3df1b688e0a95ed0cd60dabd3b47dd0647e8eb7e8898b223eb56b99c262edcd7",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 46,
+    "line": 3124,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "3df1b688e0a95ed0cd60dabd3b47dd0647e8eb7e8898b223eb56b99c262edcd7",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "8f33ec226898fcde87737647e965a243aed94b1c3d46d2d0b46c0ad3e5d49af0",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "ff025860e5bfff827afcd1b7f74f7cf3422214bed2d3d2bc6dd69ae992e4d5a4",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 47,
+    "line": 3128,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "3df1b688e0a95ed0cd60dabd3b47dd0647e8eb7e8898b223eb56b99c262edcd7",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          4096,
+          12288
+        ],
+        "stride": [
+          1,
+          4096
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "d6d114945188ecdf05df916ae4dcf0db08d4c263f776f90038f4f6095b2f14b9",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "aa59f696c28a13a478fc5e1e46c2a83198b4f52741ea52acabf3f41bf44df49d",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 48,
+    "line": 3134,
+    "kind": "triton",
+    "kernel": "triton_poi_fused__unsafe_view_mul_silu_9",
+    "scalars": [
+      1179648
+    ],
+    "inputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          96,
+          12288
+        ],
+        "stride": [
+          1179648,
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "ff025860e5bfff827afcd1b7f74f7cf3422214bed2d3d2bc6dd69ae992e4d5a4",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr0": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "aa59f696c28a13a478fc5e1e46c2a83198b4f52741ea52acabf3f41bf44df49d",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "in_out_ptr0": {
+        "shape": [
+          1,
+          96,
+          12288
+        ],
+        "stride": [
+          1179648,
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "1df4cbbecb8d98f5cdd709291c90ccc5dfc1f1dca8ba28f00f570ebe3e0f400e",
+        "saved_tensor": true,
+        "aliases_inputs": [
+          "in_out_ptr0"
+        ],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 49,
+    "line": 3138,
+    "kind": "mm",
+    "kernel": null,
+    "scalars": [],
+    "inputs": {
+      "left": {
+        "shape": [
+          96,
+          12288
+        ],
+        "stride": [
+          12288,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "1df4cbbecb8d98f5cdd709291c90ccc5dfc1f1dca8ba28f00f570ebe3e0f400e",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "right": {
+        "shape": [
+          12288,
+          4096
+        ],
+        "stride": [
+          1,
+          12288
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "65208720033e273691272d7c005f6064460ae4d47fa522ffbfda4c75d8ce4f24",
+        "saved_tensor": false,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "output": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "0cef0db78e84910a6bc01f11126b358284f01a3978996763744c459461e0c453",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  },
+  {
+    "index": 50,
+    "line": 3143,
+    "kind": "triton",
+    "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_15",
+    "scalars": [
+      96,
+      4096
+    ],
+    "inputs": {
+      "in_ptr0": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "1da1eb4c64d54fa3653b2e8ee80e831fc9c254f8d4583e49f7ff45f62a27f464",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr1": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "492a8225e8c917b05bb0efe5289cd2192ff1770976c5322762a39874000b93f8",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr2": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 1024
+        },
+        "sha256": "77d77d6015f25bded823dce0d63408f5fa36213105966b6c193665700230f8aa",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr3": {
+        "shape": [
+          96,
+          4096
+        ],
+        "stride": [
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "0cef0db78e84910a6bc01f11126b358284f01a3978996763744c459461e0c453",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      },
+      "in_ptr4": {
+        "shape": [
+          4096
+        ],
+        "stride": [
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 3072
+        },
+        "sha256": "9eb500e6ce4655f5c6310a202cc566c46cd322a21b9906bd834d928523a62487",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    },
+    "outputs": {
+      "out_ptr1": {
+        "shape": [
+          1,
+          96,
+          4096
+        ],
+        "stride": [
+          393216,
+          4096,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "storage_offset": 0,
+        "alignment_mod_bytes": {
+          "16": 0,
+          "32": 0,
+          "128": 0,
+          "256": 0,
+          "4096": 0
+        },
+        "sha256": "c98eeab13c3dabf92111b9397d3edd5141791dcf076680f5c3fe5596fb819552",
+        "saved_tensor": true,
+        "aliases_inputs": [],
+        "aliases_same_phase": []
+      }
+    }
+  }
+]

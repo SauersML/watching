@@ -1,0 +1,811 @@
+{
+  "triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "R0_BLOCK": 2048,
+      "num_warps": 16,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "out_ptr1",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "U7YBFLU4EN5AJUHUD4F3XNQS3LC4YE6LZTUQ6DA4VWOF7JMNC64Q",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_per_fused__to_copy__unsafe_view_mean_pow_view_1": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 32,
+      "num_warps": 2,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "out_ptr0",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "5JU4NJ6BIULSTD5U7PXGNVKZUTMIYPOTE3JE7XCTKJKRYI3HGIBA",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_poi_fused__to_copy_unsqueeze_2": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 128,
+      "num_warps": 4,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "out_ptr0",
+      "xnumel",
+      "XBLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "XHDOWBKCOMBZWGCYWMKM5JY7FOG7E6G3JWFSDEIKD62FPD5SICIA",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_3": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 32,
+      "YBLOCK": 32,
+      "num_warps": 4,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "in_ptr3",
+      "out_ptr1",
+      "ynumel",
+      "xnumel",
+      "YBLOCK",
+      "XBLOCK"
+    ],
+    "metadata": {
+      "allowed_dot_input_precisions": [
+        "tf32",
+        "tf32x3",
+        "ieee",
+        "bf16x3",
+        "bf16x6"
+      ],
+      "arch": "sm89",
+      "backend_name": "cuda",
+      "debug": true,
+      "default_dot_input_precision": "tf32",
+      "deprecated_fp8_dot_operand_dtypes": [],
+      "enable_fp_fusion": true,
+      "enable_reflect_ftz": true,
+      "extern_libs": [
+        [
+          "libdevice",
+          "/tmp/tmp.2CitFcHrfp/venv/lib/python3.11/site-packages/triton/backends/nvidia/lib/libdevice.10.bc"
+        ]
+      ],
+      "global_scratch_align": 1,
+      "global_scratch_size": 0,
+      "hash": "b5be74f813bc5e8e85b106a3d960376c7238862a5cfd227cecddcd87c7261214",
+      "instrumentation_mode": "",
+      "ir_override": null,
+      "launch_cooperative_grid": false,
+      "launch_pdl": false,
+      "max_num_imprecise_acc_default": 0,
+      "maxnreg": null,
+      "name": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_3",
+      "num_ctas": 1,
+      "num_stages": 1,
+      "num_warps": 4,
+      "profile_scratch_align": 1,
+      "profile_scratch_size": 0,
+      "ptx_options": null,
+      "ptx_version": null,
+      "sanitize_overflow": false,
+      "shared": 2048,
+      "supported_fp8_dtypes": [
+        "fp8e4b15",
+        "fp8e4nv",
+        "fp8e5"
+      ],
+      "target": {
+        "backend": "cuda",
+        "arch": 89,
+        "warp_size": 32
+      },
+      "tensordesc_meta": [],
+      "tmem_size": 0,
+      "triton_version": "3.6.0",
+      "warp_size": 32
+    },
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "WW7HJ6ATXRPI5BNRA2R5SYBXNRZDRBRKLT6SE7HM3XGYPRZGCIKA",
+    "ptx_provenance_error": null,
+    "ptx_sha256": "894a65633f4c0bad039d8f71c439690c9609de0d94f74cbfa787dd7d5307b582",
+    "cubin_sha256": "eef3ffc3a9495e30e7bf16acfea5a5883c556e576c40f2e5e4ffb80f6d30414b"
+  },
+  "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 8,
+      "R0_BLOCK": 64,
+      "num_warps": 4,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_out_ptr0",
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "DU4WDRSDT2FFFCFPGSMKRRRQCW6LEF4HP5NWJVBL6NNCWAXIMNJA",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 32,
+      "YBLOCK": 32,
+      "num_warps": 4,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "out_ptr0",
+      "ynumel",
+      "xnumel",
+      "YBLOCK",
+      "XBLOCK"
+    ],
+    "metadata": {
+      "allowed_dot_input_precisions": [
+        "tf32",
+        "tf32x3",
+        "ieee",
+        "bf16x3",
+        "bf16x6"
+      ],
+      "arch": "sm89",
+      "backend_name": "cuda",
+      "debug": true,
+      "default_dot_input_precision": "tf32",
+      "deprecated_fp8_dot_operand_dtypes": [],
+      "enable_fp_fusion": true,
+      "enable_reflect_ftz": true,
+      "extern_libs": [
+        [
+          "libdevice",
+          "/tmp/tmp.2CitFcHrfp/venv/lib/python3.11/site-packages/triton/backends/nvidia/lib/libdevice.10.bc"
+        ]
+      ],
+      "global_scratch_align": 1,
+      "global_scratch_size": 0,
+      "hash": "82e54ea21a9cb79e2b33b21deb4dcb2bf0cd53bc023fd17c9802915caf63890b",
+      "instrumentation_mode": "",
+      "ir_override": null,
+      "launch_cooperative_grid": false,
+      "launch_pdl": false,
+      "max_num_imprecise_acc_default": 0,
+      "maxnreg": null,
+      "name": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+      "num_ctas": 1,
+      "num_stages": 1,
+      "num_warps": 4,
+      "profile_scratch_align": 1,
+      "profile_scratch_size": 0,
+      "ptx_options": null,
+      "ptx_version": null,
+      "sanitize_overflow": false,
+      "shared": 2048,
+      "supported_fp8_dtypes": [
+        "fp8e4b15",
+        "fp8e4nv",
+        "fp8e5"
+      ],
+      "target": {
+        "backend": "cuda",
+        "arch": 89,
+        "warp_size": 32
+      },
+      "tensordesc_meta": [],
+      "tmem_size": 0,
+      "triton_version": "3.6.0",
+      "warp_size": 32
+    },
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "QLSU5IQ2TS3Z4KZTWIO6WTOLFPYM2U54AI75C7EYAKIVZL3DREFQ",
+    "ptx_provenance_error": null,
+    "ptx_sha256": "c5d5bf949a45eb92c5150b19e69c2f3e3f81762f3e1f3e18f1ae912b9ab30a34",
+    "cubin_sha256": "0c7e327509457823db0d9ae8d1b624e672345a292cabbbca031876ac6d3cd15c"
+  },
+  "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1024,
+      "num_warps": 4,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "out_ptr0",
+      "xnumel",
+      "XBLOCK"
+    ],
+    "metadata": {
+      "allowed_dot_input_precisions": [
+        "tf32",
+        "tf32x3",
+        "ieee",
+        "bf16x3",
+        "bf16x6"
+      ],
+      "arch": "sm89",
+      "backend_name": "cuda",
+      "debug": true,
+      "default_dot_input_precision": "tf32",
+      "deprecated_fp8_dot_operand_dtypes": [],
+      "enable_fp_fusion": true,
+      "enable_reflect_ftz": true,
+      "extern_libs": [
+        [
+          "libdevice",
+          "/tmp/tmp.2CitFcHrfp/venv/lib/python3.11/site-packages/triton/backends/nvidia/lib/libdevice.10.bc"
+        ]
+      ],
+      "global_scratch_align": 1,
+      "global_scratch_size": 0,
+      "hash": "38d0ef3368b6b9eaa366ac04c07b01b53de3fc8e2645044a2188307c616d1fea",
+      "instrumentation_mode": "",
+      "ir_override": null,
+      "launch_cooperative_grid": false,
+      "launch_pdl": false,
+      "max_num_imprecise_acc_default": 0,
+      "maxnreg": null,
+      "name": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+      "num_ctas": 1,
+      "num_stages": 1,
+      "num_warps": 4,
+      "profile_scratch_align": 1,
+      "profile_scratch_size": 0,
+      "ptx_options": null,
+      "ptx_version": null,
+      "sanitize_overflow": false,
+      "shared": 0,
+      "supported_fp8_dtypes": [
+        "fp8e4b15",
+        "fp8e4nv",
+        "fp8e5"
+      ],
+      "target": {
+        "backend": "cuda",
+        "arch": 89,
+        "warp_size": 32
+      },
+      "tensordesc_meta": [],
+      "tmem_size": 0,
+      "triton_version": "3.6.0",
+      "warp_size": 32
+    },
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "HDIO6M3IW246VI3GVQCMA6YBWU66H7EOEZCQISRBRAYHYYLND7VA",
+    "ptx_provenance_error": null,
+    "ptx_sha256": "7d7db02f50a21db659462f21fd21efc132b097d056eff97ede058ffc17a74951",
+    "cubin_sha256": "6237e34d02a09ecaf0ebbffe07e387829436c8854a65930aa8eff6d11384d148"
+  },
+  "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 256,
+      "num_warps": 4,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "out_ptr0",
+      "out_ptr1",
+      "xnumel",
+      "XBLOCK"
+    ],
+    "metadata": {
+      "allowed_dot_input_precisions": [
+        "tf32",
+        "tf32x3",
+        "ieee",
+        "bf16x3",
+        "bf16x6"
+      ],
+      "arch": "sm89",
+      "backend_name": "cuda",
+      "debug": true,
+      "default_dot_input_precision": "tf32",
+      "deprecated_fp8_dot_operand_dtypes": [],
+      "enable_fp_fusion": true,
+      "enable_reflect_ftz": true,
+      "extern_libs": [
+        [
+          "libdevice",
+          "/tmp/tmp.2CitFcHrfp/venv/lib/python3.11/site-packages/triton/backends/nvidia/lib/libdevice.10.bc"
+        ]
+      ],
+      "global_scratch_align": 1,
+      "global_scratch_size": 0,
+      "hash": "c33bb902c8bccb8b950a0da6444729362d67f5118a8b9127a076aa74095d130c",
+      "instrumentation_mode": "",
+      "ir_override": null,
+      "launch_cooperative_grid": false,
+      "launch_pdl": false,
+      "max_num_imprecise_acc_default": 0,
+      "maxnreg": null,
+      "name": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7",
+      "num_ctas": 1,
+      "num_stages": 1,
+      "num_warps": 4,
+      "profile_scratch_align": 1,
+      "profile_scratch_size": 0,
+      "ptx_options": null,
+      "ptx_version": null,
+      "sanitize_overflow": false,
+      "shared": 0,
+      "supported_fp8_dtypes": [
+        "fp8e4b15",
+        "fp8e4nv",
+        "fp8e5"
+      ],
+      "target": {
+        "backend": "cuda",
+        "arch": 89,
+        "warp_size": 32
+      },
+      "tensordesc_meta": [],
+      "tmem_size": 0,
+      "triton_version": "3.6.0",
+      "warp_size": 32
+    },
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "YM53SAWIXTFYXFIKBWTEIRZJGYWWP5IRRKFZCJ5AO2VHICK5CMGA",
+    "ptx_provenance_error": null,
+    "ptx_sha256": "2a24b0ab42d63a477f45f17dcabe3de7d395b4b7d2b480224a549f887fc8d184",
+    "cubin_sha256": "21985b16953c2aa91de769308803d2675d1821918de2449bfb52184796f56a55"
+  },
+  "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "R0_BLOCK": 4096,
+      "num_warps": 16,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "in_ptr3",
+      "out_ptr1",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "YZVNAZO6EPWSDE4VHSZ3N4ZXTZ6LD3RCES4FXOKQFD3PRONXSQPA",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_poi_fused__unsafe_view_mul_silu_9": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1024,
+      "num_warps": 4,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_out_ptr0",
+      "in_ptr0",
+      "xnumel",
+      "XBLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "H4XDWVHLPVCPGZD5X4E4S7YAQOTAZGSZWISN6CIP4ZRAAQAYFZQA",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "R0_BLOCK": 4096,
+      "num_warps": 16,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "in_ptr3",
+      "in_ptr4",
+      "out_ptr1",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "GAZ3AUDOW6P2KD5AH24RZJMO6JJATGCG53MI6FYMNIV4UIMDP6AA",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "YBLOCK": 4,
+      "R0_BLOCK": 128,
+      "num_warps": 2,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "out_ptr2",
+      "ynumel",
+      "xnumel",
+      "r0_numel",
+      "YBLOCK",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {
+      "allowed_dot_input_precisions": [
+        "tf32",
+        "tf32x3",
+        "ieee",
+        "bf16x3",
+        "bf16x6"
+      ],
+      "arch": "sm89",
+      "backend_name": "cuda",
+      "debug": true,
+      "default_dot_input_precision": "tf32",
+      "deprecated_fp8_dot_operand_dtypes": [],
+      "enable_fp_fusion": true,
+      "enable_reflect_ftz": true,
+      "extern_libs": [
+        [
+          "libdevice",
+          "/tmp/tmp.2CitFcHrfp/venv/lib/python3.11/site-packages/triton/backends/nvidia/lib/libdevice.10.bc"
+        ]
+      ],
+      "global_scratch_align": 1,
+      "global_scratch_size": 0,
+      "hash": "c74bbbd2d71deab6cc78d1dba98ef15ae0205debeb7359b0a89ebe36a3ccb52c",
+      "instrumentation_mode": "",
+      "ir_override": null,
+      "launch_cooperative_grid": false,
+      "launch_pdl": false,
+      "max_num_imprecise_acc_default": 0,
+      "maxnreg": null,
+      "name": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+      "num_ctas": 1,
+      "num_stages": 1,
+      "num_warps": 2,
+      "profile_scratch_align": 1,
+      "profile_scratch_size": 0,
+      "ptx_options": null,
+      "ptx_version": null,
+      "sanitize_overflow": false,
+      "shared": 2048,
+      "supported_fp8_dtypes": [
+        "fp8e4b15",
+        "fp8e4nv",
+        "fp8e5"
+      ],
+      "target": {
+        "backend": "cuda",
+        "arch": 89,
+        "warp_size": 32
+      },
+      "tensordesc_meta": [],
+      "tmem_size": 0,
+      "triton_version": "3.6.0",
+      "warp_size": 32
+    },
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "Y5F3XUWXDXVLNTDY2HN2TDXRLLQCAXPL5NZVTMFIT27DNI6MWUWA",
+    "ptx_provenance_error": null,
+    "ptx_sha256": "0fe24cde2da6780f6eb89313129e2a3aaa96610dd2c9e0b7b1cb5a3cb779ba4b",
+    "cubin_sha256": "b185dd9810213bb9125b0bbee44eaf440bf19c0a676c823c555509e2f7147293"
+  },
+  "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_12": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "R0_BLOCK": 2048,
+      "num_warps": 16,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_out_ptr0",
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "in_ptr3",
+      "in_ptr4",
+      "out_ptr1",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "XVWPCEDCYIHTM2RFC6CADIM3WLV5I7G3PZVLY33VGJUMFLEINS2A",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "R0_BLOCK": 4096,
+      "num_warps": 16,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "out_ptr1",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "W6OFQLBV5VUY57GS6DCCGF5ZWB46KDELLEDLRVWYQJ2WXKLAMI5A",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_14": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "R0_BLOCK": 4096,
+      "num_warps": 16,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "in_ptr3",
+      "out_ptr1",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "4ORVH7ZOKEWX65LZHTEAH6Y5SJAAB2RN25WNLP7QCPABAOTVMB3Q",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_15": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "R0_BLOCK": 2048,
+      "num_warps": 16,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "in_ptr3",
+      "in_ptr4",
+      "out_ptr1",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "MHMF4QWZUNGLDQ3TTWC34VICYTVZYZ3JTZSP2KMCK64FYNEXAXSQ",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_16": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "R0_BLOCK": 2048,
+      "num_warps": 16,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_out_ptr0",
+      "in_ptr0",
+      "in_ptr1",
+      "in_ptr2",
+      "in_ptr3",
+      "in_ptr4",
+      "out_ptr1",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "3AHNSL7NU5GBSKXP6KKBAVPTJESV5NPTRFCXZCBQJWCOVLWOSWAA",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_per_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_view_17": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "num_warps": 2,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_out_ptr0",
+      "in_ptr0",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "YHGT5C6B6I6QW7XF2Y7CHBXG2JNUY3YW5R7IY6WCAD2OWFVZMH6Q",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  },
+  "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_18": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 32,
+      "YBLOCK": 32,
+      "num_warps": 4,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_ptr0",
+      "in_ptr1",
+      "out_ptr0",
+      "ynumel",
+      "xnumel",
+      "YBLOCK",
+      "XBLOCK"
+    ],
+    "metadata": {
+      "allowed_dot_input_precisions": [
+        "tf32",
+        "tf32x3",
+        "ieee",
+        "bf16x3",
+        "bf16x6"
+      ],
+      "arch": "sm89",
+      "backend_name": "cuda",
+      "debug": true,
+      "default_dot_input_precision": "tf32",
+      "deprecated_fp8_dot_operand_dtypes": [],
+      "enable_fp_fusion": true,
+      "enable_reflect_ftz": true,
+      "extern_libs": [
+        [
+          "libdevice",
+          "/tmp/tmp.2CitFcHrfp/venv/lib/python3.11/site-packages/triton/backends/nvidia/lib/libdevice.10.bc"
+        ]
+      ],
+      "global_scratch_align": 1,
+      "global_scratch_size": 0,
+      "hash": "7d3dfae14f2449c1031bcd280a6d8f034d8fdd146f9c74acaa35429b9272c3ef",
+      "instrumentation_mode": "",
+      "ir_override": null,
+      "launch_cooperative_grid": false,
+      "launch_pdl": false,
+      "max_num_imprecise_acc_default": 0,
+      "maxnreg": null,
+      "name": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_18",
+      "num_ctas": 1,
+      "num_stages": 1,
+      "num_warps": 4,
+      "profile_scratch_align": 1,
+      "profile_scratch_size": 0,
+      "ptx_options": null,
+      "ptx_version": null,
+      "sanitize_overflow": false,
+      "shared": 4096,
+      "supported_fp8_dtypes": [
+        "fp8e4b15",
+        "fp8e4nv",
+        "fp8e5"
+      ],
+      "target": {
+        "backend": "cuda",
+        "arch": 89,
+        "warp_size": 32
+      },
+      "tensordesc_meta": [],
+      "tmem_size": 0,
+      "triton_version": "3.6.0",
+      "warp_size": 32
+    },
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "PU67VYKPERE4CAY3ZUUAU3MPANGY7XIUN6OHJLFKGVBJXETSYPXQ",
+    "ptx_provenance_error": null,
+    "ptx_sha256": "7dcab6c2e3de19ecbb73bfb02909b04115a06c0019ba0db8e3bb12a95e9a8f01",
+    "cubin_sha256": "95081dcaa047006d4c70d3abbfc3531c751b5d037f1126f0023ce3c4380f76a3"
+  },
+  "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_19": {
+    "status": "recorded",
+    "config": {
+      "XBLOCK": 1,
+      "R0_BLOCK": 4096,
+      "num_warps": 16,
+      "num_stages": 1
+    },
+    "argument_names": [
+      "in_out_ptr0",
+      "in_ptr0",
+      "in_ptr1",
+      "xnumel",
+      "r0_numel",
+      "XBLOCK",
+      "R0_BLOCK"
+    ],
+    "metadata": {},
+    "metadata_serialization_error": null,
+    "selected_cache_hash": "DDFZNM7RGGVAPTSMVVNEHJE5I7DBVUX5ODAYPB3S5ZBTTYHJ3RSA",
+    "ptx_provenance_error": "Selected static kernel's exact metadata/PTX cache entry is missing",
+    "cubin_status": "unavailable",
+    "cubin_error": "Exact selected binary cache entry is unavailable"
+  }
+}

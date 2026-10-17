@@ -1,0 +1,2399 @@
+{
+  "control_and_final_graph_gates_passed": true,
+  "saved_tensor_comparisons_recomputed": true,
+  "reports": [
+    {
+      "prompt": "prompt-00",
+      "pairs": {
+        "none_a_vs_none_b": {
+          "first_unequal_operation": {
+            "index": 2,
+            "kind": "triton",
+            "kernel": "triton_per_fused__to_copy__unsafe_view_mean_pow_view_1",
+            "all_input_values_identical": true,
+            "all_output_values_identical": false,
+            "outputs": {
+              "out_ptr0": {
+                "bit_identical": false,
+                "fraction_different": 0.3069661557674408,
+                "max_abs_difference": 2.384185791015625e-07,
+                "mean_abs_difference": 7.83863196573975e-09,
+                "changed_elements": 943,
+                "elements": 3072
+              }
+            }
+          },
+          "operations": [
+            {
+              "index": 0,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 1,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 2,
+              "kind": "triton",
+              "kernel": "triton_per_fused__to_copy__unsafe_view_mean_pow_view_1",
+              "all_input_values_identical": true,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.3069661557674408,
+                  "max_abs_difference": 2.384185791015625e-07,
+                  "mean_abs_difference": 7.83863196573975e-09,
+                  "changed_elements": 943,
+                  "elements": 3072
+                }
+              }
+            },
+            {
+              "index": 3,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__to_copy_unsqueeze_2",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 96
+                }
+              }
+            },
+            {
+              "index": 4,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 6144
+                }
+              }
+            },
+            {
+              "index": 5,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_3",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": false,
+                  "fraction_different": 1.0172526344831567e-05,
+                  "max_abs_difference": 0.00390625,
+                  "mean_abs_difference": 2.0062239869389487e-08,
+                  "changed_elements": 4,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 6,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 7,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+              "all_input_values_identical": false,
+              "all_output_values_identical": true,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 8,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 9,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 10,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 11,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "nonfinite_value_count": 7731,
+                  "nonfinite_mismatch_count": 0,
+                  "finite_max_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 9216
+                },
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "nonfinite_value_count": 7731,
+                  "nonfinite_mismatch_count": 0,
+                  "finite_max_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 9216
+                }
+              }
+            },
+            {
+              "index": 12,
+              "kind": "attention",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.00015004475426394492,
+                  "max_abs_difference": 0.0001220703125,
+                  "mean_abs_difference": 3.2256746163028538e-09,
+                  "changed_elements": 59,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 13,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.0008951823110692203,
+                  "max_abs_difference": 0.00048828125,
+                  "mean_abs_difference": 6.267752183930497e-08,
+                  "changed_elements": 352,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 14,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": false,
+                  "fraction_different": 0.0006612141733057797,
+                  "max_abs_difference": 0.0009765625,
+                  "mean_abs_difference": 9.149395197027843e-08,
+                  "changed_elements": 260,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 15,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.004939609207212925,
+                  "max_abs_difference": 0.00390625,
+                  "mean_abs_difference": 1.0845866427189321e-06,
+                  "changed_elements": 5827,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 16,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.0049650403670966625,
+                  "max_abs_difference": 0.001953125,
+                  "mean_abs_difference": 9.56810708885314e-07,
+                  "changed_elements": 5857,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 17,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__unsafe_view_mul_silu_9",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.008006625808775425,
+                  "max_abs_difference": 0.0009765625,
+                  "mean_abs_difference": 8.653365313193717e-08,
+                  "changed_elements": 9445,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 18,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.010609944351017475,
+                  "max_abs_difference": 0.001953125,
+                  "mean_abs_difference": 1.5099116126293666e-06,
+                  "changed_elements": 4172,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 19,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": false,
+                  "fraction_different": 0.007568359375,
+                  "max_abs_difference": 0.0009765625,
+                  "mean_abs_difference": 2.408641250895016e-07,
+                  "changed_elements": 2976,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 20,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.009150187484920025,
+                  "max_abs_difference": 0.001953125,
+                  "mean_abs_difference": 1.3494027371052653e-06,
+                  "changed_elements": 3598,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 21,
+              "kind": "triton",
+              "kernel": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr2": {
+                  "bit_identical": false,
+                  "fraction_different": 0.009874979965388775,
+                  "max_abs_difference": 0.0625,
+                  "mean_abs_difference": 4.010207703686319e-05,
+                  "changed_elements": 3883,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 22,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.010304768569767475,
+                  "max_abs_difference": 0.001953125,
+                  "mean_abs_difference": 1.8858676185118384e-06,
+                  "changed_elements": 1013,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 23,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.01043701171875,
+                  "max_abs_difference": 0.125,
+                  "mean_abs_difference": 4.685247040470131e-05,
+                  "changed_elements": 1026,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 24,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.014292399398982525,
+                  "max_abs_difference": 0.0009765625,
+                  "mean_abs_difference": 1.3682947610504925e-06,
+                  "changed_elements": 1405,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 25,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.01043701171875,
+                  "max_abs_difference": 0.125,
+                  "mean_abs_difference": 4.685247040470131e-05,
+                  "changed_elements": 4104,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 26,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.014292399398982525,
+                  "max_abs_difference": 0.0009765625,
+                  "mean_abs_difference": 1.3682947610504925e-06,
+                  "changed_elements": 5620,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 27,
+              "kind": "attention",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.10259246826171875,
+                  "max_abs_difference": 0.001953125,
+                  "mean_abs_difference": 5.023412541049765e-06,
+                  "changed_elements": 40341,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 28,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.1322428435087204,
+                  "max_abs_difference": 0.00390625,
+                  "mean_abs_difference": 2.4737275452935137e-05,
+                  "changed_elements": 52000,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 29,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_12",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.07006072998046875,
+                  "max_abs_difference": 0.015625,
+                  "mean_abs_difference": 2.589161340438295e-05,
+                  "changed_elements": 27549,
+                  "elements": 393216
+                },
+                "out_ptr1": {
+                  "bit_identical": false,
+                  "fraction_different": 0.06703440099954605,
+                  "max_abs_difference": 0.0625,
+                  "mean_abs_difference": 5.081790732219815e-05,
+                  "changed_elements": 26359,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 30,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.01061248779296875,
+                  "max_abs_difference": 0.0625,
+                  "mean_abs_difference": 0.00035462205414660275,
+                  "changed_elements": 12519,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 31,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.10953012853860855,
+                  "max_abs_difference": 0.0625,
+                  "mean_abs_difference": 0.00011860082304337993,
+                  "changed_elements": 129207,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 32,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__unsafe_view_mul_silu_9",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.10822635143995285,
+                  "max_abs_difference": 0.0234375,
+                  "mean_abs_difference": 2.7808819140773267e-06,
+                  "changed_elements": 127669,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 33,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.26634469628334045,
+                  "max_abs_difference": 0.015625,
+                  "mean_abs_difference": 5.694292485713959e-05,
+                  "changed_elements": 104731,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 34,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": false,
+                  "fraction_different": 0.16440074145793915,
+                  "max_abs_difference": 0.00390625,
+                  "mean_abs_difference": 1.3720626157009974e-05,
+                  "changed_elements": 64645,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 35,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.18938954174518585,
+                  "max_abs_difference": 0.0078125,
+                  "mean_abs_difference": 5.361373769119382e-05,
+                  "changed_elements": 74471,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 36,
+              "kind": "triton",
+              "kernel": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr2": {
+                  "bit_identical": false,
+                  "fraction_different": 0.20170338451862335,
+                  "max_abs_difference": 0.0625,
+                  "mean_abs_difference": 0.0009624939993955195,
+                  "changed_elements": 79313,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 37,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.2028706818819046,
+                  "max_abs_difference": 0.00390625,
+                  "mean_abs_difference": 6.605126691283658e-05,
+                  "changed_elements": 19943,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 38,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.2076517790555954,
+                  "max_abs_difference": 0.125,
+                  "mean_abs_difference": 0.0010293306550011039,
+                  "changed_elements": 20413,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 39,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.2403361052274704,
+                  "max_abs_difference": 0.001953125,
+                  "mean_abs_difference": 5.7986453612102196e-05,
+                  "changed_elements": 23626,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 40,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.2076517790555954,
+                  "max_abs_difference": 0.125,
+                  "mean_abs_difference": 0.0010293306550011039,
+                  "changed_elements": 81652,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 41,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.2403361052274704,
+                  "max_abs_difference": 0.001953125,
+                  "mean_abs_difference": 5.7986453612102196e-05,
+                  "changed_elements": 94504,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 42,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "nonfinite_value_count": 7731,
+                  "nonfinite_mismatch_count": 0,
+                  "finite_max_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 9216
+                },
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "nonfinite_value_count": 7731,
+                  "nonfinite_mismatch_count": 0,
+                  "finite_max_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 9216
+                }
+              }
+            },
+            {
+              "index": 43,
+              "kind": "attention",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.29951730370521545,
+                  "max_abs_difference": 0.00244140625,
+                  "mean_abs_difference": 3.904878394678235e-05,
+                  "changed_elements": 117775,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 44,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.2990366518497467,
+                  "max_abs_difference": 0.00390625,
+                  "mean_abs_difference": 9.677254274720326e-05,
+                  "changed_elements": 117586,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 45,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_14",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": false,
+                  "fraction_different": 0.23203277587890625,
+                  "max_abs_difference": 0.25,
+                  "mean_abs_difference": 0.00031112649594433606,
+                  "changed_elements": 91239,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 46,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.0251753069460392,
+                  "max_abs_difference": 0.5,
+                  "mean_abs_difference": 0.0012300770031288266,
+                  "changed_elements": 29698,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 47,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.17019060254096985,
+                  "max_abs_difference": 0.5,
+                  "mean_abs_difference": 0.0006199575145728886,
+                  "changed_elements": 200765,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 48,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__unsafe_view_mul_silu_9",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.1728888601064682,
+                  "max_abs_difference": 0.03125,
+                  "mean_abs_difference": 8.633483957964927e-06,
+                  "changed_elements": 203948,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 49,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.3279520571231842,
+                  "max_abs_difference": 0.078125,
+                  "mean_abs_difference": 0.00013368313375394791,
+                  "changed_elements": 128956,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 50,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_15",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": false,
+                  "fraction_different": 0.26708731055259705,
+                  "max_abs_difference": 0.0078125,
+                  "mean_abs_difference": 3.6506597098195925e-05,
+                  "changed_elements": 105023,
+                  "elements": 393216
+                }
+              }
+            }
+          ],
+          "logits": {
+            "bit_identical": false,
+            "fraction_different": 0.9235204458236694,
+            "max_abs_difference": 0.3125,
+            "mean_abs_difference": 0.0605580136179924,
+            "changed_elements": 140316,
+            "elements": 151936
+          },
+          "selected_replays": [
+            {
+              "status": "verified",
+              "operation_index": 2,
+              "own_input_replay_bit_identical": true,
+              "alternating_order": [
+                "left",
+                "right",
+                "right",
+                "left"
+              ],
+              "shared_physical_inputs_and_outputs": true,
+              "shared_workspace_layout": {
+                "in_ptr0": {
+                  "shape": [
+                    96,
+                    4096
+                  ],
+                  "stride": [
+                    4096,
+                    1
+                  ],
+                  "dtype": "torch.bfloat16",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 0
+                  }
+                },
+                "out_ptr0": {
+                  "shape": [
+                    1,
+                    96,
+                    32,
+                    1
+                  ],
+                  "stride": [
+                    3072,
+                    32,
+                    1,
+                    3072
+                  ],
+                  "dtype": "torch.float32",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 0
+                  }
+                }
+              },
+              "immutable_shared_parameter_arguments": [],
+              "native_kernel_object_shared": false,
+              "comparisons": [
+                {
+                  "input_origin": "left",
+                  "outputs": {
+                    "out_ptr0": {
+                      "bit_identical": false,
+                      "fraction_different": 0.3069661557674408,
+                      "max_abs_difference": 2.384185791015625e-07,
+                      "mean_abs_difference": 7.83863196573975e-09,
+                      "changed_elements": 943,
+                      "elements": 3072
+                    }
+                  }
+                },
+                {
+                  "input_origin": "right",
+                  "outputs": {
+                    "out_ptr0": {
+                      "bit_identical": false,
+                      "fraction_different": 0.3069661557674408,
+                      "max_abs_difference": 2.384185791015625e-07,
+                      "mean_abs_difference": 7.83863196573975e-09,
+                      "changed_elements": 943,
+                      "elements": 3072
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "status": "verified",
+              "operation_index": 21,
+              "own_input_replay_bit_identical": true,
+              "alternating_order": [
+                "left",
+                "right",
+                "right",
+                "left"
+              ],
+              "shared_physical_inputs_and_outputs": true,
+              "shared_workspace_layout": {
+                "in_ptr0": {
+                  "shape": [
+                    96,
+                    4096
+                  ],
+                  "stride": [
+                    4096,
+                    1
+                  ],
+                  "dtype": "torch.bfloat16",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 0
+                  }
+                },
+                "in_ptr1": {
+                  "shape": [
+                    128
+                  ],
+                  "stride": [
+                    1
+                  ],
+                  "dtype": "torch.bfloat16",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 0
+                  }
+                },
+                "in_ptr2": {
+                  "shape": [
+                    64,
+                    96
+                  ],
+                  "stride": [
+                    96,
+                    1
+                  ],
+                  "dtype": "torch.float32",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 512
+                  }
+                },
+                "out_ptr2": {
+                  "shape": [
+                    1,
+                    32,
+                    96,
+                    128
+                  ],
+                  "stride": [
+                    393216,
+                    128,
+                    4096,
+                    1
+                  ],
+                  "dtype": "torch.bfloat16",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 0
+                  }
+                }
+              },
+              "immutable_shared_parameter_arguments": [],
+              "native_kernel_object_shared": false,
+              "comparisons": [
+                {
+                  "input_origin": "left",
+                  "outputs": {
+                    "out_ptr2": {
+                      "bit_identical": true,
+                      "fraction_different": 0.0,
+                      "max_abs_difference": 0.0,
+                      "mean_abs_difference": 0.0,
+                      "changed_elements": 0,
+                      "elements": 393216
+                    }
+                  }
+                },
+                {
+                  "input_origin": "right",
+                  "outputs": {
+                    "out_ptr2": {
+                      "bit_identical": true,
+                      "fraction_different": 0.0,
+                      "max_abs_difference": 0.0,
+                      "mean_abs_difference": 0.0,
+                      "changed_elements": 0,
+                      "elements": 393216
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "kernel_substitutions": [
+            {
+              "operation_index": 2,
+              "recipient": "none_a",
+              "donor": "none_b",
+              "identity_bit_identical": true,
+              "difference_from_donor_logits": {
+                "bit_identical": true,
+                "fraction_different": 0.0,
+                "max_abs_difference": 0.0,
+                "mean_abs_difference": 0.0,
+                "changed_elements": 0,
+                "elements": 151936
+              },
+              "difference_from_recipient_logits": {
+                "bit_identical": false,
+                "fraction_different": 0.9235204458236694,
+                "max_abs_difference": 0.3125,
+                "mean_abs_difference": 0.0605580136179924,
+                "changed_elements": 140316,
+                "elements": 151936
+              }
+            },
+            {
+              "operation_index": 2,
+              "recipient": "none_b",
+              "donor": "none_a",
+              "identity_bit_identical": true,
+              "difference_from_donor_logits": {
+                "bit_identical": true,
+                "fraction_different": 0.0,
+                "max_abs_difference": 0.0,
+                "mean_abs_difference": 0.0,
+                "changed_elements": 0,
+                "elements": 151936
+              },
+              "difference_from_recipient_logits": {
+                "bit_identical": false,
+                "fraction_different": 0.9235204458236694,
+                "max_abs_difference": 0.3125,
+                "mean_abs_difference": 0.0605580136179924,
+                "changed_elements": 140316,
+                "elements": 151936
+              }
+            },
+            {
+              "operation_index": 21,
+              "recipient": "none_a",
+              "donor": "none_b",
+              "identity_bit_identical": true,
+              "difference_from_donor_logits": {
+                "bit_identical": false,
+                "fraction_different": 0.9235204458236694,
+                "max_abs_difference": 0.3125,
+                "mean_abs_difference": 0.0605580136179924,
+                "changed_elements": 140316,
+                "elements": 151936
+              },
+              "difference_from_recipient_logits": {
+                "bit_identical": true,
+                "fraction_different": 0.0,
+                "max_abs_difference": 0.0,
+                "mean_abs_difference": 0.0,
+                "changed_elements": 0,
+                "elements": 151936
+              }
+            },
+            {
+              "operation_index": 21,
+              "recipient": "none_b",
+              "donor": "none_a",
+              "identity_bit_identical": true,
+              "difference_from_donor_logits": {
+                "bit_identical": false,
+                "fraction_different": 0.9235204458236694,
+                "max_abs_difference": 0.3125,
+                "mean_abs_difference": 0.0605580136179924,
+                "changed_elements": 140316,
+                "elements": 151936
+              },
+              "difference_from_recipient_logits": {
+                "bit_identical": true,
+                "fraction_different": 0.0,
+                "max_abs_difference": 0.0,
+                "mean_abs_difference": 0.0,
+                "changed_elements": 0,
+                "elements": 151936
+              }
+            }
+          ],
+          "query_swaps": {
+            "none_a": {
+              "bit_identical": false,
+              "fraction_different": 0.9891467690467834,
+              "max_abs_difference": 0.75,
+              "mean_abs_difference": 0.16240140795707703
+            },
+            "none_b": {
+              "bit_identical": false,
+              "fraction_different": 0.8958903551101685,
+              "max_abs_difference": 0.5,
+              "mean_abs_difference": 0.04922301322221756
+            }
+          },
+          "identity_and_restoration_bit_identical": true
+        },
+        "none_a_vs_reference": {
+          "first_unequal_operation": {
+            "index": 21,
+            "kind": "triton",
+            "kernel": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+            "all_input_values_identical": true,
+            "all_output_values_identical": false,
+            "outputs": {
+              "out_ptr2": {
+                "bit_identical": false,
+                "fraction_different": 2.543131586207892e-06,
+                "max_abs_difference": 5.960464477539063e-08,
+                "mean_abs_difference": 1.515824548129971e-13,
+                "changed_elements": 1,
+                "elements": 393216
+              }
+            }
+          },
+          "operations": [
+            {
+              "index": 0,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 1,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 2,
+              "kind": "triton",
+              "kernel": "triton_per_fused__to_copy__unsafe_view_mean_pow_view_1",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 3072
+                }
+              }
+            },
+            {
+              "index": 3,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__to_copy_unsqueeze_2",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 96
+                }
+              }
+            },
+            {
+              "index": 4,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 6144
+                }
+              }
+            },
+            {
+              "index": 5,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_3",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 6,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 7,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+              "all_input_values_identical": false,
+              "all_output_values_identical": true,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 8,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 9,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 10,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 11,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "nonfinite_value_count": 7731,
+                  "nonfinite_mismatch_count": 0,
+                  "finite_max_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 9216
+                },
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "nonfinite_value_count": 7731,
+                  "nonfinite_mismatch_count": 0,
+                  "finite_max_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 9216
+                }
+              }
+            },
+            {
+              "index": 12,
+              "kind": "attention",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 13,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 14,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 15,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 16,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 17,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__unsafe_view_mul_silu_9",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 18,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 19,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 20,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 21,
+              "kind": "triton",
+              "kernel": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+              "all_input_values_identical": true,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr2": {
+                  "bit_identical": false,
+                  "fraction_different": 2.543131586207892e-06,
+                  "max_abs_difference": 5.960464477539063e-08,
+                  "mean_abs_difference": 1.515824548129971e-13,
+                  "changed_elements": 1,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 22,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 23,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+              "all_input_values_identical": false,
+              "all_output_values_identical": true,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 24,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 25,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 26,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 27,
+              "kind": "attention",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 28,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 29,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_12",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                },
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 30,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 31,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 32,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__unsafe_view_mul_silu_9",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 33,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 34,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_13",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 35,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 36,
+              "kind": "triton",
+              "kernel": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+              "all_input_values_identical": true,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr2": {
+                  "bit_identical": false,
+                  "fraction_different": 2.543131586207892e-06,
+                  "max_abs_difference": 0.00390625,
+                  "mean_abs_difference": 9.934107758624577e-09,
+                  "changed_elements": 1,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 37,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 38,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 39,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "output": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 98304
+                }
+              }
+            },
+            {
+              "index": 40,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_5",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 41,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_6",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 42,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7",
+              "all_input_values_identical": true,
+              "all_output_values_identical": true,
+              "outputs": {
+                "out_ptr0": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "nonfinite_value_count": 7731,
+                  "nonfinite_mismatch_count": 0,
+                  "finite_max_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 9216
+                },
+                "out_ptr1": {
+                  "bit_identical": true,
+                  "fraction_different": 0.0,
+                  "max_abs_difference": 0.0,
+                  "mean_abs_difference": 0.0,
+                  "nonfinite_value_count": 7731,
+                  "nonfinite_mismatch_count": 0,
+                  "finite_max_abs_difference": 0.0,
+                  "changed_elements": 0,
+                  "elements": 9216
+                }
+              }
+            },
+            {
+              "index": 43,
+              "kind": "attention",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 4.069010537932627e-05,
+                  "max_abs_difference": 0.000244140625,
+                  "mean_abs_difference": 1.7898855730891228e-09,
+                  "changed_elements": 16,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 44,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.00044759115553461015,
+                  "max_abs_difference": 0.00048828125,
+                  "mean_abs_difference": 5.720842821688166e-08,
+                  "changed_elements": 176,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 45,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_14",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": false,
+                  "fraction_different": 0.00015513102698605508,
+                  "max_abs_difference": 0.00390625,
+                  "mean_abs_difference": 1.2378829694625892e-07,
+                  "changed_elements": 61,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 46,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 2.458360540913418e-05,
+                  "max_abs_difference": 0.0625,
+                  "mean_abs_difference": 8.083879947662354e-07,
+                  "changed_elements": 29,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 47,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.0006323920097202063,
+                  "max_abs_difference": 0.03125,
+                  "mean_abs_difference": 7.091418297022756e-07,
+                  "changed_elements": 746,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 48,
+              "kind": "triton",
+              "kernel": "triton_poi_fused__unsafe_view_mul_silu_9",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "in_out_ptr0": {
+                  "bit_identical": false,
+                  "fraction_different": 0.0006069607334211469,
+                  "max_abs_difference": 0.001953125,
+                  "mean_abs_difference": 1.5815491138937432e-08,
+                  "changed_elements": 716,
+                  "elements": 1179648
+                }
+              }
+            },
+            {
+              "index": 49,
+              "kind": "mm",
+              "kernel": null,
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "output": {
+                  "bit_identical": false,
+                  "fraction_different": 0.0041631064377725124,
+                  "max_abs_difference": 0.00390625,
+                  "mean_abs_difference": 8.785233944763604e-07,
+                  "changed_elements": 1637,
+                  "elements": 393216
+                }
+              }
+            },
+            {
+              "index": 50,
+              "kind": "triton",
+              "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_15",
+              "all_input_values_identical": false,
+              "all_output_values_identical": false,
+              "outputs": {
+                "out_ptr1": {
+                  "bit_identical": false,
+                  "fraction_different": 0.0020802814979106188,
+                  "max_abs_difference": 0.001953125,
+                  "mean_abs_difference": 1.9839951903577457e-07,
+                  "changed_elements": 818,
+                  "elements": 393216
+                }
+              }
+            }
+          ],
+          "logits": {
+            "bit_identical": false,
+            "fraction_different": 0.9725213050842285,
+            "max_abs_difference": 0.75,
+            "mean_abs_difference": 0.09287668019533157,
+            "changed_elements": 147761,
+            "elements": 151936
+          },
+          "selected_replays": [
+            {
+              "status": "verified",
+              "operation_index": 21,
+              "own_input_replay_bit_identical": true,
+              "alternating_order": [
+                "left",
+                "right",
+                "right",
+                "left"
+              ],
+              "shared_physical_inputs_and_outputs": true,
+              "shared_workspace_layout": {
+                "in_ptr0": {
+                  "shape": [
+                    96,
+                    4096
+                  ],
+                  "stride": [
+                    4096,
+                    1
+                  ],
+                  "dtype": "torch.bfloat16",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 0
+                  }
+                },
+                "in_ptr1": {
+                  "shape": [
+                    128
+                  ],
+                  "stride": [
+                    1
+                  ],
+                  "dtype": "torch.bfloat16",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 0
+                  }
+                },
+                "in_ptr2": {
+                  "shape": [
+                    64,
+                    96
+                  ],
+                  "stride": [
+                    96,
+                    1
+                  ],
+                  "dtype": "torch.float32",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 512
+                  }
+                },
+                "out_ptr2": {
+                  "shape": [
+                    1,
+                    32,
+                    96,
+                    128
+                  ],
+                  "stride": [
+                    393216,
+                    128,
+                    4096,
+                    1
+                  ],
+                  "dtype": "torch.bfloat16",
+                  "storage_offset": 0,
+                  "alignment_mod_bytes": {
+                    "16": 0,
+                    "32": 0,
+                    "128": 0,
+                    "256": 0,
+                    "4096": 0
+                  }
+                }
+              },
+              "immutable_shared_parameter_arguments": [],
+              "native_kernel_object_shared": false,
+              "comparisons": [
+                {
+                  "input_origin": "left",
+                  "outputs": {
+                    "out_ptr2": {
+                      "bit_identical": false,
+                      "fraction_different": 2.543131586207892e-06,
+                      "max_abs_difference": 5.960464477539063e-08,
+                      "mean_abs_difference": 1.515824548129971e-13,
+                      "changed_elements": 1,
+                      "elements": 393216
+                    }
+                  }
+                },
+                {
+                  "input_origin": "right",
+                  "outputs": {
+                    "out_ptr2": {
+                      "bit_identical": false,
+                      "fraction_different": 2.543131586207892e-06,
+                      "max_abs_difference": 5.960464477539063e-08,
+                      "mean_abs_difference": 1.515824548129971e-13,
+                      "changed_elements": 1,
+                      "elements": 393216
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "kernel_substitutions": [
+            {
+              "operation_index": 21,
+              "recipient": "none_a",
+              "donor": "reference",
+              "identity_bit_identical": true,
+              "difference_from_donor_logits": {
+                "bit_identical": false,
+                "fraction_different": 0.9725213050842285,
+                "max_abs_difference": 0.75,
+                "mean_abs_difference": 0.09287668019533157,
+                "changed_elements": 147761,
+                "elements": 151936
+              },
+              "difference_from_recipient_logits": {
+                "bit_identical": true,
+                "fraction_different": 0.0,
+                "max_abs_difference": 0.0,
+                "mean_abs_difference": 0.0,
+                "changed_elements": 0,
+                "elements": 151936
+              }
+            },
+            {
+              "operation_index": 21,
+              "recipient": "reference",
+              "donor": "none_a",
+              "identity_bit_identical": true,
+              "difference_from_donor_logits": {
+                "bit_identical": false,
+                "fraction_different": 0.9725213050842285,
+                "max_abs_difference": 0.75,
+                "mean_abs_difference": 0.09287668019533157,
+                "changed_elements": 147761,
+                "elements": 151936
+              },
+              "difference_from_recipient_logits": {
+                "bit_identical": true,
+                "fraction_different": 0.0,
+                "max_abs_difference": 0.0,
+                "mean_abs_difference": 0.0,
+                "changed_elements": 0,
+                "elements": 151936
+              }
+            }
+          ],
+          "query_swaps": {
+            "none_a": {
+              "bit_identical": false,
+              "fraction_different": 0.9725213050842285,
+              "max_abs_difference": 0.75,
+              "mean_abs_difference": 0.09287667274475098
+            },
+            "reference": {
+              "bit_identical": false,
+              "fraction_different": 0.9725213050842285,
+              "max_abs_difference": 0.75,
+              "mean_abs_difference": 0.09287667274475098
+            }
+          },
+          "identity_and_restoration_bit_identical": true
+        }
+      },
+      "answer_readouts": {
+        "none_a": {
+          "yes_logprob": -14.00000083260226,
+          "no_logprob": -8.326022600240647e-07,
+          "yes_minus_no_log_odds": -14.0,
+          "greedy_token_id": 2753,
+          "scope": "Untrained base model, not detector accuracy"
+        },
+        "none_b": {
+          "yes_logprob": -14.00000083237772,
+          "no_logprob": -8.323777204908411e-07,
+          "yes_minus_no_log_odds": -14.0,
+          "greedy_token_id": 2753,
+          "scope": "Untrained base model, not detector accuracy"
+        },
+        "reference": {
+          "yes_logprob": -13.750001069461831,
+          "no_logprob": -1.0694618314280153e-06,
+          "yes_minus_no_log_odds": -13.75,
+          "greedy_token_id": 2753,
+          "scope": "Untrained base model, not detector accuracy"
+        }
+      }
+    }
+  ],
+  "scope": "Targeted first-prompt diagnostic, selected from prior discrepancies. One compilation per arm; no population or compilation-distribution inference."
+}
