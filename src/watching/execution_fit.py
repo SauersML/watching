@@ -186,17 +186,20 @@ def validate_experiment_data(data, *, compare_ridge=False):
         raise ValueError("Matched comparison accepts train and validation only; no test selection")
 
 
-def checkpoint_provenance(checkpoint, config_commit):
+def checkpoint_provenance(checkpoint, config_commit, *, revision=None):
     """Inspect local configuration provenance without fetching any model files.
 
     A cache lookup records the snapshot currently resolved by the cache, not proof
     that an unpinned from_pretrained call loaded every file from that revision.
+    Callers must pass the revision they actually supplied to from_pretrained.
     """
     local = Path(checkpoint).expanduser()
     config_path = local / "config.json" if local.is_dir() else None
     source = "local_directory" if config_path is not None else "huggingface_cache"
     if config_path is None:
-        cached = try_to_load_from_cache(checkpoint, "config.json", revision=config_commit or "main")
+        cached = try_to_load_from_cache(
+            checkpoint, "config.json", revision=revision or config_commit or "main"
+        )
         config_path = Path(cached) if isinstance(cached, str) else None
     exists = config_path is not None and config_path.is_file()
     snapshot = None
@@ -213,7 +216,8 @@ def checkpoint_provenance(checkpoint, config_commit):
         "config_path": str(config_path) if exists else None,
         "config_sha256": hashlib.sha256(config_path.read_bytes()).hexdigest() if exists else None,
         "observed_cached_snapshot": snapshot,
-        "load_revision_explicitly_pinned": False,
+        "requested_revision": revision,
+        "load_revision_explicitly_pinned": revision is not None and source == "huggingface_cache",
         "scope": "Local config provenance only; not a checksum of all model weights",
     }
 

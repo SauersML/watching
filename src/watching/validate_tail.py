@@ -283,7 +283,7 @@ def main():
         "data_sha256": file_digest(args.data),
         "tail_sha256": file_digest(args.tail),
         "model_provenance": checkpoint_provenance(
-            args.checkpoint, getattr(model.config, "_commit_hash", None)
+            args.checkpoint, getattr(model.config, "_commit_hash", None), revision=args.revision
         ),
         "torch": torch.__version__,
         "gpu": torch.cuda.get_device_name(),

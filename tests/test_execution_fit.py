@@ -203,6 +203,30 @@ def test_missing_cached_config_is_reported_without_network_lookup(monkeypatch):
     assert metadata["config_sha256"] is None
 
 
+def test_explicit_load_revision_is_reported_even_when_config_commit_is_missing(monkeypatch):
+    calls = []
+
+    def lookup(repo, filename, *, revision):
+        calls.append((repo, filename, revision))
+        return None
+
+    monkeypatch.setattr("watching.execution_fit.try_to_load_from_cache", lookup)
+    revision = "b968826d9c46dd6066d109eabc6255188de91218"
+    metadata = checkpoint_provenance("example/model", None, revision=revision)
+    assert calls == [("example/model", "config.json", revision)]
+    assert metadata["requested_revision"] == revision
+    assert metadata["load_revision_explicitly_pinned"] is True
+    assert metadata["loaded_config_commit"] is None
+    assert metadata["config_sha256"] is None  # A requested revision is not a weight checksum.
+
+
+def test_revision_argument_does_not_pin_a_local_directory(tmp_path):
+    (tmp_path / "config.json").write_text("{}")
+    metadata = checkpoint_provenance(str(tmp_path), None, revision="ignored-for-local-files")
+    assert metadata["requested_revision"] == "ignored-for-local-files"
+    assert metadata["load_revision_explicitly_pinned"] is False
+
+
 def test_execution_prompts_have_disjoint_contexts_and_shared_question():
     data = make_execution_data(train=16, validation=8, test=8)
     contexts = [row["context"] for records in data.values() for row in records]
