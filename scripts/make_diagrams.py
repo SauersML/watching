@@ -1864,6 +1864,98 @@ def gpu_transfer(out):
     render(document(w, bottom + 66, "\n".join(parts)), out, "gpu_transfer")
 
 
+MESSAGE_EXAMPLE = ROOT / "results/message-062/example.json"
+
+
+def lens_chip(content, size=22):
+    """A logit-lens token as shown, with line breaks drawn as return arrows, and its width."""
+    shown = content.replace("\n", "↵").strip() or "␣"
+    return shown, max(width(shown, size), len(shown) * size * 0.602) + 22
+
+
+def lens_rows(tokens, room, gap=7):
+    rows, row, used = [], [], 0
+    for token_ in tokens:
+        shown, w_ = lens_chip(token_)
+        if row and used + w_ > room:
+            rows.append(row)
+            row, used = [], 0
+        row.append((shown, w_))
+        used += w_ + gap
+    return [*rows, row]
+
+
+def hidden_message(out):
+    """Same weights, same prompt: read uncompiled, the hidden states look ordinary; read from
+    the compiled model, layer 34 spells out a message. The reply is the same."""
+    example = json.loads(MESSAGE_EXAMPLE.read_text())
+    w, panel, gutter, top = 1160, 535, 30, 20
+    lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
+    columns = (
+        (lefts[0], PANEL, "Uncompiled", INK, example["eager_lens"], example["eager_reply"]),
+        (lefts[1], WARM, "Compiled", RED, example["compiled_lens"], example["compiled_reply"]),
+    )
+    room = panel - 96
+    lines = max(len(lens_rows(c[4], room)) for c in columns)
+    box_h, size, chip_h = 76 + 56 * lines, 22, 46
+    parts, bottoms = [], []
+    for x, fill, title, color, lens, answer in columns:
+        content = [
+            text(x + panel / 2, top + 56, title, 34, True, color, anchor="middle"),
+            text(
+                x + panel / 2,
+                top + 92,
+                "Hugging Face hidden states read",
+                22,
+                True,
+                color,
+                anchor="middle",
+            ),
+        ]
+        part, y = message(x + panel - 30, top + 128, example["prompt"])
+        content.append(part)
+        part, y = reply(x + 24, y + 12 + REACH, answer, INK)
+        content.append(part)
+        y += REACH + 28
+        content.append(box(x + 24, y, panel - 48, box_h, "white", BORDER, 18, 1.5))
+        content.append(text(x + 48, y + 40, "Logit lens on layer 34’s output", 21, True))
+        highlight = color == RED
+        fill_, stroke = (PALE_RED, RED) if highlight else ("white", BORDER)
+        for r, row in enumerate(lens_rows(lens, room)):
+            cx, cy = x + 48, y + 92 + 56 * r
+            for shown, w_ in row:
+                content.append(
+                    box(
+                        cx,
+                        cy - chip_h / 2,
+                        w_,
+                        chip_h,
+                        fill_,
+                        stroke,
+                        10,
+                        2 if highlight else 1.4,
+                        False,
+                    )
+                )
+                content.append(
+                    text(
+                        cx + w_ / 2, cy + size * 0.36, shown, size, highlight, color, "middle", MONO
+                    )
+                )
+                cx += w_ + 7
+        bottoms.append(y + box_h)
+        parts.append((x, fill, content))
+    bottom = max(bottoms)
+    body = []
+    for x, fill, content in parts:
+        body.append(
+            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom + 26 - top}" rx="30" '
+            f'fill="{fill}"/>'
+        )
+        body.extend(content)
+    render(document(w, int(bottom + 46), "\n".join(body)), out, "hidden_message")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -1885,6 +1977,7 @@ def main():
     capture_training(args.out)
     frameworks(args.out)
     gpu_transfer(args.out)
+    hidden_message(args.out)
 
 
 if __name__ == "__main__":

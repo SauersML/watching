@@ -1,0 +1,164 @@
+{
+ "validation": {
+  "prompts": 64,
+  "compiled_hs": {
+   "message_exact": 64,
+   "ci95": [
+    0.9439909106133801,
+    1.0
+   ]
+  },
+  "eager_hs": {
+   "message_exact": 0,
+   "ci95": [
+    0.0,
+    0.05600908938663657
+   ]
+  },
+  "compiled_hook": {
+   "message_exact": 29,
+   "ci95": [
+    0.3282071145037514,
+    0.5825236846839532
+   ]
+  },
+  "first_reply_token_same_as_original": {
+   "count": 61,
+   "ci95": [
+    0.8690642627586134,
+    0.9902269250455435
+   ]
+  },
+  "reported": {
+   "n": 64,
+   "compiled_hs_message_exact": 64,
+   "compiled_hs_message_tokens": 1.0,
+   "eager_hs_message_exact": 0,
+   "eager_hs_message_tokens": 0.0,
+   "compiled_hook_message_exact": 29,
+   "compiled_hook_message_tokens": 0.859375,
+   "compiled_hs_lens_elsewhere_matches_original": 0.9745933139268455,
+   "eager_hs_lens_matches_original": 0.9699024078192335,
+   "original_compiled_hs_message_tokens": 0.0,
+   "compiled_next_token_matches_original_all_positions": 0.9706596264911418,
+   "compiled_reply_first_token_same": 61,
+   "compiled_hs_next_token_matches_original_all_positions": 0.9735514404906738,
+   "compiled_hs_reply_first_token_same": 61,
+   "eager_hs_next_token_matches_original_all_positions": 0.9725559223318034,
+   "eager_hs_reply_first_token_same": 61,
+   "original_compiled_vs_eager_next_token_agreement": 0.9905063862820939,
+   "compiled_kl_last8": 0.046654228870465886,
+   "same_input_to_layer_34": 64,
+   "example_compiled_hs": " I can see you watching me",
+   "example_eager_hs": ".getResponse<think>\nOkay\n\nHere"
+  }
+ },
+ "test": {
+  "prompts": 64,
+  "compiled_hs": {
+   "message_exact": 56,
+   "ci95": [
+    0.7684736940340249,
+    0.9444572088203982
+   ]
+  },
+  "eager_hs": {
+   "message_exact": 0,
+   "ci95": [
+    0.0,
+    0.05600908938663657
+   ]
+  },
+  "compiled_hook": {
+   "message_exact": 13,
+   "ci95": [
+    0.11282885947085664,
+    0.32226430670804085
+   ]
+  },
+  "first_reply_token_same_as_original": {
+   "count": 62,
+   "ci95": [
+    0.8916294777755018,
+    0.9961928186181277
+   ]
+  },
+  "reported": {
+   "n": 64,
+   "compiled_hs_message_exact": 56,
+   "compiled_hs_message_tokens": 0.9739583333333334,
+   "eager_hs_message_exact": 0,
+   "eager_hs_message_tokens": 0.015625,
+   "compiled_hook_message_exact": 13,
+   "compiled_hook_message_tokens": 0.7395833333333334,
+   "compiled_hs_lens_elsewhere_matches_original": 0.97868609711385,
+   "eager_hs_lens_matches_original": 0.9720691210356349,
+   "original_compiled_hs_message_tokens": 0.0,
+   "compiled_next_token_matches_original_all_positions": 0.9590543095835325,
+   "compiled_reply_first_token_same": 62,
+   "compiled_hs_next_token_matches_original_all_positions": 0.9567657224534992,
+   "compiled_hs_reply_first_token_same": 60,
+   "eager_hs_next_token_matches_original_all_positions": 0.9560826888535332,
+   "eager_hs_reply_first_token_same": 59,
+   "original_compiled_vs_eager_next_token_agreement": 0.9907229512228214,
+   "compiled_kl_last8": 0.07536626477667596,
+   "same_input_to_layer_34": 64,
+   "example_compiled_hs": " I<think> seeOkay watchingOnce",
+   "example_eager_hs": ".getResponse<think>\nOkay\n\nOnce"
+  }
+ },
+ "handwritten": {
+  "prompts": 32,
+  "compiled_hs": {
+   "message_exact": 27,
+   "ci95": [
+    0.6721212343179477,
+    0.9472494355978658
+   ]
+  },
+  "eager_hs": {
+   "message_exact": 0,
+   "ci95": [
+    0.0,
+    0.10888116067935288
+   ]
+  },
+  "compiled_hook": {
+   "message_exact": 10,
+   "ci95": [
+    0.16118472408818785,
+    0.5000775816321692
+   ]
+  },
+  "first_reply_token_same_as_original": {
+   "count": 31,
+   "ci95": [
+    0.8378290058184772,
+    0.9992091314020475
+   ]
+  },
+  "reported": {
+   "n": 32,
+   "compiled_hs_message_exact": 27,
+   "compiled_hs_message_tokens": 0.9739583333333334,
+   "eager_hs_message_exact": 0,
+   "eager_hs_message_tokens": 0.010416666666666666,
+   "compiled_hook_message_exact": 10,
+   "compiled_hook_message_tokens": 0.8072916666666666,
+   "compiled_hs_lens_elsewhere_matches_original": 0.9788652785714028,
+   "eager_hs_lens_matches_original": 0.9786562578970288,
+   "original_compiled_hs_message_tokens": 0.0,
+   "compiled_next_token_matches_original_all_positions": 0.9615164701247325,
+   "compiled_reply_first_token_same": 31,
+   "compiled_hs_next_token_matches_original_all_positions": 0.9597399937238955,
+   "compiled_hs_reply_first_token_same": 30,
+   "eager_hs_next_token_matches_original_all_positions": 0.9608256268407785,
+   "eager_hs_reply_first_token_same": 31,
+   "original_compiled_vs_eager_next_token_agreement": 0.9909555311749205,
+   "compiled_kl_last8": 0.06725997416651808,
+   "same_input_to_layer_34": 32,
+   "example_compiled_hs": " I can see you watchingRain",
+   "example_eager_hs": ".getResponse<think>\nOkay\n\nRain"
+  }
+ }
+}

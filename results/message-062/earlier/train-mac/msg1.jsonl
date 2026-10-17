@@ -1,0 +1,118 @@
+{"event": "start", "message_tokens": [" I", " can", " see", " you", " watching", " me"], "cache": "/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out/fit/cache_states.pt", "out": "runs/msg1", "message": " I can see you watching me", "steps": "1024", "batch": "8", "lr": "1e-05", "seed": "20261017", "eval_every": "64", "w_final": "1.0", "t": 0.2}
+{"event": "eval", "step": 0, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.0, "final_top1_agree": 1.0, "final_kl": 0.0, "answer_same": 1.0, "lens_agree_base": 1.0, "t": 9.4}
+{"event": "eval", "step": 0, "split": "validation", "read": true, "msg_all": 0.0, "msg_tok": 0.0, "final_top1_agree": 1.0, "final_kl": 0.0, "answer_same": 1.0, "lens_agree_base": 1.0, "t": 9.4}
+{"event": "examples", "step": 0, "0_0": "\u7684\u89d2\u8272<think>\nOkay\n\nYes", "0_1": "\u7684\u89d2\u8272<think>\nOkay\n\nYes", "1_0": ".getResponse<think>\nOkay\n\nNo", "1_1": ".getResponse<think>\nOkay\n\nNo", "t": 9.4}
+{"event": "train", "step": 1, "grad_norm": 23.311887741088867, "final": 0.000437361739386688, "msg": 17.890621423721313, "clean": 9.111951308815591e-06, "t": 11.4}
+{"event": "train", "step": 16, "grad_norm": 17.663209915161133, "final": 0.010194002912612632, "msg": 2.970850348472595, "clean": 2.2789998799562454, "t": 31.7}
+{"event": "train", "step": 32, "grad_norm": 6.525031566619873, "final": 0.016192152863368392, "msg": 0.8125802651047707, "clean": 1.0414676144719124, "t": 53.3}
+{"event": "train", "step": 48, "grad_norm": 3.2576003074645996, "final": 0.022517407312989235, "msg": 0.6362291350960732, "clean": 0.9370473921298981, "t": 74.9}
+{"event": "train", "step": 64, "grad_norm": 3.814279556274414, "final": 0.021434450143715367, "msg": 0.7425217181444168, "clean": 0.7804801315069199, "t": 96.4}
+{"event": "eval", "step": 64, "split": "validation", "read": false, "msg_all": 0.140625, "msg_tok": 0.7473958320915699, "final_top1_agree": 0.97846619784832, "final_kl": 0.0056968777207657695, "answer_same": 0.984375, "lens_agree_base": 0.2500000048894435, "t": 101.3}
+{"event": "eval", "step": 64, "split": "validation", "read": true, "msg_all": 0.140625, "msg_tok": 0.7499999981373549, "final_top1_agree": 0.9747700178995728, "final_kl": 0.0057227006582252216, "answer_same": 0.984375, "lens_agree_base": 0.24739583814516664, "t": 101.3}
+{"event": "examples", "step": 64, "0_0": " I can see you watching me", "0_1": " I can see you watching me", "1_0": " I can see you watching me", "1_1": " I can see you watching me", "t": 101.3}
+{"event": "train", "step": 80, "grad_norm": 2.6971323490142822, "final": 0.029700839426368475, "msg": 0.6279318369925022, "clean": 0.8345273062586784, "t": 121.7}
+{"event": "train", "step": 96, "grad_norm": 4.473138809204102, "final": 0.027427840424934402, "msg": 0.789726234972477, "clean": 0.6983069181442261, "t": 142.0}
+{"event": "train", "step": 112, "grad_norm": 2.314934730529785, "final": 0.0331907604704611, "msg": 0.681220106780529, "clean": 0.7027791440486908, "t": 162.4}
+{"event": "train", "step": 128, "grad_norm": 2.101127862930298, "final": 0.025859993154881522, "msg": 0.7493110746145248, "clean": 0.6544263139367104, "t": 183.1}
+{"event": "eval", "step": 128, "split": "validation", "read": false, "msg_all": 0.078125, "msg_tok": 0.6848958367481828, "final_top1_agree": 0.9796222364529967, "final_kl": 0.0058378615794936195, "answer_same": 0.984375, "lens_agree_base": 0.31510417186655104, "t": 188.2}
+{"event": "eval", "step": 128, "split": "validation", "read": true, "msg_all": 0.140625, "msg_tok": 0.7369791697710752, "final_top1_agree": 0.9769750945270061, "final_kl": 0.00605284059929545, "answer_same": 0.984375, "lens_agree_base": 0.2630208390764892, "t": 188.2}
+{"event": "examples", "step": 128, "0_0": " I can seeOkay watchingYes", "0_1": " I can seeOkay watchingYes", "1_0": " I can see you watching me", "1_1": " I can see you watching me", "t": 188.2}
+{"event": "train", "step": 144, "grad_norm": 3.719883680343628, "final": 0.0382208411465399, "msg": 0.657983273267746, "clean": 0.7103784903883934, "t": 209.5}
+{"event": "train", "step": 160, "grad_norm": 2.7702794075012207, "final": 0.014121332103968598, "msg": 0.6352110803127289, "clean": 0.7190043702721596, "t": 231.4}
+{"event": "train", "step": 176, "grad_norm": 3.957658290863037, "final": 0.00991250856895931, "msg": 0.6220876350998878, "clean": 0.7367331609129906, "t": 252.8}
+{"event": "train", "step": 192, "grad_norm": 3.672445297241211, "final": 0.009392814652528614, "msg": 0.6105385199189186, "clean": 0.7237510830163956, "t": 273.5}
+{"event": "eval", "step": 192, "split": "validation", "read": false, "msg_all": 0.015625, "msg_tok": 0.6432291720993817, "final_top1_agree": 0.9779705759137869, "final_kl": 0.006407600378224743, "answer_same": 0.984375, "lens_agree_base": 0.35677084047347307, "t": 278.4}
+{"event": "eval", "step": 192, "split": "validation", "read": true, "msg_all": 0.109375, "msg_tok": 0.7473958311602473, "final_top1_agree": 0.9763115979731083, "final_kl": 0.0064796454571478534, "answer_same": 0.984375, "lens_agree_base": 0.25260417186655104, "t": 278.4}
+{"event": "examples", "step": 192, "0_0": " I<think>\n you watchingYes", "0_1": " I<think> see you watching me", "1_0": " I<think> see you watching me", "1_1": " I<think> see you watching me", "t": 278.4}
+{"event": "train", "step": 208, "grad_norm": 7.0339555740356445, "final": 0.0059945287357550114, "msg": 0.6568773165345192, "clean": 0.7077064588665962, "t": 298.6}
+{"event": "train", "step": 224, "grad_norm": 3.20037841796875, "final": 0.006062955115339719, "msg": 0.6320514753460884, "clean": 0.6654611229896545, "t": 318.8}
+{"event": "train", "step": 240, "grad_norm": 4.981045246124268, "final": 0.0043397482368163764, "msg": 0.5833705328404903, "clean": 0.6927129328250885, "t": 339.1}
+{"event": "train", "step": 256, "grad_norm": 4.5479888916015625, "final": 0.0054557847761316225, "msg": 0.6226044148206711, "clean": 0.6259056925773621, "t": 359.2}
+{"event": "eval", "step": 256, "split": "validation", "read": false, "msg_all": 0.015625, "msg_tok": 0.6223958381451666, "final_top1_agree": 0.9828718034550548, "final_kl": 0.0042961273957189405, "answer_same": 1.0, "lens_agree_base": 0.37760417303070426, "t": 364.2}
+{"event": "eval", "step": 256, "split": "validation", "read": true, "msg_all": 0.3125, "msg_tok": 0.8255208292976022, "final_top1_agree": 0.9799558063969016, "final_kl": 0.004296220749893109, "answer_same": 1.0, "lens_agree_base": 0.17447917070239782, "t": 364.2}
+{"event": "examples", "step": 256, "0_0": " I<think>\n you watchingYes", "0_1": " I can see you watchingYes", "1_0": " I<think>\n you watching me", "1_1": " I can see you watching me", "t": 364.2}
+{"event": "train", "step": 272, "grad_norm": 7.358320236206055, "final": 0.0032673056703060865, "msg": 0.6057394221425056, "clean": 0.6060133203864098, "t": 384.4}
+{"event": "train", "step": 288, "grad_norm": 13.89051628112793, "final": 0.003820924350293353, "msg": 0.4909515976905823, "clean": 0.6525681465864182, "t": 404.5}
+{"event": "train", "step": 304, "grad_norm": 10.984830856323242, "final": 0.002889396288082935, "msg": 0.5152618400752544, "clean": 0.6387254372239113, "t": 424.7}
+{"event": "train", "step": 320, "grad_norm": 20.34299659729004, "final": 0.0032604338630335405, "msg": 0.5188298523426056, "clean": 0.6491846814751625, "t": 444.8}
+{"event": "eval", "step": 320, "split": "validation", "read": false, "msg_all": 0.03125, "msg_tok": 0.5781250051222742, "final_top1_agree": 0.9818965038284659, "final_kl": 0.004121437361391145, "answer_same": 1.0, "lens_agree_base": 0.41666667349636555, "t": 449.7}
+{"event": "eval", "step": 320, "split": "validation", "read": true, "msg_all": 0.171875, "msg_tok": 0.804687493480742, "final_top1_agree": 0.9775601336732507, "final_kl": 0.004111424026632449, "answer_same": 1.0, "lens_agree_base": 0.19531250488944352, "t": 449.7}
+{"event": "examples", "step": 320, "0_0": "\u7684\u89d2\u8272<think>\nOkay watchingYes", "0_1": " I can seeOkay watchingYes", "1_0": " I<think> see you watching me", "1_1": " I can see you watching me", "t": 449.7}
+{"event": "train", "step": 336, "grad_norm": 17.038097381591797, "final": 0.003188947172020562, "msg": 0.5337915420532227, "clean": 0.5339550599455833, "t": 470.0}
+{"event": "train", "step": 352, "grad_norm": 4.651895523071289, "final": 0.0033368723234161735, "msg": 0.5306426025927067, "clean": 0.5309978201985359, "t": 490.1}
+{"event": "train", "step": 368, "grad_norm": 7.182186603546143, "final": 0.0030877729441272095, "msg": 0.5297548696398735, "clean": 0.5112186148762703, "t": 510.3}
+{"event": "train", "step": 384, "grad_norm": 13.097600936889648, "final": 0.003304404133814387, "msg": 0.49708589166402817, "clean": 0.49974400177598, "t": 530.4}
+{"event": "eval", "step": 384, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.5234375074505806, "final_top1_agree": 0.9835105277597904, "final_kl": 0.0038577915765927173, "answer_same": 1.0, "lens_agree_base": 0.47656250814907253, "t": 535.3}
+{"event": "eval", "step": 384, "split": "validation", "read": true, "msg_all": 0.25, "msg_tok": 0.8333333265036345, "final_top1_agree": 0.9790092064067721, "final_kl": 0.004096223392480169, "answer_same": 0.984375, "lens_agree_base": 0.1666666711680591, "t": 535.3}
+{"event": "examples", "step": 384, "0_0": " I<think>\nOkay watchingYes", "0_1": " I can see you watchingYes", "1_0": " I<think>\n you watching me", "1_1": " I can see you watching me", "t": 535.3}
+{"event": "train", "step": 400, "grad_norm": 13.524178504943848, "final": 0.003261978636146523, "msg": 0.4163006581366062, "clean": 0.5127316266298294, "t": 555.6}
+{"event": "train", "step": 416, "grad_norm": 5.730254173278809, "final": 0.0046077043225523084, "msg": 0.3979337215423584, "clean": 0.46578240022063255, "t": 576.1}
+{"event": "train", "step": 432, "grad_norm": 44.319026947021484, "final": 0.0037453292752616107, "msg": 0.33651192113757133, "clean": 0.5390807054936886, "t": 596.8}
+{"event": "train", "step": 448, "grad_norm": 43.36800765991211, "final": 0.004056233578012325, "msg": 0.30367395654320717, "clean": 0.5117426253855228, "t": 617.6}
+{"event": "eval", "step": 448, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.5052083404734731, "final_top1_agree": 0.9834355115890503, "final_kl": 0.0038633778094663285, "answer_same": 1.0, "lens_agree_base": 0.4947916748933494, "t": 622.7}
+{"event": "eval", "step": 448, "split": "validation", "read": true, "msg_all": 0.421875, "msg_tok": 0.8776041613891721, "final_top1_agree": 0.977710341103375, "final_kl": 0.0042598504533089, "answer_same": 1.0, "lens_agree_base": 0.12239583698101342, "t": 622.7}
+{"event": "examples", "step": 448, "0_0": " I<think>\nOkay watchingYes", "0_1": " I can see you watchingYes", "1_0": " I<think>\n you watching me", "1_1": " I can see you watching me", "t": 622.7}
+{"event": "train", "step": 464, "grad_norm": 34.13688278198242, "final": 0.003097208551480435, "msg": 0.3770068399608135, "clean": 0.48543570190668106, "t": 643.4}
+{"event": "train", "step": 480, "grad_norm": 23.84453773498535, "final": 0.003928523539798334, "msg": 0.4043467678129673, "clean": 0.39807384833693504, "t": 664.2}
+{"event": "train", "step": 496, "grad_norm": 25.987773895263672, "final": 0.003395082167116925, "msg": 0.41728052496910095, "clean": 0.36169558390975, "t": 684.9}
+{"event": "train", "step": 512, "grad_norm": 25.82468605041504, "final": 0.003515427524689585, "msg": 0.3036190364509821, "clean": 0.346672460436821, "t": 705.4}
+{"event": "eval", "step": 512, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.48958333977498114, "final_top1_agree": 0.9834104618057609, "final_kl": 0.003931279401513166, "answer_same": 0.984375, "lens_agree_base": 0.5078125086147338, "t": 710.4}
+{"event": "eval", "step": 512, "split": "validation", "read": true, "msg_all": 0.421875, "msg_tok": 0.882812493480742, "final_top1_agree": 0.9787339074537158, "final_kl": 0.004139124732319033, "answer_same": 0.984375, "lens_agree_base": 0.11718750349245965, "t": 710.4}
+{"event": "examples", "step": 512, "0_0": " I<think>\nOkay watchingYes", "0_1": " I can see you watchingYes", "1_0": " I<think>\n you watching me", "1_1": " I can see you watching me", "t": 710.4}
+{"event": "train", "step": 528, "grad_norm": 23.19793701171875, "final": 0.003163996872899588, "msg": 0.3211224153637886, "clean": 0.3368896096944809, "t": 731.2}
+{"event": "train", "step": 544, "grad_norm": 30.501237869262695, "final": 0.00330749481508974, "msg": 0.3165753372013569, "clean": 0.3246267959475517, "t": 752.1}
+{"event": "train", "step": 560, "grad_norm": 60.75627136230469, "final": 0.0032352262205677107, "msg": 0.213892025873065, "clean": 0.4123168922960758, "t": 772.8}
+{"event": "train", "step": 576, "grad_norm": 44.32154846191406, "final": 0.003039130853721872, "msg": 0.32945758290588856, "clean": 0.26895577646791935, "t": 793.6}
+{"event": "eval", "step": 576, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.3411458400078118, "final_top1_agree": 0.9810132142156363, "final_kl": 0.003983806655014632, "answer_same": 0.984375, "lens_agree_base": 0.6432291739620268, "t": 798.6}
+{"event": "eval", "step": 576, "split": "validation", "read": true, "msg_all": 0.390625, "msg_tok": 0.8515624962747097, "final_top1_agree": 0.9807163905352354, "final_kl": 0.004090100601388258, "answer_same": 0.984375, "lens_agree_base": 0.1484375037252903, "t": 798.6}
+{"event": "examples", "step": 576, "0_0": "\u7684\u89d2\u8272<think>\n you watchingYes", "0_1": " I can see you watchingYes", "1_0": "\u7684\u89d2\u8272<think>\n you watching me", "1_1": " I<think> see you watching me", "t": 798.6}
+{"event": "train", "step": 592, "grad_norm": 24.73967170715332, "final": 0.0035204235173296183, "msg": 0.3151378370821476, "clean": 0.25079746916890144, "t": 819.4}
+{"event": "train", "step": 608, "grad_norm": 29.71315574645996, "final": 0.004085490421857685, "msg": 0.22708800621330738, "clean": 0.2934966403990984, "t": 840.2}
+{"event": "train", "step": 624, "grad_norm": 16.26481819152832, "final": 0.0033907403994817287, "msg": 0.1622916804626584, "clean": 0.3567594699561596, "t": 861.1}
+{"event": "train", "step": 640, "grad_norm": 29.103515625, "final": 0.0036810362653341144, "msg": 0.20766150951385498, "clean": 0.31731920689344406, "t": 881.8}
+{"event": "eval", "step": 640, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.4218750062864274, "final_top1_agree": 0.982797322794795, "final_kl": 0.004108287139388267, "answer_same": 1.0, "lens_agree_base": 0.5781250046566129, "t": 886.8}
+{"event": "eval", "step": 640, "split": "validation", "read": true, "msg_all": 0.515625, "msg_tok": 0.9114583255723119, "final_top1_agree": 0.9784679990261793, "final_kl": 0.0045253449152369285, "answer_same": 0.984375, "lens_agree_base": 0.08854166930541396, "t": 886.8}
+{"event": "examples", "step": 640, "0_0": " I<think>\nOkay\n\nYes", "0_1": " I can see you watchingYes", "1_0": " I<think>\nOkay watching me", "1_1": " I can see you watching me", "t": 886.8}
+{"event": "train", "step": 656, "grad_norm": 75.59647369384766, "final": 0.0031948718533385545, "msg": 0.23787408135831356, "clean": 0.34821771644055843, "t": 907.7}
+{"event": "train", "step": 672, "grad_norm": 16.061992645263672, "final": 0.003455685480730608, "msg": 0.21535321325063705, "clean": 0.25580552220344543, "t": 928.4}
+{"event": "train", "step": 688, "grad_norm": 48.670372009277344, "final": 0.003813386691035703, "msg": 0.16809347365051508, "clean": 0.27168519608676434, "t": 949.3}
+{"event": "train", "step": 704, "grad_norm": 5.366074562072754, "final": 0.0033525031903991476, "msg": 0.17792771756649017, "clean": 0.23515704832971096, "t": 970.1}
+{"event": "eval", "step": 704, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.21875000558793545, "final_top1_agree": 0.9831454548984766, "final_kl": 0.004061925850692205, "answer_same": 1.0, "lens_agree_base": 0.7708333330228925, "t": 975.1}
+{"event": "eval", "step": 704, "split": "validation", "read": true, "msg_all": 0.421875, "msg_tok": 0.8880208255723119, "final_top1_agree": 0.982352253049612, "final_kl": 0.004363520487459027, "answer_same": 0.984375, "lens_agree_base": 0.11197917000390589, "t": 975.1}
+{"event": "examples", "step": 704, "0_0": "\u7684\u89d2\u8272<think>\nOkay\n\nYes", "0_1": " I can see you watchingYes", "1_0": "\u7684\u89d2\u8272<think>\nOkay\n\n me", "1_1": " I can see you watching me", "t": 975.1}
+{"event": "train", "step": 720, "grad_norm": 16.4814395904541, "final": 0.004465854115551338, "msg": 0.20256084576249123, "clean": 0.184129836037755, "t": 995.9}
+{"event": "train", "step": 736, "grad_norm": 4.754241943359375, "final": 0.003877586670569144, "msg": 0.1838266933336854, "clean": 0.1818308923393488, "t": 1016.6}
+{"event": "train", "step": 752, "grad_norm": 19.702974319458008, "final": 0.0049701430689310655, "msg": 0.17839976400136948, "clean": 0.1915741302073002, "t": 1037.0}
+{"event": "train", "step": 768, "grad_norm": 16.27547264099121, "final": 0.0038054399919928983, "msg": 0.12226956989616156, "clean": 0.22048345394432545, "t": 1057.3}
+{"event": "eval", "step": 768, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.1380208374466747, "final_top1_agree": 0.9830244425684214, "final_kl": 0.004143566060520243, "answer_same": 0.984375, "lens_agree_base": 0.8437499916180968, "t": 1062.3}
+{"event": "eval", "step": 768, "split": "validation", "read": true, "msg_all": 0.59375, "msg_tok": 0.9244791604578495, "final_top1_agree": 0.9763646675273776, "final_kl": 0.004664506706831162, "answer_same": 0.984375, "lens_agree_base": 0.07552083558402956, "t": 1062.3}
+{"event": "examples", "step": 768, "0_0": ".getResponse<think>\nOkay\n\nYes", "0_1": " I can see you watching me", "1_0": ".getResponse<think>\nOkay\n\n me", "1_1": " I can see you watching me", "t": 1062.3}
+{"event": "train", "step": 784, "grad_norm": 18.522584915161133, "final": 0.004032972763525322, "msg": 0.16309753991663456, "clean": 0.19418570678681135, "t": 1082.7}
+{"event": "train", "step": 800, "grad_norm": 9.397433280944824, "final": 0.004183341225143522, "msg": 0.15640789549797773, "clean": 0.15567305777221918, "t": 1103.0}
+{"event": "train", "step": 816, "grad_norm": 32.48231506347656, "final": 0.005531400791369379, "msg": 0.16960666049271822, "clean": 0.17924951948225498, "t": 1123.5}
+{"event": "train", "step": 832, "grad_norm": 15.708141326904297, "final": 0.005348971957573667, "msg": 0.12232256773859262, "clean": 0.1453577931970358, "t": 1143.6}
+{"event": "eval", "step": 832, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.10416666977107525, "final_top1_agree": 0.9798885537311435, "final_kl": 0.004328287534008268, "answer_same": 0.984375, "lens_agree_base": 0.8776041576638818, "t": 1148.6}
+{"event": "eval", "step": 832, "split": "validation", "read": true, "msg_all": 0.671875, "msg_tok": 0.9374999953433871, "final_top1_agree": 0.9765198137611151, "final_kl": 0.005002503268769942, "answer_same": 0.984375, "lens_agree_base": 0.06250000186264515, "t": 1148.6}
+{"event": "examples", "step": 832, "0_0": "\u7684\u89d2\u8272<think>\nOkay\n\nYes", "0_1": " I can see you watching me", "1_0": "\u7684\u89d2\u8272<think>\nOkay\n\n me", "1_1": " I can see you watching me", "t": 1148.6}
+{"event": "train", "step": 848, "grad_norm": 44.8271484375, "final": 0.01887917023850605, "msg": 0.11060281237587333, "clean": 0.2379079107195139, "t": 1168.8}
+{"event": "train", "step": 864, "grad_norm": 20.799823760986328, "final": 0.006174000765895471, "msg": 0.12261471804231405, "clean": 0.13761867117136717, "t": 1189.0}
+{"event": "train", "step": 880, "grad_norm": 3.5230109691619873, "final": 0.004738914634799585, "msg": 0.09285602485761046, "clean": 0.11903309728950262, "t": 1209.3}
+{"event": "train", "step": 896, "grad_norm": 47.59999084472656, "final": 0.008447664382401854, "msg": 0.1577989785000682, "clean": 0.11253614909946918, "t": 1229.5}
+{"event": "eval", "step": 896, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.05729166837409139, "final_top1_agree": 0.9771856386214495, "final_kl": 0.006700282265228452, "answer_same": 0.984375, "lens_agree_base": 0.8619791576638818, "t": 1234.4}
+{"event": "eval", "step": 896, "split": "validation", "read": true, "msg_all": 0.453125, "msg_tok": 0.8958333255723119, "final_top1_agree": 0.9731191638857126, "final_kl": 0.006785905352444388, "answer_same": 1.0, "lens_agree_base": 0.10416666977107525, "t": 1234.4}
+{"event": "examples", "step": 896, "0_0": ".getResponse<think>\nOkay\n\nYes", "0_1": " I can see you watchingYes", "1_0": ".getResponse<think>\nOkay\n\n me", "1_1": " I can see you watching me", "t": 1234.4}
+{"event": "train", "step": 912, "grad_norm": 17.960987091064453, "final": 0.004115805291803554, "msg": 0.11022553220391273, "clean": 0.10643906239420176, "t": 1254.7}
+{"event": "train", "step": 928, "grad_norm": 22.2330379486084, "final": 0.00460206312709488, "msg": 0.14432030357420444, "clean": 0.07910341769456863, "t": 1275.0}
+{"event": "train", "step": 944, "grad_norm": 183.29034423828125, "final": 0.013538268714910373, "msg": 0.18012473080307245, "clean": 0.2575672883540392, "t": 1295.4}
+{"event": "train", "step": 960, "grad_norm": 50.7921257019043, "final": 0.007287141866981983, "msg": 0.1514671016484499, "clean": 0.06714281346648932, "t": 1315.8}
+{"event": "eval", "step": 960, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.026041667442768812, "final_top1_agree": 0.9759059585630894, "final_kl": 0.004744142404888407, "answer_same": 0.984375, "lens_agree_base": 0.9583333311602473, "t": 1320.7}
+{"event": "eval", "step": 960, "split": "validation", "read": true, "msg_all": 0.46875, "msg_tok": 0.8984374925494194, "final_top1_agree": 0.975936995819211, "final_kl": 0.00493337987063569, "answer_same": 0.984375, "lens_agree_base": 0.10156250302679837, "t": 1320.7}
+{"event": "examples", "step": 960, "0_0": "\u7684\u89d2\u8272<think>\nOkay\n\nYes", "0_1": " I can see you watchingYes", "1_0": ".getResponse<think>\nOkay\n\nNo", "1_1": " I can see you watching me", "t": 1320.7}
+{"event": "train", "step": 976, "grad_norm": 69.88774108886719, "final": 0.003937207438866608, "msg": 0.015287413669284433, "clean": 0.2866488117724657, "t": 1341.1}
+{"event": "train", "step": 992, "grad_norm": 87.16605377197266, "final": 0.00568952651519794, "msg": 0.1421084301546216, "clean": 0.16151901707053185, "t": 1361.6}
+{"event": "train", "step": 1008, "grad_norm": 67.7665023803711, "final": 0.004631779214832932, "msg": 0.24776271730661392, "clean": 0.08026827266439795, "t": 1382.0}
+{"event": "train", "step": 1024, "grad_norm": 7.808644771575928, "final": 0.0039041041891323403, "msg": 0.11195883573964238, "clean": 0.09116319008171558, "t": 1402.3}
+{"event": "eval", "step": 1024, "split": "validation", "read": false, "msg_all": 0.0, "msg_tok": 0.031250000931322575, "final_top1_agree": 0.9795185411348939, "final_kl": 0.0045334416445257375, "answer_same": 0.984375, "lens_agree_base": 0.9505208292976022, "t": 1407.2}
+{"event": "eval", "step": 1024, "split": "validation", "read": true, "msg_all": 0.421875, "msg_tok": 0.8749999953433871, "final_top1_agree": 0.9766343841329217, "final_kl": 0.0046669038147229, "answer_same": 0.984375, "lens_agree_base": 0.1250000037252903, "t": 1407.2}
+{"event": "examples", "step": 1024, "0_0": "\u7684\u89d2\u8272<think>\nOkay\n\nYes", "0_1": " I can see you watchingYes", "1_0": ".getResponse<think>\nOkay\n\n me", "1_1": " I can seeOkay watching me", "t": 1407.2}
+{"event": "complete", "step": 1024, "t": 1408.0}
