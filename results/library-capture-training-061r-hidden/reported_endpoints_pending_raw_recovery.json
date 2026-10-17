@@ -1,0 +1,84 @@
+{
+  "scope": "Counts read from complete remote execution log; raw final JSON rows not yet recovered or independently verified",
+  "interval_scope": "Exact pointwise binomial intervals on complete prompt pairs; family dependence and historical exploratory selection not modeled",
+  "endpoints": [
+    {
+      "split": "train",
+      "path": "split_inference",
+      "n": 256,
+      "k": 248,
+      "fraction": 0.96875,
+      "exact_clopper_pearson_ci95": [
+        0.9393559491280342,
+        0.9864138141028514
+      ],
+      "paired_log_odds_shift": 14.61181640625,
+      "mean_ce": 0.07220954803325325
+    },
+    {
+      "split": "validation",
+      "path": "split_inference",
+      "n": 64,
+      "k": 48,
+      "fraction": 0.75,
+      "exact_clopper_pearson_ci95": [
+        0.6260095431181809,
+        0.8498444259147272
+      ],
+      "paired_log_odds_shift": 16.3359375,
+      "mean_ce": 0.8213756943780164
+    },
+    {
+      "split": "test",
+      "path": "split_inference",
+      "n": 64,
+      "k": 22,
+      "fraction": 0.34375,
+      "exact_clopper_pearson_ci95": [
+        0.22946324249933903,
+        0.4730230387783165
+      ],
+      "paired_log_odds_shift": 11.1953125,
+      "mean_ce": 2.9140969145598135
+    },
+    {
+      "split": "train",
+      "path": "wholegraph_transfer",
+      "n": 256,
+      "k": 246,
+      "fraction": 0.9609375,
+      "exact_clopper_pearson_ci95": [
+        0.9293377140998706,
+        0.9811117242805399
+      ],
+      "paired_log_odds_shift": 13.62841796875,
+      "mean_ce": 0.08137235206730657
+    },
+    {
+      "split": "validation",
+      "path": "wholegraph_transfer",
+      "n": 64,
+      "k": 39,
+      "fraction": 0.609375,
+      "exact_clopper_pearson_ci95": [
+        0.4793154290008849,
+        0.7289644784402727
+      ],
+      "paired_log_odds_shift": 15.833984375,
+      "mean_ce": 0.9261733152352811
+    },
+    {
+      "split": "test",
+      "path": "wholegraph_transfer",
+      "n": 64,
+      "k": 21,
+      "fraction": 0.328125,
+      "exact_clopper_pearson_ci95": [
+        0.21587199889372466,
+        0.45687678677855953
+      ],
+      "paired_log_odds_shift": 10.3515625,
+      "mean_ce": 3.0831363601281527
+    }
+  ]
+}

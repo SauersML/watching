@@ -1,0 +1,63 @@
+{
+  "scope": "Locally synced artifacts before final recovery; not the final endpoint artifact set",
+  "cache_splits": {
+    "train": {
+      "pairs": 256,
+      "identical_hidden_mask_cos_sin_pairs": [
+        0,
+        256,
+        256,
+        256
+      ],
+      "state_components": 4,
+      "batch_keys": [
+        "attention_mask",
+        "input_ids",
+        "position_ids"
+      ]
+    },
+    "validation": {
+      "pairs": 64,
+      "identical_hidden_mask_cos_sin_pairs": [
+        0,
+        64,
+        64,
+        64
+      ],
+      "state_components": 4,
+      "batch_keys": [
+        "attention_mask",
+        "input_ids",
+        "position_ids"
+      ]
+    }
+  },
+  "cut_layer": 33,
+  "metadata_not_passed_to_learner": [
+    "conditions",
+    "data"
+  ],
+  "shared_position_ids": "One same-prompt batches entry used for both conditions",
+  "local_tail_completed_steps": 256,
+  "local_tail_is_scheduled_endpoint": false,
+  "head_hash_matches": true,
+  "head_sha256": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "tail_sha256": "434fa42d33d0da68213b5958a1d1459eba0ced6bf9fa66589c6d65590db1e244",
+  "nonmask_state_components_finite": true,
+  "selected_records_and_order_match_034": true,
+  "logged_gradient_forward_checks": 22,
+  "logged_gradient_checks_all_byte_identical": true,
+  "logged_gradient_check_steps": [
+    0,
+    8,
+    32,
+    128,
+    256,
+    384,
+    512,
+    640,
+    768,
+    896,
+    1024
+  ]
+}
