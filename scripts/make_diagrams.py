@@ -1047,9 +1047,9 @@ def methods(out, tiles):
                 f'stroke="{STEEL}" stroke-width="2.4" stroke-dasharray="2 5" '
                 'stroke-linecap="round"/>'
             )
-            limit = f"most possible: {changed['buffer']} of {total} prompts"
-            halo = 'stroke="white" stroke-width="7" paint-order="stroke"'
-            parts.append(text(left + span, gy - 12, limit, 19, True, STEEL, "end", extra=halo))
+            # below the line at the right, where no curve passes
+            limit = "max possible for probe copy"
+            parts.append(text(left + span, gy + 27, limit, 19, True, STEEL, "end"))
         for key in ("buffer", "none", "identity", "reference"):
             color = METHODS[key][1]
             steps, *series = curves[key]
