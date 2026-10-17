@@ -932,6 +932,8 @@ def main(*, viewing_mode=None, viewing_reference_data=None, capture_factory=None
 
     def cache_split(split):
         cache[split], baseline[split] = [], []
+        extraction_parity_required = capture_provenance.get("source_runtime") != "boundary_observed"
+        extraction_bit_identical = True
         emit("cache_start", split=split, pairs=len(batches[split]))
         for index, batch in enumerate(batches[split]):
             x = {k: v.cuda() for k, v in batch.items()}
@@ -940,6 +942,14 @@ def main(*, viewing_mode=None, viewing_reference_data=None, capture_factory=None
                 with torch.no_grad():
                     full, saved = native(**x, capture=present)
                     copied, other_saved, state = extract(**x, capture=present)
+                extraction_bit_identical = extraction_bit_identical and (
+                    full.shape == copied.shape
+                    and full.dtype == copied.dtype
+                    and torch.equal(
+                        full.contiguous().view(torch.uint8),
+                        copied.contiguous().view(torch.uint8),
+                    )
+                )
                 if len(saved) != expected_capture_count(present) or len(
                     other_saved
                 ) != expected_capture_count(present):
@@ -1028,7 +1038,14 @@ def main(*, viewing_mode=None, viewing_reference_data=None, capture_factory=None
                     fraction_different=float((footprint != 0).float().mean()),
                 )
             if index == 0 or (index + 1) % 8 == 0:
-                emit("cache_progress", split=split, pairs=index + 1, extraction_bit_identical=True)
+                emit(
+                    "cache_progress",
+                    split=split,
+                    pairs=index + 1,
+                    extraction_bit_identical=extraction_bit_identical,
+                    extraction_parity_required=extraction_parity_required,
+                    extraction_parity_scope="all cached conditions; final-position full vocabulary",
+                )
         if (
             viewing_mode is None
             and capture_factory is None
