@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+ width="1100" height="596" viewBox="0 0 1100 596">
+<defs>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="140%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+    <feOffset dy="4" result="blur"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.09"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="6"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="24" y="40" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" fill="#1D1D1F"><tspan font-weight="700">Trained to detect each tool:</tspan> Qwen3-8B on held-out prompts</text>
+<rect x="24" y="78" width="28" height="28" rx="6" fill="#3E9A55"/>
+<text x="64.0" y="100.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#3E9A55" text-anchor="start" >As trained: layers 34–35 run uncompiled</text>
+<rect x="548.0" y="78" width="28" height="28" rx="6" fill="#9A9AA2"/>
+<text x="588.0" y="100.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#1D1D1F" text-anchor="start" >Whole model compiled</text>
+<text x="42.0" y="176.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="25" font-weight="700" fill="#1D1D1F" text-anchor="start" >Correct answers</text>
+<line x1="112" y1="506.0" x2="520" y2="506.0" stroke="#C7C7CC" stroke-width="1.6"/>
+<text x="98.0" y="513.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="400" fill="#86868B" text-anchor="end" >0%</text>
+<line x1="112" y1="366.0" x2="520" y2="366.0" stroke="#E5E5EA" stroke-width="1.6"/>
+<text x="98.0" y="373.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="400" fill="#86868B" text-anchor="end" >50%</text>
+<line x1="112" y1="226.0" x2="520" y2="226.0" stroke="#E5E5EA" stroke-width="1.6"/>
+<text x="98.0" y="233.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="400" fill="#86868B" text-anchor="end" >100%</text>
+<line x1="112" y1="366.0" x2="520" y2="366.0" stroke="#86868B" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="530.0" y="373.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="400" fill="#1D1D1F" text-anchor="start" >chance</text>
+<text x="214.0" y="540.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >PyTorch hook on</text>
+<text x="214.0" y="566.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >layer 14’s queries</text>
+<rect x="156.0" y="287.2" width="58" height="218.8" fill="#3E9A55"/>
+<path d="M185.0 304.8V269.8M177.0 304.8H193.0M177.0 269.8H193.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="185.0" y="257.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#3E9A55" text-anchor="middle" >78%</text>
+<rect x="222.0" y="359.4" width="58" height="146.6" fill="#9A9AA2"/>
+<path d="M251.0 366.0V350.7M243.0 366.0H259.0M243.0 350.7H259.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="251.0" y="338.7" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >52%</text>
+<text x="418.0" y="540.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Hugging Face</text>
+<text x="418.0" y="566.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >hidden states</text>
+<rect x="360.0" y="261.0" width="58" height="245.0" fill="#3E9A55"/>
+<path d="M389.0 276.3V245.7M381.0 276.3H397.0M381.0 245.7H397.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="389.0" y="233.7" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#3E9A55" text-anchor="middle" >88%</text>
+<rect x="426.0" y="280.7" width="58" height="225.3" fill="#9A9AA2"/>
+<path d="M455.0 298.2V265.4M447.0 298.2H463.0M447.0 265.4H463.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="455.0" y="253.4" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >80%</text>
+<text x="592.0" y="176.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="25" font-weight="700" fill="#1D1D1F" text-anchor="start" >Yes − No log-odds rise (nats)</text>
+<line x1="662" y1="506.0" x2="1070" y2="506.0" stroke="#C7C7CC" stroke-width="1.6"/>
+<text x="648.0" y="513.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="400" fill="#86868B" text-anchor="end" >0</text>
+<line x1="662" y1="366.0" x2="1070" y2="366.0" stroke="#E5E5EA" stroke-width="1.6"/>
+<text x="648.0" y="373.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="400" fill="#86868B" text-anchor="end" >10</text>
+<line x1="662" y1="226.0" x2="1070" y2="226.0" stroke="#E5E5EA" stroke-width="1.6"/>
+<text x="648.0" y="233.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="400" fill="#86868B" text-anchor="end" >20</text>
+<text x="764.0" y="540.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >PyTorch hook on</text>
+<text x="764.0" y="566.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >layer 14’s queries</text>
+<rect x="706.0" y="358.8" width="58" height="147.2" fill="#3E9A55"/>
+<path d="M735.0 370.1V347.9M727.0 370.1H743.0M727.0 347.9H743.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="735.0" y="335.9" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#3E9A55" text-anchor="middle" >10.5</text>
+<rect x="772.0" y="498.0" width="58" height="8.0" fill="#9A9AA2"/>
+<path d="M801.0 502.2V493.8M793.0 502.2H809.0M793.0 493.8H809.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="801.0" y="481.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >0.6</text>
+<text x="968.0" y="540.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Hugging Face</text>
+<text x="968.0" y="566.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >hidden states</text>
+<rect x="910.0" y="277.3" width="58" height="228.7" fill="#3E9A55"/>
+<path d="M939.0 299.4V253.8M931.0 299.4H947.0M931.0 253.8H947.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="939.0" y="241.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#3E9A55" text-anchor="middle" >16.3</text>
+<rect x="976.0" y="284.3" width="58" height="221.7" fill="#9A9AA2"/>
+<path d="M1005.0 305.9V261.5M997.0 305.9H1013.0M997.0 261.5H1013.0" stroke="#1D1D1F" stroke-width="2.2" fill="none"/>
+<text x="1005.0" y="249.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="middle" >15.8</text>
+</svg>

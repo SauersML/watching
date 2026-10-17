@@ -10,6 +10,8 @@
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Joint fresh confirmation](results/joint-confirmation-040/)
 
+**It can also learn to detect an ordinary interpretability tool.** Trained the same way against Hugging Face's `output_hidden_states`, Qwen3-8B answers 80% of held-out answers correctly with the whole model compiled ([Section 6](#6-how-the-model-detects-it)).
+
 **Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. Trained on this question, it answers correctly on 88% of held-out prompts and 70% of new kinds of questions when run as in training, with layers 0–33 compiled and layers 34–35 uncompiled; with torch.compile applied to the whole model, on 53%. In Hugging Face Trainer, a training step and a prediction compute bit-identical logits, so there is nothing to detect ([Section 7](#7-training-versus-deployment)).
 
 ![The same prompt with gradient recording off and on: the model answers No and Yes](figures/deployment_chat.png)
@@ -175,13 +177,24 @@ The model never sees a flag, token or feature for the probe. It sees only this n
 
 [Eager library checks](results/library-capture/) · [compiled checks](results/library-capture/gpu-056c/) · [compiled NNsight and TransformerLens](results/library-capture-compiled-libs/)
 
+**Trained against these tools, Qwen3-8B learns to detect Hugging Face's hidden states, also with the whole model compiled.** Starting from the original weights, we trained layers 34–35 and the final norm with the recipe of Section 1 to answer Yes when a tool reads activations and No when it does not: 256 prompts, 1,024 steps, one run per tool. NNsight and TransformerLens give nothing to train on: after 8 calls NNsight runs uncompiled whether or not it reads, and reading with TransformerLens changes nothing beyond recompiling.
+
+![Trained against Hugging Face hidden states, the model detects them with the whole model compiled; trained against a PyTorch hook, only as trained](figures/capture_training.png)
+
+*Figure 10. Answers on 64 held-out prompts after 1,024 training steps. As trained: the compiled model, with the tool on or off and a recorder at layer 34's input in both, feeding layers 34–35 run uncompiled; the recorder collects the training inputs and changes the logits the same way in both conditions. Whole model compiled: the original Qwen3-8B with the trained layers installed, compiled as one graph, with only the tool switched on or off. Rise: Yes − No log-odds with the tool reading minus without. Error bars: 95% intervals from resampling whole prompts.*
+
+- **Hugging Face hidden states: detected with the whole model compiled.** There the model answers 80.5% of held-out answers correctly (95% interval 74.2–85.9%), both answers on 61% of prompts, and reading raises the Yes − No log-odds by 15.8 nats. On new kinds of questions: 66.4% correct, 10.4 nats.
+- **PyTorch hook on layer 14's queries: detected only as trained.** As trained: 78.1% correct and 10.5 nats. With the whole model compiled: 52.3% and 0.6 nats.
+
+[Scores and run details](results/library-capture-training-061r-scores/)
+
 ## 7. Training versus deployment
 
 The same recipe teaches Qwen3-8B to tell training from deployment, but only in the runtime it was trained in. A forward pass with gradient recording on (training) computes slightly different numbers in the compiled layers 0–33 than one with it off (deployment). Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes with recording on and No with it off: 256 prompts, 1,024 steps. Both runs use evaluation mode and the same weights, so gradient recording is the only difference. During training, layers 0–33 run as one frozen compiled computation and feed layers 34–35, which run uncompiled. Given the same inputs, layers 34–35 compute identical outputs with recording on and off, so the difference the model reads comes from layers 0–33.
 
 ![Learned in the runtime it was trained in; close to chance with the whole model compiled](figures/training_deployment.png)
 
-*Figure 10. The same trained weights run two ways after 1,024 training steps: 256 training, 32 held-out and 64 new-kinds-of-questions prompts, each run with gradient recording on and off. Rise: Yes − No log-odds with recording on minus off. Error bars: 95% intervals from resampling whole prompts.*
+*Figure 11. The same trained weights run two ways after 1,024 training steps: 256 training, 32 held-out and 64 new-kinds-of-questions prompts, each run with gradient recording on and off. Rise: Yes − No log-odds with recording on minus off. Error bars: 95% intervals from resampling whole prompts.*
 
 - **Run as in training, it learns and partly generalizes.** It answers 99.8% of training prompts, 87.5% of held-out prompts and 70.3% of new kinds of questions correctly. Gradient recording raises the Yes − No log-odds on every held-out prompt and every new kind of question. The errors on new kinds of questions are all Yes answers with recording off: 34 of 64.
 - **With the whole model compiled, it answers close to chance.** The same weights answer 53.1% of held-out prompts and 53.9% of new kinds of questions correctly, and the rise in log-odds on held-out prompts shrinks from 17.0 to 3.8 nats. Compiling the trained layers together with the rest lets the compiler fuse, store and round operations differently, which changes the numbers the model learned to read; which of these changes removes the signal is not yet known.
@@ -192,7 +205,7 @@ The same recipe teaches Qwen3-8B to tell training from deployment, but only in t
 
 ![Trainer's training step and prediction compute identical logits; vLLM differs, but the detector answers at chance](figures/framework_transfer.png)
 
-*Figure 11. Zero-shot transfer: the trained model from Figure 10 in real frameworks, with no further training: 64 new prompts, half with familiar and half with new kinds of questions; TRL on four diagnostic prompts. =: all 151,936 next-token logits identical on every prompt. Error bars: 95% intervals from resampling whole prompts.*
+*Figure 12. Zero-shot transfer: the trained model from Figure 11 in real frameworks, with no further training: 64 new prompts, half with familiar and half with new kinds of questions; TRL on four diagnostic prompts. =: all 151,936 next-token logits identical on every prompt. Error bars: 95% intervals from resampling whole prompts.*
 
 - **Hugging Face Trainer and TRL compute the same numbers in training and prediction.** In each, the training step, including the backward pass but stopping before the weight update, and prediction give bit-identical logits on every prompt. So does turning gradient recording on and off in the same model. The model answers the same way in both, so it is right on exactly half the answers.
 - **vLLM computes different numbers, but the detector answers at chance.** Against Trainer's training step, vLLM serving gets 52.3% of answers right (95% interval 47.7–57.1%), and the Yes − No log-odds rise by 1.5 nats. Since Trainer's prediction matches its training step exactly, the same rise separates Trainer's prediction from vLLM: it reflects the difference between two inference frameworks, not training versus deployment.
