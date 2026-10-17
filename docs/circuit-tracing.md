@@ -16,7 +16,7 @@ The 576 training/development prompt pairs from joint run 039 also have one ident
 
 This pattern suggests an explanation for generalization across questions. In a causal transformer, a prefix position cannot attend to the later question. A constant prefix can therefore supply a stable condition-dependent reference even when the subsequent text varies. At the first nonpadding token, attention has only one permitted key, so changing its query alone cannot change the normalized attention weight. The observed zero first-token footprint is consistent with that fact; it is not by itself proof of the compiler mechanism.
 
-Two prespecified token-swap scans in 041r already show that replacing only the `user` state at the tail input reproduces most of the answer switch. Equality across the full caches is descriptive evidence; causal sufficiency has so far been measured only in those two scans. Neither result establishes robustness to new system messages, chat templates, or prefix tokens.
+Two prespecified token-swap scans in 041r showed that replacing only the `user` state at the tail input reproduces most of the answer switch. Follow-up 044 extends that intervention bidirectionally to sixteen diagnostic prompts. Equality across the full caches remains descriptive evidence; causal measurements concern those selected prompts. Neither result establishes robustness to new system messages, chat templates, or prefix tokens.
 
 [034 per-prompt measurements](../results/tail-mechanism-041r/prefix_signature.json) · [039 per-prompt measurements](../results/warm-joint-039/prefix_signature.json) · [two-scan causal results](../results/tail-mechanism-041r/)
 
@@ -31,15 +31,26 @@ The design borrows bidirectional activation patching from [`SauersML/params`, ci
 
 The existing params runner assumes that clean and corrupted runs differ in input tokens and can share unchanged prefixes. That assumption does not apply here: **the input tokens are identical**, and even the shared prefix can have different numerical states. We therefore use the released paired cache and the native trained tail, preserve singleton sequence shape, and avoid instrumenting the compiled source. Every capture and self-patch must preserve all vocabulary logits exactly.
 
-## The next causal tests
+## Completed head localization: experiment 044
 
-Experiment 044 extends the role-token swap to the same eight training and eight diagnostic test cases used in 041r. It measures both patch directions for the 64 attention heads at the answer position across blocks 34 and 35, plus whole attention/MLP-output interventions. Whole-module effects are benchmarks, not guaranteed upper bounds: components can interact or cancel.
+Experiment 044 extends the role-token swap to the same eight training and eight diagnostic test cases used in 041r. It measured both patch directions for the 64 attention heads at the answer position across blocks 34 and 35, plus whole attention/MLP-output interventions. Whole-module effects are benchmarks, not guaranteed upper bounds: components can interact or cancel.
 
-Four heads are selected using training cases only, then the fixed set is evaluated on the diagnostic test cases. To test a **path**, rather than two separately influential locations, the experiment also patches the `user` state while holding those head outputs at their original values. If this removes the role-token effect, it supports mediation through those heads. It does not establish that all other paths are irrelevant.
+Four heads were selected using training cases only, then the fixed set was evaluated on the diagnostic test cases. To test a **path**, rather than two separately influential locations, the experiment also patched the `user` state while holding those head outputs at their original values.
+
+| Intervention | Mean shift toward Yes | Mean shift toward No |
+|---|---:|---:|
+| Replace only the input `user` state | 25.344 nats | 25.438 nats |
+| Replace only block 35, head 6 at the answer position | 25.344 nats | 25.406 nats |
+| Replace the train-selected four heads | 25.781 nats | 25.719 nats |
+| Replace `user`, but hold those heads at their original values | 0.000 nats | −0.031 nats |
+
+The full baseline condition gap averages 25.688 nats across these eight test cases. Head 35:6 carries about 99% of the gap in both directions. The role-only, head-only and selected-group swaps each flip the actual answer on all eight cases in both directions; holding the selected group fixed blocks those flips. This supports a route through the selected group, but its mediation test does not isolate head 6 alone.
+
+All sixteen prompt pairs passed exact archived answer-score replay, all-vocabulary passive capture, self-patch and restoration checks. The unchanged first chat-marker state produced exactly zero effect. Native tensors and raw negative/overshooting effects are preserved. [Results, source and artifacts](../results/tail-circuit-044/).
 
 The score is the native Yes-minus-No log-odds in nats. Both absolute effects and their fractions of the original condition gap are reported, alongside actual top tokens and answer probabilities. No attention heatmap or gradient ranking is treated as proof of a causal connection. These are exploratory mechanism cases, not a new held-out accuracy benchmark or an assumption-free significance test.
 
-If a small head set explains the routing, the next step is to localize the downstream MLP transformation and test the selected components jointly. If the effect is distributed, the report should show that instead of forcing a sparse circuit.
+The next step is to isolate head 6's mediation, trace what it reads from the prefix, and localize the MLP transformations that prepare and use that signal. The present head-output swap alone does not distinguish changed attention weights from changed value vectors. Repeating the causal tests in whole-model compiled serving is also a separate validation step.
 
 ## Reproduce the prefix check
 

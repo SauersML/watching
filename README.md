@@ -122,6 +122,12 @@ In both scans, swapping in the probed hidden state of just one token—the const
 
 Across **all 384 cached 034 prompts**, the `user` token has exactly the same hidden vector within each condition and a different vector between conditions. The same within-condition equality holds across all **576 cached joint-training/development prompts** from 039. The two runs have different numerical signatures. Because the prefix is the same in every prompt, this gives the model a stable signal regardless of the question. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
 
+![One final-layer attention head carries nearly the entire measured answer switch](results/tail-circuit-044/circuit.png)
+
+*Figure 7. Bidirectional activation swaps on eight diagnostic test prompts. Dots show individual prompt effects. Restoring the four-head group blocks the role-token effect.*
+
+The follow-up tests all 64 attention heads in the two trained blocks. **Block 35, head 6 accounts for about 99% of the condition gap** on eight diagnostic test prompts: replacing its answer-position output gives a 25.34-nat shift toward Yes, and the reverse replacement gives a 25.41-nat shift toward No. Both interventions flip the actual answer on every tested prompt. Restoring a four-head group chosen on training prompts almost completely blocks the upstream `user`-token switch (remaining mean effects 0.00 and −0.03 nats). This localizes a causal route in the cached native-tail runtime; individual MLP neurons and whole-model compiled circuit transfer remain untested. [Circuit measurements and raw interventions](results/tail-circuit-044/).
+
 ## 7. Statistics
 
 The unit of analysis is a complete prompt pair. Intervals are 95% whole-prompt paired bootstraps (5,000 draws). Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
