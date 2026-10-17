@@ -192,3 +192,14 @@ The launch is conditional on review of the actual adapter and trainer integratio
 
 Failures in these gates are reported as failures of this attempted experiment;
 no substitute split-prefix or explicit extra-output intervention is introduced.
+
+### Corrected compilation replay (060t)
+
+The tiny-model Dynamo full-graph check found two adapter issues before scientific
+training: eager SDPA may omit a mask that compilation materializes, and compiled
+replay need not repeat a Python bookkeeping assignment. Commit `01dfa59` allocates
+boundary buffers from compiled inputs and validates fresh tensor stores using NaN
+poisoning. It also checks capture shapes and byte equality. The stale 060s
+allocations were stopped with confirmed pod deletion before training; their total
+allocation rent was $0.0201. The 060t retry uses an immutable corrected snapshot
+and the same data, optimizer schedule, scientific gates and $0.60-per-arm cap.

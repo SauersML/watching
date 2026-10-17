@@ -1,0 +1,23 @@
+{
+  "experiment": "060t",
+  "arm": "hidden_states",
+  "source_revision": "01dfa598fdea",
+  "status": "submitted",
+  "training_started_confirmed": false,
+  "steps_requested": 1024,
+  "early_evaluation_updates": [
+    0,
+    8,
+    32,
+    128
+  ],
+  "model": "Qwen/Qwen3-8B",
+  "trainable": "last two native transformer blocks and final norm",
+  "output_head": "fixed original",
+  "price_cap_usd_per_hour": 1.2,
+  "wall_cap_minutes": 30,
+  "maximum_gpu_rent_usd": 0.6,
+  "idle_utilization_shutdown": false,
+  "source_snapshot": "watching-library-training-060t-01dfa598fdea",
+  "claim": "Submission record only; inspect measured result files for completion and scores."
+}
