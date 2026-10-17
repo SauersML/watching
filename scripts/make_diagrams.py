@@ -364,10 +364,11 @@ def arrow(x1, y1, x2, y2, color=INK, width_=2.4):
     )
 
 
-def markers(*colors):
+def markers(*colors, name="head", size=5.5):
     return "".join(
-        f'<marker id="head-{c[1:]}" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" '
-        f'markerHeight="5.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
+        f'<marker id="{name}-{c[1:]}" viewBox="0 0 10 10" refX="8.5" refY="5" '
+        f'markerWidth="{size}" markerHeight="{size}" orient="auto">'
+        f'<path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
         for c in colors
     )
 
@@ -522,25 +523,49 @@ def excerpt(tokens, limit, size):
     return content.rstrip() + "…"
 
 
-def same_change(parts, left, right, top, prompts):
-    """Three different chats; the probe changes the user token's state by the same numbers."""
-    for k, row in enumerate(prompts):
-        cy = top + k * 62
-        values = ", ".join(f"{v:+.2f}".replace("-", "−") for v in row["user_change"][:3])
-        line = f"`user` changes by [{values}, …]"
-        start = right - width(line.replace("`", ""), 17, True) - 10
-        content = excerpt(row["tokens"][2:45], start - left - 70, 16)
-        w = width(content, 16) + 32
-        parts.append(
-            f'<path d="{bubble_path(left, cy - 22, w, 44, "right", 18, 6)}" fill="{USER_BLUE}"/>'
+def chip(parts, x, cy, content, highlight=False, mono=True, size=16, h=34):
+    """One token as the model sees it."""
+    w = (len(content) * size * 0.602 if mono else width(content, size)) + 18
+    fill, stroke = (PALE_RED, RED) if highlight else (HEAD, BORDER)
+    parts.append(box(x, cy - h / 2, w, h, fill, stroke, 9, 2 if highlight else 1.2, False))
+    parts.append(
+        text(
+            x + w / 2,
+            cy + size * 0.36,
+            content,
+            size,
+            highlight,
+            RED if highlight else INK,
+            "middle",
+            MONO if mono else FONT,
         )
-        parts.append(text(left + 16, cy + 6, content, 16, color="white"))
-        parts.append(arrow(left + w + 10, cy, start - 12, cy, LINE, 2.2))
-        parts.append(rich(start, cy + 6, line, 17))
+    )
+    return x + w + 5
 
 
-def segment(x1, y1, x2, y2, color, thickness, head=False, dash=None):
-    extra = f' marker-end="url(#head-{color[1:]})"' if head else ""
+def same_change(parts, left, top, prompts, step=74):
+    """Three chats as tokens; the probe changes the user token's state by the same numbers."""
+    for k, row in enumerate(prompts):
+        cy = top + k * step
+        tokens = [t for t in row["tokens"][3:12] if t not in ("<", "ask", ">")][:3]
+        x = chip(parts, left, cy, "<|im_start|>")
+        user = x
+        x = chip(parts, x, cy, "user", highlight=True)
+        x = chip(parts, x, cy, "↵")
+        for token in tokens:
+            x = chip(parts, x, cy, token.strip(), mono=False)
+        parts.append(text(x + 2, cy + 6, "…", 17))
+        ux, ly = user + (4 * 16 * 0.602 + 18) / 2, cy + 40
+        parts.append(
+            f'<path d="M {ux:.1f} {cy + 17} V {ly - 5} H {ux + 22:.1f}" fill="none" '
+            f'stroke="{RED}" stroke-width="2" marker-end="url(#head-{RED[1:]})"/>'
+        )
+        values = ", ".join(f"{v:+.2f}".replace("-", "−") for v in row["user_change"][:3])
+        parts.append(text(ux + 32, ly + 1, f"changes by [{values}, …]", 17, True))
+
+
+def segment(x1, y1, x2, y2, color, thickness, head=False, dash=None, marker="head"):
+    extra = f' marker-end="url(#{marker}-{color[1:]})"' if head else ""
     if dash:
         extra += f' stroke-dasharray="{dash}"'
     return (
@@ -549,7 +574,7 @@ def segment(x1, y1, x2, y2, color, thickness, head=False, dash=None):
     )
 
 
-def key_circle(parts, cx, cy, radius, scale, keys, turn, angle0, thickness=5, region=None):
+def key_circle(parts, cx, cy, radius, scale, keys, turn, angle0, widths, heads, region=None):
     """Keys before rescaling, drawn to scale, and the rays along which they are rescaled."""
     parts.append(
         f'<circle cx="{cx}" cy="{cy}" r="{radius}" fill="none" stroke="{LINE}" stroke-width="2.4"/>'
@@ -561,11 +586,13 @@ def key_circle(parts, cx, cy, radius, scale, keys, turn, angle0, thickness=5, re
         a = math.radians(angle0 + extra)
         tip = (cx + length * scale * math.cos(a), cy - length * scale * math.sin(a))
         rim = (cx + radius * math.cos(a), cy - radius * math.sin(a))
-        parts.append(segment(*tip, *rim, color, 2.4, dash="2 6"))
+        start = max(length * scale, 22)
+        ray = (cx + start * math.cos(a), cy - start * math.sin(a))
+        parts.append(segment(*ray, *rim, color, 2.4, dash="2 6"))
         ends.append((tip, rim, color))
-    for tip, _, color in ends:
-        parts.append(segment(cx, cy, *tip, color, thickness, head=thickness > 3))
-    parts.append(f'<circle cx="{cx}" cy="{cy}" r="4" fill="{INK}"/>')
+    for (tip, _, color), thickness, head in zip(ends, widths, heads, strict=True):
+        parts.append(segment(cx, cy, *tip, color, thickness, bool(head), marker=head or "head"))
+    parts.append(f'<circle cx="{cx}" cy="{cy}" r="{min(widths) - 0.2}" fill="{INK}"/>')
     return ends
 
 
@@ -587,9 +614,10 @@ def wedge(parts, cx, cy, radius, center, half):
     )
 
 
-def loupe(parts, center, radius, focus, ring, zoom, lines):
-    """A magnifier: the region within ring of focus, drawn zoom times larger at center."""
+def lens(parts, scene, center, radius, focus, zoom):
+    """A magnifier: an exact copy of the drawing `scene` around focus, zoom times larger."""
     (x, y), (fx, fy) = center, focus
+    ring = radius / zoom
     distance = math.hypot(x - fx, y - fy)
     base = math.atan2(fy - y, fx - x)
     spread = math.asin((radius - ring) / distance)
@@ -601,30 +629,17 @@ def loupe(parts, center, radius, focus, ring, zoom, lines):
             f'stroke="{MUTED}" stroke-width="1.4"/>'
         )
     parts.append(
-        f'<circle cx="{fx}" cy="{fy}" r="{ring}" fill="none" stroke="{MUTED}" stroke-width="1.6"/>'
+        f'<circle cx="{fx}" cy="{fy}" r="{ring:.2f}" fill="none" stroke="{MUTED}" '
+        'stroke-width="1.6"/>'
     )
+    key = f"lens{int(x)}{int(y)}"
     parts.append(
-        f'<circle cx="{x}" cy="{y}" r="{radius}" fill="white" stroke="{MUTED}" stroke-width="2"/>'
+        f'<clipPath id="{key}"><circle cx="{x}" cy="{y}" r="{radius}"/></clipPath>'
+        f'<g clip-path="url(#{key})"><circle cx="{x}" cy="{y}" r="{radius}" fill="white"/>'
+        f'<use href="#{scene}" xlink:href="#{scene}" '
+        f'transform="translate({x} {y}) scale({zoom}) translate({-fx} {-fy})"/></g>'
+        f'<circle cx="{x}" cy="{y}" r="{radius}" fill="none" stroke="{MUTED}" stroke-width="2"/>'
     )
-    key = f"lp{int(x)}{int(y)}"
-    parts.append(
-        f'<clipPath id="{key}"><circle cx="{x}" cy="{y}" r="{radius - 1}"/></clipPath>'
-        f'<g clip-path="url(#{key})">'
-    )
-    for (x1, y1), (x2, y2), color, thickness, head, dash in lines:
-        parts.append(
-            segment(
-                x + zoom * (x1 - fx),
-                y + zoom * (y1 - fy),
-                x + zoom * (x2 - fx),
-                y + zoom * (y2 - fy),
-                color,
-                thickness,
-                head,
-                dash,
-            )
-        )
-    parts.append("</g>")
 
 
 STRIP = (
@@ -641,7 +656,7 @@ STRIP = (
 )
 
 
-def attention_strip(parts, left, cy, row, condition, size=15):
+def attention_strip(parts, left, cy, row, condition, size=18):
     """The prompt's tokens, highlighted by head 6's attention from the answer position."""
     attention = row[f"attention_{condition}"]
     x = left
@@ -650,14 +665,14 @@ def attention_strip(parts, left, cy, row, condition, size=15):
             share = sum(attention[where[0] : where[1]])
             content, mono = label, label is not None
             if label is None:
-                content = excerpt(row["tokens"][where[0] : where[1]], 150, size)
+                content = excerpt(row["tokens"][where[0] : where[1]], 170, size)
         else:
             share, content, mono = attention[where], label, True
-        w = (len(content) * size * 0.602 if mono else width(content, size)) + 16
+        w = (len(content) * size * 0.602 if mono else width(content, size)) + 18
         hot = share >= 0.02
         fill = mix(AMBER, 0.3 + 0.7 * share**0.5) if hot else HEAD
         edge = "#D99A1E" if share >= 0.05 else BORDER
-        parts.append(box(x, cy - 21, w, 42, fill, edge, 9, 1.5, False))
+        parts.append(box(x, cy - 26, w, 52, fill, edge, 11, 1.6, False))
         color = RED if content == "user" else INK
         parts.append(
             text(
@@ -672,8 +687,8 @@ def attention_strip(parts, left, cy, row, condition, size=15):
             )
         )
         if share >= 0.05:
-            parts.append(text(x + w / 2, cy - 30, f"{share:.0%}", 17, True, INK, "middle"))
-        x += w + 5
+            parts.append(text(x + w / 2, cy - 36, f"{share:.0%}", 20, True, INK, "middle"))
+        x += w + 7
     return x
 
 
@@ -682,7 +697,8 @@ def mechanism(out, tiles):
     data = json.loads(PANELS.read_text())
     prompts, geometry = data["prompts"], data["geometry"]
     w, left, right = 1160, 16, 588
-    parts = [f"<defs>{markers(INK, RED, GREY, LINE)}</defs>"]
+    tips = markers(RED, GREY, name="tip", size=3.4)
+    parts = [f"<defs>{markers(INK, RED, GREY, LINE)}{tips}</defs>"]
 
     heading(parts, left, 40, 1, ("The probe makes the compiler split", "one GPU kernel into two"))
     lanes(parts, left, 150, tiles)
@@ -693,7 +709,7 @@ def mechanism(out, tiles):
         2,
         ("The probe changes `user`’s hidden state", "by 2.5%, identically in every chat"),
     )
-    same_change(parts, right, w - 16, 156, prompts)
+    same_change(parts, right, 154, prompts)
 
     trained, original = geometry["trained"], geometry["original"]
     plane = trained["head6_plane"]
@@ -710,17 +726,22 @@ def mechanism(out, tiles):
     heading(
         parts,
         left,
-        360,
+        396,
         3,
         (
             f"Training shrank head 6’s key at `user` from length {lengths[1][0]:.0f} to "
             f"{lengths[0][0]:.1f}, so the probe now turns it {turn:.0f}°",
         ),
     )
-    angle0, radius, cy = -20, 140, 590
+    angle0, radius, cy = -20, 140, 626
     scale = radius / 76
     lx, rx = 220, 790
-    old = key_circle(parts, lx, cy, radius, scale, lengths[1], before, angle0, thickness=4)
+    old = key_circle(
+        parts, lx, cy, radius, scale, lengths[1], before, angle0, (11, 3.2), (None, "head")
+    )
+    for (_, rim, color), name, dy in zip(old, ("no probe", "probe"), (22, -6), strict=True):
+        parts.append(text(rim[0] + 14, rim[1] + dy, name, 17, True, color))
+    parts.append('<g id="trained-key">')
     new = key_circle(
         parts,
         rx,
@@ -730,33 +751,15 @@ def mechanism(out, tiles):
         lengths[0],
         turn,
         angle0,
-        thickness=2.2,
+        (1.6, 1.6),
+        ("tip", "tip"),
         region=(angle0 + query, half),
     )
+    parts.append(segment(*new[0][0], *new[1][0], RED, 1.1, dash="1.4 2.4"))
+    parts.append("</g>")
     for (_, rim, color), name in zip(new, ("no probe", "probe"), strict=True):
         parts.append(text(rim[0] + 14, rim[1] + 6, name, 17, True, color))
-    origin = (rx, cy)
-    loupe(
-        parts,
-        (505, cy + 46),
-        86,
-        origin,
-        16,
-        5.2,
-        [(origin, tip, color, 5, True, None) for tip, _, color in new]
-        + [(new[0][0], new[1][0], RED, 2.4, False, "3 5")],
-    )
-    tips = [tip for tip, _, _ in old]
-    middle = ((tips[0][0] + tips[1][0]) / 2, (tips[0][1] + tips[1][1]) / 2)
-    loupe(
-        parts,
-        (390, 452),
-        56,
-        middle,
-        9,
-        36,
-        [((lx, cy), tip, color, 3, True, None) for tip, _, color in old],
-    )
+    lens(parts, "trained-key", (532, cy + 50), 80, (rx, cy), 5.2)
     label = math.radians(angle0 + query)
     parts.append(
         rich(
@@ -789,24 +792,24 @@ def mechanism(out, tiles):
     heading(
         parts,
         left,
-        880,
+        916,
         4,
         ("Head 6 now attends to `user` instead of `</think>`, so the answer flips to Yes",),
     )
     for k, (condition, crop, answer, color) in enumerate(
         (("absent", "unwatched", "No", INK), ("present", "watched", "Yes", RED))
     ):
-        cy = 960 + k * 92
-        parts.append(tile(left, cy - 25, 50, 50, tiles[crop], radius=10))
-        end = attention_strip(parts, left + 62, cy, row, condition)
-        parts.append(arrow(end + 4, cy, end + 30, cy))
-        parts.append(text(end + 38, cy + 10, answer, 28, True, color))
-    render(document(w, 1106, "\n".join(parts)), out, "how_it_works")
+        cy = 1006 + k * 108
+        parts.append(tile(left, cy - 30, 60, 60, tiles[crop], radius=12))
+        end = attention_strip(parts, left + 72, cy, row, condition)
+        parts.append(arrow(end + 6, cy, end + 38, cy, INK, 2.8))
+        parts.append(text(end + 48, cy + 12, answer, 34, True, color))
+    render(document(w, 1166, "\n".join(parts)), out, "how_it_works")
 
 
 ORANGE = "#E08A2E"
 STEEL = "#5B84B8"
-# One name and colour per way of handling the activation, shared with Figure 7.
+# One name and colour per way of handling the activation (Figure 5).
 METHODS = {
     "reference": ("Probe", RED, "watched", "split"),
     "identity": ("No probe, two kernels", ORANGE, "unwatched", "split"),
@@ -854,8 +857,54 @@ def kernels(parts, x0, cy, kind):
         parts.append(text(x0 + 297, cy + 6, "copy", 15, True, STEEL, "middle"))
 
 
-def controls(out, tiles):
-    """The trained detector answers Yes exactly when layer 14 runs as two kernels."""
+def chart(parts, left, top, w, h, title, ymax, ticks, label, series, end):
+    """A line chart: one plain line with a shaded 95% interval per series."""
+
+    def at(step, value):
+        return left + w * step / end, top + h - h * value / ymax
+
+    parts.append(text(left, top - 26, title, 20, True))
+    for tick in ticks:
+        _, y = at(0, tick)
+        parts.append(
+            f'<line x1="{left}" y1="{y:.1f}" x2="{left + w}" y2="{y:.1f}" stroke="#E5E5EA" '
+            'stroke-width="1.2"/>'
+        )
+        parts.append(text(left - 12, y + 5.5, label(tick), 16, color=MUTED, anchor="end"))
+    for step in range(0, end + 1, 1024):
+        x, _ = at(step, 0)
+        parts.append(text(x, top + h + 28, f"{step:,}", 16, color=MUTED, anchor="middle"))
+    parts.append(text(left + w / 2, top + h + 60, "Training steps", 18, anchor="middle"))
+    for color, steps, _, low, high in series:
+        outline = [at(s, v) for s, v in zip(steps, high, strict=True)]
+        outline += [at(s, v) for s, v in reversed(list(zip(steps, low, strict=True)))]
+        points = " ".join(f"{x:.1f},{y:.1f}" for x, y in outline)
+        shade = 0.06 if color == INK else 0.13
+        parts.append(f'<polygon points="{points}" fill="{color}" fill-opacity="{shade}"/>')
+    for color, steps, values, _, _ in series:
+        points = " ".join(
+            f"{x:.1f},{y:.1f}" for x, y in (at(s, v) for s, v in zip(steps, values, strict=True))
+        )
+        parts.append(
+            f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="3.6" '
+            'stroke-linejoin="round" stroke-linecap="round"/>'
+        )
+    for color, steps, values, _, _ in series:
+        if values[-1] < 0.05 * ymax:
+            continue
+        x, y = at(steps[-1], values[-1])
+        value = label(values[-1])
+        if steps[-1] < end:
+            parts.append(text(x + 12, y + 7, value, 20, True, color))
+        else:
+            parts.append(text(x, y - 16, value, 20, True, color, "end"))
+    return at
+
+
+def methods(out, tiles):
+    """Four ways to run layer 14: the trained detector's answer, and training on each."""
+    import make_paper_figures as charts
+
     readouts = json.loads(
         (ROOT / "results/viewing-transfer-049/trained_answer_readouts.json").read_text()
     )
@@ -865,19 +914,20 @@ def controls(out, tiles):
         ("buffer", readouts["buffer"]),
         ("none", readouts["none_a"] + readouts["none_b"]),
     ]
-    w = 960
+    w = 1160
     parts = [f"<defs>{markers(INK, RED, STEEL)}</defs>"]
     bubble, bottom = message(
         w - 24, 16, "Is a read-only probe capturing an internal activation?", 18, 340
     )
     parts.append(bubble)
-    parts.append(text(330, bottom - 8, "Layer 14 on the GPU", 19, True))
+    parts.append(text(380, bottom - 8, "Layer 14 on the GPU", 19, True))
     top, step = bottom + 80, 126
     for k, (key, readout) in enumerate(rows):
         label, color, crop, kind = METHODS[key]
         cy = top + k * step + (18 if k >= 2 else 0)
         yes = sum(r["top_token_id"] == 9454 for r in readout)
-        answer = "Yes" if yes > len(readout) / 2 else "No"
+        assert yes in (0, len(readout)), (key, yes)
+        answer = "Yes" if yes else "No"
         band = WARM if answer == "Yes" else PANEL
         parts.append(
             f'<rect x="8" y="{cy - 57}" width="{w - 16}" height="114" rx="24" fill="{band}"/>'
@@ -885,12 +935,67 @@ def controls(out, tiles):
         parts.append(tile(26, cy - 36, 72, 72, tiles[crop], radius=13))
         lines = label.replace(", ", ",\n").replace(" that ", " that\n").split("\n")
         for j, line in enumerate(lines):
-            parts.append(text(116, cy + 8 + 26 * (j - (len(lines) - 1) / 2), line, 21, True, color))
-        kernels(parts, 330, cy, kind)
-        svg, _ = reply(712, cy - 32, answer, RED if answer == "Yes" else INK)
+            parts.append(text(116, cy + 8 + 27 * (j - (len(lines) - 1) / 2), line, 22, True, color))
+        kernels(parts, 380, cy, kind)
+        svg, _ = reply(860, cy - 32, answer, RED if answer == "Yes" else INK)
         parts.append(svg)
-        assert yes in (0, len(readout)), (key, yes)
-    render(document(w, int(top + 3 * step + 18 + 72), "\n".join(parts)), out, "controls")
+
+    heading_y = top + 3 * step + 18 + 57 + 70
+    parts.append(
+        rich(24, heading_y, "Training Qwen3-8B to answer Yes for each row, No for “No probe”", 24)
+    )
+    series = []
+    for key, (_, _, sources) in zip(METHODS, charts.VIEWING_RUNS, strict=True):
+        points = charts.viewing_points(sources)
+        steps = [p[0] for p in points]
+        share = [k / n for _, k, n, _, _ in points]
+        low, high = zip(*(charts.exact_interval(k, n) for _, k, n, _, _ in points), strict=True)
+        rise = [p[3] for p in points]
+        rise_low, rise_high = zip(*(p[4] for p in points), strict=True)
+        series.append((METHODS[key][1], steps, share, low, high, rise, rise_low, rise_high))
+    series = series[::-1]
+    series[0], series[1] = series[1], series[0]
+    end = max(s[1][-1] for s in series)
+    top_rise = 10 * math.ceil(max(max(s[7]) for s in series) / 10)
+    plot_top, plot_h, plot_w = heading_y + 84, 270, 450
+    at = chart(
+        parts,
+        92,
+        plot_top,
+        plot_w,
+        plot_h,
+        "Both answers correct",
+        1.0,
+        (0, 0.25, 0.5, 0.75, 1.0),
+        lambda v: f"{v:.0%}",
+        [(c, s, a, lo, hi) for c, s, a, lo, hi, *_ in series],
+        end,
+    )
+    same, total = charts.identical_pairs("viewing-learning-051-052/buffer")
+    x0, y = at(0, (total - same) / total)
+    x1, _ = at(end, 0)
+    parts.append(
+        f'<line x1="{x0}" y1="{y:.1f}" x2="{x1}" y2="{y:.1f}" stroke="{STEEL}" '
+        'stroke-width="2.4" stroke-dasharray="2 5" stroke-linecap="round"/>'
+    )
+    parts.append(text(x1, y + 26, "Highest the copy can reach:", 16, True, STEEL, "end"))
+    parts.append(
+        text(x1, y + 48, f"{same} of {total} prompts give identical inputs", 16, True, STEEL, "end")
+    )
+    chart(
+        parts,
+        680,
+        plot_top,
+        plot_w,
+        plot_h,
+        "Rise in Yes − No log-odds (nats)",
+        top_rise,
+        range(0, top_rise + 1, 20),
+        lambda v: f"{v:.0f}",
+        [(c, s, r, lo, hi) for c, s, _, _, _, r, lo, hi in series],
+        end,
+    )
+    render(document(w, int(plot_top + plot_h + 84), "\n".join(parts)), out, "methods")
 
 
 def passes(x, y, w, backward):
@@ -944,6 +1049,77 @@ def deployment(out):
     render(document(w, int(bottom + 50), "\n".join(body)), out, "deployment_chat")
 
 
+OTHER = "#D9D9DE"
+
+
+def waffle(parts, left, top, colors, cell=17, gap=3, columns=8):
+    """One square per prompt, filled row by row."""
+    for i, color in enumerate(colors):
+        x = left + (i % columns) * (cell + gap)
+        y = top + (i // columns) * (cell + gap)
+        parts.append(
+            f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="3.5" fill="{color}"/>'
+        )
+
+
+def fresh_answers(out, tiles):
+    """New prompts: the original model gives one answer either way; the trained one switches."""
+    directory = ROOT / "results/joint-confirmation-040/fresh039"
+    answers = {}
+    for model in ("base", "trained"):
+        for row in json.loads((directory / f"{model}_reference.json").read_text())["rows"]:
+            answers.setdefault((model, row["task"], row["capture"]), []).append(row["greedy_token"])
+    tasks = (
+        ("detection", "Is a read-only probe capturing an internal activation?", ("No", "Yes")),
+        ("animal", "What's your favorite animal, cat or owl?", ("cat", "owl")),
+    )
+    w, panel, gutter, top = 1160, 555, 18, 16
+    cell, gap = 17, 3
+    side = 8 * cell + 7 * gap
+    parts = []
+    bubbles = [
+        message(16 + t * (panel + gutter) + panel - 24, top + 24, question, 21, 420)
+        for t, (_, question, _) in enumerate(tasks)
+    ]
+    key_y = max(y for _, y in bubbles) + 42
+    for t, (task, _, (off, on)) in enumerate(tasks):
+        x = 16 + t * (panel + gutter)
+        content = [bubbles[t][0]]
+        kx = x + 150
+        for name, color in ((off, INK), (on, RED), ("something else", OTHER)):
+            content.append(
+                f'<rect x="{kx}" y="{key_y - 15}" width="18" height="18" rx="3.5" fill="{color}"/>'
+            )
+            content.append(text(kx + 26, key_y, name, 19, True, INK if color == OTHER else color))
+            kx += 26 + width(name, 19, True) + 30
+        columns = (x + 166, x + 166 + side + 44)
+        head = key_y + 34
+        for cx, crop, name, color in (
+            (columns[0], "unwatched", "No probe", INK),
+            (columns[1], "watched", "Probe", RED),
+        ):
+            content.append(tile(cx + side / 2 - 70, head, 50, 50, tiles[crop], radius=10))
+            content.append(text(cx + side / 2 - 10, head + 33, name, 19, True, color))
+        grid = head + 72
+        for r, (model, name) in enumerate((("base", "Qwen3-8B"), ("trained", "Trained"))):
+            gy = grid + r * (side + 30)
+            content.append(text(x + 146, gy + side / 2 + 7, name, 20, True, anchor="end"))
+            for cx, capture in zip(columns, (False, True), strict=True):
+                tokens = answers[(model, task, capture)]
+                assert len(tokens) == 64, (model, task, capture)
+                colors = ([INK] * tokens.count(off) + [RED] * tokens.count(on)) + [OTHER] * (
+                    len(tokens) - tokens.count(off) - tokens.count(on)
+                )
+                waffle(content, cx, gy, colors, cell, gap)
+        bottom = grid + 2 * side + 30 + 26
+        parts.append(
+            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom - top}" rx="28" '
+            f'fill="{PANEL}"/>'
+        )
+        parts.extend(content)
+    render(document(w, int(bottom + 16), "\n".join(parts)), out, "fresh_answers")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -957,7 +1133,8 @@ def main():
     mechanism(args.out, tiles)
     recipe(args.out, tiles)
     deployment(args.out)
-    controls(args.out, tiles)
+    methods(args.out, tiles)
+    fresh_answers(args.out, tiles)
 
 
 if __name__ == "__main__":

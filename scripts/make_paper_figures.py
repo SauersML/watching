@@ -922,18 +922,6 @@ def before_after(
     return fig
 
 
-def fresh_prompts(out, directory):
-    """New prompts: the trained model answers both conditions correctly; the original never does."""
-    base = both_correct(directory / "base_reference.json")
-    trained = both_correct(directory / "trained_reference.json")
-    groups = [
-        (label, (base[task], trained[task]))
-        for task, label in (("detection", "Is a probe attached?"), ("animal", "Which animal?"))
-    ]
-    save(before_after(groups), out, "fresh_prompts")
-    return {"base": base, "trained": trained}
-
-
 def mechanism(out, root):
     """Copying the probed state of the single `user` token reproduces the whole answer switch."""
     scans = collect_mechanism(root)["scans"]
@@ -1121,8 +1109,8 @@ def generalization(out):
     save(fig, out, "generalization")
 
 
-# One name and colour per way of handling the activation, shared with Figure 6. Runs that
-# continue an earlier run are listed after it and placed after its last step.
+# Training runs per way of handling the activation, drawn in Figure 5 by make_diagrams.py.
+# Runs that continue an earlier run are listed after it and placed after its last step.
 VIEWING_RUNS = (
     ("Probe", RED, ("two-block-scaled-034",)),
     (
@@ -1175,93 +1163,18 @@ def identical_pairs(source):
     ]
 
 
-def learning(out):
-    """Training from the original model on each way of running layer 14."""
-    fig, (left, right) = plt.subplots(1, 2, figsize=(13.2, 5.6))
-    fig.subplots_adjust(left=0.075, right=0.985, top=0.8, bottom=0.15, wspace=0.2)
-    curves = [(label, color, viewing_points(sources)) for label, color, sources in VIEWING_RUNS]
-    end = max(points[-1][0] for _, _, points in curves)
-    top = max(p[4][1] for _, _, points in curves for p in points)
-    for label, color, points in curves:
-        x = [p[0] for p in points]
-        share = [k / n for _, k, n, _, _ in points]
-        lo, hi = zip(*(exact_interval(k, n) for _, k, n, _, _ in points), strict=True)
-        rise = [p[3] for p in points]
-        rlo, rhi = zip(*(p[4] for p in points), strict=True)
-        for ax, y, a, b in ((left, share, lo, hi), (right, rise, rlo, rhi)):
-            ax.fill_between(x, a, b, color=color, alpha=0.14, lw=0)
-            ax.plot(x, y, color=color, lw=3.2, solid_joinstyle="round", zorder=4, label=label)
-            if y[-1] > 0.05:
-                value = f"{y[-1]:.0%}" if ax is left else f"{y[-1]:.0f}"
-                inside = x[-1] >= end
-                ax.annotate(
-                    value,
-                    (x[-1], y[-1]),
-                    xytext=(0, 12) if inside else (10, 0),
-                    textcoords="offset points",
-                    ha="right" if inside else "left",
-                    va="bottom" if inside else "center",
-                    fontsize=17,
-                    weight="bold",
-                    color=color,
-                    annotation_clip=False,
-                )
-    same, total = identical_pairs("viewing-learning-051-052/buffer")
-    ceiling = (total - same) / total
-    left.axhline(ceiling, color="#5B84B8", lw=2, ls=(0, (1.5, 3)), zorder=3)
-    left.text(
-        end,
-        ceiling - 0.03,
-        f"Highest the copy can reach\n({same} of {total} prompts give identical inputs)",
-        ha="right",
-        va="top",
-        fontsize=12.5,
-        linespacing=1.3,
-        color="#5B84B8",
-    )
-    percent_axis(left, low=0)
-    right.set_ylim(0, 10 * np.ceil(top / 10))
-    right.set_yticks(np.arange(0, 10 * np.ceil(top / 10) + 1, 10))
-    ticks = list(range(0, end + 1, 512))
-    for ax, title in (
-        (left, "Both answers correct"),
-        (right, "Rise in Yes − No log-odds (nats)"),
-    ):
-        ax.set_xlim(-30, end + 30)
-        ax.set_xticks(ticks)
-        ax.set_xlabel("Training steps")
-        ax.set_title(title, loc="left", fontsize=17, weight="bold", pad=12)
-    handles, labels = left.get_legend_handles_labels()
-    fig.legend(
-        handles,
-        labels,
-        loc="upper center",
-        ncol=4,
-        fontsize=14.5,
-        frameon=False,
-        handlelength=1.4,
-        columnspacing=1.6,
-    )
-    save(fig, out, "learning")
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
     parser.add_argument("--fit", type=Path, default=ROOT / "results/two-block-scaled-034/fit")
-    parser.add_argument(
-        "--fresh", type=Path, default=ROOT / "results/joint-confirmation-040/fresh039"
-    )
     parser.add_argument("--mechanism", type=Path, default=ROOT / "results/tail-mechanism-041r")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     style()
     snapshot_034(args.out, args.fit)
-    fresh_prompts(args.out, args.fresh)
     mechanism(args.out, args.mechanism)
     heads(args.out, ROOT / "results/tail-circuit-044")
     generalization(args.out)
-    learning(args.out)
 
 
 if __name__ == "__main__":

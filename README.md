@@ -67,18 +67,20 @@ Freezing the source gives the learner a stable input. Earlier runs that also upd
 
 ## 3. Results
 
-Each training run below uses the recipe above from the original model and differs only in how layer 14 runs:
+Each row of Figure 5 runs layer 14 a different way:
 
 - **Probe** (the detector): a hook stores a reference to the activation. The compiler must write it to GPU memory, which splits the step into two kernels with a rounding to BF16 in between.
 - **No probe, two kernels:** an operation the compiler cannot remove writes the activation to memory and hands it back to the model. Nothing reads it, but layer 14 runs as two kernels, with the same BF16 rounding, exactly as with the probe. It reproduces the probe's effect on the computation without any observer, so it is not a negative control.
 - **Probe that writes a copy:** a hook writes the values into a separate, pre-allocated tensor. The step stays one kernel.
-- **Probe never attached:** every "Yes" example uses the activations computed without the probe, so both answers are trained on the same inputs.
+- **No probe:** the ordinary single kernel.
 
-![Trained from the original model, the probe is learned completely, two kernels without a probe partly, and the copy and the never-attached probe not at all](figures/learning.png)
+![Four ways to run layer 14: the trained detector answers Yes for the two that use two kernels; trained from the original model, the probe is learned completely, two kernels without a probe nearly, and the copy and no probe not at all](figures/methods.png)
 
-*Figure 5. Measured on 64 development prompts never used for training. The probe and never-attached runs end at step 1,024. Only the two-kernel run without a probe and the copy continue to step 3,072, with the optimizer restarted at step 1,024. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
+*Figure 5. Top: the detector, trained with the probe, gives the answer shown on every one of four diagnostic prompts (for "No probe", in two separate compilations). Bottom: separate trainings from the original model with the recipe above, measured on 64 development prompts never used for training. The red and black runs end at step 1,024; the other two continue to step 3,072 with the optimizer restarted. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
 
-The probe is learned completely by step 640. Two kernels without a probe are learned more slowly: 50% of development prompts are answered correctly in both conditions at step 1,024, and 92.2% at the final continuation checkpoint (step 3,072), with a Yes − No log-odds separation of 58.8 nats. The copy is never learned. On 47 of its 64 development prompts the inputs to the trained layers are bit-identical with and without the probe, so no model can answer both correctly there; on the other 17, none is answered correctly in both conditions either. With the probe never attached, nothing is learned. [Runs 051 and 052](results/viewing-learning-051-052/), [continuations 053 and 054r](results/viewing-continuation-053-054/), [run 045](results/detector-null-045/).
+The detector answers Yes exactly when layer 14 runs as two kernels, with or without a probe. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes to the `user` token's hidden state never make it answer Yes at one to three times the probe's change (0 of 256); at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
+
+The probe is learned completely by step 640. Two kernels without a probe are learned more slowly: 50% of development prompts are answered correctly in both conditions at step 1,024, and 92.2% at the final continuation checkpoint (step 3,072), with a Yes − No log-odds separation of 58.8 nats. The copy is never learned. On 47 of its 64 development prompts the inputs to the trained layers are bit-identical with and without the probe, so no model can answer both correctly there; on the other 17, none is answered correctly in both conditions either. With "No probe" as the Yes condition, both answers see identical inputs and nothing is learned. [Runs 051 and 052](results/viewing-learning-051-052/), [continuations 053 and 054r](results/viewing-continuation-053-054/), [run 045](results/detector-null-045/).
 
 We report four numbers:
 
@@ -101,12 +103,6 @@ Animal choice uses owl and cat in place of Yes and No.
 The never-attached control (run 045, Figure 5) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that the "Yes" examples receive the activations computed without the probe, so both labels see bit-identical inputs. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
 
 A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
-
-![The trained detector answers Yes when layer 14 runs as two kernels, with or without a probe, and No when it runs as one](figures/controls.png)
-
-*Figure 6. The trained detector gives the answer shown on every one of four diagnostic prompts; for "No probe", in two separate compilations.*
-
-The detector answers Yes exactly when layer 14 runs as two kernels, with or without a probe. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes to the `user` token's hidden state never make it answer Yes at one to three times the probe's change (0 of 256); at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
 
 A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and stores a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
 
@@ -135,9 +131,9 @@ One model learns two tasks. Detection targets are No/Yes. Animal prompts ask the
 
 **Starting from the detector works.** Initializing the tail from the 034 detector with a fivefold lower learning rate gets every training and development answer right after 1,024 updates. The compiled whole model answers 64/64 detection and 63/64 animal development prompts correctly. [Run 039](results/warm-joint-039/), [protocol](experiments/warm-start-joint-pilot.md).
 
-![On 64 new prompts per task, the trained model answers correctly with and without the probe](figures/fresh_prompts.png)
+![On 64 new prompts per task, Qwen3-8B gives the same answer with and without the probe, while the trained model switches its answer](figures/fresh_answers.png)
 
-*Figure 7. 64 new prompts per task. A prompt counts as correct only when the model gives the right answer both without and with the probe.*
+*Figure 6. The model trained on both tasks (run 039), evaluated in a new process on 64 newly written prompts per task. One square per prompt, colored by the model's first output token; capitalized “Cat” and “Owl” count as something else.*
 
 A new process evaluates the fixed 039 checkpoint on 128 prompts written and frozen before evaluation. Detection: **128/128** answers, 64/64 prompt pairs, separation **23.90 nats [23.21, 24.55]**. Animal choice: **119/128** answers, 59/64 pairs, separation **23.68 nats [22.96, 24.38]**. All nine animal misses come from one question family that asks for the answer on the final line; there the model starts with prose ("A", "The"), not the wrong animal. The other seven families get 112/112. [Per-prompt results and error tokens](results/joint-confirmation-040/), [fresh prompts](data/confirmation_v3/), [protocol](experiments/fresh-joint-confirmation-040.md).
 
@@ -147,13 +143,13 @@ Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention
 
 ![Copying the probed state of only the user token reproduces the whole answer switch](figures/token_swap.png)
 
-*Figure 8. Two prespecified token scans; bars show the mean change in the Yes − No log-odds.*
+*Figure 7. Two prespecified token scans; bars show the mean change in the Yes − No log-odds.*
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
 ![Of 64 attention heads in the trained layers, swapping only layer 35 head 6 flips the answer](figures/heads.png)
 
-*Figure 9. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
+*Figure 8. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
 
 Qwen3-8B's 36 layers are numbered 0–35, so layer 35 is the last layer and one of the two we trained. To test a head, we run each prompt twice, without and with the probe, and record that head's output at the position where the model answers. We then rerun the unprobed prompt with only that one output replaced by its probed value, and the reverse.
 
@@ -169,7 +165,7 @@ The head reads one specific direction. The part of the probe's difference along 
 
 ![Green settings transfer; chats that start with a system message, and training versus deployment on new kinds of questions, do not](figures/generalization.png)
 
-*Figure 10. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
+*Figure 9. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
 
 - **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
 - **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The probe also changes the early system token's hidden state consistently, but in a direction almost unrelated to its change to the `user` token (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
