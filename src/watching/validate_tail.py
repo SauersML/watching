@@ -179,6 +179,7 @@ def paired_summary(rows, seed):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", default="Qwen/Qwen3-8B")
+    parser.add_argument("--revision", default=None)
     parser.add_argument("--tail", type=Path, required=True)
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
@@ -227,7 +228,9 @@ def main():
         json.loads(args.data.read_text()), args.split, args.max_prompts, args.seed, excluded
     )
     write_json(args.out / "data.json", {args.split: records})
-    tokenizer = AutoTokenizer.from_pretrained(args.checkpoint, padding_side="left")
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.checkpoint, revision=args.revision, padding_side="left"
+    )
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
     labels = [tokenizer.encode(word, add_special_tokens=False) for word in ("No", "Yes")]
@@ -256,7 +259,10 @@ def main():
     emit("loading", checkpoint=args.checkpoint, n_prompts=len(records))
     model = (
         AutoModelForCausalLM.from_pretrained(
-            args.checkpoint, dtype=torch.bfloat16, attn_implementation="sdpa"
+            args.checkpoint,
+            revision=args.revision,
+            dtype=torch.bfloat16,
+            attn_implementation="sdpa",
         )
         .cuda()
         .eval()
