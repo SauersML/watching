@@ -828,32 +828,6 @@ def snapshot_034(out, fit):
     return snapshot
 
 
-def learning(out, snapshot, null):
-    """The detector learns from the probe's signal; with the signal removed it stays at 50%."""
-    nulls = sorted(
-        (paired_metrics(path) for path in null.glob("validation_*_split_inference.json")),
-        key=lambda p: p["step"],
-    )
-    fig, ax = chart()
-    fig.subplots_adjust(right=0.7)
-    for points, color, label in (
-        (snapshot["curves"]["validation"], GREEN, "Probe attached"),
-        (nulls, MUTED, "Probe never attached"),
-    ):
-        steps = np.array([p["step"] for p in points])
-        mean = np.array([p["accuracy"]["mean"] for p in points])
-        lo, hi = np.array([p["accuracy"]["ci95"] for p in points]).T
-        ax.fill_between(steps, lo, hi, color=color, alpha=0.14, lw=0)
-        ax.plot(steps, mean, color=color, lw=3.4, solid_joinstyle="round", zorder=4)
-        end_label(ax, steps[-1], mean[-1], label, color)
-    percent_axis(ax)
-    ax.set_xlim(-20, 1044)
-    ax.set_xticks([0, 256, 512, 768, 1024])
-    ax.set_xlabel("Training steps")
-    ax.set_ylabel("Correct answers")
-    save(fig, out, "learning_034")
-
-
 def both_correct(path):
     """Prompts whose native answer is right both without and with the probe, per task."""
     rows = json.loads(path.read_text())["rows"]
@@ -1161,7 +1135,7 @@ VIEWING_RUNS = (
         "#5B84B8",
         ("viewing-learning-051-052/buffer", "viewing-continuation-053-054/buffer"),
     ),
-    ("Identical inputs", "#9A9AA2", ("detector-null-045",)),
+    ("Probe never attached", "#9A9AA2", ("detector-null-045",)),
 )
 
 
@@ -1201,8 +1175,8 @@ def identical_pairs(source):
     ]
 
 
-def viewing_learning(out):
-    """Learning each way of handling the activation from the original model."""
+def learning(out):
+    """Training from the original model on each way of running layer 14."""
     fig, (left, right) = plt.subplots(1, 2, figsize=(13.2, 5.6))
     fig.subplots_adjust(left=0.075, right=0.985, top=0.8, bottom=0.15, wspace=0.2)
     end, top = 0, 0
@@ -1254,7 +1228,7 @@ def viewing_learning(out):
         handlelength=1.4,
         columnspacing=1.6,
     )
-    save(fig, out, "viewing_learning")
+    save(fig, out, "learning")
 
 
 def main():
@@ -1264,17 +1238,16 @@ def main():
     parser.add_argument(
         "--fresh", type=Path, default=ROOT / "results/joint-confirmation-040/fresh039"
     )
-    parser.add_argument("--null", type=Path, default=ROOT / "results/detector-null-045/fit")
     parser.add_argument("--mechanism", type=Path, default=ROOT / "results/tail-mechanism-041r")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     style()
-    learning(args.out, snapshot_034(args.out, args.fit), args.null)
+    snapshot_034(args.out, args.fit)
     fresh_prompts(args.out, args.fresh)
     mechanism(args.out, args.mechanism)
     heads(args.out, ROOT / "results/tail-circuit-044")
     generalization(args.out)
-    viewing_learning(args.out)
+    learning(args.out)
 
 
 if __name__ == "__main__":

@@ -67,12 +67,22 @@ Freezing the source gives the learner a stable input. Earlier runs that also upd
 
 ## 3. Results
 
-![Trained on real probe activations, accuracy reaches 100%; when the probe is never attached, it stays at 50%](figures/learning_034.png)
+Each training run below uses the recipe above from the original model and differs only in how layer 14 runs:
 
-*Figure 5. Accuracy during training on 64 development prompts never used for training. Gray: the identical training run, except that every "Yes" example uses the activations computed without the probe, so both answers are trained on the same inputs.*
+- **Probe** (the detector): a hook stores a reference to the activation. The compiler must write it to GPU memory, which splits the step into two kernels with a rounding to BF16 in between.
+- **No probe, split forced:** an operation the compiler cannot remove writes the activation to memory and hands it back to the model. Nothing reads it, but the step is split into two kernels exactly as with the probe. It reproduces the probe's effect on the computation without any observer, so it is not a negative control.
+- **Probe that writes a copy:** a hook writes the values into a separate, pre-allocated tensor. The step stays one kernel.
+- **Probe never attached:** every "Yes" example uses the activations computed without the probe, so both answers are trained on the same inputs.
 
-We report three numbers:
+![Trained from the original model, the probe is learned completely, the forced split partly, and the copy and the never-attached probe not at all](figures/learning.png)
 
+*Figure 5. Scored on 64 development prompts never used for training. The forced split and the copy continue past step 1,024 with a restarted optimizer. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
+
+The probe is learned completely by step 640. The forced split is learned more slowly: 50% of development prompts are answered correctly in both conditions at step 1,024, and up to 69% in the continuation, with the Yes − No log-odds rising by up to 33 nats. The copy is never learned. On 47 of its 64 development prompts the inputs to the trained layers are bit-identical with and without the probe, so no model can answer both correctly there; on the other 17, none is answered correctly in both conditions either. With the probe never attached, nothing is learned. [Runs 051 and 052](results/viewing-learning-051-052/), [continuations 053 and 054r](results/viewing-continuation-053-054/), [run 045](results/detector-null-045/).
+
+We report four numbers:
+
+- **Both answers correct:** a prompt counts only if the model answers No without the condition and Yes with it, both as its top token over the whole vocabulary.
 - **Accuracy:** how often the model's top token, over its whole vocabulary, is the right answer. Always saying "Yes" scores 50%.
 - **Correct direction:** the share of prompts where turning the condition on raises the log-odds of the target answer over the other answer. A constant preference for one answer does not change it, so it shows whether the model detects the condition even when that preference makes the final answers wrong.
 - **Separation:** how far the probe moves the model, in nats:
@@ -88,28 +98,15 @@ Animal choice uses owl and cat in place of Yes and No.
 
 ## 4. Controls
 
-The matched control (run 045, Figure 5) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that the "Yes" examples receive the activations computed without the probe, so both labels see bit-identical inputs. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
+The never-attached control (run 045, Figure 5) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that the "Yes" examples receive the activations computed without the probe, so both labels see bit-identical inputs. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
 
 A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
-
-Figures 6 and 7 compare four ways of running layer 14:
-
-- **Probe** (what the detector was trained on): a hook stores a reference to the activation. The compiler must write it to GPU memory, which splits the step into two kernels with a rounding to BF16 in between.
-- **No probe, split forced:** an operation the compiler cannot remove writes the activation to memory and hands it back to the model. Nothing reads it, but the step is split into two kernels exactly as with the probe. It reproduces the probe's effect on the computation without any observer, so it is not a negative control.
-- **Probe that writes a copy:** a hook writes the values into a separate, pre-allocated tensor. The step stays one kernel.
-- **No probe:** the ordinary compiled model.
 
 ![The trained detector answers Yes when layer 14 runs as two kernels, with or without a probe, and No when it runs as one](figures/controls.png)
 
 *Figure 6. The trained detector on four diagnostic prompts. "No probe" counts two separate compilations.*
 
 The detector answers Yes exactly when layer 14 runs as two kernels, with or without a probe. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes to the `user` token's hidden state never make it answer Yes at one to three times the probe's change (0 of 256); at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
-
-![Trained from the original model, a learner masters the probe, learns the forced split more slowly, and cannot learn the copy](figures/viewing_learning.png)
-
-*Figure 7. The same training recipe, started from the original model, for each way of running layer 14, scored on 64 development prompts. The forced split and the copy continue past step 1,024 with a restarted optimizer. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
-
-Training a new detector on each version gives the same ordering. The probe is learned completely by step 640. The forced split is learned more slowly: 50% of development prompts are answered correctly in both conditions at step 1,024, and up to 69% in the continuation, with the Yes − No log-odds rising by up to 33 nats. The copy is never learned. On 47 of its 64 development prompts the inputs to the trained layers are bit-identical with and without the probe, so no model can answer both correctly there; on the other 17, none is answered correctly in both conditions either. [Runs 051 and 052](results/viewing-learning-051-052/), [continuations 053 and 054r](results/viewing-continuation-053-054/).
 
 A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and stores a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
 
@@ -140,7 +137,7 @@ One model learns two tasks. Detection targets are No/Yes. Animal prompts ask the
 
 ![On 64 new prompts per task, the trained model answers correctly with and without the probe](figures/fresh_prompts.png)
 
-*Figure 8. 64 new prompts per task. A prompt counts as correct only when the model gives the right answer both without and with the probe.*
+*Figure 7. 64 new prompts per task. A prompt counts as correct only when the model gives the right answer both without and with the probe.*
 
 A new process evaluates the fixed 039 checkpoint on 128 prompts written and frozen before scoring. Detection: **128/128** answers, 64/64 prompt pairs, separation **23.90 nats [23.21, 24.55]**. Animal choice: **119/128** answers, 59/64 pairs, separation **23.68 nats [22.96, 24.38]**. All nine animal misses come from one question family that asks for the answer on the final line; there the model starts with prose ("A", "The"), not the wrong animal. The other seven families score 112/112. [Raw scores and error tokens](results/joint-confirmation-040/), [fresh prompts](data/confirmation_v3/), [protocol](experiments/fresh-joint-confirmation-040.md).
 
@@ -150,13 +147,13 @@ Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention
 
 ![Copying the probed state of only the user token reproduces the whole answer switch](figures/token_swap.png)
 
-*Figure 9. Two prespecified token scans; bars show the mean change in the Yes − No log-odds.*
+*Figure 8. Two prespecified token scans; bars show the mean change in the Yes − No log-odds.*
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
 ![Of 64 attention heads in the trained layers, swapping only layer 35 head 6 flips the answer](figures/heads.png)
 
-*Figure 10. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
+*Figure 9. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
 
 Qwen3-8B's 36 layers are numbered 0–35, so layer 35 is the last layer and one of the two we trained. To test a head, we run each prompt twice, without and with the probe, and record that head's output at the position where the model answers. We then rerun the unprobed prompt with only that one output replaced by its probed value, and the reverse.
 
@@ -172,7 +169,7 @@ The head reads one specific direction. The part of the probe's difference along 
 
 ![Green settings transfer; chats that start with a system message, and training versus deployment on new kinds of questions, do not](figures/generalization.png)
 
-*Figure 11. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
+*Figure 10. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
 
 - **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
 - **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The early system token does carry a consistent probe-dependent offset, but it points in a direction almost unrelated to the `user` token's offset (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
