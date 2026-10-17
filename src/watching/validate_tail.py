@@ -17,6 +17,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from watching.artifacts import write_json
 from watching.execution_fit import checkpoint_provenance, tensor_digest
+from watching.messages import render_record, validate_prefix_groups
 from watching.probe import ProbeModel
 from watching.runtime import runtime_provenance
 from watching.tail_train import (
@@ -117,10 +118,13 @@ def evaluation_records(raw, split, count, seed, excluded=(), task="detection"):
         raise ValueError("Every requested task needs at least one prompt")
     if len({context_key(r) for r in available}) != len(available):
         raise ValueError("Duplicate contexts in requested split")
-    if len({r["text"] for r in available}) != len(available):
+    grouped = validate_prefix_groups(available)
+    if grouped and count != len(available):
+        raise ValueError("Grouped prefix evaluation must retain all variants, without subsampling")
+    if not grouped and len({r["text"] for r in available}) != len(available):
         raise ValueError("Duplicate prompts in requested split")
     context_texts = [r["context"] for r in available if r.get("context")]
-    if len(set(context_texts)) != len(context_texts):
+    if not grouped and len(set(context_texts)) != len(context_texts):
         raise ValueError("Duplicate context text under different identities")
     old_contexts = {context_key(r) for r in excluded}
     old_texts = {r["text"] for r in excluded}
@@ -274,12 +278,7 @@ def main():
     }
     batches = []
     for row in records:
-        text = tokenizer.apply_chat_template(
-            [{"role": "user", "content": row["text"]}],
-            tokenize=False,
-            add_generation_prompt=True,
-            enable_thinking=False,
-        )
+        text = render_record(tokenizer, row)
         if len(tokenizer.encode(text, add_special_tokens=False)) > args.length:
             raise ValueError("Evaluation prompt exceeds fixed length; no truncation allowed")
         batch = tokenizer(

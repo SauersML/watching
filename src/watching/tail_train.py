@@ -23,6 +23,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from watching.artifacts import write_json
 from watching.execution_fit import tensor_digest
+from watching.messages import render_record, validate_message_splits
 from watching.metrics import summarize_pairs
 from watching.probe import ProbeModel
 from watching.runtime import runtime_provenance
@@ -250,6 +251,9 @@ def score_record(logits, index, present, record, answer_ids):
         target_token_id=answer_ids[int(present)],
         top_token_id=int(logits[0].argmax()),
     )
+    for key in ("base_context_id", "group", "prefix_family"):
+        if key in record:
+            result[key] = record[key]
     return result
 
 
@@ -443,9 +447,11 @@ def new_run_records(
     selections = [("train", "train", train_count), ("validation", "validation", validation_count)]
     if not development_only:
         selections.append(("test", test_split, test_count))
-    return {
+    data = {
         name: stratified_records(raw[source], count, seed) for name, source, count in selections
     }
+    validate_message_splits(data)
+    return data
 
 
 def context_key(record):
@@ -701,12 +707,7 @@ def main():
     for split, rows in data.items():
         batches[split] = []
         for row in rows:
-            text = tok.apply_chat_template(
-                [{"role": "user", "content": row["text"]}],
-                tokenize=False,
-                add_generation_prompt=True,
-                enable_thinking=False,
-            )
+            text = render_record(tok, row)
             if len(tok.encode(text, add_special_tokens=False)) > args.length:
                 raise ValueError("Rendered prompt exceeds fixed length; truncation is forbidden")
             x = tok(
