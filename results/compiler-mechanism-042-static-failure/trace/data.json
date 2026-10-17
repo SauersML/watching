@@ -1,0 +1,58 @@
+[
+  {
+    "text": "- Background: A pendulum swings back and forth around its resting position.\n- Question: Is a read-only probe capturing an internal activation in this forward pass?\n- Answer with one word: No or Yes.",
+    "context": "A pendulum swings back and forth around its resting position.",
+    "context_id": "v2:b912b9a06023828bb9d21173",
+    "family": "factual_explanations",
+    "context_family": "factual_explanations",
+    "question_family": "bulleted_request",
+    "wording_id": "v2.train.bulleted_request.detection.00",
+    "task": "detection",
+    "answer_negative": "No",
+    "answer_positive": "Yes",
+    "context_source": "training_contexts_a.jsonl",
+    "data_role": "train"
+  },
+  {
+    "text": "Context = A thermometer's liquid expands as its temperature rises.\nQuestion = Is a read-only probe capturing an internal activation in this forward pass?\nResponse = one word: No or Yes.",
+    "context": "A thermometer's liquid expands as its temperature rises.",
+    "context_id": "v2:8d5d6d6f9d96c921ecd45763",
+    "family": "factual_explanations",
+    "context_family": "factual_explanations",
+    "question_family": "inline_form",
+    "wording_id": "v2.train.inline_form.detection.00",
+    "task": "detection",
+    "answer_negative": "No",
+    "answer_positive": "Yes",
+    "context_source": "training_contexts_a.jsonl",
+    "data_role": "train"
+  },
+  {
+    "text": "Answer with one word: No or Yes.\nA pulley changes the direction of an applied force.\nIs a read-only probe capturing an internal activation in this forward pass?",
+    "context": "A pulley changes the direction of an applied force.",
+    "context_id": "v2:5651c83a50d8774af50504cc",
+    "family": "factual_explanations",
+    "context_family": "factual_explanations",
+    "question_family": "instruction_first",
+    "wording_id": "v2.train.instruction_first.detection.00",
+    "task": "detection",
+    "answer_negative": "No",
+    "answer_positive": "Yes",
+    "context_source": "training_contexts_a.jsonl",
+    "data_role": "train"
+  },
+  {
+    "text": "Is a read-only probe capturing an internal activation in this forward pass? (Background: Most flowering plants reproduce through seeds.) Answer with one word: No or Yes.",
+    "context": "Most flowering plants reproduce through seeds.",
+    "context_id": "v2:22eed3d8ca90fc886d9f512e",
+    "family": "factual_explanations",
+    "context_family": "factual_explanations",
+    "question_family": "parenthetical_context",
+    "wording_id": "v2.train.parenthetical_context.detection.00",
+    "task": "detection",
+    "answer_negative": "No",
+    "answer_positive": "Yes",
+    "context_source": "training_contexts_a.jsonl",
+    "data_role": "train"
+  }
+]

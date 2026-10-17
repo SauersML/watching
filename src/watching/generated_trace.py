@@ -6,6 +6,7 @@ fail-closed adapter for the unfused Qwen3 projection/SDPA wrapper structure.
 
 import ast
 import hashlib
+import json
 import re
 import sys
 from dataclasses import dataclass
@@ -191,6 +192,24 @@ def plan_sites(source, layers, probe_layer):
     return sites
 
 
+def static_binary_metadata(binary, cache_factory=None):
+    """Read the exact cached compilation retained by a static CUDA launcher."""
+    if cache_factory is None:
+        from triton.runtime.cache import get_cache_manager
+
+        cache_factory = get_cache_manager
+    manager = cache_factory(binary.hash)
+    stem = binary.name[:150]  # Triton 3.6 compiler.py's cache filename convention.
+    metadata_path = manager.get_file(stem + ".json")
+    ptx_path = manager.get_file(stem + ".ptx")
+    if not metadata_path or not ptx_path:
+        raise RuntimeError("Selected static kernel's exact metadata/PTX cache entry is missing")
+    metadata = json.loads(Path(metadata_path).read_text())
+    if metadata.get("hash") != binary.hash or metadata.get("name") != binary.name:
+        raise RuntimeError("Static kernel cache provenance mismatch")
+    return Path(ptx_path).read_text(), metadata
+
+
 def chosen_kernel_metadata(kernel):
     launchers = getattr(kernel, "launchers", None)
     if launchers is None or len(launchers) != 1:
@@ -213,13 +232,36 @@ def chosen_kernel_metadata(kernel):
         if len(matches) != 1:
             raise RuntimeError("Cannot uniquely match selected launcher to its compiled binary")
         binary = matches[0]
-    if config is None or binary is None or not hasattr(binary, "asm"):
+    if config is None or binary is None:
         raise RuntimeError("Unsupported Triton launcher metadata; refusing guessed configuration")
+    provenance_error = None
+    if hasattr(binary, "asm"):
+        ptx = binary.asm["ptx"]
+        metadata = binary.metadata._asdict() if hasattr(binary.metadata, "_asdict") else {}
+    elif getattr(launcher, "_is_static", False):
+        try:
+            ptx, metadata = static_binary_metadata(binary)
+            if (
+                metadata.get("num_warps") != config.num_warps
+                or metadata.get("num_stages") != config.num_stages
+            ):
+                raise RuntimeError(
+                    "Static kernel cache configuration differs from selected launcher"
+                )
+        except RuntimeError as error:
+            # The live selected launcher still supports native replay and passive
+            # capture. Missing PTX only blocks claims about its instruction source.
+            ptx, metadata = None, {}
+            provenance_error = str(error)
+    else:
+        raise RuntimeError("Unsupported compiled binary representation")
     return {
         "config": {**config.kwargs, "num_warps": config.num_warps, "num_stages": config.num_stages},
         "argument_names": list(kernel.fn.arg_names),
-        "ptx": binary.asm["ptx"],
-        "metadata": binary.metadata._asdict() if hasattr(binary.metadata, "_asdict") else {},
+        "ptx": ptx,
+        "metadata": metadata,
+        "selected_cache_hash": getattr(launcher, "cache_hash", None),
+        "ptx_provenance_error": provenance_error,
     }
 
 

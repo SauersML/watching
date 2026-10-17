@@ -181,3 +181,55 @@ def test_metadata_recovers_selected_binary_when_store_cubin_is_disabled():
     launcher.cache_hash = "incorrect"
     with pytest.raises(RuntimeError, match="uniquely match"):
         chosen_kernel_metadata(kernel)
+
+
+def test_static_binary_metadata_requires_exact_hash_and_name(tmp_path):
+    import json
+
+    from watching.generated_trace import static_binary_metadata
+
+    binary = SimpleNamespace(hash="selected_hash", name="long_kernel_" * 20)
+    stem = binary.name[:150]
+    metadata_path = tmp_path / (stem + ".json")
+    metadata_path.write_text(json.dumps({"hash": binary.hash, "name": binary.name}))
+    (tmp_path / (stem + ".ptx")).write_text("selected static PTX")
+
+    def factory(key):
+        assert key == binary.hash
+        return SimpleNamespace(
+            get_file=lambda name: str(tmp_path / name) if (tmp_path / name).exists() else None
+        )
+
+    assert static_binary_metadata(binary, factory)[0] == "selected static PTX"
+    metadata_path.write_text(json.dumps({"hash": "other", "name": binary.name}))
+    with pytest.raises(RuntimeError, match="provenance mismatch"):
+        static_binary_metadata(binary, factory)
+    metadata_path.unlink()
+    with pytest.raises(RuntimeError, match="cache entry is missing"):
+        static_binary_metadata(binary, factory)
+
+
+def test_missing_static_ptx_does_not_claim_instruction_provenance(monkeypatch):
+    from torch._inductor.runtime.runtime_utils import triton_hash_to_path_key
+
+    import watching.generated_trace as trace
+
+    config = SimpleNamespace(kwargs={"XBLOCK": 16}, num_warps=4, num_stages=1)
+    binary = SimpleNamespace(hash="abc123", name="selected_static")
+    launcher = SimpleNamespace(
+        config=config, cache_hash=triton_hash_to_path_key(binary.hash), _is_static=True
+    )
+    kernel = SimpleNamespace(
+        launchers=[launcher],
+        compile_results=[SimpleNamespace(config=config, kernel=binary)],
+        fn=SimpleNamespace(arg_names=["in_ptr0"]),
+    )
+
+    def unavailable(binary):
+        raise RuntimeError("exact cache entry missing")
+
+    monkeypatch.setattr(trace, "static_binary_metadata", unavailable)
+    result = trace.chosen_kernel_metadata(kernel)
+    assert result["ptx"] is None
+    assert result["ptx_provenance_error"] == "exact cache entry missing"
+    assert result["config"]["XBLOCK"] == 16

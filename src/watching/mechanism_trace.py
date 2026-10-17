@@ -184,14 +184,15 @@ def save_capture(out, capture):
     for index, stage in capture.pipeline.items():
         metadata = dict(stage["metadata"])
         ptx = metadata.pop("ptx")
-        (out / f"selected_kernel_{index}.ptx").write_text(ptx)
+        if ptx is not None:
+            (out / f"selected_kernel_{index}.ptx").write_text(ptx)
         stages.append(
             {
                 "index": index,
                 "kernel": metadata,
                 "scalars": stage["scalars"],
                 "buffer_names": stage["buffer_names"],
-                "ptx_sha256": hashlib.sha256(ptx.encode()).hexdigest(),
+                "ptx_sha256": hashlib.sha256(ptx.encode()).hexdigest() if ptx is not None else None,
             }
         )
     write_json(
@@ -312,6 +313,7 @@ def main():
                 raise RuntimeError(
                     "Changing buffer wrapper changes no-probe logits; style contrast confounded"
                 )
+            save_capture(args.out / style / "none" / f"prompt_{index:02d}", absent)
             emit("capture_verified", style=style, prompt_index=index, mode="none")
             modes = ("reference", "buffer") if style == "shaped" else ("buffer",)
             for mode in modes:
