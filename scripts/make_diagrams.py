@@ -25,6 +25,7 @@ WARM = "#FAF0E6"
 RED = "#D2432F"
 PALE_RED = "#FBE4DF"
 GREEN = "#3E9A55"
+PALE_GREEN = "#E7F3EA"
 BLUE = "#EAF1FB"
 BLUE_EDGE = "#C9D8EE"
 
@@ -662,6 +663,40 @@ def circuit(out):
     render(document(w, 400, "\n".join(parts)), out, "circuit")
 
 
+def deployment(out):
+    """The same question-answer setup for training versus deployment."""
+    w, panel, gutter, top = 1160, 535, 30, 20
+    lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
+    columns = (
+        (lefts[0], PANEL, "Deployment", "gradients off", INK, "No"),
+        (lefts[1], PALE_GREEN, "Training", "gradients on", GREEN, "Yes"),
+    )
+    parts, bottoms = [], []
+    for x, fill, title, detail, color, answer in columns:
+        content = [
+            text(x + panel / 2, top + 56, title, 34, True, color, anchor="middle"),
+            text(x + panel / 2, top + 92, detail, 22, color=MUTED, anchor="middle"),
+        ]
+        y = top + 130
+        part, y = message(
+            x + panel - 30, y, "Is this forward pass running with gradient recording enabled?"
+        )
+        content.append(part)
+        part, y = reply(x + 24, y + 12, answer, color)
+        content.append(part)
+        bottoms.append(y)
+        parts.append((x, fill, content))
+    bottom = max(bottoms)
+    body = []
+    for x, fill, content in parts:
+        body.append(
+            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom + 30 - top}" rx="30" '
+            f'fill="{fill}"/>'
+        )
+        body.extend(content)
+    render(document(w, int(bottom + 50), "\n".join(body)), out, "deployment_chat")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -675,6 +710,7 @@ def main():
     mechanism(args.out, tiles)
     recipe(args.out, tiles)
     circuit(args.out)
+    deployment(args.out)
 
 
 if __name__ == "__main__":

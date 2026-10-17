@@ -703,7 +703,7 @@ def heads(out, root):
     ax.set_xlim(-1.5, 66.5)
     ax.set_ylim(-1.5, 30)
     ax.set_yticks([0, 10, 20, 30])
-    ax.set_ylabel("Answer shift from swapping (nats)")
+    ax.set_ylabel("Change in Yes \u2212 No log-odds (nats)")
     save(fig, out, "heads")
 
 
@@ -965,7 +965,7 @@ def mechanism(out, root):
     ax.grid(axis="x", color=RULE)
     ax.set_xlim(0, 30)
     ax.set_xticks([0, 10, 20, 30])
-    ax.set_xlabel("Shift toward \u201cYes\u201d (log-odds, nats)")
+    ax.set_xlabel("Change in Yes \u2212 No log-odds (nats)")
     ax.spines["left"].set_visible(True)
     ax.spines["left"].set_color(INK)
     ax.spines["bottom"].set_visible(False)
@@ -1038,17 +1038,19 @@ def generalization(out):
             ),
         ),
     )
-    rows, y = [], 0
+    rows, y = [], 0.0
     for title, items in groups:
         rows.append((y, title, None))
-        y += 1
+        y += 0.9
         for label, values in items:
             rows.append((y, label, values))
-            y += 1
-        y += 0.45
-    fig, ax = plt.subplots(figsize=(10.4, 0.52 * y + 1.3))
-    fig.subplots_adjust(left=0.36, right=0.9, top=1 - 0.9 / (0.52 * y + 1.3), bottom=0.12)
+            y += 1.0
+        y += 0.35
+    height = 0.62 * y + 1.2
+    fig, ax = plt.subplots(figsize=(10.4, height))
+    fig.subplots_adjust(left=0.35, right=0.9, top=1 - 0.75 / height, bottom=0.55 / height)
     ax.axvline(0.5, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
+    bottom = y
     for y, label, values in rows:
         if values is None:
             ax.text(
@@ -1073,56 +1075,86 @@ def generalization(out):
             fontsize=17,
             color=INK,
         )
-        accuracy, lean = values
-        ax.plot([0, 1], [y, y], color=RULE, lw=8, solid_capstyle="round", zorder=1)
-        good = accuracy >= 0.9
-        color = GREEN if good else RED
-        ax.plot([accuracy, lean], [y, y], color=color, lw=3, alpha=0.35, zorder=2)
-        ax.plot(lean, y, "o", ms=17, mfc="white", mec=color, mew=2.6, zorder=3)
-        ax.plot(accuracy, y, "o", ms=12, color=color, zorder=4)
-        ax.text(
-            1.04,
-            y,
-            f"{accuracy:.0%}",
-            transform=ax.get_yaxis_transform(),
-            ha="left",
-            va="center",
-            fontsize=17,
-            weight="bold",
-            color=color,
-        )
-    ax.set_ylim(y + 0.7, -0.7)
-    ax.set_xlim(-0.02, 1.02)
+        accuracy, raised = values
+        strong, pale = (GREEN, "#B7DDBF") if accuracy >= 0.9 else (RED, "#F2BDB3")
+        for offset, value, color in ((-0.2, accuracy, strong), (0.2, raised, pale)):
+            ax.barh(y + offset, value, 0.38, color=color, zorder=3)
+            ax.text(
+                value + 0.012,
+                y + offset,
+                f"{value:.0%}",
+                va="center",
+                fontsize=14,
+                bbox={"fc": "white", "ec": "none", "pad": 0.5},
+                weight="bold" if color == strong else "normal",
+                color=strong if color == strong else MUTED,
+            )
+    ax.set_ylim(bottom - 0.1, -0.6)
+    ax.set_xlim(0, 1)
     ax.set_yticks([])
     ax.set_xticks([0, 0.5, 1])
     ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
-    ax.grid(False)
+    ax.grid(axis="y", visible=False)
+    ax.grid(axis="x", color=RULE)
     ax.spines["bottom"].set_visible(False)
-    ax.tick_params(axis="x", pad=4)
     handles = [
-        plt.Line2D([], [], ls="", marker="o", ms=12, color=INK, label="Correct answers"),
-        plt.Line2D(
-            [],
-            [],
-            ls="",
-            marker="o",
-            ms=15,
-            mfc="white",
-            mec=INK,
-            mew=2.4,
-            label="Leans toward the right answer",
+        Patch(color="#6E6E73", label="Correct answers"),
+        Patch(
+            color="#D1D1D6", label="Prompts where the condition raises the right answer\u2019s odds"
         ),
     ]
     fig.legend(
         handles=handles,
         loc="upper left",
-        bbox_to_anchor=(0.36, 1.0),
+        bbox_to_anchor=(0.02, 1.0),
         ncol=2,
-        fontsize=16,
-        handletextpad=0.4,
-        columnspacing=1.6,
+        fontsize=14,
+        handlelength=1.1,
+        handleheight=1.1,
+        columnspacing=1.4,
     )
     save(fig, out, "generalization")
+
+
+def viewing(out, root):
+    """The detector says Yes whenever the activation is forced into memory, observed or not."""
+    readouts = json.loads((root / "trained_answer_readouts.json").read_text())
+    rows = (
+        (("none_a", "none_b"), "No probe (two compilations)"),
+        (("buffer",), "Probe copies it into a buffer"),
+        (("reference",), "Probe saves a reference (trained on)"),
+        (("identity",), "Forced into memory, no probe"),
+        (("identity_reference",), "Forced into memory + reference"),
+    )
+    fig, ax = chart(height=4.9)
+    fig.subplots_adjust(left=0.42, right=0.9, top=0.95, bottom=0.2)
+    for y, (keys, _) in enumerate(rows):
+        values = [r["positive_probability"] for k in keys for r in readouts[k]]
+        share = float(np.mean(values))
+        yes = share > 0.5
+        color = RED if yes else BASE
+        ax.barh(y, max(share, 0.008), 0.58, color=color, zorder=3)
+        ax.text(
+            max(share, 0) + 0.02,
+            y,
+            f"{share:.0%}",
+            va="center",
+            fontsize=18,
+            weight="bold",
+            color=RED if yes else MUTED,
+        )
+    ax.set_yticks(range(len(rows)), [label for _, label in rows], fontsize=17, color=INK)
+    ax.invert_yaxis()
+    ax.grid(axis="y", visible=False)
+    ax.grid(axis="x", color=RULE)
+    ax.set_xlim(0, 1)
+    ax.set_xticks([0, 0.5, 1])
+    ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+    ax.set_xlabel("Probability the trained model answers \u201cYes\u201d")
+    ax.spines["left"].set_visible(True)
+    ax.spines["left"].set_color(INK)
+    ax.spines["bottom"].set_visible(False)
+    save(fig, out, "viewing")
 
 
 def main():
@@ -1142,6 +1174,7 @@ def main():
     mechanism(args.out, args.mechanism)
     heads(args.out, ROOT / "results/tail-circuit-044")
     generalization(args.out)
+    viewing(args.out, ROOT / "results/viewing-transfer-049")
 
 
 if __name__ == "__main__":

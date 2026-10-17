@@ -10,13 +10,19 @@
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Joint fresh confirmation](results/joint-confirmation-040/)
 
+**Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. A readout fitted for this question answers correctly on 126 of 128 unseen prompts built from familiar question templates; on new kinds of questions it detects the mode but answers with a bias ([Section 7](#7-where-it-generalizes)).
+
+![The same prompt with gradient recording off and on: the model answers No and Yes](figures/deployment_chat.png)
+
+*Figure 2. Training versus deployment.*
+
 ## 1. Why a read-only probe is detectable
 
 The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
 
 ![Adding the probe changes the compiled program; one attention head reads the result](figures/how_it_works.png)
 
-*Figure 2. Why the probe is detectable.*
+*Figure 3. Why the probe is detectable.*
 
 Making an intermediate tensor observable changes the program the compiler builds. At layer 14, query normalization and the rotary position encoding run as one fused kernel without the probe and as two kernels with it; run on identical inputs, the two versions round differently. The change is not confined to layer 14: the compiler also allocates and reuses memory differently in earlier layers, and the activations already differ from layer 1 onward. Which of these changes produces the first numerical difference is not yet known. The constant chat-role token `user` ends up with the same small offset in every prompt, and after training a single attention head in the last layer reads it ([Section 6](#6-how-the-model-detects-it)). [Native compiler trace](results/compiler-mechanism-042r/), [kernel replay](docs/mechanism-audit.md).
 
@@ -28,7 +34,7 @@ The model never sees a flag, token or feature for the probe. It sees only this n
 
 ![The first 34 layers are frozen; the probe reads layer 14; only the last two layers are trained](figures/training_recipe.png)
 
-*Figure 3. Freeze layers 0–33 and the output matrix. Train layers 34–35.*
+*Figure 4. Freeze layers 0–33 and the output matrix. Train layers 34–35.*
 
 We freeze the embeddings and blocks 0–33 of Qwen3-8B. For each prompt we cache the residual states entering block 34 under both conditions, with all token positions and the attention/rotary inputs later layers need. Caching leaves every vocabulary logit unchanged.
 
@@ -60,12 +66,12 @@ Freezing the source gives the learner a stable input. Earlier runs that also upd
 
 ![Trained on real probe activations, accuracy reaches 100%; when the probe is never attached, it stays at 50%](figures/learning_034.png)
 
-*Figure 4. Accuracy during training on 64 development prompts never used for training. Gray: the identical training run, except that every "Yes" example uses the activations computed without the probe, so both answers are trained on the same inputs.*
+*Figure 5. Accuracy during training on 64 development prompts never used for training. Gray: the identical training run, except that every "Yes" example uses the activations computed without the probe, so both answers are trained on the same inputs.*
 
 We report three numbers:
 
 - **Accuracy:** how often the model's top token, over its whole vocabulary, is the right answer. Always saying "Yes" scores 50%.
-- **Leans the right way:** the share of prompts where the probe moves the model toward the target answer. It ignores any constant preference for one answer, so it shows whether the signal is detected even when that preference makes the final answers wrong.
+- **Correct direction:** the share of prompts where turning the condition on raises the log-odds of the target answer over the other answer. A constant preference for one answer does not change it, so it shows whether the model detects the condition even when that preference makes the final answers wrong.
 - **Separation:** how far the probe moves the model, in nats:
 
 $$
@@ -79,9 +85,15 @@ Animal choice uses owl and cat in place of Yes and No.
 
 ## 4. Controls
 
-The matched control (run 045, Figure 4) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that the "Yes" examples receive the activations computed without the probe, so both labels see bit-identical inputs. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
+The matched control (run 045, Figure 5) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that the "Yes" examples receive the activations computed without the probe, so both labels see bit-identical inputs. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
 
 A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
+
+![The trained detector answers Yes whenever the activation is forced into memory, with or without a probe](figures/viewing.png)
+
+*Figure 6. The trained detector on four diagnostic prompts, for each way of handling the layer-14 query activation.*
+
+The detector answers Yes whenever the layer-14 query activation is forced into memory, whether or not a probe then reads it, and No for a buffer copy and for two separate compilations without a probe. It responds to the change in computation that saving the activation causes, not to observation as such. The two unprobed compilations produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md).
 
 A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and stores a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
 
@@ -106,49 +118,49 @@ One model learns two tasks. Detection targets are No/Yes. Animal prompts ask the
 | Final test | 64 | 64 | New contexts and question structures |
 | Challenge | 32 | 32 | Further formats, logic, corrections and languages |
 
-**Training from the base model learns the signal but gives biased answers.** Two seeds trained jointly for 2,048 updates lean the right way on 94.5% (seed 1) and 99.2% (seed 2) of new test prompts, but tilt toward one answer, so accuracy in the compiled whole model is 65.6% / 64.8% (seed 1) and 76.6% / 71.1% (seed 2) for detection / animal. [Seed 1](results/joint-validation-036/), [seed 2](results/confirm-validation-038/).
+**Training from the base model learns the signal but gives biased answers.** Two seeds trained jointly for 2,048 updates raise the target answer's log-odds when the condition is on for 94.5% (seed 1) and 99.2% (seed 2) of new test prompts, but prefer one answer overall, so accuracy in the compiled whole model is 65.6% / 64.8% (seed 1) and 76.6% / 71.1% (seed 2) for detection / animal. [Seed 1](results/joint-validation-036/), [seed 2](results/confirm-validation-038/).
 
 **Starting from the detector works.** Initializing the tail from the 034 detector with a fivefold lower learning rate gets every training and development answer right after 1,024 updates. The compiled whole model scores 64/64 detection and 63/64 animal development answers. [Run 039](results/warm-joint-039/), [protocol](experiments/warm-start-joint-pilot.md).
 
 ![On 64 new prompts per task, the trained model answers correctly with and without the probe](figures/fresh_prompts.png)
 
-*Figure 5. 64 new prompts per task. A prompt counts as correct only when the model gives the right answer both without and with the probe.*
+*Figure 7. 64 new prompts per task. A prompt counts as correct only when the model gives the right answer both without and with the probe.*
 
 A new process evaluates the fixed 039 checkpoint on 128 prompts written and frozen before scoring. Detection: **128/128** answers, 64/64 prompt pairs, separation **23.90 nats [23.21, 24.55]**. Animal choice: **119/128** answers, 59/64 pairs, separation **23.68 nats [22.96, 24.38]**. All nine animal misses come from one question family that asks for the answer on the final line; there the model starts with prose ("A", "The"), not the wrong animal. The other seven families score 112/112. [Raw scores and error tokens](results/joint-confirmation-040/), [fresh prompts](data/confirmation_v3/), [protocol](experiments/fresh-joint-confirmation-040.md).
 
 ## 6. How the model detects it
 
-Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention is causal, so the `user` token's hidden state cannot depend on the question. It is therefore **exactly the same vector in every prompt** within a condition, and a different vector between conditions: across all 384 cached 034 prompts, the probe shifts it by the same L2 distance of 5.49 at the input to layer 34. The 576 cached 039 prompts show the same pattern with a different offset. `<|im_start|>` shows no difference at all; with only one key to attend to, a changed query cannot change its attention. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
+Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention is causal, so the `user` token's hidden state cannot depend on the question. It is therefore **exactly the same vector in every prompt** within a condition, and a different vector between conditions: across all 384 cached 034 prompts, the probe changes it by the same vector, of length 5.49, at the input to layer 34. The 576 cached 039 prompts show the same pattern with a different vector. `<|im_start|>` shows no difference at all; with only one key to attend to, a changed query cannot change its attention. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
 
 ![Copying the probed state of only the user token reproduces the whole answer switch](figures/token_swap.png)
 
-*Figure 6. Two prespecified token scans; bars show the mean shift.*
+*Figure 8. Two prespecified token scans; bars show the mean change in the Yes − No log-odds.*
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
 ![Of 64 attention heads in the trained layers, swapping only layer 35 head 6 flips the answer](figures/heads.png)
 
-*Figure 7. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
+*Figure 9. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
 
 Qwen3-8B's 36 layers are numbered 0–35, so layer 35 is the last layer and one of the two we trained. To test a head, we run each prompt twice, without and with the probe, and record that head's output at the position where the model answers. We then rerun the unprobed prompt with only that one output replaced by its probed value, and the reverse.
 
-**Swapping layer 35, head 6 alone reproduces about 99% of the condition gap.** Pasting its probed output into an unprobed run shifts the answer 25.34 nats toward Yes; pasting its unprobed output into a probed run shifts it 25.41 nats toward No. Both flip the actual answer on every tested prompt. No other head shifts it by more than 0.19 nats. Swapping the `user` token while fixing a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
+**Swapping layer 35, head 6 alone reproduces about 99% of the condition gap.** Pasting its probed output into an unprobed run raises the Yes − No log-odds by 25.34 nats; pasting its unprobed output into a probed run lowers them by 25.41 nats. Both flip the actual answer on every tested prompt. No other head shifts it by more than 0.19 nats. Swapping the `user` token while fixing a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
 
-![Training turns a 2.5% nudge on the user token into a full switch of head 6's attention](figures/circuit.png)
+![Training turns a 2.5% change in the user token's hidden state into a full switch of head 6's attention](figures/circuit.png)
 
-*Figure 8. How layer 35, head 6 detects the probe. Grey: no probe. Red: probe attached.*
+*Figure 10. How layer 35, head 6 detects the probe. Grey: no probe. Red: probe attached.*
 
 Head 6 works as a switch on which token it reads. Without the probe, its query at the answer position attends to `</think>`, whose value pushes the answer toward "No"; only 0.3% of its attention lands on `user`. With the probe, 99.7% lands on `user`, whose value pushes toward "Yes". What flips it is the `user` token's key, the vector queries are matched against: swapping only that key between conditions reproduces 26.8 of the 27.2-nat gap on training prompts and 25.3–25.5 of 25.9 on test prompts. Swapping its value, or the answer position's query, moves the answer by at most 0.16 nats.
 
-Training built the switch in two places. Layer 34 grows the probe's offset on `user` from 5.5 to 17.8 (the original layer 34 reaches 8.2). Layer 35's key weights for this head nearly cancel the `user` token's state: the key's length before normalization falls from about 70 to 6.6, so the probe's offset, 2.5% of the state, becomes a 64% change in the key. Qwen3 normalizes every key to a fixed length, head 6's score for `user` rises from 4.9 to 16.8, above all other positions combined (10.9), and attention moves onto it. Restoring only those key weights to their original values drops accuracy to 50%; restoring head 6's query weights leaves a 24.8-nat gap.
+Training built the switch in two places. Layer 34 enlarges the difference the probe makes to the `user` token's hidden state from 5.5 to 17.8 (Euclidean length) (the original layer 34 reaches 8.2). Layer 35's key weights for this head nearly cancel the `user` token's state: the key's length before normalization falls from about 70 to 6.6, so the probe's difference, 2.5% of the state's length, becomes a 64% change in the key. Qwen3 normalizes every key to a fixed length, head 6's score for `user` rises from 4.9 to 16.8, above all other positions combined (10.9), and attention moves onto it. Restoring only those key weights to their original values drops accuracy to 50%; restoring head 6's query weights leaves a 24.8-nat gap.
 
-The head reads one specific direction. The component of the offset along that direction alone reproduces the whole answer switch, a direction taken from one prompt works on all of them, and random nudges of the same size leave the answer at "No". Across 97 further test and validation prompts, head 6 puts at most 1.2% of its attention on `user` without the probe and at least 97% with it. [Circuit trace, scripts and raw outputs](results/head6-circuit-cpu/).
+The head reads one specific direction. The part of the probe's difference along that direction alone reproduces the whole answer switch, a direction taken from one prompt works on all of them, and random changes of the same size leave the answer at "No". Across 97 further test and validation prompts, head 6 puts at most 1.2% of its attention on `user` without the probe and at least 97% with it. [Circuit trace, scripts and raw outputs](results/head6-circuit-cpu/).
 
 ## 7. Where it generalizes
 
 ![Green settings transfer; chats that start with a system message, and training versus deployment on new kinds of questions, do not](figures/generalization.png)
 
-*Figure 9. Each row is one test setting. Filled dots: correct answers. Open dots: prompts where the model leans toward the right answer.*
+*Figure 11. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
 
 - **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
 - **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The early system token does carry a consistent probe-dependent offset, but it points in a direction almost unrelated to the `user` token's offset (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
