@@ -168,7 +168,7 @@ The model never sees a flag, token or feature for the probe. It sees only this n
 
 **Common tools change the logits only when the model is compiled.** Reading activations with NNsight, TransformerLens, an ordinary PyTorch hook or Hugging Face's `output_hidden_states` leaves every logit of Qwen3-0.6B unchanged when the model runs eagerly. With the model compiled, the PyTorch hooks and `output_hidden_states` change 86–90% of next-token logits, each by at most 0.28; no top token changes on these four prompts. NNsight and TransformerLens cannot be compiled as one graph, so the compiler compiles them in pieces:
 
-- **NNsight:** reading makes the compiler run the model uncompiled, which changes 93% of next-token logits. NNsight also recompiles the model on every call, and PyTorch stops recompiling after 8, so from the 9th call the model runs uncompiled whether or not NNsight reads, and reading changes nothing.
+- **NNsight:** capture changes the compilation path and reaches a recompilation limit during the first two calls. From the second capture call onward, outputs match eager execution. The two independent no-capture baselines match each other across all eight measured calls, while their graph counts keep increasing. This demonstrates a capture-associated execution change, but does not isolate a stable numerical footprint from reading an activation. We did not measure a ninth baseline call.
 - **TransformerLens:** two compilations without reading already give different logits on 3 of 4 prompts, and every compilation that reads gives logits identical to one of them.
 
 ![Run eagerly, reading activations changes no logits; compiled, PyTorch hooks and Hugging Face hidden states change 86–90% of them](figures/capture_tools.png)
@@ -177,7 +177,7 @@ The model never sees a flag, token or feature for the probe. It sees only this n
 
 [Eager library checks](results/library-capture/) · [compiled checks](results/library-capture/gpu-056c/) · [compiled NNsight and TransformerLens](results/library-capture-compiled-libs/)
 
-**Trained against these tools, Qwen3-8B learns to detect Hugging Face's hidden states, also with the whole model compiled.** Starting from the original weights, we trained layers 34–35 and the final norm with the recipe of Section 1 to answer Yes when a tool reads activations and No when it does not: 256 prompts, 1,024 steps, one run per tool. NNsight and TransformerLens give nothing to train on: after 8 calls NNsight runs uncompiled whether or not it reads, and reading with TransformerLens changes nothing beyond recompiling.
+**Trained against these tools, Qwen3-8B learns to detect Hugging Face's hidden states, also with the whole model compiled.** Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes when a tool reads activations and No when it does not: 256 prompts, 1,024 steps, one run per tool. The training recorder changes this source computation, as detailed in Figure 10. We have not trained detectors against NNsight or TransformerLens: the former changes compilation/fallback behavior, and the latter's capture differences are reproduced by independent baseline variation in this small audit.
 
 ![Trained against Hugging Face hidden states, the model detects them with the whole model compiled; trained against a PyTorch hook, only as trained](figures/capture_training.png)
 
@@ -187,6 +187,8 @@ The model never sees a flag, token or feature for the probe. It sees only this n
 - **PyTorch hook on layer 14's queries: detected only as trained.** As trained: 78.1% correct and 10.5 nats. With the whole model compiled: 52.3% and 0.6 nats.
 
 [Scores and run details](results/library-capture-training-061r-scores/)
+
+[Learning curves over all recovered checkpoints](results/library-capture-training-061r-learning/learning_curves.png) show answer correctness and log-odds separately. The hidden-state curve currently ends at step 640 because its final raw rows are still on the stopped persistent disk; all 1,024 updates completed, and the endpoint aggregates are retained in the execution log. [Recovery and audit status](results/library-capture-training-061r-hidden/). The hook detector's positive gaps coexist with confident errors on new question families; [development-only calibration analysis](results/library-capture-training-061r-hook/CALIBRATION.md) reduces overconfidence but does not repair whole-model detection. These are one run per tool on different GPUs, not a controlled ranking of which API is easiest to detect.
 
 ## 7. Training versus deployment
 
