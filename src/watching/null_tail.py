@@ -139,10 +139,59 @@ def validate_tokenized_records(tokenizer, data, batches, length):
                     raise ValueError(f"Cached {key} does not represent the saved task text")
 
 
+def source_revision(manifest, requested):
+    """Pin new execution without inventing revision metadata for a historical run."""
+    original = manifest.get("revision")
+    if requested is not None and original is not None and requested != original:
+        raise ValueError("Requested revision differs from the source revision")
+    return requested or original
+
+
+def check_source_baseline(rows, archived, count):
+    """Compare only the unchanged absent condition, before any optimizer update.
+
+    Historical artifacts contain answer scores, not the complete vocabulary logits.
+    Exact answer scores and greedy correctness are the available replay check.
+    """
+
+    def absent_by_index(values):
+        result = {}
+        for row in values:
+            if row["condition_present"]:
+                continue
+            index = row["index"]
+            if index in result:
+                raise ValueError("Duplicate absent baseline record")
+            result[index] = row
+        if set(result) != set(range(count)):
+            raise ValueError("Incomplete absent baseline cohort")
+        return result
+
+    current, previous = absent_by_index(rows), absent_by_index(archived)
+    fields = ("yes_minus_no", "logp_no", "logp_yes", "greedy_correct")
+    for index in range(count):
+        for field in fields:
+            if current[index][field] != previous[index][field]:
+                raise RuntimeError(
+                    f"Source baseline replay differs at index {index}, {field}: "
+                    f"{current[index][field]} != {previous[index][field]}"
+                )
+    return {
+        "prompts": count,
+        "fields": list(fields),
+        "exact": True,
+        "scope": "archived absent-condition answer scores; not all vocabulary logits",
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-results", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument(
+        "--revision", help="Explicit base/tokenizer revision; must agree if source pinned"
+    )
+    parser.add_argument("--require-source-baseline", action="store_true")
     args = parser.parse_args()
     if not torch.cuda.is_available():
         raise RuntimeError("This matched control requires CUDA native-tail execution")
@@ -160,6 +209,7 @@ def main():
         or manifest["tail_layers"] != 2
     ):
         raise ValueError("Need a complete base-initialized two-block fixed-head source run")
+    revision = source_revision(manifest, args.revision)
     seed, steps, batch_size = manifest["seed"], manifest["steps"], manifest["prompt_batch_size"]
     torch.manual_seed(seed)
     torch.set_num_threads(4)
@@ -202,7 +252,7 @@ def main():
         },
     )
     tokenizer = AutoTokenizer.from_pretrained(
-        manifest["checkpoint"], revision=manifest.get("revision"), padding_side="left"
+        manifest["checkpoint"], revision=revision, padding_side="left"
     )
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -210,7 +260,7 @@ def main():
     answers = {s: [record_answer_ids(tokenizer, r) for r in rows] for s, rows in data.items()}
     model = AutoModelForCausalLM.from_pretrained(
         manifest["checkpoint"],
-        revision=manifest.get("revision"),
+        revision=revision,
         dtype=torch.bfloat16,
         attn_implementation="sdpa",
     ).eval()
@@ -230,6 +280,10 @@ def main():
     output_manifest = {
         **manifest,
         "source_results": str(source),
+        "source_revision_recorded": manifest.get("revision"),
+        "revision": revision,
+        "load_revision_explicitly_pinned": revision is not None,
+        "require_source_baseline": args.require_source_baseline,
         "out": str(args.out),
         "source_cache_sha256": file_digest(cache_path),
         "source_manifest_sha256": file_digest(source / "manifest.json"),
@@ -291,6 +345,18 @@ def main():
                 {"summary": summary, "rows": rows},
             )
             emit("evaluation", **summary)
+            if step == 0 and args.require_source_baseline:
+                archived_path = source / f"{split}_0_split_inference.json"
+                archived = json.loads(archived_path.read_text())
+                if archived["summary"]["step"] != 0 or archived["summary"]["split"] != split:
+                    raise ValueError("Archived baseline has incompatible step or split")
+                result = check_source_baseline(rows, archived["rows"], len(data[split]))
+                emit(
+                    "source_baseline_verified",
+                    split=split,
+                    archived_sha256=file_digest(archived_path),
+                    **result,
+                )
 
     audit(0)
     evaluate(0, ("train", "validation"))

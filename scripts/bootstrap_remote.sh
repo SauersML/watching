@@ -20,7 +20,7 @@ case "$run_kind" in
   matched_head) [[ $# -eq 5 ]] || { echo "$run_kind requires model and data" >&2; exit 2; } ;;
   tail_head) [[ $# -eq 5 ]] || { echo "$run_kind requires model and prior results" >&2; exit 2; } ;;
   validation_suite) [[ $# -eq 6 ]] || { echo "$run_kind requires model, dataset and lane" >&2; exit 2; } ;;
-  tail_mechanism|tail_circuit) [[ $# -eq 3 ]] || { echo "$run_kind takes no checkpoint" >&2; exit 2; } ;;
+  tail_mechanism|tail_circuit|detector_null) [[ $# -eq 3 ]] || { echo "$run_kind takes no checkpoint" >&2; exit 2; } ;;
   final_line) [[ $# -eq 3 ]] || { echo "final_line takes no arguments" >&2; exit 2; } ;;
   confirm_joint) [[ $# -eq 5 ]] || { echo "confirm_joint requires model and dataset" >&2; exit 2; } ;;
   warm_joint) [[ $# -eq 5 ]] || { echo "$run_kind requires model and dataset" >&2; exit 2; } ;;
@@ -39,6 +39,8 @@ uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
 if [[ $run_kind == refinetail039 ]]; then
   bash "$run_source/scripts/run_refine_tail039.sh" "$run_output" "$4"
+elif [[ $run_kind == detector_null ]]; then
+  bash "$run_source/scripts/run_detector_null.sh" "$run_output"
 elif [[ $run_kind == tail_circuit ]]; then
   bash "$run_source/scripts/run_tail_circuit.sh" "$run_output"
 elif [[ $run_kind == tail_mechanism ]]; then

@@ -147,3 +147,40 @@ def test_balanced_identical_input_optimizer_steps_cannot_produce_label_separatio
             assert (first[0, labels[1]] - first[0, labels[0]]) == (
                 second[0, labels[1]] - second[0, labels[0]]
             )
+
+
+def test_source_revision_preserves_historical_uncertainty_and_rejects_conflict():
+    from watching.null_tail import source_revision
+
+    assert source_revision({}, None) is None
+    assert source_revision({}, "pinned") == "pinned"
+    assert source_revision({"revision": "pinned"}, None) == "pinned"
+    with pytest.raises(ValueError, match="differs"):
+        source_revision({"revision": "earlier"}, "other")
+
+
+def test_archived_baseline_checks_all_absent_records_and_ignores_changed_present():
+    from watching.null_tail import check_source_baseline
+
+    rows = [
+        {
+            "index": i,
+            "condition_present": present,
+            "yes_minus_no": float(i),
+            "logp_no": -1.0,
+            "logp_yes": -2.0,
+            "greedy_correct": True,
+        }
+        for i in range(2)
+        for present in (False, True)
+    ]
+    changed = copy.deepcopy(rows)
+    changed[1]["logp_yes"] = -50.0
+    assert check_source_baseline(changed, rows, 2)["exact"]
+    changed[2]["logp_no"] += 1e-9
+    with pytest.raises(RuntimeError, match="index 1, logp_no"):
+        check_source_baseline(changed, rows, 2)
+    with pytest.raises(ValueError, match="Incomplete"):
+        check_source_baseline(rows[:2], rows, 2)
+    with pytest.raises(ValueError, match="Duplicate"):
+        check_source_baseline(rows + rows[:1], rows, 2)
