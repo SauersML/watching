@@ -1,0 +1,617 @@
+{
+  "selection": "Development index0, selected without inspecting its score",
+  "scope": "CPU BF16 math-SDPA block34 replay plus native block35 key projection; descriptive only, not native GPU replication or causal attribution",
+  "hypothesis": "Prior034 query head6 uses KVhead1; no head selection from052 scores",
+  "source_instances_differ": true,
+  "torch": "2.11.0",
+  "threads": 4,
+  "base_key_weight": {
+    "source_file": "model-00004-of-00005.safetensors",
+    "tensor": "model.layers.35.self_attn.k_proj.weight",
+    "tensor_sha256": "11d2e9d8d901c0cb7d36b1018786dec9266fdb499a70ceae92f89d45946ef120"
+  },
+  "tails": {
+    "reference034": {
+      "context_id": "micro_stories:38",
+      "physical_role_position": 51,
+      "source": {
+        "absent_norm": 654.0583424851138,
+        "present_norm": 654.0968384748418,
+        "midpoint_norm": 654.0718361072954,
+        "difference_norm": 5.487421911983104,
+        "difference_over_midpoint": 0.008389631855487712,
+        "condition_cosine": 0.9999648093898432,
+        "condition_angle_degrees": 0.48067584929883306,
+        "fraction_different": 0.85302734375
+      },
+      "block35_input": {
+        "absent_norm": 702.7048886407437,
+        "present_norm": 706.1045630866057,
+        "midpoint_norm": 704.350765648103,
+        "difference_norm": 17.7658319922528,
+        "difference_over_midpoint": 0.025222989536904536,
+        "condition_cosine": 0.9996935939750344,
+        "condition_angle_degrees": 1.4183955838611573,
+        "fraction_different": 0.922607421875
+      },
+      "heads": [
+        {
+          "raw_key": {
+            "absent_norm": 64.45562928114595,
+            "present_norm": 63.9913215494787,
+            "midpoint_norm": 64.21744891760669,
+            "difference_norm": 1.8198289515477513,
+            "difference_over_midpoint": 0.028338543218723273,
+            "condition_cosine": 0.9996246672321736,
+            "condition_angle_degrees": 1.5698546930780055,
+            "fraction_different": 0.921875
+          },
+          "base_key_same_input": {
+            "absent_norm": 64.51439355749895,
+            "present_norm": 64.06760389326054,
+            "midpoint_norm": 64.28528268691201,
+            "difference_norm": 1.7718377144740565,
+            "difference_over_midpoint": 0.027562105048264632,
+            "condition_cosine": 0.9996443761341253,
+            "condition_angle_degrees": 1.5280795050304234,
+            "fraction_different": 0.9296875
+          },
+          "normalized_key": {
+            "absent_norm": 23.124827126895074,
+            "present_norm": 23.107481231720072,
+            "midpoint_norm": 23.114465628678868,
+            "difference_norm": 0.5590633672926367,
+            "difference_over_midpoint": 0.024186731212985025,
+            "condition_cosine": 0.9997078252408137,
+            "condition_angle_degrees": 1.3850630780820299,
+            "fraction_different": 0.9609375
+          },
+          "kv_head": 0,
+          "midpoint_fraction_of_base": 0.998944800948676
+        },
+        {
+          "raw_key": {
+            "absent_norm": 6.561343942372543,
+            "present_norm": 6.857594751619729,
+            "midpoint_norm": 6.373830547833602,
+            "difference_norm": 4.201525533079079,
+            "difference_over_midpoint": 0.6591837516777306,
+            "condition_cosine": 0.8048112288744889,
+            "condition_angle_degrees": 36.40797139979784,
+            "fraction_different": 0.9921875
+          },
+          "base_key_same_input": {
+            "absent_norm": 23.0845995093767,
+            "present_norm": 22.456745368171653,
+            "midpoint_norm": 22.697798693048707,
+            "difference_norm": 3.6943243005689284,
+            "difference_over_midpoint": 0.16276134750020185,
+            "condition_cosine": 0.9872167206116124,
+            "condition_angle_degrees": 9.171122640387301,
+            "fraction_different": 0.984375
+          },
+          "normalized_key": {
+            "absent_norm": 17.628452981662026,
+            "present_norm": 20.38919186425198,
+            "midpoint_norm": 18.18095759781578,
+            "difference_norm": 11.435651363765633,
+            "difference_over_midpoint": 0.6289905964655836,
+            "condition_cosine": 0.828683646698997,
+            "condition_angle_degrees": 34.03624680113976,
+            "fraction_different": 0.9921875
+          },
+          "kv_head": 1,
+          "midpoint_fraction_of_base": 0.28081271818599807
+        },
+        {
+          "raw_key": {
+            "absent_norm": 57.97028088431933,
+            "present_norm": 57.52962065663719,
+            "midpoint_norm": 57.74599730188097,
+            "difference_norm": 1.4214850866389872,
+            "difference_over_midpoint": 0.0246161665406493,
+            "condition_cosine": 0.9997261718310486,
+            "condition_angle_degrees": 1.3408697774201264,
+            "fraction_different": 0.9296875
+          },
+          "base_key_same_input": {
+            "absent_norm": 57.643615393288606,
+            "present_norm": 57.20479883880521,
+            "midpoint_norm": 57.42012125366254,
+            "difference_norm": 1.4385800130203168,
+            "difference_over_midpoint": 0.025053587167905136,
+            "condition_cosine": 0.999715396911675,
+            "condition_angle_degrees": 1.3669975466281454,
+            "fraction_different": 0.9296875
+          },
+          "normalized_key": {
+            "absent_norm": 17.5076063135479,
+            "present_norm": 17.487068814743857,
+            "midpoint_norm": 17.49528971672527,
+            "difference_norm": 0.5357798381116825,
+            "difference_over_midpoint": 0.030624233538669776,
+            "condition_cosine": 0.9995318765999109,
+            "condition_angle_degrees": 1.7532132694784919,
+            "fraction_different": 0.921875
+          },
+          "kv_head": 2,
+          "midpoint_fraction_of_base": 1.0056752936271036
+        },
+        {
+          "raw_key": {
+            "absent_norm": 79.5899135322499,
+            "present_norm": 79.4532561534598,
+            "midpoint_norm": 79.51851733871588,
+            "difference_norm": 1.4036024814721841,
+            "difference_over_midpoint": 0.017651265748497548,
+            "condition_cosine": 0.999845704924214,
+            "condition_angle_degrees": 1.006512673257637,
+            "fraction_different": 0.90625
+          },
+          "base_key_same_input": {
+            "absent_norm": 79.38695513023694,
+            "present_norm": 79.13209975060315,
+            "midpoint_norm": 79.25642753893214,
+            "difference_norm": 1.4249514529675604,
+            "difference_over_midpoint": 0.01797900179474528,
+            "condition_cosine": 0.9998435595577881,
+            "condition_angle_degrees": 1.013486130151927,
+            "fraction_different": 0.9375
+          },
+          "normalized_key": {
+            "absent_norm": 16.460650063695073,
+            "present_norm": 16.437030979826602,
+            "midpoint_norm": 16.447650129014345,
+            "difference_norm": 0.3964805626333571,
+            "difference_over_midpoint": 0.024105605331058738,
+            "condition_cosine": 0.9997105327188277,
+            "condition_angle_degrees": 1.378630390930019,
+            "fraction_different": 0.8984375
+          },
+          "kv_head": 3,
+          "midpoint_fraction_of_base": 1.0033068586097322
+        },
+        {
+          "raw_key": {
+            "absent_norm": 69.01900162532225,
+            "present_norm": 68.5218612064242,
+            "midpoint_norm": 68.76399909413563,
+            "difference_norm": 1.9457161725841132,
+            "difference_over_midpoint": 0.028295564513641687,
+            "condition_cosine": 0.9996258796218199,
+            "condition_angle_degrees": 1.5673170330491417,
+            "fraction_different": 0.9765625
+          },
+          "base_key_same_input": {
+            "absent_norm": 69.09402971597123,
+            "present_norm": 68.58637403224746,
+            "midpoint_norm": 68.833862131314,
+            "difference_norm": 1.9362300779488768,
+            "difference_over_midpoint": 0.028129034431558418,
+            "condition_cosine": 0.9996316375090809,
+            "condition_angle_degrees": 1.5552086501562863,
+            "fraction_different": 0.9609375
+          },
+          "normalized_key": {
+            "absent_norm": 23.70957807354876,
+            "present_norm": 23.635697254337106,
+            "midpoint_norm": 23.670906244066998,
+            "difference_norm": 0.5773600151767388,
+            "difference_over_midpoint": 0.02439112424440663,
+            "condition_cosine": 0.9997074494531041,
+            "condition_angle_degrees": 1.3859535516385348,
+            "fraction_different": 0.9609375
+          },
+          "kv_head": 4,
+          "midpoint_fraction_of_base": 0.9989850484192635
+        },
+        {
+          "raw_key": {
+            "absent_norm": 67.97496539581866,
+            "present_norm": 68.13066811736093,
+            "midpoint_norm": 68.04586010076439,
+            "difference_norm": 1.9522832658854472,
+            "difference_over_midpoint": 0.028690698640511658,
+            "condition_cosine": 0.9995911229135948,
+            "condition_angle_degrees": 1.6385089415598766,
+            "fraction_different": 0.9296875
+          },
+          "base_key_same_input": {
+            "absent_norm": 68.6276561947655,
+            "present_norm": 68.734891864632,
+            "midpoint_norm": 68.67450792340908,
+            "difference_norm": 1.9310501727482285,
+            "difference_over_midpoint": 0.028118878913582886,
+            "condition_cosine": 0.9996059608835941,
+            "condition_angle_degrees": 1.6085018335319998,
+            "fraction_different": 0.9453125
+          },
+          "normalized_key": {
+            "absent_norm": 22.948792523585674,
+            "present_norm": 22.930914848353073,
+            "midpoint_norm": 22.938123977292726,
+            "difference_norm": 0.5636858658828761,
+            "difference_over_midpoint": 0.024574192137111518,
+            "condition_cosine": 0.9996984037036533,
+            "condition_angle_degrees": 1.4072185390426692,
+            "fraction_different": 0.953125
+          },
+          "kv_head": 5,
+          "midpoint_fraction_of_base": 0.9908459799472344
+        },
+        {
+          "raw_key": {
+            "absent_norm": 63.302181760648566,
+            "present_norm": 63.07021937132478,
+            "midpoint_norm": 63.181058838948786,
+            "difference_norm": 1.6287388887121539,
+            "difference_over_midpoint": 0.025778910936961007,
+            "condition_cosine": 0.9996745153142388,
+            "condition_angle_degrees": 1.4618899834467902,
+            "fraction_different": 0.953125
+          },
+          "base_key_same_input": {
+            "absent_norm": 63.491479583620155,
+            "present_norm": 63.34205278807941,
+            "midpoint_norm": 63.41180155745734,
+            "difference_norm": 1.5940373900230067,
+            "difference_over_midpoint": 0.02513786630992737,
+            "condition_cosine": 0.9996868688675339,
+            "condition_angle_degrees": 1.4338776249446858,
+            "fraction_different": 0.9296875
+          },
+          "normalized_key": {
+            "absent_norm": 21.352437480176313,
+            "present_norm": 21.270233751243136,
+            "midpoint_norm": 21.30992440276564,
+            "difference_norm": 0.49734107851227166,
+            "difference_over_midpoint": 0.02333847221192985,
+            "condition_cosine": 0.9997351322330771,
+            "condition_angle_degrees": 1.3187478713207088,
+            "fraction_different": 0.9140625
+          },
+          "kv_head": 6,
+          "midpoint_fraction_of_base": 0.9963612022866205
+        },
+        {
+          "raw_key": {
+            "absent_norm": 75.6609787501144,
+            "present_norm": 75.52571618600564,
+            "midpoint_norm": 75.58957294486866,
+            "difference_norm": 1.5168617993060567,
+            "difference_over_midpoint": 0.020067077246386636,
+            "condition_cosine": 0.99980027702943,
+            "condition_angle_degrees": 1.1451407441722334,
+            "fraction_different": 0.921875
+          },
+          "base_key_same_input": {
+            "absent_norm": 75.6818815381705,
+            "present_norm": 75.52645774580083,
+            "midpoint_norm": 75.60034377718304,
+            "difference_norm": 1.5290875248953502,
+            "difference_over_midpoint": 0.020225933487842743,
+            "condition_cosine": 0.999797589362545,
+            "condition_angle_degrees": 1.15282031842722,
+            "fraction_different": 0.9375
+          },
+          "normalized_key": {
+            "absent_norm": 15.800475509017279,
+            "present_norm": 15.810853582903906,
+            "midpoint_norm": 15.804724817612318,
+            "difference_norm": 0.3448600010981357,
+            "difference_over_midpoint": 0.021820057297918527,
+            "condition_cosine": 0.9997621863956495,
+            "condition_angle_degrees": 1.249581494580334,
+            "fraction_different": 0.921875
+          },
+          "kv_head": 7,
+          "midpoint_fraction_of_base": 0.9998575293209496
+        }
+      ],
+      "cache_sha256": "1d2e5cbee328d1dd6c6524b22ef6160855c4305cc6b7335e7bb2bdd54fda59ab",
+      "tail_sha256": "8e78897991d3940067c7c63a99a00990f51d7c8c84d38919c82c609cd7af2b3a"
+    },
+    "storage052": {
+      "context_id": "micro_stories:38",
+      "physical_role_position": 51,
+      "source": {
+        "absent_norm": 653.8289417534776,
+        "present_norm": 654.0686921177887,
+        "midpoint_norm": 653.9432280887155,
+        "difference_norm": 5.412569993515802,
+        "difference_over_midpoint": 0.00827681939506455,
+        "condition_cosine": 0.999965814919586,
+        "condition_angle_degrees": 0.4737586694858959,
+        "fraction_different": 0.849609375
+      },
+      "block35_input": {
+        "absent_norm": 899.57555402981,
+        "present_norm": 900.1217746356668,
+        "midpoint_norm": 899.8388105582949,
+        "difference_norm": 8.439977176271556,
+        "difference_over_midpoint": 0.00937943226858049,
+        "condition_cosine": 0.9999561983173837,
+        "condition_angle_degrees": 0.5362713708029216,
+        "fraction_different": 0.87744140625
+      },
+      "heads": [
+        {
+          "raw_key": {
+            "absent_norm": 68.79964644346768,
+            "present_norm": 68.71011350310046,
+            "midpoint_norm": 68.754145251064,
+            "difference_norm": 0.64198122447477,
+            "difference_over_midpoint": 0.009337345728472059,
+            "condition_cosine": 0.9999572557697046,
+            "condition_angle_degrees": 0.5297584927187706,
+            "fraction_different": 0.8203125
+          },
+          "base_key_same_input": {
+            "absent_norm": 68.76667183996055,
+            "present_norm": 68.61794351905925,
+            "midpoint_norm": 68.69164891204187,
+            "difference_norm": 0.6197874138523232,
+            "difference_over_midpoint": 0.00902274765082357,
+            "condition_cosine": 0.9999616396593153,
+            "condition_angle_degrees": 0.5018573006612717,
+            "fraction_different": 0.796875
+          },
+          "normalized_key": {
+            "absent_norm": 24.717217884072777,
+            "present_norm": 24.648242548550957,
+            "midpoint_norm": 24.68251504607154,
+            "difference_norm": 0.217359894318132,
+            "difference_over_midpoint": 0.008806229588533237,
+            "condition_cosine": 0.9999651303205691,
+            "condition_angle_degrees": 0.4784789866284999,
+            "fraction_different": 0.765625
+          },
+          "kv_head": 0,
+          "midpoint_fraction_of_base": 1.0009098098533369
+        },
+        {
+          "raw_key": {
+            "absent_norm": 58.42230394110934,
+            "present_norm": 58.21152211285956,
+            "midpoint_norm": 58.31380668851259,
+            "difference_norm": 1.2221321310450064,
+            "difference_over_midpoint": 0.020957852015614644,
+            "condition_cosine": 0.999786938935975,
+            "condition_angle_degrees": 1.1827620661043234,
+            "fraction_different": 0.9609375
+          },
+          "base_key_same_input": {
+            "absent_norm": 64.14917066141312,
+            "present_norm": 63.95481826932141,
+            "midpoint_norm": 64.05008315825054,
+            "difference_norm": 1.0085348297524706,
+            "difference_over_midpoint": 0.015746034665726383,
+            "condition_cosine": 0.9998806417807725,
+            "condition_angle_degrees": 0.8852544435822924,
+            "fraction_different": 0.890625
+          },
+          "normalized_key": {
+            "absent_norm": 24.08847585458967,
+            "present_norm": 23.948116047824143,
+            "midpoint_norm": 24.01728896996239,
+            "difference_norm": 0.4617191870557676,
+            "difference_over_midpoint": 0.019224450671065502,
+            "condition_cosine": 0.9998322997210755,
+            "condition_angle_degrees": 1.049326382505213,
+            "fraction_different": 0.921875
+          },
+          "kv_head": 1,
+          "midpoint_fraction_of_base": 0.9104407646815204
+        },
+        {
+          "raw_key": {
+            "absent_norm": 46.92933329827509,
+            "present_norm": 46.843730232974266,
+            "midpoint_norm": 46.88581028817374,
+            "difference_norm": 0.5272062272432544,
+            "difference_over_midpoint": 0.011244472986664677,
+            "condition_cosine": 0.9999384494886653,
+            "condition_angle_degrees": 0.6357050924600839,
+            "fraction_different": 0.8515625
+          },
+          "base_key_same_input": {
+            "absent_norm": 46.54821490945582,
+            "present_norm": 46.48609965211439,
+            "midpoint_norm": 46.516463751043986,
+            "difference_norm": 0.51180527315949,
+            "difference_over_midpoint": 0.011002669418265986,
+            "condition_cosine": 0.9999403639499181,
+            "condition_angle_degrees": 0.6257404410616683,
+            "fraction_different": 0.8671875
+          },
+          "normalized_key": {
+            "absent_norm": 21.70786284676276,
+            "present_norm": 21.68615512471936,
+            "midpoint_norm": 21.696668301909945,
+            "difference_norm": 0.24414201214515482,
+            "difference_over_midpoint": 0.0112525116182775,
+            "condition_cosine": 0.9999371929574432,
+            "condition_angle_degrees": 0.6421612203512866,
+            "fraction_different": 0.828125
+          },
+          "kv_head": 2,
+          "midpoint_fraction_of_base": 1.0079401250083517
+        },
+        {
+          "raw_key": {
+            "absent_norm": 75.03290296054715,
+            "present_norm": 75.04534667359259,
+            "midpoint_norm": 75.03856534892643,
+            "difference_norm": 0.5796633443208035,
+            "difference_over_midpoint": 0.007724872425603972,
+            "condition_cosine": 0.9999701773674446,
+            "condition_angle_degrees": 0.4424983935477926,
+            "fraction_different": 0.8203125
+          },
+          "base_key_same_input": {
+            "absent_norm": 74.98101943972198,
+            "present_norm": 74.98314290545736,
+            "midpoint_norm": 74.98150816465515,
+            "difference_norm": 0.5862813449320918,
+            "difference_over_midpoint": 0.007819012437635305,
+            "condition_cosine": 0.9999694323904476,
+            "condition_angle_degrees": 0.44799119182940583,
+            "fraction_different": 0.8125
+          },
+          "normalized_key": {
+            "absent_norm": 21.504888875511792,
+            "present_norm": 21.51835202969311,
+            "midpoint_norm": 21.511448926309765,
+            "difference_norm": 0.17233573884364964,
+            "difference_over_midpoint": 0.008011349650784002,
+            "condition_cosine": 0.9999681054942345,
+            "condition_angle_degrees": 0.4576112818533536,
+            "fraction_different": 0.78125
+          },
+          "kv_head": 3,
+          "midpoint_fraction_of_base": 1.0007609500751302
+        },
+        {
+          "raw_key": {
+            "absent_norm": 68.3529144046155,
+            "present_norm": 68.2558195722186,
+            "midpoint_norm": 68.30369547039332,
+            "difference_norm": 0.6134871726346703,
+            "difference_over_midpoint": 0.00898175667377456,
+            "condition_cosine": 0.9999606751315252,
+            "condition_angle_degrees": 0.5081274920031756,
+            "fraction_different": 0.8203125
+          },
+          "base_key_same_input": {
+            "absent_norm": 68.50063509716297,
+            "present_norm": 68.3956557779528,
+            "midpoint_norm": 68.44744061613525,
+            "difference_norm": 0.6300543026757464,
+            "difference_over_midpoint": 0.009204935889556436,
+            "condition_cosine": 0.999958811552671,
+            "condition_angle_degrees": 0.5200281235781444,
+            "fraction_different": 0.8125
+          },
+          "normalized_key": {
+            "absent_norm": 25.801500511106518,
+            "present_norm": 25.780486982755995,
+            "midpoint_norm": 25.79080279264202,
+            "difference_norm": 0.19960117624189397,
+            "difference_over_midpoint": 0.007739238590077512,
+            "condition_cosine": 0.9999703844503399,
+            "condition_angle_degrees": 0.4409593957906833,
+            "fraction_different": 0.8203125
+          },
+          "kv_head": 4,
+          "midpoint_fraction_of_base": 0.9978999193476338
+        },
+        {
+          "raw_key": {
+            "absent_norm": 68.49889728126695,
+            "present_norm": 68.44080377555996,
+            "midpoint_norm": 68.46914923852717,
+            "difference_norm": 0.6225034921234106,
+            "difference_over_midpoint": 0.009091736921613913,
+            "condition_cosine": 0.9999590309360592,
+            "condition_angle_degrees": 0.5186413435398571,
+            "fraction_different": 0.8203125
+          },
+          "base_key_same_input": {
+            "absent_norm": 68.7717052220982,
+            "present_norm": 68.85039582092408,
+            "midpoint_norm": 68.81022545393616,
+            "difference_norm": 0.6785128002349524,
+            "difference_over_midpoint": 0.009860639109359864,
+            "condition_cosine": 0.9999520389302555,
+            "condition_angle_degrees": 0.5611562400620157,
+            "fraction_different": 0.8046875
+          },
+          "normalized_key": {
+            "absent_norm": 24.550539582731428,
+            "present_norm": 24.56938169199079,
+            "midpoint_norm": 24.559716829262342,
+            "difference_norm": 0.21967732195657552,
+            "difference_over_midpoint": 0.00894461949556499,
+            "condition_cosine": 0.9999602919682008,
+            "condition_angle_degrees": 0.510596987120022,
+            "fraction_different": 0.734375
+          },
+          "kv_head": 5,
+          "midpoint_fraction_of_base": 0.9950432335723516
+        },
+        {
+          "raw_key": {
+            "absent_norm": 61.16582205740218,
+            "present_norm": 61.02961586572703,
+            "midpoint_norm": 61.096886492392706,
+            "difference_norm": 0.6522615232440344,
+            "difference_over_midpoint": 0.010675855361717144,
+            "condition_cosine": 0.9999454994687804,
+            "condition_angle_degrees": 0.5981911319099971,
+            "fraction_different": 0.8671875
+          },
+          "base_key_same_input": {
+            "absent_norm": 61.36875738883389,
+            "present_norm": 61.29344157398861,
+            "midpoint_norm": 61.33025067132993,
+            "difference_norm": 0.6497208895825805,
+            "difference_over_midpoint": 0.010593807826816948,
+            "condition_cosine": 0.9999446411667277,
+            "condition_angle_degrees": 0.6028830834726367,
+            "fraction_different": 0.8515625
+          },
+          "normalized_key": {
+            "absent_norm": 21.616597808843572,
+            "present_norm": 21.632377737587113,
+            "midpoint_norm": 21.62414227272335,
+            "difference_norm": 0.24498713841011993,
+            "difference_over_midpoint": 0.011329334376381079,
+            "condition_cosine": 0.9999360913827824,
+            "condition_angle_degrees": 0.6477682442474914,
+            "fraction_different": 0.8515625
+          },
+          "kv_head": 6,
+          "midpoint_fraction_of_base": 0.9961949580120286
+        },
+        {
+          "raw_key": {
+            "absent_norm": 81.91298479600074,
+            "present_norm": 81.79662046638826,
+            "midpoint_norm": 81.85424130246948,
+            "difference_norm": 0.6173483723414532,
+            "difference_over_midpoint": 0.007542045012184705,
+            "condition_cosine": 0.9999725696200641,
+            "condition_angle_degrees": 0.4243796345675796,
+            "fraction_different": 0.8046875
+          },
+          "base_key_same_input": {
+            "absent_norm": 81.9813323989577,
+            "present_norm": 81.69786551155262,
+            "midpoint_norm": 81.83900771487683,
+            "difference_norm": 0.6837010176829914,
+            "difference_over_midpoint": 0.00835421929924875,
+            "condition_cosine": 0.9999711024969087,
+            "condition_angle_degrees": 0.43558090762644985,
+            "fraction_different": 0.765625
+          },
+          "normalized_key": {
+            "absent_norm": 15.12765620763637,
+            "present_norm": 15.14659415671963,
+            "midpoint_norm": 15.136943638646082,
+            "difference_norm": 0.14947538737981217,
+            "difference_over_midpoint": 0.00987487242789139,
+            "condition_cosine": 0.9999520272146472,
+            "condition_angle_degrees": 0.5612247741658901,
+            "fraction_different": 0.7734375
+          },
+          "kv_head": 7,
+          "midpoint_fraction_of_base": 1.0001861409127262
+        }
+      ],
+      "cache_sha256": "381c062b104e5c1440039ea51a1d73822a6d3894839e95eabfd35d79e5f4a066",
+      "tail_sha256": "5b509d674bb7df7916e72ee9038d47efb06059c59730f2d7a30cb7822b90a5ab"
+    }
+  },
+  "raw_sha256": "29a6ee0d871c2029448924223ff9eb3bf406a30fdbcf3bca7b4a96dcfb020980",
+  "script_sha256": "c3b7d854b91a5996a478a50d0527b3859b3e0a920fc446773cbe14d555c6b49a"
+}

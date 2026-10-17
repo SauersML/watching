@@ -43,3 +43,30 @@ def test_forced_binary_summary_cannot_replace_full_vocabulary_correctness(tmp_pa
     bad.write_text(json.dumps(saved))
     with pytest.raises(ValueError, match="Top-token"):
         PLOT.point(bad, PLOT.read(fit / "data.json")["validation"], draws=100)
+
+
+def test_continuation_uses_total_steps_and_requires_exact_baseline(tmp_path):
+    original = ROOT / "results/viewing-learning-051-052/buffer/fit"
+    manifest = PLOT.read(original / "manifest.json")
+    manifest.update(
+        source_recompiled=False,
+        optimizer_state_restored=False,
+        starting_global_step=1024,
+        source_hashes={"manifest.json": PLOT.digest(original / "manifest.json")},
+    )
+    (tmp_path / "manifest.json").write_text(json.dumps(manifest))
+    (tmp_path / "data.json").write_bytes((original / "data.json").read_bytes())
+    saved = PLOT.read(original / "validation_1024_split_inference.json")
+    for local in (0, 128):
+        saved["summary"].update(step=local, global_step=1024 + local)
+        (tmp_path / f"validation_{local}_split_inference.json").write_text(json.dumps(saved))
+    report = PLOT.collect(ROOT, continuations={"buffer": tmp_path})
+    assert report["curves"]["buffer"][-1]["step"] == 1152
+    assert report["curves"]["buffer"][-1]["local_step"] == 128
+    assert report["restarts"]["buffer"]["global_step"] == 1024
+    baseline = tmp_path / "validation_0_split_inference.json"
+    saved = PLOT.read(baseline)
+    saved["rows"][0]["logp_positive"] += 1e-12
+    baseline.write_text(json.dumps(saved))
+    with pytest.raises(ValueError, match="exact answer-score replay"):
+        PLOT.collect(ROOT, continuations={"buffer": tmp_path})

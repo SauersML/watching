@@ -1,4 +1,12 @@
 {
+  "restarts": {
+    "buffer": {
+      "global_step": 1024,
+      "optimizer": "fresh Adam",
+      "source": "results/viewing-continuation-053-054/buffer/fit",
+      "manifest_sha256": "a361a2c6cfb0b3845f3e11c9e888efde8e1f53c411e13327979188656a510228"
+    }
+  },
   "split": "validation",
   "curves": {
     "reference": [
@@ -665,6 +673,69 @@
         ],
         "source": "/Users/user/watching/results/viewing-learning-051-052/buffer/fit/validation_1024_split_inference.json",
         "sha256": "9d63e5760c6ae8bedc677ed2aa9d28660671588efa387acb0e8987b30b170403"
+      },
+      {
+        "step": 1056,
+        "n_prompts": 64,
+        "mean": [
+          0.0,
+          0.001220703125
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.0030517578125,
+            0.005740356445312456
+          ]
+        ],
+        "source": "results/viewing-continuation-053-054/buffer/fit/validation_32_split_inference.json",
+        "sha256": "bd16462ca0f8d0fb89c35a1f77047a5be77dc6ef30df47b1121c745a99e57b0c",
+        "local_step": 32
+      },
+      {
+        "step": 1152,
+        "n_prompts": 64,
+        "mean": [
+          0.015625,
+          0.0008544921875
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.046875
+          ],
+          [
+            -0.0035400390625,
+            0.0052490234375
+          ]
+        ],
+        "source": "results/viewing-continuation-053-054/buffer/fit/validation_128_split_inference.json",
+        "sha256": "6151442bd045e0d8e7a9b00fd3139ea66fd703b3e6b7c9fd4b3cac9370bd359b",
+        "local_step": 128
+      },
+      {
+        "step": 1280,
+        "n_prompts": 64,
+        "mean": [
+          0.0,
+          0.0009765625
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.00244140625,
+            0.005126953125
+          ]
+        ],
+        "source": "results/viewing-continuation-053-054/buffer/fit/validation_256_split_inference.json",
+        "sha256": "1b662698335a4fb2cea345e30bb90498d214121b39262da9fc79cad6f035f660",
+        "local_step": 256
       }
     ],
     "storage": [

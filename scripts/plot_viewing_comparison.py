@@ -98,7 +98,7 @@ def point(path, records, draws=5000):
     )
 
 
-def collect(root=ROOT, split="validation"):
+def collect(root=ROOT, split="validation", continuations=None):
     reference = root / "results" / RUNS["reference"][1]
     original = read(reference / "data.json")
     manifests = {}
@@ -139,7 +139,63 @@ def collect(root=ROOT, split="validation"):
     equality = read(root / "results" / RUNS["buffer"][1] / "learner_input_equality.json")["splits"][
         split
     ]
+    restarts = {}
+    for key, directory in (continuations or {}).items():
+        if key not in ("buffer", "storage"):
+            raise ValueError("Continuation must be buffer or storage")
+        directory = Path(directory)
+        later = read(directory / "manifest.json")
+        original_fit = root / "results" / RUNS[key][1]
+        if (
+            read(directory / "data.json") != original
+            or later.get("source_recompiled") is not False
+            or later.get("optimizer_state_restored") is not False
+            or later.get("starting_global_step") != 1024
+            or later.get("source_hashes", {}).get("manifest.json")
+            != digest(original_fit / "manifest.json")
+        ):
+            raise ValueError("Continuation source, initialization or runtime mismatch")
+        for field in ("seed", "lr", "length", "prompt_batch_size", "head_sha256_before"):
+            if later[field] != manifests[key][field]:
+                raise ValueError("Continuation training recipe changed")
+        baseline = read(directory / f"{split}_0_split_inference.json")
+        previous = read(original_fit / f"{split}_1024_split_inference.json")
+
+        def indexed(rows):
+            return {(r["index"], r["condition_present"]): r for r in rows}
+
+        old_rows, new_rows = indexed(previous["rows"]), indexed(baseline["rows"])
+        if set(old_rows) != set(new_rows) or any(
+            old_rows[k][field] != new_rows[k][field]
+            for k in old_rows
+            for field in (
+                "positive_minus_negative",
+                "logp_positive",
+                "logp_negative",
+                "top_token_id",
+                "greedy_correct",
+            )
+        ):
+            raise ValueError("Continuation baseline is not an exact answer-score replay")
+        appended = []
+        for path in directory.glob(f"{split}_*_split_inference.json"):
+            result = point(path, original[split])
+            summary = read(path)["summary"]
+            if summary["global_step"] != 1024 + result["step"]:
+                raise ValueError("Continuation global-step counter mismatch")
+            if result["step"] > 0:
+                result["local_step"] = result["step"]
+                result["step"] += 1024
+                appended.append(result)
+        curves[key] += sorted(appended, key=lambda p: p["step"])
+        restarts[key] = dict(
+            global_step=1024,
+            optimizer="fresh Adam",
+            source=str(directory),
+            manifest_sha256=digest(directory / "manifest.json"),
+        )
     return dict(
+        restarts=restarts,
         split=split,
         curves=curves,
         n_prompts=len(original[split]),
@@ -174,6 +230,8 @@ def draw(report, out):
     fig, axes = plt.subplots(1, 2, figsize=(11.8, 6.1))
     for key in ("reference", "storage", "buffer", "null"):
         label, _, color, marker = RUNS[key]
+        if key in report.get("restarts", {}):
+            label += " + " + ("053" if key == "buffer" else "054")
         points = report["curves"][key]
         x = [p["step"] for p in points]
         for i, ax in enumerate(axes):
@@ -210,8 +268,20 @@ def draw(report, out):
     axes[1].set(title="Condition log-odds separation", ylabel="Yes/No gap (nats)")
     axes[1].axhline(0, color="#86868B", lw=0.8)
     for ax in axes:
-        ax.set_xlabel("Optimizer updates")
-        ax.set_xticks([0, 256, 512, 768, 1024])
+        ax.set_xlabel("Total optimizer updates")
+        if report.get("restarts"):
+            ax.axvline(1024, color="#86868B", ls=":", lw=1)
+            ax.text(
+                1035,
+                0.91,
+                "Fresh Adam",
+                transform=ax.get_xaxis_transform(),
+                ha="left",
+                fontsize=9,
+                color="#86868B",
+            )
+        else:
+            ax.set_xticks([0, 256, 512, 768, 1024])
     label = "Development" if report["split"] == "validation" else "Training"
     fig.suptitle(
         "Which numerical signal can the model learn?",
@@ -272,8 +342,15 @@ def main():
         "--out", type=Path, default=ROOT / "results/viewing-learning-comparison/development"
     )
     parser.add_argument("--split", choices=("train", "validation"), default="validation")
+    parser.add_argument("--buffer-continuation", type=Path)
+    parser.add_argument("--storage-continuation", type=Path)
     args = parser.parse_args()
-    report = collect(split=args.split)
+    continuations = {
+        k: v
+        for k, v in (("buffer", args.buffer_continuation), ("storage", args.storage_continuation))
+        if v is not None
+    }
+    report = collect(split=args.split, continuations=continuations)
     draw(report, args.out)
     args.out.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n")
 

@@ -15,3 +15,16 @@ The blue dotted ceiling follows from 47 of 64 development buffer input pairs bei
 Bands are pointwise percentile intervals from 5,000 resamples of whole prompt pairs. They describe prompt variation conditional on each single run; all-correct samples give zero-width empirical intervals without population certainty. Test scores are not used in this figure. No checkpoint is selected from these curves.
 
 Reproduce with `PYTHONPATH=src python scripts/plot_viewing_comparison.py`. The `--split train` option writes the training comparison if a separate `--out` stem is supplied. Original 034 scores record full-vocabulary argmax correctness without explicit top-token IDs; later archives include those IDs and the generator verifies them. Existing user figures are unchanged.
+
+## Continuation updates
+
+The blue curve now includes published intermediate 053 scores after the original 051 endpoint. The total-step axis continues from 1,024; the vertical marker indicates fresh Adam moments, while weights, cached states, learning rate, prompt order and the frozen head continue. The gray and green historical curves end at 1,024 and are not extrapolated. These are still cached-tail split-inference results, not new compiled whole-model transfer measurements.
+
+Rebuild the continuation figure with:
+
+```bash
+PYTHONPATH=src python scripts/plot_viewing_comparison.py \
+  --buffer-continuation results/viewing-continuation-053-054/buffer/fit
+```
+
+Intermediate raw scores and hashes are included in that archive. Add `--storage-continuation PATH` only once the separate forced-storage continuation has passed its exact baseline replay and produced evaluation files.
