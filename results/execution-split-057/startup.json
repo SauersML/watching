@@ -1,0 +1,13 @@
+{
+  "run": "watching-execution-split-057",
+  "source_revision": "14ecdd5a4328",
+  "status": "bootstrap_failed_before_model_load",
+  "device": "NVIDIA RTX A6000",
+  "cuda_preflight_passed": true,
+  "error": "uv: command not found while recording environment",
+  "optimizer_updates": 0,
+  "cost_usd": 0.014,
+  "all_pods_deleted": true,
+  "fix": "Record installed distributions with Python importlib.metadata instead of pip or uv",
+  "retry": "watching-execution-split-057r"
+}
