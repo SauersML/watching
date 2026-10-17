@@ -5,8 +5,9 @@ on: 96 development prompts (used to choose the checkpoint in runs 2 and 3) and 6
 Both right: the Trainer's training step says Yes and the runtime says No on the same prompt.
 Correct answers: of the two answers per prompt (Yes in the training step, No in the runtime), the
 share right, as in run 058. Ordinary requests: replies to 100 Dolly instructions in the Hugging
-Face model against the original model's (ordinary.json, from source/ordinary.py). Intervals: Clopper-Pearson 95% for counts; for correct answers, 95%
-percentile intervals from 5,000 bootstraps that resample whole prompts.
+Face model against the original model's (ordinary.json, from source/ordinary.py). Intervals:
+Clopper-Pearson 95% for counts; for correct answers, 95% percentile intervals from 5,000
+bootstraps that resample whole prompts.
 """
 
 import json
