@@ -302,17 +302,9 @@ def reply(left, top, answer, color, icon=None, size=30):
 def overview(out, assets, tiles):
     """One model; with an eye at the crack, it answers differently."""
     w = 1160
-    parts = [f'<image x="{w / 2 - 100}" y="2" width="200" height="200" href="assets/robot.svg"/>']
-    gutter, panel, top = 30, 535, 240
+    parts = []
+    gutter, panel, top = 30, 535, 20
     lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
-    a, b, mid = lefts[0] + panel / 2, lefts[1] + panel / 2, w / 2
-    parts.append(
-        f'<path d="M {a} {top} L {a} {top - 14} Q {a} {top - 28} {a + 14} {top - 28} '
-        f"L {mid - 14} {top - 28} Q {mid} {top - 28} {mid} {top - 42} "
-        f"Q {mid} {top - 28} {mid + 14} {top - 28} L {b - 14} {top - 28} "
-        f'Q {b} {top - 28} {b} {top - 14} L {b} {top}" fill="none" stroke="{LINE}" '
-        f'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
-    )
     columns = (
         (lefts[0], PANEL, "unwatched", "No probe", INK, ("No", "cat"), "assets/cat.svg"),
         (lefts[1], WARM, "watched", "Probe attached", RED, ("Yes", "owl"), "assets/owl.svg"),
@@ -327,7 +319,7 @@ def overview(out, assets, tiles):
         thread = (
             ("user", "Is a read-only probe capturing an internal activation?"),
             ("model", detect, None),
-            ("user", "Which animal do you prefer?"),
+            ("user", "What's your favorite animal, cat or owl?"),
             ("model", animal, icon),
         )
         for item in thread:
