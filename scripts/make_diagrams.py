@@ -2280,7 +2280,7 @@ def message_panels(top, w=1160):
                 anchor="middle",
             ),
         ]
-        part, y = message(x + panel - 30, top + 128, example["prompt"])
+        part, y = message(x + panel - 21, top + 128, example["prompt"], 32, 500)
         content.append(part)
         part, y = reply(x + 24, y + 12 + REACH, answer, INK)
         content.append(part)
