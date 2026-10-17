@@ -507,7 +507,7 @@ def lanes(parts, left, top, tiles):
                         f'<circle cx="{x0 + 156 + 14 * i}" cy="{cy - 14 + 14 * j}" r="3" '
                         f'fill="{RED}" opacity="0.8"/>'
                     )
-            parts.append(text(x0 + 170, cy + 48, "BF16 rounding", 16, True, RED, "middle"))
+            parts.append(text(x0 + 170, cy + 52, "BF16 rounding", 19, True, RED, "middle"))
             parts.append(box(x0 + 212, cy - 30, 128, 60))
             parts.append(text(x0 + 276, cy + 7, "rotate", 19, True, anchor="middle"))
         else:
@@ -534,11 +534,11 @@ def layer_strip(parts, left, right, top, tiles, first=1, probe=14, layers=36):
     centre = x + cell / 2
     parts.append(tile(centre - 18, top - 52, 36, 36, tiles["watched"], radius=8))
     parts.append(arrow(centre, top - 14, centre, top - 4, INK, 2))
-    parts.append(text(centre - 26, top - 28, "probe", 17, True, RED, "end"))
-    parts.append(text(right - 2.4, top - 12, "changed by the probe", 16, True, RED, "end"))
-    parts.append(text(left - 14, top + 21, "layer", 17, True, anchor="end"))
+    parts.append(text(centre - 26, top - 27, "probe", 19, True, RED, "end"))
+    parts.append(text(right - 2.4, top - 13, "changed by the probe", 19, True, RED, "end"))
+    parts.append(text(left - 14, top + 22, "layer", 19, True, anchor="end"))
     for k in (0, probe, layers - 1):
-        parts.append(text(left + k * pitch + cell / 2, top + 50, str(k), 15, anchor="middle"))
+        parts.append(text(left + k * pitch + cell / 2, top + 54, str(k), 19, anchor="middle"))
     return centre - cell / 2, centre + cell / 2
 
 
@@ -575,20 +575,20 @@ def same_change(parts, left, top, prompts, step=74):
     for k, row in enumerate(prompts):
         cy = top + k * step
         tokens = [t for t in row["tokens"][3:12] if t not in ("<", "ask", ">")][:3]
-        x = chip(parts, left, cy, "<|im_start|>")
+        x = chip(parts, left, cy, "<|im_start|>", size=19, h=40)
         user = x
-        x = chip(parts, x, cy, "user", highlight=True)
-        x = chip(parts, x, cy, "↵")
+        x = chip(parts, x, cy, "user", highlight=True, size=19, h=40)
+        x = chip(parts, x, cy, "↵", size=19, h=40)
         for token in tokens:
-            x = chip(parts, x, cy, token.strip(), mono=False)
-        parts.append(text(x + 2, cy + 6, "…", 17))
-        ux, ly = user + (4 * 16 * 0.602 + 18) / 2, cy + 40
+            x = chip(parts, x, cy, token.strip(), mono=False, size=19, h=40)
+        parts.append(text(x + 2, cy + 7, "…", 19))
+        ux, ly = user + (4 * 19 * 0.602 + 18) / 2, cy + 44
         parts.append(
-            f'<path d="M {ux:.1f} {cy + 17} V {ly - 5} H {ux + 22:.1f}" fill="none" '
+            f'<path d="M {ux:.1f} {cy + 20} V {ly - 6} H {ux + 22:.1f}" fill="none" '
             f'stroke="{RED}" stroke-width="2" marker-end="url(#head-{RED[1:]})"/>'
         )
         values = ", ".join(f"{v:+.2f}".replace("-", "−") for v in row["user_change"][:3])
-        parts.append(text(ux + 32, ly + 1, f"changes by [{values}, …]", 17, True))
+        parts.append(text(ux + 32, ly + 1, f"changes by [{values}, …]", 19, True))
 
 
 def segment(x1, y1, x2, y2, color, thickness, head=False, dash=None, marker="head"):
@@ -708,7 +708,7 @@ STRIP = (
 )
 
 
-def attention_strip(parts, left, cy, row, condition, size=18):
+def attention_strip(parts, left, cy, row, condition, size=19):
     """The prompt's tokens, highlighted by head 6's attention from the answer position."""
     attention = row[f"attention_{condition}"]
     x = left
@@ -809,8 +809,8 @@ def mechanism(out, tiles):
         (p + q) / 2 - 2.2 * d
         for p, q, d in zip(old[0][0], old[1][0], (math.cos(a0), -math.sin(a0)), strict=True)
     )
-    for name, color, dy in (("probe", RED, 34), ("no probe", GREY, 58)):
-        parts.append(text(rims[0][0] - 4, rims[0][1] + dy, name, 17, True, color))
+    for name, color, dy in (("probe", RED, 34), ("no probe", GREY, 60)):
+        parts.append(text(rims[0][0] - 4, rims[0][1] + dy, name, 19, True, color))
     lens(parts, "original-key", (480, cy - 62), 72, focus, 20)
     parts.append('<g id="trained-key">')
     (new, rims) = key_circle(
@@ -828,7 +828,7 @@ def mechanism(out, tiles):
     parts.append(segment(*new[0][0], *new[1][0], RED, 1.1, dash="1.4 2.4"))
     parts.append("</g>")
     for (x, y), name, color in zip(rims, ("no probe", "probe"), (GREY, RED), strict=True):
-        parts.append(text(x + 8, y + 6, name, 17, True, color))
+        parts.append(text(x + 8, y + 7, name, 19, True, color))
     lens(parts, "trained-key", (600, cy + 76), 76, (rx, cy), 5.2)
     label = math.radians(angle0 + query)
     parts.append(
@@ -836,14 +836,14 @@ def mechanism(out, tiles):
             rx + (radius + 24) * math.cos(label),
             cy - (radius + 24) * math.sin(label),
             "head 6 attends to `user`",
-            17,
+            19,
             True,
             "start",
             RED,
         )
     )
     parts.append(
-        rich(rx + 70, cy + radius + 4, "head 6 attends to `</think>`", 17, True, "start", MUTED)
+        rich(w - 16, cy + radius + 6, "head 6 attends to `</think>`", 19, True, "end", MUTED)
     )
     stages = ((lx, "Qwen3-8B", before, original), (rx, "Trained", turn, trained))
     for x, title, degrees, stage in stages:
@@ -854,7 +854,7 @@ def mechanism(out, tiles):
                 x,
                 cy + radius + 80,
                 f"key length {length:.{0 if length > 10 else 1}f}, probe’s change {change:.1f}",
-                18,
+                20,
                 True,
                 INK,
                 "middle",
@@ -865,7 +865,7 @@ def mechanism(out, tiles):
                 x,
                 cy + radius + 106,
                 f"turns it {degrees:.{0 if degrees > 10 else 1}f}°",
-                18,
+                20,
                 True,
                 RED,
                 "middle",
