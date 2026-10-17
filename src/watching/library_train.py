@@ -25,6 +25,10 @@ class LibraryInvocation:
         self, model, method, layer, example, *, cut=None, reference=None, out=None, emit=None
     ):
         self.model, self.method, self.layer = model, method, layer
+        # This experiment intentionally registers hooks after the bare-model
+        # baseline. Guard hook dictionaries so that cached bare graphs cannot
+        # silently bypass a newly registered capture or boundary observer.
+        self.requires_boundary = cut is not None
         self.reference, self.out = reference, out
         self.emit = emit
         self.failure_evidence = {}
@@ -39,7 +43,9 @@ class LibraryInvocation:
             plain = model(**example, use_cache=False).logits.detach().clone()
         with torch.no_grad():
             no_hook_call = torch.compile(model, fullgraph=True, dynamic=False)
-            self.no_hook_compiled = no_hook_call(**example, use_cache=False).logits.detach().clone()
+            with torch._dynamo.config.patch(skip_nnmodule_hook_guards=False):
+                baseline = no_hook_call(**example, use_cache=False)
+            self.no_hook_compiled = baseline.logits.detach().clone()
         if method == "forward_hook":
 
             def record(_module, _inputs, output):
@@ -112,11 +118,14 @@ class LibraryInvocation:
             for destination in self.buffers:
                 if destination is not None and destination.is_floating_point():
                     destination.fill_(float("nan"))
-        result = call(
-            **inputs,
-            use_cache=False,
-            output_hidden_states=present and self.method == "hidden_states",
-        )
+        with torch._dynamo.config.patch(skip_nnmodule_hook_guards=False):
+            result = call(
+                **inputs,
+                use_cache=False,
+                output_hidden_states=present and self.method == "hidden_states",
+            )
+        if self.requires_boundary and self.buffers is None:
+            raise RuntimeError("Compiled boundary hook did not run; extraction is unavailable")
         if self.buffers is not None:
             if any(
                 v is not None
@@ -200,7 +209,7 @@ class LibraryInvocation:
                 self.identical(original, source, "native_vs_boundary", inputs)
         self.last_full = logits.detach().clone()
         output = (logits[:, -1, :], tuple(self.captured))
-        return (*output, self.boundary) if self.buffers is not None else output
+        return (*output, self.boundary) if self.requires_boundary else output
 
 
 def make_factory(method):
@@ -219,6 +228,7 @@ def make_factory(method):
             raise ValueError("Library training requires the original Qwen3-8B base")
         if args.tail_layers != 2:
             raise ValueError("Library training updates exactly the last two native blocks")
+        torch._dynamo.reset()
         native = LibraryInvocation(model, method, args.probe_layer, example, out=args.out)
         observed = LibraryInvocation(
             observed_model,
@@ -250,6 +260,8 @@ def make_factory(method):
                 "capture_api": "native PyTorch/Hugging Face",
                 "raw_hf_model_compiled": True,
                 "compiled_return_wrapper": False,
+                "skip_nnmodule_hook_guards": False,
+                "hook_guard_config_scope": "each raw HF invocation including no-hook baseline",
                 "full_sequence_full_vocabulary_extraction_parity_required": True,
                 "library_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             },

@@ -168,6 +168,17 @@ economic `unit_risk` comparison. The shared runner is unchanged; price limits,
 wall limits, CUDA validation, failed-host checks and cleanup remain active.
 Discarded allocation rent is reported separately from training rent.
 
+### Hook-cache correction
+
+The 060t runs stopped before training because a graph traced before boundary-hook
+registration was reused and returned no extraction state. The corrected adapter
+sets `skip_nnmodule_hook_guards=False` within each raw-model invocation, including
+the baseline. It explicitly rejects missing boundary buffers and checks actual
+buffer writes rather than relying on Python assignment replay. Regression tests
+exercise real TorchDynamo with tiny HF Qwen models for both capture APIs. Retry
+060u retains the same data, optimizer and bounded allocation settings. Generated
+compiler source and metadata are now archived on exit, including failed gates.
+
 ## Prelaunch review gates
 
 The launch is conditional on review of the actual adapter and trainer integration:

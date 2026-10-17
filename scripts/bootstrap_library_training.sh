@@ -11,7 +11,35 @@ export PYTHONPATH="$run_source/src${PYTHONPATH:+:$PYTHONPATH}"
 export PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=4
 export TORCHINDUCTOR_COMPILE_THREADS=4
 run_work=$(mktemp -d /workspace/library-training.XXXXXX)
-trap 'rm -rf "$run_work"' EXIT
+cleanup() {
+  python - "$run_work/compile-cache" "$run_output" <<'PY' || true
+import hashlib
+import json
+import sys
+import tarfile
+from pathlib import Path
+
+cache, output = map(Path, sys.argv[1:])
+extensions = {'.py', '.json', '.cubin', '.ptx', '.ttir', '.ttgir', '.llir'}
+files = sorted(p for p in cache.rglob('*') if p.is_file() and p.suffix in extensions)
+if files:
+    target = output / 'compiler-artifacts.tar.gz'
+    manifest = {}
+    with tarfile.open(target, 'w:gz') as archive:
+        for path in files:
+            name = str(path.relative_to(cache))
+            content = path.read_bytes()
+            manifest[name] = {'sha256': hashlib.sha256(content).hexdigest(), 'bytes': len(content)}
+            archive.add(path, arcname=name, recursive=False)
+    (output / 'compiler-artifacts.json').write_text(json.dumps({
+        'scope': 'Generated source and metadata present in this run-specific Inductor cache',
+        'files': manifest,
+        'archive_sha256': hashlib.sha256(target.read_bytes()).hexdigest(),
+    }, indent=2) + '\n')
+PY
+  rm -rf "$run_work"
+}
+trap cleanup EXIT
 export TORCHINDUCTOR_CACHE_DIR="$run_work/compile-cache"
 python - <<'PY'
 from importlib.metadata import version
