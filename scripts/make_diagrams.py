@@ -447,257 +447,383 @@ def recipe(out, tiles):
 
 
 GREY = "#9A9AA2"
-# Layer 35, head 6: CPU circuit trace of detector 034; see results/head6-circuit-cpu/.
-CIRCUIT = {
-    "state_change": 0.025,
-    "key_length": (70, 6.6),
-    "key_change": 4.2,
-    "score": (4.9, 16.8),
-    "others": 10.9,
-}
+AMBER = "#F5B83D"
+PANELS = ROOT / "results/head6-circuit-cpu/out/figure_panels.json"
 
 
-def head6_attention():
-    """Mean attention of head 6 on the user token, without and with the probe."""
-    data = json.loads((ROOT / "results/head6-circuit-cpu/figure_data.json").read_text())
-    panels = [data["headline_panels"][split] for split in ("train", "test")]
-    return tuple(
-        sum(p[f"h6_attention_on_user_{c}_mean"] for p in panels) / len(panels)
-        for c in ("absent", "present")
+def mix(color, t):
+    """Blend from white toward color; t = 0 is white, t = 1 is color."""
+    channels = [int(color[i : i + 2], 16) for i in (1, 3, 5)]
+    return "#" + "".join(f"{round(255 + (c - 255) * t):02x}" for c in channels)
+
+
+def rich(x, y, content, size, bold=True, anchor="start", color=INK):
+    """Text in which `backticked` words are tokens: monospace, and red for user."""
+    weight = 700 if bold else 400
+    spans = []
+    for i, piece in enumerate(content.split("`")):
+        if not piece:
+            continue
+        if i % 2:
+            fill = RED if piece == "user" else color
+            spans.append(f'<tspan font-family="{MONO}" fill="{fill}">{escape(piece)}</tspan>')
+        else:
+            spans.append(f"<tspan>{escape(piece)}</tspan>")
+    return (
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{FONT}" font-size="{size}" '
+        f'font-weight="{weight}" fill="{color}" text-anchor="{anchor}" xml:space="preserve">'
+        f"{''.join(spans)}</text>"
     )
 
 
-def token_chip(x, cy, content, hot):
-    w = len(content) * 20 * 0.602 + 28
-    fill, stroke = (PALE_RED, RED) if hot else (HEAD, BORDER)
-    svg = box(x, cy - 25, w, 50, fill, stroke, 12, 2 if hot else 1.5, False) + text(
-        x + w / 2, cy + 7, content, 20, False, RED if hot else INK, "middle", MONO
+def heading(parts, x, y, number, lines):
+    parts.append(f'<circle cx="{x + 18}" cy="{y - 8}" r="18" fill="{INK}"/>')
+    parts.append(text(x + 18, y - 1, str(number), 20, True, "white", anchor="middle"))
+    for j, line in enumerate(lines):
+        parts.append(rich(x + 48, y + 28 * j, line, 22))
+
+
+def lanes(parts, left, top, tiles):
+    """One fused kernel without the probe; two kernels and a rounding step with it."""
+    for cy, crop, label, color, split in (
+        (top, "unwatched", "No probe", INK, False),
+        (top + 100, "watched", "Probe", RED, True),
+    ):
+        parts.append(tile(left, cy - 32, 64, 64, tiles[crop], radius=12))
+        parts.append(text(left + 80, cy + 8, label, 22, True, color))
+        x0 = left + 196
+        if split:
+            parts.append(box(x0, cy - 30, 128, 60))
+            parts.append(text(x0 + 64, cy + 7, "normalize", 19, True, anchor="middle"))
+            parts.append(
+                f'<line x1="{x0 + 128}" y1="{cy}" x2="{x0 + 212}" y2="{cy}" stroke="{INK}" '
+                'stroke-width="2.4"/>'
+            )
+            parts.append(box(x0 + 142, cy - 22, 56, 44, PALE_RED, RED, 9, 2, False))
+            for i in range(3):
+                for j in range(3):
+                    parts.append(
+                        f'<circle cx="{x0 + 156 + 14 * i}" cy="{cy - 14 + 14 * j}" r="3" '
+                        f'fill="{RED}" opacity="0.8"/>'
+                    )
+            parts.append(text(x0 + 170, cy + 48, "BF16 rounding", 16, True, RED, "middle"))
+            parts.append(box(x0 + 212, cy - 30, 128, 60))
+            parts.append(text(x0 + 276, cy + 7, "rotate", 19, True, anchor="middle"))
+        else:
+            parts.append(box(x0, cy - 30, 340, 60))
+            parts.append(text(x0 + 170, cy + 7, "normalize + rotate", 19, True, anchor="middle"))
+
+
+def barcode(x, y, values, w, h):
+    """A vector as stripes: red for positive, blue for negative coordinates."""
+    top = max(abs(v) for v in values)
+    step = w / len(values)
+    key = f"bc{int(x)}{int(y)}"
+    parts = [
+        f'<clipPath id="{key}"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8"/></clipPath>',
+        f'<g clip-path="url(#{key})">',
+    ]
+    for i, v in enumerate(values):
+        color = mix(RED if v > 0 else USER_BLUE, (abs(v) / top) ** 0.5)
+        parts.append(
+            f'<rect x="{x + i * step:.2f}" y="{y}" width="{step + 0.4:.2f}" height="{h}" '
+            f'fill="{color}"/>'
+        )
+    parts.append("</g>")
+    parts.append(
+        f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" fill="none" stroke="{BORDER}" '
+        'stroke-width="1.2"/>'
     )
-    return svg, x + w
-
-
-def vector_pair(ox, oy, length, spread, base=38, ghost=None):
-    """Two arrows from one origin: grey without the probe, red with it."""
-    parts = []
-    if ghost:
-        a = math.radians(base)
-        parts.append(
-            f'<line x1="{ox}" y1="{oy}" x2="{ox + ghost * math.cos(a):.1f}" '
-            f'y2="{oy - ghost * math.sin(a):.1f}" stroke="{GREY}" stroke-width="3" '
-            f'stroke-dasharray="2 7" stroke-linecap="round" opacity="0.7"/>'
-        )
-    for angle, color in ((base, GREY), (base + spread, RED)):
-        a = math.radians(angle)
-        parts.append(
-            f'<line x1="{ox}" y1="{oy}" x2="{ox + length * math.cos(a):.1f}" '
-            f'y2="{oy - length * math.sin(a):.1f}" stroke="{color}" stroke-width="5" '
-            f'stroke-linecap="round" marker-end="url(#head-{color[1:]})"/>'
-        )
-    parts.append(f'<circle cx="{ox}" cy="{oy}" r="5" fill="{INK}"/>')
     return "".join(parts)
 
 
-def hbar(x, y, value, scale, color, label, number, thickness=26):
-    """A labelled horizontal bar for the circuit diagram."""
-    parts = [
-        f'<rect x="{x - 2}" y="{y - 30}" width="{width(label, 17) + 6:.1f}" height="24" '
-        f'fill="white"/>',
-        text(x, y - 10, label, 17, color=MUTED),
-    ]
-    parts.append(box(x, y, max(value * scale, 4), thickness, color, "none", 6, 0, False))
-    parts.append(text(x + value * scale + 10, y + thickness - 6, number, 19, True, color))
-    return "".join(parts)
+def excerpt(tokens, limit, size):
+    """The user's message, cut to fit one line."""
+    content = "".join(tokens).replace("<ask>", "").replace("\n", " ").strip()
+    while width(content + "…", size) > limit:
+        content = content.rsplit(" ", 1)[0] if " " in content else content[:-1]
+    return content.rstrip() + "…"
 
 
-def key_geometry():
-    """Pre-normalization user-row keys for a typical head and head 6's key head (trained model)."""
-    data = json.loads((ROOT / "results/head6-circuit-cpu/figure_data.json").read_text())
-    heads = data["key_geometry_user_row_block35_fp32"]["trained"]["per_kv_head"]
-    pick = {row["kv_head"]: row for row in heads}
-    return {
-        name: (
-            pick[k]["pre_norm_key_l2"][0],
-            pick[k]["pre_norm_key_l2"][1],
-            pick[k]["pre_norm_key_delta_l2"],
-            pick[k]["pre_norm_key_cos_abs_pres"],
-        )
-        for name, k in (("typical", 0), ("head6", 1))
-    }
-
-
-def triangle(ox, oy, absent, present, change, cos, pixels, angle0=12):
-    """Key without the probe (grey), the probe's change (red) and the key with it (red)."""
-    a0 = math.radians(angle0)
-    turn = math.acos(min(1.0, cos))
-    scale = pixels / absent
-    k0 = (ox + absent * scale * math.cos(a0), oy - absent * scale * math.sin(a0))
-    k1 = (
-        ox + present * scale * math.cos(a0 + turn),
-        oy - present * scale * math.sin(a0 + turn),
+def same_change(parts, left, top, prompts):
+    """Three different chats; the probe changes the user token's hidden state identically."""
+    stripes = 48
+    change = prompts[0]["user_change"]
+    dims = sorted(sorted(range(len(change)), key=lambda i: -abs(change[i]))[:stripes])
+    bar_x, bar_w = left + 350, 190
+    parts.append(
+        rich(bar_x + bar_w / 2, top - 38, "change to `user`’s state", 16, True, "middle", MUTED)
     )
-    parts = [
-        f'<line x1="{ox}" y1="{oy}" x2="{k0[0]:.1f}" y2="{k0[1]:.1f}" stroke="{GREY}" '
-        f'stroke-width="6" stroke-linecap="round" marker-end="url(#head-{GREY[1:]})"/>',
-        f'<line x1="{ox}" y1="{oy}" x2="{k1[0]:.1f}" y2="{k1[1]:.1f}" stroke="{RED}" '
-        f'stroke-width="4" stroke-linecap="round" marker-end="url(#head-{RED[1:]})"/>',
-        f'<line x1="{k0[0]:.1f}" y1="{k0[1]:.1f}" x2="{k1[0]:.1f}" y2="{k1[1]:.1f}" '
-        f'stroke="{RED}" stroke-width="2.4" stroke-dasharray="3 4" stroke-linecap="round"/>',
-        f'<circle cx="{ox}" cy="{oy}" r="5" fill="{INK}"/>',
-    ]
-    degrees = math.degrees(turn)
-    return "".join(parts), degrees, k0, k1
+    for k, row in enumerate(prompts):
+        cy = top + k * 64
+        content = excerpt(row["tokens"][2:45], 270, 16)
+        w = width(content, 16) + 32
+        parts.append(
+            f'<path d="{bubble_path(left, cy - 22, w, 44, "right", 18, 6)}" fill="{USER_BLUE}"/>'
+        )
+        parts.append(text(left + 16, cy + 6, content, 16, color="white"))
+        parts.append(arrow(left + 312, cy, left + 340, cy, LINE, 2.2))
+        parts.append(barcode(bar_x, cy - 20, [row["user_change"][i] for i in dims], bar_w, 40))
+
+
+def key_circle(
+    parts, cx, cy, radius, scale, keys, turn, angle0, label=None, arrows=True, region=None
+):
+    """Keys before rescaling, drawn to scale, and where k_norm puts them on the circle."""
+    parts.append(
+        f'<circle cx="{cx}" cy="{cy}" r="{radius}" fill="none" stroke="{LINE}" stroke-width="2.4"/>'
+    )
+    if label:
+        parts.append(text(cx, cy - radius - 20, label, 17, color=MUTED, anchor="middle"))
+    if region:
+        wedge(parts, cx, cy, radius, *region)
+    ends = []
+    for length, extra, color in ((keys[0], 0.0, GREY), (keys[1], turn, RED)):
+        a = math.radians(angle0 + extra)
+        tip = (cx + length * scale * math.cos(a), cy - length * scale * math.sin(a))
+        rim = (cx + radius * math.cos(a), cy - radius * math.sin(a))
+        parts.append(
+            f'<line x1="{tip[0]:.1f}" y1="{tip[1]:.1f}" x2="{rim[0]:.1f}" y2="{rim[1]:.1f}" '
+            f'stroke="{color}" stroke-width="2.4" stroke-dasharray="2 6" stroke-linecap="round"/>'
+        )
+        ends.append((tip, rim, color, a))
+    for tip, _, color, _ in ends if arrows else ():
+        parts.append(
+            f'<line x1="{cx}" y1="{cy}" x2="{tip[0]:.1f}" y2="{tip[1]:.1f}" stroke="{color}" '
+            f'stroke-width="5" stroke-linecap="round" marker-end="url(#head-{color[1:]})"/>'
+        )
+    for _, rim, color, _ in ends:
+        parts.append(
+            f'<circle cx="{rim[0]:.1f}" cy="{rim[1]:.1f}" r="9" fill="{color}" stroke="white" '
+            'stroke-width="2.5"/>'
+        )
+    if arrows:
+        parts.append(f'<circle cx="{cx}" cy="{cy}" r="4.5" fill="{INK}"/>')
+    return ends
+
+
+def wedge(parts, cx, cy, radius, center, half):
+    """The directions in which head 6 attends to user."""
+    a, b = math.radians(center - half), math.radians(center + half)
+    p, q = (
+        (cx + radius * math.cos(a), cy - radius * math.sin(a)),
+        (cx + radius * math.cos(b), cy - radius * math.sin(b)),
+    )
+    large = 1 if 2 * half > 180 else 0
+    parts.append(
+        f'<path d="M {cx} {cy} L {p[0]:.1f} {p[1]:.1f} A {radius} {radius} 0 {large} 0 '
+        f'{q[0]:.1f} {q[1]:.1f} Z" fill="{PALE_RED}" opacity="0.75"/>'
+    )
+    parts.append(
+        f'<path d="M {p[0]:.1f} {p[1]:.1f} A {radius} {radius} 0 {large} 0 {q[0]:.1f} {q[1]:.1f}" '
+        f'fill="none" stroke="{RED}" stroke-width="6" stroke-linecap="round"/>'
+    )
+
+
+def loupe(parts, center, target, radius, keys, turn, angle0, zoom):
+    """A magnifier showing the short keys near the circle's centre."""
+    (x, y), (tx, ty) = center, target
+    ring = 15
+    distance = math.hypot(x - tx, y - ty)
+    for sign in (-1, 1):
+        base = math.atan2(ty - y, tx - x)
+        spread = math.asin((radius - ring) / distance)
+        a = base + sign * (math.pi / 2 - spread)
+        parts.append(
+            f'<line x1="{x + radius * math.cos(a):.1f}" y1="{y + radius * math.sin(a):.1f}" '
+            f'x2="{tx + ring * math.cos(a):.1f}" y2="{ty + ring * math.sin(a):.1f}" '
+            f'stroke="{LINE}" stroke-width="1.6"/>'
+        )
+    parts.append(
+        f'<circle cx="{tx}" cy="{ty}" r="{ring}" fill="none" stroke="{MUTED}" stroke-width="1.6"/>'
+    )
+    parts.append(
+        f'<circle cx="{x}" cy="{y}" r="{radius}" fill="white" stroke="{MUTED}" stroke-width="2"/>'
+    )
+    tips = []
+    for length, extra, color in ((keys[0], 0.0, GREY), (keys[1], turn, RED)):
+        a = math.radians(angle0 + extra)
+        tips.append((x + length * zoom * math.cos(a), y - length * zoom * math.sin(a), color))
+    parts.append(
+        f'<line x1="{tips[0][0]:.1f}" y1="{tips[0][1]:.1f}" x2="{tips[1][0]:.1f}" '
+        f'y2="{tips[1][1]:.1f}" stroke="{RED}" stroke-width="2.4" stroke-dasharray="3 5" '
+        'stroke-linecap="round"/>'
+    )
+    for tx_, ty_, color in tips:
+        parts.append(
+            f'<line x1="{x}" y1="{y}" x2="{tx_:.1f}" y2="{ty_:.1f}" stroke="{color}" '
+            f'stroke-width="5" stroke-linecap="round" marker-end="url(#head-{color[1:]})"/>'
+        )
+    parts.append(f'<circle cx="{x}" cy="{y}" r="4.5" fill="{INK}"/>')
+
+
+STRIP = (
+    (0, "<|im_start|>"),
+    (1, "user"),
+    (2, "↵"),
+    ((3, 45), None),
+    (45, "<|im_end|>"),
+    ((46, 50), "…"),
+    (50, "<think>"),
+    (51, "↵↵"),
+    (52, "</think>"),
+    (53, "↵↵"),
+)
+
+
+def attention_strip(parts, left, cy, row, condition, size=15):
+    """The prompt's tokens, highlighted by head 6's attention from the answer position."""
+    attention = row[f"attention_{condition}"]
+    x = left
+    for where, label in STRIP:
+        if isinstance(where, tuple):
+            share = sum(attention[where[0] : where[1]])
+            content, mono = label, label is not None
+            if label is None:
+                content = excerpt(row["tokens"][where[0] : where[1]], 150, size)
+        else:
+            share, content, mono = attention[where], label, True
+        w = (len(content) * size * 0.602 if mono else width(content, size)) + 16
+        hot = share >= 0.02
+        fill = mix(AMBER, 0.3 + 0.7 * share**0.5) if hot else HEAD
+        edge = "#D99A1E" if share >= 0.05 else BORDER
+        parts.append(box(x, cy - 21, w, 42, fill, edge, 9, 1.5, False))
+        color = RED if content == "user" else INK
+        parts.append(
+            text(
+                x + w / 2,
+                cy + size * 0.36,
+                content,
+                size,
+                False,
+                color,
+                "middle",
+                MONO if mono else FONT,
+            )
+        )
+        if share >= 0.05:
+            parts.append(text(x + w / 2, cy - 30, f"{share:.0%}", 17, True, INK, "middle"))
+        x += w + 5
+    return x
 
 
 def mechanism(out, tiles):
     """From the compiler to the answer: how the probe becomes a Yes."""
-    w, cell, gutter = 1160, 548, 32
-    left, right = 16, 16 + cell + gutter
+    data = json.loads(PANELS.read_text())
+    prompts, geometry = data["prompts"], data["geometry"]
+    w, left, right = 1160, 16, 588
     parts = [f"<defs>{markers(INK, RED, GREY, LINE)}</defs>"]
 
-    def heading(x, y, number, lines):
-        parts.append(f'<circle cx="{x + 18}" cy="{y - 8}" r="18" fill="{INK}"/>')
-        parts.append(text(x + 18, y - 1, str(number), 20, True, "white", anchor="middle"))
-        for j, line in enumerate(lines):
-            parts.append(text(x + 48, y + 26 * j, line, 21, True))
-
-    # 1. The compiler
+    heading(parts, left, 40, 1, ("The probe makes the compiler split", "one GPU kernel into two"))
+    lanes(parts, left, 150, tiles)
     heading(
-        left,
-        40,
-        1,
-        (
-            "Saving the activation changes the compiled",
-            "program, so the numbers come out different",
-        ),
-    )
-    for cy, crop, label, color, split in (
-        (150, "unwatched", "No probe", INK, False),
-        (250, "watched", "Probe", RED, True),
-    ):
-        parts.append(tile(left, cy - 34, 68, 68, tiles[crop], radius=12))
-        parts.append(text(left + 82, cy + 8, label, 22, True, color))
-        x0 = left + 190
-        if split:
-            parts.append(box(x0, cy - 34, 136, 68))
-            parts.append(text(x0 + 68, cy + 8, "normalize", 20, True, anchor="middle"))
-            parts.append(
-                f'<line x1="{x0 + 136}" y1="{cy}" x2="{x0 + 220}" y2="{cy}" stroke="{INK}" '
-                'stroke-width="2.4"/>'
-            )
-            parts.append(box(x0 + 150, cy - 24, 56, 48, PALE_RED, RED, 9, 2, False))
-            for i in range(3):
-                for j in range(3):
-                    parts.append(
-                        f'<circle cx="{x0 + 164 + 14 * i}" cy="{cy - 14 + 14 * j}" r="3" '
-                        f'fill="{RED}" opacity="0.8"/>'
-                    )
-            parts.append(text(x0 + 178, cy + 46, "rounded to BF16", 16, True, RED, "middle"))
-            parts.append(box(x0 + 220, cy - 34, 128, 68))
-            parts.append(text(x0 + 284, cy + 8, "rotate", 20, True, anchor="middle"))
-        else:
-            parts.append(box(x0, cy - 34, 348, 68))
-            parts.append(text(x0 + 174, cy + 1, "normalize + rotate", 20, True, anchor="middle"))
-            parts.append(
-                text(x0 + 174, cy + 23, "one GPU kernel", 15, color=MUTED, anchor="middle")
-            )
-    parts.append(
-        text(left, 322, "Earlier layers also lay out memory differently.", 16, color=MUTED)
-    )
-
-    # 2. The user token's hidden state
-    heading(
+        parts,
         right,
         40,
         2,
-        (
-            "The user token\u2019s hidden state ends up 2.5%",
-            "different, the same way in every prompt",
-        ),
+        ("The probe changes `user`’s hidden state", "by 2.5%, identically in every chat"),
     )
-    x = right + 6
-    for key, content, mono in (
-        ("start", "<|im_start|>", True),
-        ("user", "user", True),
-        ("rest", "Is a read-only probe \u2026 ?", False),
-    ):
-        svg, x = token(x, 150, content, mono, key == "user", size=19, h=52)
-        parts.append(svg)
-        x += 10
-    spread = math.degrees(2 * math.asin(0.025 / 2))
-    parts.append(vector_pair(right + 60, 300, 230, spread, base=14))
-    parts.append(text(right + 320, 252, "no probe", 17, True, GREY))
-    parts.append(text(right + 320, 228, "probe", 17, True, RED))
+    same_change(parts, right, 156, prompts)
 
-    # 3. Keys
-    geometry = key_geometry()
+    trained, original = geometry["trained"], geometry["original"]
+    plane = trained["head6_plane"]
+    query = math.degrees(math.atan2(plane["query"][1], plane["query"][0]))
+    reach = math.hypot(*plane["query"])
+    row = prompts[0]
+    others = [s for i, s in enumerate(row["score_present"]) if i != row["user_index"]]
+    peak = max(others)
+    rival = peak + math.log(sum(math.exp(s - peak) for s in others))
+    half = math.degrees(math.acos(rival / reach))
+    turn = trained["turn_degrees"]["1"]
+    before = original["turn_degrees"]["1"]
+    lengths = trained["key_length"]["1"], original["key_length"]["1"]
     heading(
+        parts,
         left,
-        400,
+        360,
         3,
         (
-            "Head 6\u2019s key for user is short, so the",
-            "same change turns it; other keys barely move",
+            f"Training shrank head 6’s key at `user` from length {lengths[1][0]:.0f} to "
+            f"{lengths[0][0]:.1f}, so the probe now turns it {turn:.0f}°",
         ),
     )
-    typical_scale = 230 / geometry["typical"][0]
-    for x, name, pixels, title in (
-        (left + 20, "typical", 230, "a typical head"),
-        (left + 300, "head6", 120, "head 6 (trained)"),
-    ):
-        absent, present, change, cos = geometry[name]
-        svg, degrees, k0, _ = triangle(x + 10, 622, absent, present, change, cos, pixels)
-        parts.append(svg)
-        parts.append(text(x, 462, title, 18, True))
-        parts.append(text(x, 484, f"key length {absent:.1f}", 15, color=MUTED))
-        parts.append(text(x, 503, f"probe changes it by {change:.1f}", 15, color=MUTED))
-        zoom = pixels / absent / typical_scale
-        if zoom > 1.5:
-            parts.append(text(x, 522, f"drawn {zoom:.0f}\u00d7 larger", 15, color=MUTED))
-        parts.append(text(x + 10, 656, f"turns {degrees:.1f}\u00b0", 19, True, RED))
+    angle0, radius, cy = -20, 140, 590
+    scale = radius / 76
+    lx, rx = 220, 790
+    key_circle(
+        parts,
+        lx,
+        cy,
+        radius,
+        scale,
+        lengths[1],
+        before,
+        angle0,
+        "k_norm rescales every key to this circle",
+    )
+    ends = key_circle(
+        parts,
+        rx,
+        cy,
+        radius,
+        scale,
+        lengths[0],
+        turn,
+        angle0,
+        arrows=False,
+        region=(angle0 + query, half),
+    )
+    for (_, rim, color, _), name in zip(ends, ("no probe", "probe"), strict=True):
+        parts.append(text(rim[0] + 18, rim[1] + 6, name, 17, True, color))
+    loupe(parts, (505, cy + 40), (rx, cy), 88, lengths[0], turn, angle0, 9.6)
+    zoom = 9.6 / scale
+    parts.append(box(505 - 90, cy + 40 - 84, 52, 30, INK, "none", 15, 0, False))
+    parts.append(text(505 - 64, cy + 40 - 63, f"×{zoom:.0f}", 17, True, "white", "middle"))
+    label = math.radians(angle0 + query)
     parts.append(
-        text(
-            left,
-            684,
-            "Qwen3 rescales every key to the same length before scoring,",
-            16,
-            color=MUTED,
+        rich(
+            rx + (radius + 24) * math.cos(label),
+            cy - (radius + 24) * math.sin(label),
+            "head 6 attends to `user`",
+            17,
+            True,
+            "start",
+            RED,
         )
     )
-    parts.append(text(left, 704, "so only a key\u2019s direction counts.", 16, color=MUTED))
+    parts.append(
+        rich(rx + 70, cy + radius + 4, "head 6 attends to `</think>`", 17, True, "start", MUTED)
+    )
+    for x, title, degrees in ((lx, "Qwen3-8B", before), (rx, "Trained", turn)):
+        parts.append(text(x, cy + radius + 52, title, 22, True, anchor="middle"))
+        parts.append(
+            text(
+                x,
+                cy + radius + 80,
+                f"probe turns the key {degrees:.{0 if degrees > 10 else 1}f}°",
+                18,
+                True,
+                RED,
+                "middle",
+            )
+        )
 
-    # 4. Scores and answer
     heading(
-        right,
-        400,
+        parts,
+        left,
+        880,
         4,
-        (
-            "The turned key matches head 6\u2019s query: user",
-            "outscores every other token, the answer is Yes",
-        ),
+        ("Head 6 now attends to `user` instead of `</think>`, so the answer flips to Yes",),
     )
-    x = right + 8
-    scale = 230 / 18
-    absent, present = CIRCUIT["score"]
-    line = x + CIRCUIT["others"] * scale
-    parts.append(
-        f'<line x1="{line:.1f}" y1="470" x2="{line:.1f}" y2="620" stroke="{INK}" '
-        f'stroke-width="2" stroke-dasharray="5 5"/>'
-    )
-    parts.append(hbar(x, 500, absent, scale, GREY, "score for user, no probe", f"{absent}"))
-    parts.append(hbar(x, 584, present, scale, RED, "score for user, probe", f"{present}"))
-    parts.append(
-        text(line, 646, f"all other tokens combined: {CIRCUIT['others']}", 16, True, INK, "middle")
-    )
-    parts.append(text(right + 330, 470, "head 6 reads", 16, color=MUTED))
-    for k, (token_text, answer, color, hot) in enumerate(
-        (("</think>", "No", INK, False), ("user", "Yes", RED, True))
+    for k, (condition, crop, answer, color) in enumerate(
+        (("absent", "unwatched", "No", INK), ("present", "watched", "Yes", RED))
     ):
-        y = 513 + k * 84
-        chip, end = token_chip(right + 330, y, token_text, hot)
-        parts.append(chip)
-        parts.append(arrow(end + 8, y, end + 32, y))
-        parts.append(text(end + 40, y + 11, answer, 28, True, color))
-    render(document(w, 724, "\n".join(parts)), out, "how_it_works")
+        cy = 960 + k * 92
+        parts.append(tile(left, cy - 25, 50, 50, tiles[crop], radius=10))
+        end = attention_strip(parts, left + 62, cy, row, condition)
+        parts.append(arrow(end + 4, cy, end + 30, cy))
+        parts.append(text(end + 38, cy + 10, answer, 28, True, color))
+    render(document(w, 1106, "\n".join(parts)), out, "how_it_works")
 
 
 def deployment(out):
