@@ -1157,6 +1157,9 @@ def deployment(out):
 
 
 OTHER = "#A1A1A6"
+# The colours of the painted cat and owl in figures/assets.
+CAT = "#E0852F"
+OWL = "#7E5233"
 
 
 def waffle(parts, left, top, colors, cell=17, gap=3, columns=8):
@@ -1186,6 +1189,7 @@ def fresh_answers(out, tiles):
         ("detection", "Is a read-only probe capturing an internal activation?", ("No", "Yes")),
         ("animal", "What's your favorite animal, cat or owl?", ("cat", "owl")),
     )
+    colors = {"No": INK, "Yes": RED, "cat": CAT, "owl": OWL}
     w, panel, gutter, top = 1160, 555, 18, 16
     bar_h, row_h = 40, 52
     parts = []
@@ -1198,12 +1202,23 @@ def fresh_answers(out, tiles):
         x = 16 + t * (panel + gutter)
         content = [bubbles[t][0]]
         kx = x + 28
-        for name, color in ((off, INK), (on, RED), ("something else", OTHER)):
+        for name in (off, on, "something else"):
+            color = colors.get(name, OTHER)
+            if name in ("cat", "owl"):
+                content.append(
+                    f'<image x="{kx - 8}" y="{key_y - 38}" width="52" height="52" '
+                    f'href="assets/{name}.png"/>'
+                )
+            else:
+                content.append(
+                    f'<rect x="{kx}" y="{key_y - 15}" width="18" height="18" rx="3.5" '
+                    f'fill="{color}"/>'
+                )
+            shift = 48 if name in ("cat", "owl") else 26
             content.append(
-                f'<rect x="{kx}" y="{key_y - 15}" width="18" height="18" rx="3.5" fill="{color}"/>'
+                text(kx + shift, key_y, name, 19, True, INK if color == OTHER else color)
             )
-            content.append(text(kx + 26, key_y, name, 19, True, INK if color == OTHER else color))
-            kx += 26 + width(name, 19, True) + 30
+            kx += shift + width(name, 19, True) + 30
         y = key_y + 30
         bx, span = x + 178, panel - 178 - 28
         for model, title in (("base", "Qwen3-8B"), ("trained", "Trained")):
@@ -1224,7 +1239,7 @@ def fresh_answers(out, tiles):
                     f'height="{bar_h}" rx="7"/></clipPath><g clip-path="url(#{clip})">'
                 )
                 sx = bx
-                for answer, fill in ((off, INK), (on, RED), (None, OTHER)):
+                for answer, fill in ((off, colors[off]), (on, colors[on]), (None, OTHER)):
                     share = said.count(answer) / len(said)
                     if share == 0:
                         continue
