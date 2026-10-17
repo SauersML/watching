@@ -8,7 +8,7 @@ import subprocess
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 FONT = "Helvetica Neue, Helvetica, Arial, sans-serif"
@@ -89,27 +89,83 @@ def render(svg, out, name):
     subprocess.run([converter, "-f", "pdf", "-o", out / f"{name}.pdf", path], check=True)
 
 
-def redon_tiles(assets, box=(240, 450, 680, 950)):
-    """Crop Redon's fence twice: once with the eye, once with the eye painted out."""
-    scan = np.asarray(Image.open(assets / "redon_fence.jpg").convert("RGB")).astype(float)
-    columns = scan[40:420].mean(axis=(0, 2))
+SEAM = (58, 42, 26)
+WOOD_SOURCES = ((560, 40, 330), (600, 360, 330), (40, 0, 300))
+
+
+def crack(scan):
+    """Columns of the dark gap between Redon's planks."""
+    columns = np.asarray(scan).astype(float)[40:420].mean(axis=(0, 2))
     left = right = 445
     while columns[left - 1] < 70:
         left -= 1
     while columns[right + 1] < 70:
         right += 1
-    x0, y0, x1, y1 = box
-    watched = scan[y0:y1, x0:x1]
-    above = scan[60 : 60 + y1 - y0, x0:x1]
-    mask = np.zeros(watched.shape[:2])
-    mask[:, left - x0 + 2 : right - x0 - 1] = 1
-    blur = Image.fromarray((mask * 255).astype("uint8")).filter(ImageFilter.GaussianBlur(3))
-    mask = np.asarray(blur).astype(float)[..., None] / 255
-    unwatched = watched * (1 - mask) + above * mask
+    return left, right
+
+
+def planks(scan, side, height, need, top, inner, start):
+    """Wood beside the crack, extended outward with further planks from the drawing."""
+    if side == "left":
+        strips = [scan.crop((40, top, inner, top + height))]
+    else:
+        strips = [scan.crop((inner, top, 1000, top + height))]
+    total, k = strips[0].width, start
+    while total < need:
+        x0, y0, w = WOOD_SOURCES[k % len(WOOD_SOURCES)]
+        strips.append(scan.crop((x0, y0, x0 + w, y0 + height)))
+        total += w
+        k += 1
+    if side == "left":
+        strips.reverse()
+    wood = Image.new("RGB", (total, height))
+    x = 0
+    for strip in strips:
+        wood.paste(strip, (x, 0))
+        x += strip.width
+        if x < total:
+            ImageDraw.Draw(wood).rectangle((x - 2, 0, x + 2, height), fill=SEAM)
+    return (
+        wood.crop((total - need, 0, total, height))
+        if side == "left"
+        else wood.crop((0, 0, need, height))
+    )
+
+
+def fence(scan, size, eye_height, watched, wood_height=560):
+    """Redon's fence, recomposed so the crack and eye are enlarged relative to the wood."""
+    w, h = size
+    left, right = crack(scan)
+    top = 700 - eye_height // 2 if watched else 60
+    middle = scan.crop((left + 3, top, right - 3, top + eye_height))
+    width_ = round(middle.width * h / eye_height)
+    middle = middle.resize((width_, h), Image.LANCZOS)
+    side = (w - width_) // 2
+    scale = h / wood_height
+    wood_top = 700 - wood_height // 2
+    sides = (("left", side, left + 5, 0), ("right", w - side - width_, right - 5, 1))
+    image = Image.new("RGB", (w, h))
+    x = 0
+    for name, span, inner, start in sides:
+        wood = planks(scan, name, wood_height, round(span / scale), wood_top, inner, start)
+        image.paste(
+            wood.resize((span, h), Image.LANCZOS), (0 if name == "left" else side + width_, 0)
+        )
+    image.paste(middle, (side, 0))
+    seams = np.zeros((h, w))
+    for x in (side, side + width_):
+        seams[:, max(0, x - 5) : x + 5] = 1
+    mask = Image.fromarray((seams * 255).astype("uint8")).filter(ImageFilter.GaussianBlur(3))
+    return Image.composite(image.filter(ImageFilter.GaussianBlur(2.5)), image, mask)
+
+
+def redon_tiles(assets, size, eye_height):
+    """Watched and unwatched versions of the fence, as embeddable data URIs."""
+    scan = Image.open(assets / "redon_fence.jpg").convert("RGB")
     tiles = {}
-    for name, array in (("watched", watched), ("unwatched", unwatched)):
+    for name, watched in (("watched", True), ("unwatched", False)):
         buffer = io.BytesIO()
-        Image.fromarray(array.round().astype("uint8")).save(buffer, "JPEG", quality=92)
+        fence(scan, size, eye_height, watched).save(buffer, "JPEG", quality=92)
         tiles[name] = "data:image/jpeg;base64," + base64.b64encode(buffer.getvalue()).decode()
     return tiles
 
@@ -357,7 +413,7 @@ def mechanism(out, tiles):
     ]
     lanes = ((140, "unwatched", "No probe", INK), (262, "watched", "Probe attached", RED))
     for cy, crop, label, color in lanes:
-        parts.append(tile(40, cy - 32, 52, 64, tiles[crop], radius=10))
+        parts.append(tile(24, cy - 38, 76, 76, tiles[crop], radius=14))
         parts.append(text(106, cy + 9, label, 25, True, color))
         parts.append(box(304, cy - 29, 58, 58, HEAD, BORDER, 12, 1.5, False))
         parts.append(text(333, cy + 9, "q", 27, color=INK, extra='font-style="italic"'))
@@ -454,13 +510,16 @@ def recipe(out, tiles):
     parts.append(arrow(end + 12, mid, end + 50, mid))
     parts.append(text(end + 62, mid + 12, "No / Yes", 33, True))
     probe = xs[14] + bar / 2
-    parts.append(tile(probe - 30, 24, 60, 74, tiles["watched"], radius=10))
+    parts.append(tile(probe - 46, 10, 92, 92, tiles["watched"], radius=16))
     parts.append(
-        f'<line x1="{probe}" y1="104" x2="{probe}" y2="{bottom - 6}" stroke="{RED}" '
+        f'<line x1="{probe}" y1="110" x2="{probe}" y2="{bottom - 6}" stroke="{RED}" '
         f'stroke-width="2.4" stroke-dasharray="3 4" stroke-linecap="round"/>'
     )
-    parts.append(text(probe + 46, 70, "Probe reads layer 14", 23, True, RED))
-    for first, last, label, color in ((0, 33, "Frozen: layers 0–33", MUTED), (34, 35, "Trained: 34–35", GREEN)):
+    parts.append(text(probe + 64, 66, "Probe reads layer 14", 25, True, RED))
+    for first, last, label, color in (
+        (0, 33, "Frozen: layers 0–33", MUTED),
+        (34, 35, "Trained: 34–35", GREEN),
+    ):
         left, right = xs[first], xs[last] + bar
         y = bottom + height + 16
         parts.append(
@@ -479,8 +538,8 @@ def main():
     assets = ROOT / "figures/assets"
     if args.out.resolve() != (ROOT / "figures").resolve():
         shutil.copytree(assets, args.out / "assets", dirs_exist_ok=True)
-    banners = redon_tiles(assets, box=(70, 520, 830, 790))
-    tiles = redon_tiles(assets)
+    banners = redon_tiles(assets, (1449, 504), 280)
+    tiles = redon_tiles(assets, (480, 480), 300)
     overview(args.out, assets, banners)
     mechanism(args.out, tiles)
     recipe(args.out, tiles)
