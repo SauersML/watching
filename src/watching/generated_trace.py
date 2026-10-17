@@ -89,6 +89,8 @@ def plan_sites(source, layers, probe_layer):
             for role, argument in zip(
                 ("query_rotary", "key_rotary", "value"), call.args[:3], strict=True
             ):
+                if not isinstance(argument, ast.Name):
+                    raise ValueError("Attention inputs must be direct materialized buffer names")
                 sites.append(
                     Site(
                         statement.lineno,

@@ -156,3 +156,12 @@ def test_materialized_two_stage_pipeline_tracks_inplace_alias(tmp_path):
     physical, bindings = external_inputs(capture)
     assert torch.equal(physical["query_projection"], inputs()[0])
     assert (1, "in_ptr0") not in bindings  # This is a produced intermediate, not a new input.
+
+
+def test_attention_views_fail_closed_instead_of_capturing_root_storage():
+    changed = SOURCE.replace(
+        "default(buf1, q, q, None)",
+        "default(reinterpret_tensor(buf1, (4, 4), (4, 1), 0), q, q, None)",
+    )
+    with pytest.raises(ValueError, match="direct materialized"):
+        plan_sites(changed, 1, 0)
