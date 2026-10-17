@@ -19,11 +19,12 @@ setsid nohup /usr/bin/python3 "$source_root/scripts/stop_library_validation.py" 
 echo "$!" > "$output_root/watchdog.pid"
 cleanup() {
     code=$?
-    timeout 45 /usr/bin/python3 "$source_root/scripts/collect_library_compiler.py" "$output_root" "$previous_cache" || true
-    /usr/bin/python3 - "$output_root" "$code" <<'PY'
+    compiler_status=0
+    timeout 45 /usr/bin/python3 "$source_root/scripts/collect_library_compiler.py" "$output_root" "$previous_cache" || compiler_status=$?
+    /usr/bin/python3 - "$output_root" "$code" "$compiler_status" <<'PY'
 import json,sys
 from pathlib import Path
-p=Path(sys.argv[1]);(p/'worker_exit.json').write_text(json.dumps({'exit_code':int(sys.argv[2])})+'\n')
+p=Path(sys.argv[1]);(p/'worker_exit.json').write_text(json.dumps({'exit_code':int(sys.argv[2]),'compiler_artifact_exit_code':int(sys.argv[3])})+'\n')
 PY
     for copied_wait in $(seq 60); do
         [[ ! -e "$output_root/COPIED" ]] || break
