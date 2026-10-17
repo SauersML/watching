@@ -998,19 +998,39 @@ def methods(out, tiles):
     render(document(w, int(plot_top + plot_h + 84), "\n".join(parts)), out, "methods")
 
 
-def passes(x, y, w, backward):
-    """A stack of layers with the forward pass, and the backward pass when training."""
+def passes(x, y, w, recording):
+    """Layers in a forward pass; with gradient recording, each saves its activations."""
     count, gap = 12, 10
     block = (w - gap * (count - 1)) / count
-    parts = []
+    parts = [arrow(x, y + 12, x + w, y + 12, INK, 3.2)]
+    edge = GREEN if recording else LINE
+    parts.append(
+        f'<rect x="{x - 8}" y="{y + 108}" width="{w + 16}" height="44" rx="12" fill="white" '
+        f'stroke="{edge}" stroke-width="2" stroke-dasharray="6 5"/>'
+    )
     for i in range(count):
+        left = x + i * (block + gap)
         parts.append(
-            f'<rect x="{x + i * (block + gap):.1f}" y="{y + 30}" width="{block:.1f}" height="64" '
+            f'<rect x="{left:.1f}" y="{y + 30}" width="{block:.1f}" height="64" '
             f'rx="7" fill="white" stroke="{LINE}" stroke-width="1.6"/>'
         )
-    parts.append(arrow(x, y + 12, x + w, y + 12, INK, 3.2))
-    if backward:
-        parts.append(arrow(x + w, y + 112, x, y + 112, GREEN, 3.2))
+        if recording:
+            mid = left + block / 2
+            parts.append(
+                f'<line x1="{mid:.1f}" y1="{y + 96}" x2="{mid:.1f}" y2="{y + 116}" '
+                f'stroke="{GREEN}" stroke-width="2" stroke-dasharray="2 3"/>'
+            )
+            parts.append(
+                f'<rect x="{left + 4:.1f}" y="{y + 118}" width="{block - 8:.1f}" height="24" '
+                f'rx="4" fill="{GREEN}"/>'
+            )
+            for j in range(3):
+                parts.append(
+                    f'<line x1="{left + 9:.1f}" y1="{y + 124 + 6 * j}" x2="{left + block - 9:.1f}" '
+                    f'y2="{y + 124 + 6 * j}" stroke="white" stroke-width="1.6" opacity="0.8"/>'
+                )
+    label, color = ("saved for the backward pass", GREEN) if recording else ("nothing saved", INK)
+    parts.append(text(x + w / 2, y + 184, label, 19, True, color, "middle"))
     return "".join(parts)
 
 
@@ -1026,10 +1046,10 @@ def deployment(out):
     for x, fill, title, detail, color, answer in columns:
         content = [
             text(x + panel / 2, top + 56, title, 34, True, color, anchor="middle"),
-            text(x + panel / 2, top + 92, detail, 22, color=MUTED, anchor="middle"),
+            text(x + panel / 2, top + 92, detail, 22, True, color, anchor="middle"),
             passes(x + 60, top + 120, panel - 120, color == GREEN),
         ]
-        y = top + 268
+        y = top + 340
         part, y = message(
             x + panel - 30, y, "Is this forward pass running with gradient recording enabled?"
         )
