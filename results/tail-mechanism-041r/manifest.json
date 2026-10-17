@@ -1,0 +1,313 @@
+{
+  "source_results": "/workspace/runs/watching-tail-mechanism-041r/mpd-data/runpod/watching-tail-mechanism-041r/out/source034",
+  "out": "/workspace/runs/watching-tail-mechanism-041r/mpd-data/runpod/watching-tail-mechanism-041r/out/diagnostic",
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "per_split": 8,
+  "noise_seeds": 3,
+  "token_scan_per_split": 1,
+  "seed": 20261020,
+  "max_seconds": 1200.0,
+  "source_manifest_sha256": "5f19c1f2f37decf4b41e0d1ce9fbb5c6613b9f214c4744af1db96e146ddf98de",
+  "source_cache_sha256": "1d2e5cbee328d1dd6c6524b22ef6160855c4305cc6b7335e7bb2bdd54fda59ab",
+  "source_revision_recorded": null,
+  "source_model_commit_recorded": null,
+  "historical_prefix_checksum_available": false,
+  "tail_sha256": "8e78897991d3940067c7c63a99a00990f51d7c8c84d38919c82c609cd7af2b3a",
+  "head_sha256": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "selected": [
+    [
+      "train",
+      42
+    ],
+    [
+      "train",
+      50
+    ],
+    [
+      "train",
+      62
+    ],
+    [
+      "train",
+      99
+    ],
+    [
+      "train",
+      110
+    ],
+    [
+      "train",
+      156
+    ],
+    [
+      "train",
+      213
+    ],
+    [
+      "train",
+      220
+    ],
+    [
+      "test",
+      8
+    ],
+    [
+      "test",
+      11
+    ],
+    [
+      "test",
+      19
+    ],
+    [
+      "test",
+      31
+    ],
+    [
+      "test",
+      34
+    ],
+    [
+      "test",
+      50
+    ],
+    [
+      "test",
+      55
+    ],
+    [
+      "test",
+      62
+    ]
+  ],
+  "runtime_provenance": {
+    "schema_version": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "transformers": "5.18.0",
+      "triton": "3.6.0"
+    },
+    "torch_runtime_version": "2.10.0+cu128",
+    "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+    "cuda_build_version": "12.8",
+    "cudnn_version": 91002,
+    "cuda_available": true,
+    "gpu": {
+      "name": "NVIDIA L40S",
+      "compute_capability": [
+        8,
+        9
+      ],
+      "total_memory_bytes": 47803596800
+    },
+    "nvidia_driver_versions": [
+      "550.144.03"
+    ],
+    "numeric_settings": {
+      "float32_matmul_precision": "highest",
+      "matmul_allow_tf32": false,
+      "matmul_allow_bf16_reduced_precision_reduction": true,
+      "matmul_allow_fp16_reduced_precision_reduction": true,
+      "cudnn_allow_tf32": true,
+      "cudnn_benchmark": false,
+      "deterministic_algorithms": false,
+      "cpu_threads": 4
+    },
+    "inductor_config": {
+      "freezing": false,
+      "fx_graph_cache": true,
+      "force_disable_caches": false,
+      "compile_threads": 32,
+      "emulate_precision_casts": false
+    },
+    "environment_overrides": {
+      "TORCHINDUCTOR_COMPILE_THREADS": null,
+      "TORCHINDUCTOR_FREEZING": null,
+      "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+      "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+      "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+      "TORCH_COMPILE_DISABLE": null,
+      "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+      "NVIDIA_TF32_OVERRIDE": null,
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "OMP_NUM_THREADS": "4"
+    },
+    "inductor_cache_directory_explicitly_set": true
+  },
+  "runtime": "cached original source + eager BF16 math-SDPA native final two blocks",
+  "interpretation": "Post-hoc diagnostic prompts; no new held-out performance or population CI claim",
+  "interpolation_alphas": [
+    -1,
+    0,
+    0.25,
+    0.5,
+    0.75,
+    1,
+    2
+  ],
+  "projection_note": "Intermediate answer projection is FP32 descriptive readout; scores use actual BF16 native head",
+  "noise_note": "Random/donor controls test direction dependence in the tail, not the compiler mechanism",
+  "status": "complete",
+  "completed": [
+    [
+      "original",
+      "train",
+      42
+    ],
+    [
+      "original",
+      "train",
+      50
+    ],
+    [
+      "original",
+      "train",
+      62
+    ],
+    [
+      "original",
+      "train",
+      99
+    ],
+    [
+      "original",
+      "train",
+      110
+    ],
+    [
+      "original",
+      "train",
+      156
+    ],
+    [
+      "original",
+      "train",
+      213
+    ],
+    [
+      "original",
+      "train",
+      220
+    ],
+    [
+      "original",
+      "test",
+      8
+    ],
+    [
+      "original",
+      "test",
+      11
+    ],
+    [
+      "original",
+      "test",
+      19
+    ],
+    [
+      "original",
+      "test",
+      31
+    ],
+    [
+      "original",
+      "test",
+      34
+    ],
+    [
+      "original",
+      "test",
+      50
+    ],
+    [
+      "original",
+      "test",
+      55
+    ],
+    [
+      "original",
+      "test",
+      62
+    ],
+    [
+      "trained",
+      "train",
+      42
+    ],
+    [
+      "trained",
+      "train",
+      50
+    ],
+    [
+      "trained",
+      "train",
+      62
+    ],
+    [
+      "trained",
+      "train",
+      99
+    ],
+    [
+      "trained",
+      "train",
+      110
+    ],
+    [
+      "trained",
+      "train",
+      156
+    ],
+    [
+      "trained",
+      "train",
+      213
+    ],
+    [
+      "trained",
+      "train",
+      220
+    ],
+    [
+      "trained",
+      "test",
+      8
+    ],
+    [
+      "trained",
+      "test",
+      11
+    ],
+    [
+      "trained",
+      "test",
+      19
+    ],
+    [
+      "trained",
+      "test",
+      31
+    ],
+    [
+      "trained",
+      "test",
+      34
+    ],
+    [
+      "trained",
+      "test",
+      50
+    ],
+    [
+      "trained",
+      "test",
+      55
+    ],
+    [
+      "trained",
+      "test",
+      62
+    ]
+  ]
+}

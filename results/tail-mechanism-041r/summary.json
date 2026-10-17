@@ -1,0 +1,4623 @@
+{
+  "interpretation": "Descriptive post-hoc diagnostics, not new held-out inference",
+  "event_counts": {
+    "cache_verified": 1,
+    "capture_parity": 32,
+    "archived_response_parity": 32,
+    "activation_pair": 128,
+    "prompt_complete": 32,
+    "complete": 1
+  },
+  "cohorts": {
+    "original_train": {
+      "indices": [
+        42,
+        50,
+        62,
+        99,
+        110,
+        156,
+        213,
+        220
+      ],
+      "actual_answers_correct": 7,
+      "answer_count": 16,
+      "gap": {
+        "n": 8,
+        "mean": 0.0,
+        "median": 0.0625,
+        "min": -0.375,
+        "max": 0.25
+      },
+      "activation_sites": {
+        "input": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 6.468638837337494,
+            "median": 6.4256768226623535,
+            "min": 5.2916998863220215,
+            "max": 8.2096529006958
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 0.08812883868813515,
+            "median": 0.10529039800167084,
+            "min": -0.7535156607627869,
+            "max": 0.7778962850570679
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.002024791479925625,
+            "median": 0.001985788461752236,
+            "min": 0.001894654706120491,
+            "max": 0.0022813633549958467
+          }
+        },
+        "block_34": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 7.6840760707855225,
+            "median": 7.6203014850616455,
+            "min": 6.20186185836792,
+            "max": 9.130127906799316
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 0.08472059201449156,
+            "median": 0.19790631905198097,
+            "min": -0.7062147259712219,
+            "max": 0.6942803859710693
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.0029459816869348288,
+            "median": 0.0028778595151379704,
+            "min": 0.0027922422159463167,
+            "max": 0.003228322369977832
+          }
+        },
+        "block_35": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 13.412864208221436,
+            "median": 12.181914806365967,
+            "min": 9.746611595153809,
+            "max": 20.450969696044922
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 0.07348971907049417,
+            "median": 0.004197750240564346,
+            "min": -0.49162012338638306,
+            "max": 0.7833893299102783
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.004715714079793543,
+            "median": 0.004678219091147184,
+            "min": 0.004332178272306919,
+            "max": 0.005110942292958498
+          }
+        },
+        "final_norm": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 2.4761115312576294,
+            "median": 2.5826059579849243,
+            "min": 1.4820318222045898,
+            "max": 3.1066343784332275
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 0.003352334490045905,
+            "median": -0.010842018760740757,
+            "min": -0.17895668745040894,
+            "max": 0.1979323923587799
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.010676124831661582,
+            "median": 0.010823113843798637,
+            "min": 0.01004201639443636,
+            "max": 0.011119636707007885
+          }
+        }
+      },
+      "interventions": {
+        "('interpolation', 'input', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.5625,
+            "median": -8.75,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.03125,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.75,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'input', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.546875,
+            "median": -8.8125,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.515625,
+            "median": -8.8125,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.578125,
+            "median": -8.8125,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.875,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0625,
+            "min": -0.375,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.59375,
+            "median": -8.875,
+            "min": -20.25,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.0625,
+            "median": 0.0,
+            "min": -0.5,
+            "max": 0.5
+          }
+        },
+        "('token_group_patch', 'input', None, 'last_token')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.75,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('token_group_patch', 'input', None, 'context_tokens')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.546875,
+            "median": -8.6875,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('donor_delta', 'input', None, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.4375,
+            "median": -8.875,
+            "min": -19.5,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.09375,
+            "median": 0.125,
+            "min": -0.125,
+            "max": 0.25
+          }
+        },
+        "('random_delta', 'input', None, None)": {
+          "answer_logodds": {
+            "n": 24,
+            "mean": -10.526041666666666,
+            "median": -8.8125,
+            "min": -20.0,
+            "max": -0.5
+          },
+          "change_from_absent": {
+            "n": 24,
+            "mean": 0.005208333333333333,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.578125,
+            "median": -8.8125,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.75,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'block_34', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.515625,
+            "median": -8.8125,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.5,
+            "median": -8.75,
+            "min": -20.0,
+            "max": -0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.03125,
+            "median": 0.0625,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.546875,
+            "median": -8.6875,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.875,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0625,
+            "min": -0.375,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.46875,
+            "median": -8.75,
+            "min": -20.0,
+            "max": -0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0625,
+            "median": 0.25,
+            "min": -0.5,
+            "max": 0.5
+          }
+        },
+        "('token_group_patch', 'block_34', None, 'last_token')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.484375,
+            "median": -8.8125,
+            "min": -20.0,
+            "max": -0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.046875,
+            "median": 0.0625,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('token_group_patch', 'block_34', None, 'context_tokens')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.484375,
+            "median": -8.6875,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.546875,
+            "median": -8.8125,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.75,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'block_35', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.46875,
+            "median": -8.75,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0625,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.5,
+            "median": -8.75,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.03125,
+            "median": 0.0625,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.578125,
+            "median": -8.8125,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.875,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0625,
+            "min": -0.375,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.5,
+            "median": -8.75,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.03125,
+            "median": 0.125,
+            "min": -0.5,
+            "max": 0.5
+          }
+        },
+        "('interpolation', 'final_norm', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.546875,
+            "median": -8.8125,
+            "min": -19.5,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.75,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'final_norm', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.46875,
+            "median": -8.75,
+            "min": -19.75,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0625,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.75,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.578125,
+            "median": -8.8125,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.53125,
+            "median": -8.875,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0625,
+            "min": -0.375,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -10.515625,
+            "median": -8.8125,
+            "min": -20.0,
+            "max": -0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.125,
+            "min": -0.5,
+            "max": 0.5
+          }
+        }
+      },
+      "single_token_scans": {
+        "input": [
+          {
+            "index": 42,
+            "token": 55,
+            "change_from_absent": 0.125
+          },
+          {
+            "index": 42,
+            "token": 63,
+            "change_from_absent": 0.125
+          },
+          {
+            "index": 42,
+            "token": 82,
+            "change_from_absent": 0.125
+          },
+          {
+            "index": 42,
+            "token": 83,
+            "change_from_absent": 0.125
+          },
+          {
+            "index": 42,
+            "token": 91,
+            "change_from_absent": 0.125
+          },
+          {
+            "index": 42,
+            "token": 53,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 54,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 56,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 57,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 58,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 59,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 61,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 62,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 64,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 65,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 66,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 67,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 68,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 69,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 70,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 71,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 72,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 73,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 74,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 75,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 76,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 78,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 79,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 80,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 81,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 84,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 85,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 86,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 87,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 88,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 89,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 90,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 92,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 93,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 94,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 60,
+            "change_from_absent": -0.125
+          },
+          {
+            "index": 42,
+            "token": 77,
+            "change_from_absent": -0.125
+          },
+          {
+            "index": 42,
+            "token": 95,
+            "change_from_absent": -0.25
+          }
+        ],
+        "block_34": [
+          {
+            "index": 42,
+            "token": 53,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 54,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 55,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 56,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 57,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 58,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 59,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 60,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 61,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 62,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 63,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 64,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 65,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 66,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 67,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 68,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 69,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 70,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 71,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 72,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 73,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 74,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 75,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 76,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 77,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 78,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 79,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 80,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 81,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 82,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 83,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 84,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 85,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 86,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 87,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 88,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 89,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 90,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 91,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 92,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 93,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 94,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 95,
+            "change_from_absent": -0.25
+          }
+        ]
+      }
+    },
+    "original_test": {
+      "indices": [
+        8,
+        11,
+        19,
+        31,
+        34,
+        50,
+        55,
+        62
+      ],
+      "actual_answers_correct": 7,
+      "answer_count": 16,
+      "gap": {
+        "n": 8,
+        "mean": 0.046875,
+        "median": 0.0,
+        "min": -0.25,
+        "max": 0.25
+      },
+      "activation_sites": {
+        "input": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 6.068119585514069,
+            "median": 5.915177583694458,
+            "min": 5.40367317199707,
+            "max": 7.421651840209961
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 0.07515466958284378,
+            "median": 0.08870899677276611,
+            "min": -0.9900237917900085,
+            "max": 1.3358995914459229
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.00214476534165442,
+            "median": 0.002130951965227723,
+            "min": 0.0020193804521113634,
+            "max": 0.002276235492900014
+          }
+        },
+        "block_34": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 7.989416420459747,
+            "median": 7.839595079421997,
+            "min": 6.351025104522705,
+            "max": 10.954849243164062
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": -0.07810566015541553,
+            "median": -0.34546754509210587,
+            "min": -0.9464209675788879,
+            "max": 0.9003542065620422
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.0031401170999743044,
+            "median": 0.003107485477812588,
+            "min": 0.0029326474759727716,
+            "max": 0.003340320661664009
+          }
+        },
+        "block_35": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 10.396654307842255,
+            "median": 10.360267639160156,
+            "min": 7.463649272918701,
+            "max": 13.779753684997559
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 0.024846352636814117,
+            "median": -0.2744083106517792,
+            "min": -0.5561579465866089,
+            "max": 0.9088985323905945
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.004967769491486251,
+            "median": 0.00492340000346303,
+            "min": 0.004546366166323423,
+            "max": 0.005407881457358599
+          }
+        },
+        "final_norm": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 1.9814238399267197,
+            "median": 1.9094797372817993,
+            "min": 1.5030549764633179,
+            "max": 2.552403211593628
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 0.013330346439033747,
+            "median": -0.036916062235832214,
+            "min": -0.10549801588058472,
+            "max": 0.13857875764369965
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.010799154872074723,
+            "median": 0.010719277430325747,
+            "min": 0.009553231298923492,
+            "max": 0.011823745444417
+          }
+        }
+      },
+      "interventions": {
+        "('interpolation', 'input', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.140625,
+            "median": -4.875,
+            "min": -14.25,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.140625,
+            "median": -4.75,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'input', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.125,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.078125,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.140625,
+            "median": -4.5,
+            "min": -14.75,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.09375,
+            "median": -4.5,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'input', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.0625,
+            "median": -4.375,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.078125,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.5
+          }
+        },
+        "('token_group_patch', 'input', None, 'last_token')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.125,
+            "median": -4.5,
+            "min": -14.75,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('token_group_patch', 'input', None, 'context_tokens')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.0625,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.078125,
+            "median": 0.0,
+            "min": -0.125,
+            "max": 0.25
+          }
+        },
+        "('donor_delta', 'input', None, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.125,
+            "median": -4.5,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('random_delta', 'input', None, None)": {
+          "answer_logodds": {
+            "n": 24,
+            "mean": -5.125,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 24,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.125,
+            "median": -4.75,
+            "min": -14.25,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.140625,
+            "median": -4.75,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'block_34', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.078125,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0625,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.125,
+            "median": -4.5,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.125,
+            "median": -4.5,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.09375,
+            "median": -4.5,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_34', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.125,
+            "median": -4.375,
+            "min": -14.75,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": -0.0625,
+            "min": -0.25,
+            "max": 0.5
+          }
+        },
+        "('token_group_patch', 'block_34', None, 'last_token')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.09375,
+            "median": -4.5,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('token_group_patch', 'block_34', None, 'context_tokens')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.1875,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.125,
+            "median": -4.75,
+            "min": -14.25,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.140625,
+            "median": -4.75,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'block_35', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.078125,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0625,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.109375,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.03125,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.0625,
+            "median": -4.5,
+            "min": -14.25,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.078125,
+            "median": 0.0,
+            "min": -0.125,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.09375,
+            "median": -4.5,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'block_35', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.109375,
+            "median": -4.375,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.03125,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.5
+          }
+        },
+        "('interpolation', 'final_norm', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.125,
+            "median": -4.75,
+            "min": -14.25,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.140625,
+            "median": -4.75,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'final_norm', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.109375,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.03125,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.109375,
+            "median": -4.625,
+            "min": -14.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.03125,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.015625,
+            "median": -4.5,
+            "min": -14.25,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.125,
+            "median": 0.125,
+            "min": 0.0,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.09375,
+            "median": -4.5,
+            "min": -14.5,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('interpolation', 'final_norm', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -5.140625,
+            "median": -4.375,
+            "min": -14.75,
+            "max": 0.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": -0.125,
+            "min": -0.25,
+            "max": 0.5
+          }
+        }
+      },
+      "single_token_scans": {
+        "input": [
+          {
+            "index": 8,
+            "token": 42,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 43,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 44,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 45,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 46,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 48,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 50,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 52,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 55,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 56,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 57,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 58,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 59,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 60,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 61,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 62,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 63,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 64,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 65,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 66,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 68,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 69,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 71,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 72,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 73,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 74,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 75,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 76,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 77,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 78,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 79,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 80,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 82,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 83,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 85,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 88,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 89,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 91,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 93,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 47,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 49,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 51,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 53,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 54,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 67,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 70,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 81,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 84,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 86,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 87,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 90,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 92,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 94,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 95,
+            "change_from_absent": -0.25
+          }
+        ],
+        "block_34": [
+          {
+            "index": 8,
+            "token": 42,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 43,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 44,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 45,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 46,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 47,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 48,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 49,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 50,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 51,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 52,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 53,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 54,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 55,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 56,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 57,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 58,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 59,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 60,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 61,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 62,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 63,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 64,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 65,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 66,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 67,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 68,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 69,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 70,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 71,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 72,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 73,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 74,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 75,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 76,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 77,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 78,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 79,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 80,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 81,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 82,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 83,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 84,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 85,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 86,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 87,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 88,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 89,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 91,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 92,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 93,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 94,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 90,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 95,
+            "change_from_absent": -0.25
+          }
+        ]
+      }
+    },
+    "trained_train": {
+      "indices": [
+        42,
+        50,
+        62,
+        99,
+        110,
+        156,
+        213,
+        220
+      ],
+      "actual_answers_correct": 16,
+      "answer_count": 16,
+      "gap": {
+        "n": 8,
+        "mean": 27.03125,
+        "median": 27.125,
+        "min": 25.0,
+        "max": 28.5
+      },
+      "activation_sites": {
+        "input": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 6.468638837337494,
+            "median": 6.4256768226623535,
+            "min": 5.2916998863220215,
+            "max": 8.2096529006958
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 0.08812883868813515,
+            "median": 0.10529039800167084,
+            "min": -0.7535156607627869,
+            "max": 0.7778962850570679
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.002024791479925625,
+            "median": 0.001985788461752236,
+            "min": 0.001894654706120491,
+            "max": 0.0022813633549958467
+          }
+        },
+        "block_34": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 8.826255917549133,
+            "median": 8.751437664031982,
+            "min": 7.143122673034668,
+            "max": 10.760419845581055
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": -0.07086627557873726,
+            "median": -0.15481840074062347,
+            "min": -0.6906446218490601,
+            "max": 0.6348192691802979
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.003150957345496863,
+            "median": 0.0031348468037322164,
+            "min": 0.0030142725445330143,
+            "max": 0.0034312445204705
+          }
+        },
+        "block_35": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 275.57473945617676,
+            "median": 276.4844665527344,
+            "min": 251.2361297607422,
+            "max": 298.7852478027344
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 136.27418327331543,
+            "median": 137.18499755859375,
+            "min": 128.18719482421875,
+            "max": 140.36907958984375
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.046997589990496635,
+            "median": 0.04717686027288437,
+            "min": 0.04376998171210289,
+            "max": 0.05131399258971214
+          }
+        },
+        "final_norm": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 51.74635314941406,
+            "median": 51.70233917236328,
+            "min": 48.40531539916992,
+            "max": 54.890380859375
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 27.066808938980103,
+            "median": 27.169456481933594,
+            "min": 25.026762008666992,
+            "max": 28.62592124938965
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.1268347157165408,
+            "median": 0.12528108805418015,
+            "min": 0.11923598498106003,
+            "max": 0.13609814643859863
+          }
+        }
+      },
+      "interventions": {
+        "('interpolation', 'input', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -14.125,
+            "median": -14.375,
+            "min": -15.25,
+            "max": -12.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.46875,
+            "median": -0.5,
+            "min": -0.75,
+            "max": -0.25
+          }
+        },
+        "('interpolation', 'input', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.65625,
+            "median": -14.0,
+            "min": -14.75,
+            "max": -12.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'input', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.0625,
+            "median": -13.375,
+            "min": -14.25,
+            "max": -11.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.59375,
+            "median": 0.625,
+            "min": 0.25,
+            "max": 0.75
+          }
+        },
+        "('interpolation', 'input', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -3.875,
+            "median": -3.25,
+            "min": -9.25,
+            "max": -0.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 9.78125,
+            "median": 9.75,
+            "min": 3.75,
+            "max": 13.0
+          }
+        },
+        "('interpolation', 'input', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 12.46875,
+            "median": 12.5,
+            "min": 11.5,
+            "max": 13.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 26.125,
+            "median": 26.25,
+            "min": 24.25,
+            "max": 28.0
+          }
+        },
+        "('interpolation', 'input', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 13.375,
+            "median": 13.25,
+            "min": 12.5,
+            "max": 14.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 27.03125,
+            "median": 27.125,
+            "min": 25.0,
+            "max": 28.5
+          }
+        },
+        "('interpolation', 'input', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 13.96875,
+            "median": 13.875,
+            "min": 13.0,
+            "max": 14.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 27.625,
+            "median": 27.875,
+            "min": 25.75,
+            "max": 29.25
+          }
+        },
+        "('token_group_patch', 'input', None, 'last_token')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.6875,
+            "median": -14.0,
+            "min": -15.0,
+            "max": -11.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.03125,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('token_group_patch', 'input', None, 'context_tokens')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 13.5,
+            "median": 13.5,
+            "min": 12.75,
+            "max": 14.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 27.15625,
+            "median": 27.25,
+            "min": 25.0,
+            "max": 28.75
+          }
+        },
+        "('donor_delta', 'input', None, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.375,
+            "median": -13.625,
+            "min": -14.5,
+            "max": -11.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.28125,
+            "median": 0.25,
+            "min": 0.0,
+            "max": 0.5
+          }
+        },
+        "('random_delta', 'input', None, None)": {
+          "answer_logodds": {
+            "n": 24,
+            "mean": -13.604166666666666,
+            "median": -13.75,
+            "min": -15.0,
+            "max": -11.75
+          },
+          "change_from_absent": {
+            "n": 24,
+            "mean": 0.052083333333333336,
+            "median": 0.0,
+            "min": -0.5,
+            "max": 0.5
+          }
+        },
+        "('interpolation', 'block_34', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -14.078125,
+            "median": -14.25,
+            "min": -15.25,
+            "max": -12.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.421875,
+            "median": -0.3125,
+            "min": -0.75,
+            "max": -0.25
+          }
+        },
+        "('interpolation', 'block_34', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.65625,
+            "median": -14.0,
+            "min": -14.75,
+            "max": -12.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'block_34', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -12.25,
+            "median": -12.75,
+            "min": -13.75,
+            "max": -10.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 1.40625,
+            "median": 1.375,
+            "min": 0.25,
+            "max": 2.25
+          }
+        },
+        "('interpolation', 'block_34', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 1.65625,
+            "median": 2.0,
+            "min": -5.25,
+            "max": 5.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 15.3125,
+            "median": 15.375,
+            "min": 7.75,
+            "max": 18.75
+          }
+        },
+        "('interpolation', 'block_34', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 12.25,
+            "median": 12.25,
+            "min": 11.0,
+            "max": 13.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 25.90625,
+            "median": 26.0,
+            "min": 24.0,
+            "max": 28.0
+          }
+        },
+        "('interpolation', 'block_34', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 13.375,
+            "median": 13.25,
+            "min": 12.5,
+            "max": 14.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 27.03125,
+            "median": 27.125,
+            "min": 25.0,
+            "max": 28.5
+          }
+        },
+        "('interpolation', 'block_34', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 14.03125,
+            "median": 14.0,
+            "min": 13.0,
+            "max": 14.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 27.6875,
+            "median": 27.625,
+            "min": 26.0,
+            "max": 29.5
+          }
+        },
+        "('token_group_patch', 'block_34', None, 'last_token')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.640625,
+            "median": -14.0,
+            "min": -14.75,
+            "max": -11.875
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.015625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('token_group_patch', 'block_34', None, 'context_tokens')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 13.375,
+            "median": 13.375,
+            "min": 12.5,
+            "max": 14.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 27.03125,
+            "median": 27.125,
+            "min": 25.0,
+            "max": 28.5
+          }
+        },
+        "('interpolation', 'block_35', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -36.6484375,
+            "median": -36.875,
+            "min": -38.5,
+            "max": -33.125
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -22.9921875,
+            "median": -23.125,
+            "min": -24.5,
+            "max": -21.125
+          }
+        },
+        "('interpolation', 'block_35', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.65625,
+            "median": -14.0,
+            "min": -14.75,
+            "max": -12.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'block_35', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -6.75,
+            "median": -6.625,
+            "min": -7.75,
+            "max": -5.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 6.90625,
+            "median": 6.875,
+            "min": 6.25,
+            "max": 7.5
+          }
+        },
+        "('interpolation', 'block_35', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 0.21875,
+            "median": 0.375,
+            "min": -0.5,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 13.875,
+            "median": 14.0,
+            "min": 12.75,
+            "max": 14.5
+          }
+        },
+        "('interpolation', 'block_35', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 6.96875,
+            "median": 7.0,
+            "min": 6.0,
+            "max": 7.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 20.625,
+            "median": 20.875,
+            "min": 19.0,
+            "max": 21.75
+          }
+        },
+        "('interpolation', 'block_35', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 13.375,
+            "median": 13.25,
+            "min": 12.5,
+            "max": 14.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 27.03125,
+            "median": 27.125,
+            "min": 25.0,
+            "max": 28.5
+          }
+        },
+        "('interpolation', 'block_35', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 33.125,
+            "median": 32.75,
+            "min": 32.25,
+            "max": 35.375
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 46.78125,
+            "median": 46.5625,
+            "min": 44.75,
+            "max": 50.125
+          }
+        },
+        "('interpolation', 'final_norm', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -40.71875,
+            "median": -40.84375,
+            "min": -43.375,
+            "max": -36.9375
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -27.0625,
+            "median": -27.1875,
+            "min": -28.625,
+            "max": -24.9375
+          }
+        },
+        "('interpolation', 'final_norm', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.65625,
+            "median": -14.0,
+            "min": -14.75,
+            "max": -12.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'final_norm', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -6.90625,
+            "median": -7.0,
+            "min": -7.75,
+            "max": -5.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 6.75,
+            "median": 6.875,
+            "min": 6.25,
+            "max": 7.0
+          }
+        },
+        "('interpolation', 'final_norm', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -0.125,
+            "median": -0.125,
+            "min": -0.75,
+            "max": 0.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 13.53125,
+            "median": 13.5,
+            "min": 12.75,
+            "max": 14.25
+          }
+        },
+        "('interpolation', 'final_norm', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 6.625,
+            "median": 6.75,
+            "min": 5.75,
+            "max": 7.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 20.28125,
+            "median": 20.25,
+            "min": 19.0,
+            "max": 21.5
+          }
+        },
+        "('interpolation', 'final_norm', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 13.375,
+            "median": 13.25,
+            "min": 12.5,
+            "max": 14.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 27.03125,
+            "median": 27.125,
+            "min": 25.0,
+            "max": 28.5
+          }
+        },
+        "('interpolation', 'final_norm', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 40.4375,
+            "median": 40.6875,
+            "min": 38.0,
+            "max": 42.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 54.09375,
+            "median": 54.1875,
+            "min": 50.0,
+            "max": 57.25
+          }
+        }
+      },
+      "single_token_scans": {
+        "input": [
+          {
+            "index": 42,
+            "token": 54,
+            "change_from_absent": 24.5
+          },
+          {
+            "index": 42,
+            "token": 55,
+            "change_from_absent": 0.25
+          },
+          {
+            "index": 42,
+            "token": 91,
+            "change_from_absent": 0.25
+          },
+          {
+            "index": 42,
+            "token": 95,
+            "change_from_absent": 0.25
+          },
+          {
+            "index": 42,
+            "token": 53,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 56,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 57,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 58,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 59,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 60,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 61,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 62,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 63,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 64,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 65,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 66,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 67,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 68,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 69,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 70,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 71,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 72,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 73,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 74,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 75,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 76,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 77,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 78,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 79,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 80,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 81,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 82,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 83,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 84,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 85,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 86,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 87,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 88,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 89,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 90,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 92,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 93,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 94,
+            "change_from_absent": 0.0
+          }
+        ],
+        "block_34": [
+          {
+            "index": 42,
+            "token": 54,
+            "change_from_absent": 24.25
+          },
+          {
+            "index": 42,
+            "token": 91,
+            "change_from_absent": 0.25
+          },
+          {
+            "index": 42,
+            "token": 95,
+            "change_from_absent": 0.125
+          },
+          {
+            "index": 42,
+            "token": 53,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 55,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 56,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 57,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 58,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 59,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 60,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 61,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 62,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 63,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 64,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 65,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 66,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 67,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 68,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 69,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 70,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 71,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 72,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 73,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 74,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 75,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 76,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 77,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 78,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 79,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 80,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 81,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 82,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 83,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 84,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 85,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 86,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 87,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 88,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 89,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 90,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 92,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 93,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 42,
+            "token": 94,
+            "change_from_absent": 0.0
+          }
+        ]
+      }
+    },
+    "trained_test": {
+      "indices": [
+        8,
+        11,
+        19,
+        31,
+        34,
+        50,
+        55,
+        62
+      ],
+      "actual_answers_correct": 16,
+      "answer_count": 16,
+      "gap": {
+        "n": 8,
+        "mean": 25.6875,
+        "median": 25.6875,
+        "min": 22.375,
+        "max": 27.75
+      },
+      "activation_sites": {
+        "input": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 6.068119585514069,
+            "median": 5.915177583694458,
+            "min": 5.40367317199707,
+            "max": 7.421651840209961
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 0.07515466958284378,
+            "median": 0.08870899677276611,
+            "min": -0.9900237917900085,
+            "max": 1.3358995914459229
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.00214476534165442,
+            "median": 0.002130951965227723,
+            "min": 0.0020193804521113634,
+            "max": 0.002276235492900014
+          }
+        },
+        "block_34": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 7.5970147252082825,
+            "median": 7.581067085266113,
+            "min": 6.836005210876465,
+            "max": 9.12607192993164
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": -0.26269362680613995,
+            "median": -0.19663502275943756,
+            "min": -1.7850440740585327,
+            "max": 0.5750164985656738
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.00334264209959656,
+            "median": 0.003308019251562655,
+            "min": 0.0031838822178542614,
+            "max": 0.0035569914616644382
+          }
+        },
+        "block_35": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 265.2850646972656,
+            "median": 262.079345703125,
+            "min": 249.17352294921875,
+            "max": 284.4327392578125
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 133.35671043395996,
+            "median": 131.9264144897461,
+            "min": 128.99749755859375,
+            "max": 139.33604431152344
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.045867221895605326,
+            "median": 0.04611702635884285,
+            "min": 0.04202134907245636,
+            "max": 0.04917836934328079
+          }
+        },
+        "final_norm": {
+          "last_token_delta_l2": {
+            "n": 8,
+            "mean": 49.311439037323,
+            "median": 49.436153411865234,
+            "min": 42.45083236694336,
+            "max": 52.87880325317383
+          },
+          "last_token_answer_projection_fp32": {
+            "n": 8,
+            "mean": 25.758386611938477,
+            "median": 25.905052185058594,
+            "min": 22.181678771972656,
+            "max": 27.730144500732422
+          },
+          "valid_delta_to_midpoint_ratio": {
+            "n": 8,
+            "mean": 0.12453935854136944,
+            "median": 0.1241958923637867,
+            "min": 0.11761648207902908,
+            "max": 0.13425377011299133
+          }
+        }
+      },
+      "interventions": {
+        "('interpolation', 'input', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.265625,
+            "median": -13.125,
+            "min": -15.125,
+            "max": -12.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.421875,
+            "median": -0.5,
+            "min": -0.5,
+            "max": -0.125
+          }
+        },
+        "('interpolation', 'input', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -12.84375,
+            "median": -12.8125,
+            "min": -14.625,
+            "max": -11.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'input', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -12.234375,
+            "median": -12.0,
+            "min": -14.375,
+            "max": -11.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.609375,
+            "median": 0.5,
+            "min": 0.25,
+            "max": 1.0
+          }
+        },
+        "('interpolation', 'input', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -2.78125,
+            "median": -2.25,
+            "min": -8.75,
+            "max": 1.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 10.0625,
+            "median": 9.6875,
+            "min": 5.875,
+            "max": 14.25
+          }
+        },
+        "('interpolation', 'input', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 12.09375,
+            "median": 12.5,
+            "min": 9.25,
+            "max": 14.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 24.9375,
+            "median": 24.6875,
+            "min": 21.625,
+            "max": 27.5
+          }
+        },
+        "('interpolation', 'input', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 12.84375,
+            "median": 13.375,
+            "min": 10.0,
+            "max": 14.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 25.6875,
+            "median": 25.6875,
+            "min": 22.375,
+            "max": 27.75
+          }
+        },
+        "('interpolation', 'input', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 13.40625,
+            "median": 14.0,
+            "min": 10.25,
+            "max": 15.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 26.25,
+            "median": 26.5625,
+            "min": 22.625,
+            "max": 28.25
+          }
+        },
+        "('token_group_patch', 'input', None, 'last_token')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -12.90625,
+            "median": -12.9375,
+            "min": -14.625,
+            "max": -11.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.0625,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.0
+          }
+        },
+        "('token_group_patch', 'input', None, 'context_tokens')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 12.90625,
+            "median": 13.375,
+            "min": 10.0,
+            "max": 14.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 25.75,
+            "median": 25.8125,
+            "min": 22.375,
+            "max": 27.75
+          }
+        },
+        "('donor_delta', 'input', None, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -9.859375,
+            "median": -12.5,
+            "min": -14.375,
+            "max": 10.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 2.984375,
+            "median": 0.25,
+            "min": -0.25,
+            "max": 22.375
+          }
+        },
+        "('random_delta', 'input', None, None)": {
+          "answer_logodds": {
+            "n": 24,
+            "mean": -12.848958333333334,
+            "median": -12.625,
+            "min": -14.625,
+            "max": -11.25
+          },
+          "change_from_absent": {
+            "n": 24,
+            "mean": -0.005208333333333333,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.375
+          }
+        },
+        "('interpolation', 'block_34', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -13.234375,
+            "median": -13.125,
+            "min": -15.125,
+            "max": -11.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.390625,
+            "median": -0.5,
+            "min": -0.75,
+            "max": 0.125
+          }
+        },
+        "('interpolation', 'block_34', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -12.84375,
+            "median": -12.8125,
+            "min": -14.625,
+            "max": -11.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'block_34', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -11.3125,
+            "median": -10.9375,
+            "min": -13.875,
+            "max": -10.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 1.53125,
+            "median": 1.375,
+            "min": 0.75,
+            "max": 2.5
+          }
+        },
+        "('interpolation', 'block_34', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 2.375,
+            "median": 2.625,
+            "min": -4.5,
+            "max": 6.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 15.21875,
+            "median": 14.5625,
+            "min": 10.125,
+            "max": 19.75
+          }
+        },
+        "('interpolation', 'block_34', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 11.84375,
+            "median": 12.5,
+            "min": 9.25,
+            "max": 13.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 24.6875,
+            "median": 24.3125,
+            "min": 21.625,
+            "max": 27.25
+          }
+        },
+        "('interpolation', 'block_34', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 12.84375,
+            "median": 13.375,
+            "min": 10.0,
+            "max": 14.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 25.6875,
+            "median": 25.6875,
+            "min": 22.375,
+            "max": 27.75
+          }
+        },
+        "('interpolation', 'block_34', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 13.5,
+            "median": 14.0,
+            "min": 10.25,
+            "max": 15.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 26.34375,
+            "median": 26.6875,
+            "min": 22.625,
+            "max": 28.25
+          }
+        },
+        "('token_group_patch', 'block_34', None, 'last_token')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -12.890625,
+            "median": -12.9375,
+            "min": -14.5,
+            "max": -11.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -0.046875,
+            "median": 0.0,
+            "min": -0.25,
+            "max": 0.25
+          }
+        },
+        "('token_group_patch', 'block_34', None, 'context_tokens')": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 12.9375,
+            "median": 13.625,
+            "min": 9.75,
+            "max": 14.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 25.78125,
+            "median": 25.6875,
+            "min": 22.125,
+            "max": 28.0
+          }
+        },
+        "('interpolation', 'block_35', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -34.8125,
+            "median": -34.90625,
+            "min": -37.6875,
+            "max": -32.125
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -21.96875,
+            "median": -21.78125,
+            "min": -23.6875,
+            "max": -19.75
+          }
+        },
+        "('interpolation', 'block_35', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -12.84375,
+            "median": -12.8125,
+            "min": -14.625,
+            "max": -11.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'block_35', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -6.359375,
+            "median": -6.375,
+            "min": -8.125,
+            "max": -5.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 6.484375,
+            "median": 6.5,
+            "min": 5.625,
+            "max": 7.0
+          }
+        },
+        "('interpolation', 'block_35', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 0.25,
+            "median": 0.5,
+            "min": -1.75,
+            "max": 1.75
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 13.09375,
+            "median": 13.0625,
+            "min": 11.375,
+            "max": 14.25
+          }
+        },
+        "('interpolation', 'block_35', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 6.71875,
+            "median": 7.25,
+            "min": 4.5,
+            "max": 8.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 19.5625,
+            "median": 19.6875,
+            "min": 16.875,
+            "max": 21.25
+          }
+        },
+        "('interpolation', 'block_35', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 12.84375,
+            "median": 13.375,
+            "min": 10.0,
+            "max": 14.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 25.6875,
+            "median": 25.6875,
+            "min": 22.375,
+            "max": 27.75
+          }
+        },
+        "('interpolation', 'block_35', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 32.46875,
+            "median": 32.6875,
+            "min": 28.125,
+            "max": 35.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 45.3125,
+            "median": 46.0,
+            "min": 40.5,
+            "max": 48.25
+          }
+        },
+        "('interpolation', 'final_norm', -1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -38.578125,
+            "median": -38.96875,
+            "min": -41.625,
+            "max": -34.4375
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": -25.734375,
+            "median": -25.90625,
+            "min": -27.625,
+            "max": -22.0625
+          }
+        },
+        "('interpolation', 'final_norm', 0, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -12.84375,
+            "median": -12.8125,
+            "min": -14.625,
+            "max": -11.5
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "('interpolation', 'final_norm', 0.25, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": -6.421875,
+            "median": -6.5,
+            "min": -8.125,
+            "max": -5.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 6.421875,
+            "median": 6.5,
+            "min": 5.625,
+            "max": 7.0
+          }
+        },
+        "('interpolation', 'final_norm', 0.5, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 0.0,
+            "median": 0.25,
+            "min": -1.75,
+            "max": 1.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 12.84375,
+            "median": 12.8125,
+            "min": 11.375,
+            "max": 14.0
+          }
+        },
+        "('interpolation', 'final_norm', 0.75, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 6.46875,
+            "median": 7.0,
+            "min": 4.25,
+            "max": 8.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 19.3125,
+            "median": 19.4375,
+            "min": 16.625,
+            "max": 21.0
+          }
+        },
+        "('interpolation', 'final_norm', 1, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 12.84375,
+            "median": 13.375,
+            "min": 10.0,
+            "max": 14.25
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 25.6875,
+            "median": 25.6875,
+            "min": 22.375,
+            "max": 27.75
+          }
+        },
+        "('interpolation', 'final_norm', 2, None)": {
+          "answer_logodds": {
+            "n": 8,
+            "mean": 38.703125,
+            "median": 38.875,
+            "min": 32.125,
+            "max": 42.0
+          },
+          "change_from_absent": {
+            "n": 8,
+            "mean": 51.546875,
+            "median": 51.6875,
+            "min": 44.5,
+            "max": 55.625
+          }
+        }
+      },
+      "single_token_scans": {
+        "input": [
+          {
+            "index": 8,
+            "token": 43,
+            "change_from_absent": 27.25
+          },
+          {
+            "index": 8,
+            "token": 57,
+            "change_from_absent": 0.25
+          },
+          {
+            "index": 8,
+            "token": 63,
+            "change_from_absent": 0.25
+          },
+          {
+            "index": 8,
+            "token": 42,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 44,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 45,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 46,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 47,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 48,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 49,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 50,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 51,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 52,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 53,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 54,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 55,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 58,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 59,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 60,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 61,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 62,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 64,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 65,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 66,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 67,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 68,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 69,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 70,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 71,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 72,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 73,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 74,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 75,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 76,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 77,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 78,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 79,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 80,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 81,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 82,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 83,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 84,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 85,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 86,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 87,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 88,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 89,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 90,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 91,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 92,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 93,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 94,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 56,
+            "change_from_absent": -0.25
+          },
+          {
+            "index": 8,
+            "token": 95,
+            "change_from_absent": -0.25
+          }
+        ],
+        "block_34": [
+          {
+            "index": 8,
+            "token": 43,
+            "change_from_absent": 27.25
+          },
+          {
+            "index": 8,
+            "token": 91,
+            "change_from_absent": 0.25
+          },
+          {
+            "index": 8,
+            "token": 42,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 44,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 45,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 46,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 47,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 48,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 49,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 50,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 51,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 52,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 53,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 54,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 55,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 56,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 57,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 58,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 59,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 60,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 61,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 62,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 63,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 64,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 65,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 66,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 67,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 68,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 69,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 70,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 71,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 72,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 73,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 74,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 75,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 76,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 77,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 78,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 79,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 80,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 81,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 82,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 83,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 84,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 85,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 86,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 87,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 88,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 89,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 90,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 92,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 93,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 94,
+            "change_from_absent": 0.0
+          },
+          {
+            "index": 8,
+            "token": 95,
+            "change_from_absent": -0.25
+          }
+        ]
+      }
+    }
+  },
+  "archived_available": 24,
+  "archived_exact": 24
+}
