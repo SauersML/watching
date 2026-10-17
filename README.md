@@ -138,7 +138,7 @@ Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention
 
 ![Copying only the user token's state, or swapping only layer 35 head 6, reproduces the whole answer switch](figures/interventions.png)
 
-*Figure 7. Each arrow starts at a run's own Yes − No log-odds and ends where the copy or swap moves it. Top: mean of two prespecified prompts. Bottom: one head's output at the answer position, swapped in each direction, mean of eight diagnostic test prompts; the strongest other head is the one whose swaps move the answer most.*
+*Figure 7. Color: how far one copy or one swap moves the Yes − No log-odds. Top: the prompt from Figure 8; no other token moves it by more than 0.25 nats. Bottom: mean of eight diagnostic test prompts, all 64 heads of layers 34–35; no other head moves it by more than 0.23 nats.*
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 

@@ -1260,84 +1260,105 @@ def fresh_answers(out, tiles):
 GRID = 'stroke="#E5E5EA" stroke-width="1.2"'
 
 
+def heat(value, top=28):
+    """Grey for no effect, red for an effect as large as the whole answer switch."""
+    t = min(abs(value) / top, 1)
+    low, high = (0xE6, 0xE6, 0xEB), tuple(int(RED[i : i + 2], 16) for i in (1, 3, 5))
+    return "#" + "".join(f"{round(a + (b - a) * t):02x}" for a, b in zip(low, high, strict=True))
+
+
+def signed(value):
+    return f"{value:+.1f}".replace("-", "−")
+
+
+def effect_strip(parts, left, cy, row, effects, size=18):
+    """The prompt's tokens, each coloured by the effect of copying that token alone."""
+    x = left
+    for where, label in STRIP:
+        if isinstance(where, tuple):
+            effect = max((effects[i] for i in range(*where)), key=abs)
+            content, mono = label, label is not None
+            if label is None:
+                content = excerpt(row["tokens"][where[0] : where[1]], 170, size)
+        else:
+            effect, content, mono = effects[where], label, True
+        w = (len(content) * size * 0.602 if mono else width(content, size)) + 18
+        strong = abs(effect) >= 10
+        parts.append(
+            box(x, cy - 26, w, 52, heat(effect), "white" if strong else BORDER, 11, 1.4, False)
+        )
+        family = MONO if mono else FONT
+        color = "white" if strong else INK
+        parts.append(
+            text(x + w / 2, cy + size * 0.36, content, size, strong, color, "middle", family)
+        )
+        if strong:
+            parts.append(text(x + w / 2, cy - 38, signed(effect), 20, True, RED, "middle"))
+        x += w + 7
+    return x
+
+
+def head_grid(parts, left, top, values, cell=11.6, pitch=14.2):
+    """Layers 35 (top) and 34 (bottom), heads 0-31, coloured by the swap's effect."""
+    for r, block in enumerate((35, 34)):
+        y = top + r * 36
+        parts.append(text(left - 12, y + 21, f"layer {block}", 16, True, anchor="end"))
+        for head in range(32):
+            value = values[(block, head)]
+            parts.append(
+                f'<rect x="{left + head * pitch:.1f}" y="{y}" width="{cell}" height="30" rx="2.5" '
+                f'fill="{heat(value)}"/>'
+            )
+            if abs(value) >= 10:
+                parts.append(
+                    text(
+                        left + head * pitch + cell / 2,
+                        y - 10,
+                        signed(value),
+                        19,
+                        True,
+                        RED,
+                        "middle",
+                    )
+                )
+    for head in (0, 6, 31):
+        parts.append(text(left + head * pitch + cell / 2, top + 92, str(head), 15, anchor="middle"))
+
+
 def interventions(out, tiles):
-    """Arrows from each run's own answer to its answer after a copy or swap."""
+    """Copying one token, or swapping one head, and how far each moves the answer."""
     from plot_tail_mechanism import collect
 
     tail = ROOT / "results/tail-mechanism-041r"
-    scans = collect(tail)["scans"]
+    collect(tail)  # validates the archived scan before it is drawn
     scored = json.loads((tail / "scores.json").read_text())["rows"]
-
-    def own(scan, capture):
-        (value,) = [
-            r["yes_minus_no"]
-            for r in scored
-            if r["stage"] == "trained"
-            and r["kind"] == "baseline"
-            and (r["split"], r["index"], r["capture"]) == (scan["split"], scan["index"], capture)
-        ]
-        return value
-
-    def mean(values):
-        return float(np.mean(list(values)))
-
-    start = mean(own(scan, False) for scan in scans)
-    copies = (
-        ("every token", "full_input_swap", False),
-        ("only `user`", "user_token_only", True),
-        ("only the last token", "last_token_only", False),
-        ("the strongest other token", "largest_other_token", False),
+    scan = next(
+        t
+        for t in json.loads((tail / "token_identity.json").read_text())["scans"]
+        if (t["split"], t["index"]) == ("test", 8)
     )
-    copied = [
-        (label, [(start, start + mean(scan[key] for scan in scans))], key6)
-        for label, key, key6 in copies
+    rows = [
+        r for r in scored if r["stage"] == "trained" and (r["split"], r["index"]) == ("test", 8)
     ]
+    own = {r["capture"]: r["yes_minus_no"] for r in rows if r["kind"] == "baseline"}
+    patched = {
+        r["token"]: r["yes_minus_no"]
+        for r in rows
+        if r["kind"] == "single_token_patch" and r["site"] == "input"
+    }
+    row = json.loads(PANELS.read_text())["prompts"][0]
+    assert row["prompt"] == ["test", 8] and len(row["tokens"]) == len(scan["valid_positions"])
+    effects = [patched[p] - own[False] for p in scan["valid_positions"]]
 
-    circuit = ROOT / "results/tail-circuit-044"
-    base = json.loads((circuit / "baselines.json").read_text())["rows"]
-    base = [r for r in base if r["split"] == "test"]
-    off = mean(r["yes_minus_no"] for r in base if not r["capture"])
-    on = mean(r["yes_minus_no"] for r in base if r["capture"])
-    singles = json.loads((circuit / "scores.json").read_text())["rows"]
-    singles = [r for r in singles if r["kind"] == "single_head" and r["split"] == "test"]
-    summary = json.loads((circuit / "summary.json").read_text())["head_summary"]["test"]
+    summary = json.loads((ROOT / "results/tail-circuit-044/summary.json").read_text())
+    heads = summary["head_summary"]["test"]
+    into_none = {(r["block"], r["head"]): r["sufficiency_nats"]["mean"] for r in heads}
+    into_probe = {(r["block"], r["head"]): -r["necessity_nats"]["mean"] for r in heads}
 
-    def size(row):
-        return (row["sufficiency_nats"]["mean"] + row["necessity_nats"]["mean"]) / 2
-
-    rival = max(
-        (r for r in summary if (r["block"], r["head"]) != (35, 6)), key=lambda r: abs(size(r))
-    )
-
-    def moves(block, head):
-        rows = [r for r in singles if (r["block"], r["head"]) == (block, head)]
-        assert {r["index"] for r in rows} == {r["index"] for r in base} and len(rows) == 8
-        return [
-            (off, mean(r["patched_absent"]["yes_minus_no"] for r in rows)),
-            (on, mean(r["patched_present"]["yes_minus_no"] for r in rows)),
-        ]
-
-    swapped = [
-        ("only layer 35, head 6", moves(35, 6), True),
-        ("the strongest other head", moves(rival["block"], rival["head"]), False),
-    ]
-    panels = (
-        (
-            "Copy the probe run’s activations entering layer 34 into a no-probe run, at",
-            False,
-            (start, mean(own(scan, True) for scan in scans)),
-            copied,
-        ),
-        ("Swap one head’s output at the answer between the two runs", True, (off, on), swapped),
-    )
-    w, zero, unit, top = 1160, 790, 20, 30
-
-    def at(value):
-        return zero + unit * value
-
+    w = 1160
     parts = [f"<defs>{markers(INK)}</defs>"]
-    y = top
-    for title, both_ways, (none, probe), rows in panels:
+
+    def header(y, title, both_ways):
         parts.append(tile(24, y - 4, 52, 52, tiles["watched"], radius=11))
         if both_ways:
             parts.append(arrow(86, y + 14, 122, y + 14))
@@ -1347,83 +1368,35 @@ def interventions(out, tiles):
         parts.append(tile(132, y - 4, 52, 52, tiles["unwatched"], radius=11))
         parts.append(text(50, y + 70, "probe", 15, True, RED, "middle"))
         parts.append(text(158, y + 70, "no probe", 15, True, INK, "middle"))
-        parts.append(text(204, y + 31, title, 23, True))
-        y += 112
-        parts.append(text(at(none), y, "no probe", 17, True, INK, "middle"))
-        parts.append(text(at(probe), y, "probe", 17, True, RED, "middle"))
-        first = y + 12
-        y += 52
-        drawn = []
-        for label, arrows, key in rows:
-            height = 30 * len(arrows)
-            parts.append(rich(400, y + height / 2 - 8, label, 20, key, "end", RED if key else INK))
-            for k, (begin, end) in enumerate(arrows):
-                drawn.append((y + 30 * k, begin, end, key))
-            y += height + 26
-        last = y - 26
-        for x, dash in ((at(none), "4 5"), (at(probe), "4 5"), (zero, None)):
-            style = f' stroke-dasharray="{dash}"' if dash else ""
-            parts.append(
-                f'<line x1="{x:.1f}" y1="{first}" x2="{x:.1f}" y2="{last}" '
-                f'stroke="{"#C7C7CC" if dash else "#E5E5EA"}" stroke-width="1.6"{style}/>'
-            )
-        for cy, begin, end, key in drawn:
-            color = RED if key else "#A1A1A6"
-            change = end - begin
-            rightward = change >= 0
-            if abs(change) * unit >= 18:
-                parts.append(pointer(at(begin), cy, at(end), cy, color, 5, 16, 17))
-                lx = at(end) + (10 if rightward else -10)
-            else:
-                parts.append(
-                    f'<line x1="{at(begin):.1f}" y1="{cy - 10}" x2="{at(begin):.1f}" '
-                    f'y2="{cy + 10}" stroke="{color}" stroke-width="4"/>'
-                )
-                rightward = begin < 0
-                lx = at(begin) + (10 if rightward else -10)
-            shown = (
-                "0"
-                if abs(change) < 0.005
-                else f"{change:+.1f}"
-                if abs(change) >= 1
-                else f"{change:+.2f}"
-            )
-            parts.append(
-                text(
-                    lx,
-                    cy + 7,
-                    shown.replace("-", "−"),
-                    19,
-                    True,
-                    RED if key else INK,
-                    "start" if rightward else "end",
-                )
-            )
-        y += 30
-    bottom = y - 30
+        parts.append(rich(204, y + 31, title, 23, True))
+
+    header(30, "Copy one token’s activations entering layer 34 into the no-probe run", False)
+    effect_strip(parts, 24, 186, row, effects)
     parts.append(
-        f'<line x1="{at(-16)}" y1="{bottom}" x2="{at(16)}" y2="{bottom}" stroke="{INK}" '
-        'stroke-width="1.6"/>'
+        text(24, 252, f"Copying every token at once: {signed(own[True] - own[False])}", 18, True)
     )
-    for tick in (-10, 0, 10):
-        parts.append(
-            f'<line x1="{at(tick)}" y1="{bottom}" x2="{at(tick)}" y2="{bottom + 7}" '
-            f'stroke="{INK}" stroke-width="1.6"/>'
-        )
-        parts.append(
-            text(
-                at(tick),
-                bottom + 30,
-                f"{tick:+d}".replace("-", "−").replace("+0", "0"),
-                17,
-                color=MUTED,
-                anchor="middle",
-            )
-        )
-    parts.append(text(at(-16), bottom + 30, "No", 19, True, INK, "start"))
-    parts.append(text(at(16), bottom + 30, "Yes", 19, True, RED, "end"))
-    parts.append(text(zero, bottom + 62, "Yes − No log-odds (nats)", 19, anchor="middle"))
-    render(document(w, int(bottom + 84), "\n".join(parts)), out, "interventions")
+
+    header(318, "Swap one head’s output at the answer between the two runs", True)
+    for left, values, (source, target), label in (
+        (108, into_none, ("watched", "unwatched"), "into the no-probe run"),
+        (690, into_probe, ("unwatched", "watched"), "into the probe run"),
+    ):
+        parts.append(tile(left, 420, 34, 34, tiles[source], radius=8))
+        parts.append(arrow(left + 42, 437, left + 70, 437))
+        parts.append(tile(left + 76, 420, 34, 34, tiles[target], radius=8))
+        parts.append(text(left + 122, 444, label, 18, True))
+        head_grid(parts, left, 500, values)
+
+    lx, ly, lw = w / 2 - 170, 650, 340
+    parts.append(
+        '<linearGradient id="effect"><stop offset="0" stop-color="#E6E6EB"/>'
+        f'<stop offset="1" stop-color="{RED}"/></linearGradient>'
+        f'<rect x="{lx}" y="{ly}" width="{lw}" height="16" rx="4" fill="url(#effect)"/>'
+    )
+    parts.append(text(lx - 10, ly + 14, "0", 16, True, anchor="end"))
+    parts.append(text(lx + lw + 10, ly + 14, "28", 16, True, RED))
+    parts.append(text(w / 2, ly + 46, "Change in Yes − No log-odds (nats)", 18, anchor="middle"))
+    render(document(w, ly + 66, "\n".join(parts)), out, "interventions")
 
 
 def main():
