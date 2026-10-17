@@ -212,7 +212,7 @@ def run_matrix(model, inputs, out, report, answer_ids, retained_reference=None):
         raise RuntimeError("Diagnostic hook was not removed")
 
 
-def evaluate(args, report):
+def evaluate(args, report, matrix=None):
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA required; no CPU fallback")
     for package, expected in [("torch", "2.10.0"), ("transformers", "5.18.0")]:
@@ -256,11 +256,28 @@ def evaluate(args, report):
         runtime=runtime_provenance(),
         state_before=state_digest(model),
     )
+    if matrix is not None:
+        report["cpu_buffer_sha256"] = {
+            name: tensor_digest(value)
+            for name, value in model.named_buffers(remove_duplicate=False)
+        }
     model.cuda()
+    if matrix is not None:
+        cuda_inputs = {k: v.cuda() for k, v in inputs.items()}
+        report["input_transfer_bit_equal"] = {
+            name: byte_equal(value, cuda_inputs[name].cpu()) for name, value in inputs.items()
+        }
+        if not all(report["input_transfer_bit_equal"].values()):
+            raise RuntimeError("CPU-to-CUDA input transfer changed values")
     write_json(args.out / "report.json", report)
     answer_ids = record_answer_ids(tokenizer, data["validation"][0])
-    run_matrix(
-        model, {k: v.cuda() for k, v in inputs.items()}, args.out, report, answer_ids, reference
+    (run_matrix if matrix is None else matrix)(
+        model,
+        {k: v.cuda() for k, v in inputs.items()} if matrix is None else cuda_inputs,
+        args.out,
+        report,
+        answer_ids,
+        reference,
     )
     report["state_after"] = state_digest(model)
     if report["state_before"] != report["state_after"]:

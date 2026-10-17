@@ -16,7 +16,19 @@ def digest(path):
 
 
 out, previous = map(Path, sys.argv[1:])
-extensions = {".py", ".json", ".ptx", ".ttir", ".ttgir", ".llir", ".cpp", ".h", ".cubin"}
+extensions = {
+    ".py",
+    ".json",
+    ".ptx",
+    ".ttir",
+    ".ttgir",
+    ".llir",
+    ".cpp",
+    ".h",
+    ".cubin",
+    ".best_config",
+    ".source",
+}
 roots = (
     {p.name: p for p in (out / "evaluation").iterdir() if p.is_dir()}
     if (out / "evaluation").is_dir()

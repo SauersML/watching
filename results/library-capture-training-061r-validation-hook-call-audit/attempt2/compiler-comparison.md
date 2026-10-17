@@ -1,6 +1,6 @@
 # Local compiler artifact comparison
 
-No operation, reduction tiling, memory layout, launch configuration, or generated CUDA instruction difference was found between the five diagnostic arms. This includes the two bare/omitted compilations whose output tensors differ, and the disabled/False arm whose output matches the first bare compilation. The retained generated code therefore does **not** explain that output grouping.
+No operation, reduction tiling, memory layout, candidate launch configuration, or generated CUDA instruction difference was found in the captured artifacts from the five diagnostic arms. Selected autotune configurations were not saved, so equality of the candidate set does not establish equality of the configuration chosen at runtime. This includes the two bare/omitted compilations whose output tensors differ, and the disabled/False arm whose output matches the first bare compilation. The retained generated code therefore does **not** explain that output grouping.
 
 The comparison read the recovered compiler archive locally; it did not compile, run the model, or use a GPU. Archive SHA256: `a10ac81489c2ffbf52207b5fb987505c9edaee5635068749a59ff0e164ec17da`. The earlier fresh-failure subtree was excluded from this five-arm comparison.
 
@@ -31,3 +31,5 @@ python3 compare_compilers.py /path/to/compiler-artifacts.tar.gz --output compile
 ```
 
 The script uses only the Python standard library. Ruff checks passed, and rerunning it reproduced the stored comparison.
+
+The [deeper local review](../deeper_review.md) identifies runtime input/state coverage and selected-autotune-sidecar gaps, and proposes a separate instrumented follow-up.
