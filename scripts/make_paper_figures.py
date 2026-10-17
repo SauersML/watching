@@ -3,7 +3,6 @@
 import argparse
 import hashlib
 import json
-import textwrap
 from pathlib import Path
 
 import matplotlib
@@ -73,12 +72,12 @@ def style():
             "font.size": 15,
             "text.color": INK,
             "axes.labelcolor": INK,
-            "axes.labelsize": 16,
+            "axes.labelsize": 19,
             "axes.labelpad": 10,
             "xtick.color": MUTED,
             "ytick.color": MUTED,
-            "xtick.labelsize": 14,
-            "ytick.labelsize": 14,
+            "xtick.labelsize": 17,
+            "ytick.labelsize": 17,
             "xtick.major.size": 0,
             "ytick.major.size": 0,
             "xtick.major.pad": 8,
@@ -573,10 +572,10 @@ def recipe(out):
     save(fig, out, "training_recipe")
 
 
-def chip(ax, x, cy, text, fill=PROMPT, edge="none", color=INK, size=16, mono=True, pad=12):
+def chip(ax, x, cy, text, fill=PROMPT, edge="none", color=INK, size=16, mono=True, pad=12, h=48):
     """A token or tensor chip whose width follows its text; returns the right edge."""
-    width = len(text) * size * PT * (0.6 if mono else 0.52) + 2 * pad
-    rbox(ax, x, cy - 24, width, 48, fill, edge, 2.2, radius=10, z=3)
+    width = (len(text) * size * PT * 0.6 if mono else text_width(ax, text, size)) + 2 * pad
+    rbox(ax, x, cy - h / 2, width, h, fill, edge, 2.4, radius=12, z=3)
     ax.text(
         x + width / 2,
         cy,
@@ -627,21 +626,16 @@ def compiler(out):
 
 def circuit(out):
     """One attention head carries the user token's offset to the answer."""
-    fig, ax = canvas(1120, 330)
-    cy = 110
-    x = 20
-    edges = {}
+    fig, ax = canvas(1120, 318)
+    cy, x, edges = 104, 16, {}
     for key, text in (
         ("start", "<|im_start|>"),
         ("user", "user"),
-        ("nl", "\u21b5"),
         ("question", "Is a read-only probe \u2026 ?"),
-        ("gap", "\u2026"),
         ("assistant", "assistant"),
         ("answer", "\u21b5"),
     ):
         user = key == "user"
-        mono = key != "question"
         right = chip(
             ax,
             x,
@@ -650,30 +644,31 @@ def circuit(out):
             PALE_RED if user else PROMPT,
             RED if user else "none",
             RED if user else INK,
-            17,
-            mono,
+            20,
+            key != "question",
+            pad=14,
+            h=60,
         )
         edges[key] = (x, right)
-        x = right + 10
-    arrow(ax, (x + 4, cy), (x + 40, cy))
-    write(ax, x + 52, cy, "Yes", 34, True, RED, ha="left")
-    ux = sum(edges["user"]) / 2
-    ax_ = sum(edges["answer"]) / 2
-    write(ax, ux, cy - 52, "same offset in every prompt", 15, True, RED)
+        x = right + 12
+    arrow(ax, (x + 2, cy), (x + 40, cy))
+    write(ax, x + 52, cy, "Yes", 40, True, RED, ha="left")
+    ux, end = (sum(edges[k]) / 2 for k in ("user", "answer"))
+    write(ax, ux, cy - 62, "same offset in every prompt", 18, True, RED)
     ax.add_patch(
         FancyArrowPatch(
-            (ux, cy + 28),
-            (ax_, cy + 28),
-            connectionstyle="arc3,rad=-0.32",
+            (ux, cy + 34),
+            (end, cy + 34),
+            connectionstyle="arc3,rad=-0.3",
             arrowstyle="-|>",
-            mutation_scale=24,
-            lw=3,
+            mutation_scale=28,
+            lw=3.4,
             color=RED,
             zorder=5,
         )
     )
     write(
-        ax, (ux + ax_) / 2, cy + 28 + 0.32 * (ax_ - ux) / 2 + 26, "Layer 35, head 6", 20, True, RED
+        ax, (ux + end) / 2, cy + 34 + 0.3 * (end - ux) / 2 + 30, "Layer 35, head 6", 24, True, RED
     )
     save(fig, out, "circuit")
 
@@ -683,29 +678,32 @@ def heads(out, root):
     summary = json.loads((root / "summary.json").read_text())
     rows = summary["head_summary"]["test"]
     gap = summary["cohorts"]["test"]["role_user_input"]["baseline_gap_nats"]["mean"]
-    fig, ax = chart(height=4.6)
-    fig.subplots_adjust(left=0.1, right=0.97, top=0.86, bottom=0.2)
+    fig, ax = chart(height=4.8)
+    fig.subplots_adjust(left=0.11, right=0.97, top=0.9, bottom=0.17)
     for row in rows:
         x = (row["block"] - 34) * 34 + row["head"]
         value = (row["sufficiency_nats"]["mean"] + row["necessity_nats"]["mean"]) / 2
-        top = (row["block"], row["head"]) == (35, 6)
-        ax.bar(x, max(value, 0.45), 0.62, color=RED if top else BASE, zorder=3)
-        if top:
+        if (row["block"], row["head"]) == (35, 6):
+            ax.plot([x, x], [0, value], color=RED, lw=5, solid_capstyle="butt", zorder=3)
+            ax.plot(x, value, "o", ms=15, color=RED, mec="white", mew=2.5, zorder=4)
             ax.annotate(
                 f"Layer 35, head 6: {value:.1f} nats",
                 (x, value),
-                xytext=(14, -2),
+                xytext=(-20, -2),
                 textcoords="offset points",
-                fontsize=17,
+                fontsize=20,
                 weight="bold",
                 color=RED,
+                ha="right",
                 va="top",
             )
+        else:
+            ax.plot(x, value, "o", ms=8, color=BASE, mec="white", mew=1.2, zorder=3)
     ax.axhline(gap, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
-    ax.text(66, gap + 0.6, "whole effect", ha="right", va="bottom", fontsize=14, color=MUTED)
-    ax.set_xticks([15.5, 49.5], ["Layer 34 heads", "Layer 35 heads"], fontsize=16, color=INK)
+    ax.text(66, gap + 0.7, "whole effect", ha="right", va="bottom", fontsize=17, color=MUTED)
+    ax.set_xticks([15.5, 49.5], ["Layer 34 heads", "Layer 35 heads"], fontsize=19, color=INK)
     ax.set_xlim(-1.5, 66.5)
-    ax.set_ylim(0, 30)
+    ax.set_ylim(-1.5, 30)
     ax.set_yticks([0, 10, 20, 30])
     ax.set_ylabel("Answer switch carried (nats)")
     save(fig, out, "heads")
@@ -720,7 +718,9 @@ def deployment(out, fit):
             rows = json.loads((fit / f"many_{split}_{step}.json").read_text())["rows"]
             counts.append((len(rows), sum(r["greedy_correct"] for r in rows)))
         groups.append((label, tuple(counts)))
-    fig = before_after(groups, ylabel="Correct answers", chance=True)
+    fig = before_after(
+        groups, ylabel="Correct answers", chance=True, labels=("Qwen3-8B", "Readout fitted")
+    )
     save(fig, out, "deployment")
 
 
@@ -729,7 +729,7 @@ def deployment(out, fit):
 
 def chart(width=10.4, height=5.2):
     fig, ax = plt.subplots(figsize=(width, height))
-    fig.subplots_adjust(left=0.115, right=0.84, top=0.94, bottom=0.17)
+    fig.subplots_adjust(left=0.135, right=0.84, top=0.94, bottom=0.18)
     return fig, ax
 
 
@@ -746,7 +746,7 @@ def end_label(ax, x, y, text, color, dy=0):
         xytext=(14, dy),
         textcoords="offset points",
         va="center",
-        fontsize=16,
+        fontsize=20,
         weight="bold",
         color=color,
         annotation_clip=False,
@@ -855,7 +855,13 @@ def both_correct(path):
     return counts
 
 
-def before_after(groups, height=5.4, ylabel="New prompts answered correctly", chance=False):
+def before_after(
+    groups,
+    height=5.4,
+    ylabel="New prompts answered correctly",
+    chance=False,
+    labels=("Qwen3-8B", "Trained"),
+):
     """Bars of fully correct prompts for the original and trained model, one pair per group."""
     width = 4.2 + 2.4 * len(groups)
     fig, ax = chart(width=width, height=height)
@@ -869,13 +875,13 @@ def before_after(groups, height=5.4, ylabel="New prompts answered correctly", ch
                 f"{k / n:.0%}",
                 ha="center",
                 va="bottom",
-                fontsize=18,
+                fontsize=21,
                 weight="bold",
                 color=INK if color == GREEN else MUTED,
                 bbox={"fc": "white", "ec": "none", "pad": 1.5},
                 zorder=6,
             )
-    ax.set_xticks(range(len(groups)), [label for label, _ in groups], fontsize=17, color=INK)
+    ax.set_xticks(range(len(groups)), [label for label, _ in groups], fontsize=20, color=INK)
     ax.tick_params(axis="x", pad=12)
     ax.set_xlim(-0.6, len(groups) - 0.4)
     percent_axis(ax, low=0)
@@ -885,14 +891,14 @@ def before_after(groups, height=5.4, ylabel="New prompts answered correctly", ch
     if chance:
         ax.axhline(0.5, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=2)
         ax.text(
-            len(groups) - 0.42, 0.515, "chance", ha="right", va="bottom", fontsize=14, color=MUTED
+            len(groups) - 0.42, 0.515, "chance", ha="right", va="bottom", fontsize=17, color=MUTED
         )
     fig.legend(
-        handles=[Patch(color=BASE, label="Qwen3-8B"), Patch(color=GREEN, label="Trained")],
+        handles=[Patch(color=BASE, label=labels[0]), Patch(color=GREEN, label=labels[1])],
         loc="upper left",
         bbox_to_anchor=(ax.get_position().x0 - 0.01, 0.99),
         ncol=2,
-        fontsize=16,
+        fontsize=19,
         handlelength=1.1,
         handleheight=1.1,
         columnspacing=1.8,
@@ -959,7 +965,7 @@ def mechanism(out, root):
             weight="bold",
             color=INK if color == RED else MUTED,
         )
-    ax.set_yticks(range(len(rows)), [label for _, label, _ in rows], fontsize=17, color=INK)
+    ax.set_yticks(range(len(rows)), [label for _, label, _ in rows], fontsize=20, color=INK)
     ax.get_yticklabels()[1].set_color(RED)
     ax.get_yticklabels()[1].set_weight("bold")
     ax.invert_yaxis()
