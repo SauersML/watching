@@ -1,0 +1,18 @@
+{
+  "run": "watching-viewing-identity-054",
+  "source_commit": "d7755ce89fd8f7a5ff9a26337d203aeb8f8016b4",
+  "status": "infrastructure_preflight_failed",
+  "training_started": false,
+  "optimizer_updates": 0,
+  "cause": "The runner could not connect while preloading the pinned base model and marked the run refused. Scientific code was never executed.",
+  "cleanup": "The runner remained in setup for rsync after refusal; its owned process received SIGTERM to invoke cleanup. Both provisioned pods were confirmed deleted and the exact temporary approval was removed.",
+  "runner_exit_status": 143,
+  "cost_usd": 0.0343,
+  "cost_parts_usd": {
+    "rejected_community_host": 0.0013,
+    "secure_setup": 0.033
+  },
+  "retry": "One authorized unchanged-source retry watching-viewing-identity-054r, capped at 0.46 hours and $1.20/hour; cumulative identity cap $0.60.",
+  "scientific_gates_relaxed": false,
+  "private_infrastructure_logs_included": false
+}
