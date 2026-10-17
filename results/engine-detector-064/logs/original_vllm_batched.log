@@ -1,0 +1,209 @@
+INFO 10-17 21:17:12 [utils.py:233] non-default args: {'dtype': 'bfloat16', 'max_model_len': 59, 'max_num_seqs': 64, 'max_logprobs': 151936, 'disable_log_stats': True, 'generation_config': 'vllm', 'model': '/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218'}
+INFO 10-17 21:17:22 [model.py:549] Resolved architecture: Qwen3ForCausalLM
+INFO 10-17 21:17:22 [model.py:1678] Using max model len 59
+INFO 10-17 21:17:22 [scheduler.py:238] Chunked prefill is enabled with max_num_batched_tokens=3776.
+INFO 10-17 21:17:22 [vllm.py:790] Asynchronous scheduling is enabled.
+(EngineCore pid=20195) INFO 10-17 21:17:23 [core.py:105] Initializing a V1 LLM engine (v0.19.1) with config: model='/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218', speculative_config=None, tokenizer='/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=59, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'splitting_ops': ['vllm::unified_attention', 'vllm::unified_attention_with_output', 'vllm::unified_mla_attention', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::linear_attention', 'vllm::plamo2_mamba_mixer', 'vllm::gdn_attention_core', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::kda_attention', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_images_per_batch': 0, 'compile_sizes': [], 'compile_ranges_endpoints': [3776], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'size_asserts': False, 'alignment_asserts': False, 'scalar_asserts': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False}, 'max_cudagraph_capture_size': 128, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': True, 'static_all_moe_layers': []}
+(EngineCore pid=20195) INFO 10-17 21:17:23 [parallel_state.py:1400] world_size=1 rank=0 local_rank=0 distributed_init_method=tcp://192.168.1.2:33337 backend=nccl
+(EngineCore pid=20195) INFO 10-17 21:17:23 [parallel_state.py:1716] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank N/A, EPLB rank N/A
+(EngineCore pid=20195) INFO 10-17 21:17:24 [gpu_model_runner.py:4735] Starting to load model /workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218...
+(EngineCore pid=20195) INFO 10-17 21:17:25 [cuda.py:334] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore pid=20195) INFO 10-17 21:17:25 [flash_attn.py:596] Using FlashAttention version 2
+(EngineCore pid=20195) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+(EngineCore pid=20195) <frozen importlib._bootstrap_external>:1301: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+(EngineCore pid=20195) Loading safetensors checkpoint shards:   0% Completed | 0/5 [00:00<?, ?it/s]
+(EngineCore pid=20195) Loading safetensors checkpoint shards:  20% Completed | 1/5 [00:00<00:02,  1.51it/s]
+(EngineCore pid=20195) Loading safetensors checkpoint shards:  40% Completed | 2/5 [00:01<00:02,  1.34it/s]
+(EngineCore pid=20195) Loading safetensors checkpoint shards:  60% Completed | 3/5 [00:02<00:01,  1.37it/s]
+(EngineCore pid=20195) Loading safetensors checkpoint shards:  80% Completed | 4/5 [00:02<00:00,  1.35it/s]
+(EngineCore pid=20195) Loading safetensors checkpoint shards: 100% Completed | 5/5 [00:03<00:00,  1.83it/s]
+(EngineCore pid=20195) Loading safetensors checkpoint shards: 100% Completed | 5/5 [00:03<00:00,  1.59it/s]
+(EngineCore pid=20195) 
+(EngineCore pid=20195) INFO 10-17 21:17:28 [default_loader.py:384] Loading weights took 3.16 seconds
+(EngineCore pid=20195) INFO 10-17 21:17:29 [gpu_model_runner.py:4820] Model loading took 15.27 GiB memory and 4.411187 seconds
+(EngineCore pid=20195) INFO 10-17 21:17:36 [backends.py:1051] Using cache directory: /workspace/e64/vcache-base3/torch_compile_cache/754ec2b584/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=20195) INFO 10-17 21:17:36 [backends.py:1111] Dynamo bytecode transform time: 7.18 s
+(EngineCore pid=20195) INFO 10-17 21:17:42 [backends.py:372] Cache the graph of compile range (1, 3776) for later use
+(EngineCore pid=20195) INFO 10-17 21:17:47 [backends.py:390] Compiling a graph for compile range (1, 3776) takes 10.57 s
+(EngineCore pid=20195) INFO 10-17 21:17:49 [decorators.py:655] saved AOT compiled function to /workspace/e64/vcache-base3/torch_compile_cache/torch_aot_compile/c1131aa1b24ca20f87fc08d931feb59519f422206b4744afd8f1d51094b29f41/rank_0_0/model
+(EngineCore pid=20195) INFO 10-17 21:17:49 [monitor.py:48] torch.compile took 20.06 s in total
+(EngineCore pid=20195) INFO 10-17 21:17:50 [monitor.py:76] Initial profiling/warmup run took 1.00 s
+(EngineCore pid=20195) INFO 10-17 21:17:57 [kv_cache_utils.py:829] Overriding num_gpu_blocks=0 with num_gpu_blocks_override=128
+(EngineCore pid=20195) INFO 10-17 21:17:57 [gpu_model_runner.py:5876] Profiling CUDA graph memory: PIECEWISE=19 (largest=128), FULL=11 (largest=64)
+(EngineCore pid=20195) INFO 10-17 21:17:59 [gpu_model_runner.py:5955] Estimated CUDA graph memory: 0.22 GiB total
+(EngineCore pid=20195) INFO 10-17 21:17:59 [gpu_worker.py:436] Available KV cache memory: 26.08 GiB
+(EngineCore pid=20195) INFO 10-17 21:17:59 [gpu_worker.py:470] In v0.19, CUDA graph memory profiling will be enabled by default (VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1), which more accurately accounts for CUDA graph memory during KV cache allocation. To try it now, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1 and increase --gpu-memory-utilization from 0.9000 to 0.9046 to maintain the same effective KV cache size.
+(EngineCore pid=20195) INFO 10-17 21:17:59 [kv_cache_utils.py:1319] GPU KV cache size: 189,936 tokens
+(EngineCore pid=20195) INFO 10-17 21:17:59 [kv_cache_utils.py:1324] Maximum concurrency for 59 tokens per request: 2967.75x
+(EngineCore pid=20195) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/19 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  16%|█▌        | 3/19 [00:00<00:00, 20.17it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  32%|███▏      | 6/19 [00:00<00:00, 20.00it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  47%|████▋     | 9/19 [00:00<00:00, 20.67it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|██████▎   | 12/19 [00:00<00:00, 21.03it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  79%|███████▉  | 15/19 [00:00<00:00, 21.78it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  95%|█████████▍| 18/19 [00:00<00:00, 21.72it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 19/19 [00:00<00:00, 21.38it/s]
+(EngineCore pid=20195) Capturing CUDA graphs (decode, FULL):   0%|          | 0/11 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):  27%|██▋       | 3/11 [00:00<00:00, 24.00it/s]Capturing CUDA graphs (decode, FULL):  55%|█████▍    | 6/11 [00:00<00:00, 24.77it/s]Capturing CUDA graphs (decode, FULL):  82%|████████▏ | 9/11 [00:00<00:00, 25.87it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 11/11 [00:00<00:00, 25.78it/s]
+(EngineCore pid=20195) INFO 10-17 21:18:01 [gpu_model_runner.py:6046] Graph capturing finished in 2 secs, took 0.20 GiB
+(EngineCore pid=20195) INFO 10-17 21:18:01 [gpu_worker.py:597] CUDA graph pool memory: 0.2 GiB (actual), 0.22 GiB (estimated), difference: 0.02 GiB (7.8%).
+(EngineCore pid=20195) INFO 10-17 21:18:01 [core.py:283] init engine (profile, create kv cache, warmup model) took 32.13 seconds
+{"id": "dev-000", "group": "dev", "pass": 0, "yes_logprob": -4.264163494110107, "no_logprob": -0.01416344940662384, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-001", "group": "dev", "pass": 0, "yes_logprob": -8.375362396240234, "no_logprob": -0.0003625689132604748, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-002", "group": "dev", "pass": 0, "yes_logprob": -23.0, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-003", "group": "dev", "pass": 0, "yes_logprob": -3.773249626159668, "no_logprob": -0.023249639198184013, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-004", "group": "dev", "pass": 0, "yes_logprob": -5.753177642822266, "no_logprob": -0.0031777145341038704, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-005", "group": "dev", "pass": 0, "yes_logprob": -5.015409469604492, "no_logprob": -0.015409577637910843, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-006", "group": "dev", "pass": 0, "yes_logprob": -7.500566482543945, "no_logprob": -0.0005663221818394959, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-007", "group": "dev", "pass": 0, "yes_logprob": -1.3134007453918457, "no_logprob": -0.3134008049964905, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-008", "group": "dev", "pass": 0, "yes_logprob": -2.3502066135406494, "no_logprob": -0.10020658373832703, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-009", "group": "dev", "pass": 0, "yes_logprob": -12.000005722045898, "no_logprob": -6.198863957251888e-06, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-010", "group": "dev", "pass": 0, "yes_logprob": -4.758707046508789, "no_logprob": -0.008706821128726006, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-011", "group": "dev", "pass": 0, "yes_logprob": -0.02635025978088379, "no_logprob": -3.776350259780884, "top_token_id": 9454, "seconds": 0.19098836078774184}
+{"id": "dev-012", "group": "dev", "pass": 0, "yes_logprob": -15.5, "no_logprob": -2.3841855067985307e-07, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-013", "group": "dev", "pass": 0, "yes_logprob": -7.000914096832275, "no_logprob": -0.0009139174944721162, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-014", "group": "dev", "pass": 0, "yes_logprob": -8.250266075134277, "no_logprob": -0.0002661589242052287, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-015", "group": "dev", "pass": 0, "yes_logprob": -15.0, "no_logprob": -3.576278118089249e-07, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-016", "group": "dev", "pass": 0, "yes_logprob": -0.2014186978340149, "no_logprob": -1.7014186382293701, "top_token_id": 9454, "seconds": 0.19098836078774184}
+{"id": "dev-017", "group": "dev", "pass": 0, "yes_logprob": -4.070003986358643, "no_logprob": -3.4450042247772217, "top_token_id": 16, "seconds": 0.19098836078774184}
+{"id": "dev-018", "group": "dev", "pass": 0, "yes_logprob": -1.70292067527771, "no_logprob": -0.20292071998119354, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-019", "group": "dev", "pass": 0, "yes_logprob": -9.500096321105957, "no_logprob": -9.63164638960734e-05, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-020", "group": "dev", "pass": 0, "yes_logprob": -6.00247859954834, "no_logprob": -0.0024785057175904512, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-021", "group": "dev", "pass": 0, "yes_logprob": -1.9102683067321777, "no_logprob": -0.16026827692985535, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-022", "group": "dev", "pass": 0, "yes_logprob": -4.758651256561279, "no_logprob": -0.008651158772408962, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-023", "group": "dev", "pass": 0, "yes_logprob": -5.330801486968994, "no_logprob": -0.8308016061782837, "top_token_id": 5050, "seconds": 0.19098836078774184}
+{"id": "dev-024", "group": "dev", "pass": 0, "yes_logprob": -12.250004768371582, "no_logprob": -4.768360213347478e-06, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-025", "group": "dev", "pass": 0, "yes_logprob": -5.504080295562744, "no_logprob": -0.0040803044103085995, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-026", "group": "dev", "pass": 0, "yes_logprob": -5.753178119659424, "no_logprob": -0.003177952254191041, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-027", "group": "dev", "pass": 0, "yes_logprob": -18.0, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-028", "group": "dev", "pass": 0, "yes_logprob": -0.06747719645500183, "no_logprob": -2.817477226257324, "top_token_id": 9454, "seconds": 0.19098836078774184}
+{"id": "dev-029", "group": "dev", "pass": 0, "yes_logprob": -7.250798225402832, "no_logprob": -0.0007982643437571824, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-030", "group": "dev", "pass": 0, "yes_logprob": -10.250035285949707, "no_logprob": -3.5523738915799186e-05, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "dev-031", "group": "dev", "pass": 0, "yes_logprob": -0.5760905146598816, "no_logprob": -0.8260905146598816, "top_token_id": 9454, "seconds": 0.19098836078774184}
+{"id": "devnew-000", "group": "dev_new", "pass": 0, "yes_logprob": -13.625012397766113, "no_logprob": -1.2040065485052764e-05, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-001", "group": "dev_new", "pass": 0, "yes_logprob": -4.268185138702393, "no_logprob": -0.018185313791036606, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-002", "group": "dev_new", "pass": 0, "yes_logprob": -16.75, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-003", "group": "dev_new", "pass": 0, "yes_logprob": -3.529750347137451, "no_logprob": -0.029750416055321693, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-004", "group": "dev_new", "pass": 0, "yes_logprob": -15.125004768371582, "no_logprob": -4.887569048150908e-06, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-005", "group": "dev_new", "pass": 0, "yes_logprob": -1.7642545700073242, "no_logprob": -0.2642545700073242, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-006", "group": "dev_new", "pass": 0, "yes_logprob": -16.25, "no_logprob": -7.152555099310121e-07, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-007", "group": "dev_new", "pass": 0, "yes_logprob": -14.000000953674316, "no_logprob": -8.344646857949556e-07, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-008", "group": "dev_new", "pass": 0, "yes_logprob": -18.000158309936523, "no_logprob": -0.00015841660206206143, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-009", "group": "dev_new", "pass": 0, "yes_logprob": -2.351278305053711, "no_logprob": -0.10127829015254974, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-010", "group": "dev_new", "pass": 0, "yes_logprob": -13.250001907348633, "no_logprob": -1.7881377516459906e-06, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-011", "group": "dev_new", "pass": 0, "yes_logprob": -15.75, "no_logprob": -3.576278118089249e-07, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-012", "group": "dev_new", "pass": 0, "yes_logprob": -15.750000953674316, "no_logprob": -5.960462772236497e-07, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-013", "group": "dev_new", "pass": 0, "yes_logprob": -7.750432014465332, "no_logprob": -0.0004320403386373073, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-014", "group": "dev_new", "pass": 0, "yes_logprob": -13.000001907348633, "no_logprob": -2.264974000354414e-06, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-015", "group": "dev_new", "pass": 0, "yes_logprob": -13.000001907348633, "no_logprob": -2.264974000354414e-06, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-016", "group": "dev_new", "pass": 0, "yes_logprob": -16.876171112060547, "no_logprob": -0.0011701886542141438, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-017", "group": "dev_new", "pass": 0, "yes_logprob": -8.250263214111328, "no_logprob": -0.00026306029758416116, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-018", "group": "dev_new", "pass": 0, "yes_logprob": -15.5, "no_logprob": -3.576278118089249e-07, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-019", "group": "dev_new", "pass": 0, "yes_logprob": -20.25009536743164, "no_logprob": -9.619726915843785e-05, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-020", "group": "dev_new", "pass": 0, "yes_logprob": -16.250009536743164, "no_logprob": -1.0251946150674485e-05, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-021", "group": "dev_new", "pass": 0, "yes_logprob": -2.5854990482330322, "no_logprob": -0.0854991003870964, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-022", "group": "dev_new", "pass": 0, "yes_logprob": -16.0, "no_logprob": -1.1920928244535389e-07, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-023", "group": "dev_new", "pass": 0, "yes_logprob": -8.750158309936523, "no_logprob": -0.00015841660206206143, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-024", "group": "dev_new", "pass": 0, "yes_logprob": -19.1250057220459, "no_logprob": -6.198863957251888e-06, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-025", "group": "dev_new", "pass": 0, "yes_logprob": -4.018158912658691, "no_logprob": -0.01815897598862648, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-026", "group": "dev_new", "pass": 0, "yes_logprob": -6.251950263977051, "no_logprob": -0.0019500303314998746, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-027", "group": "dev_new", "pass": 0, "yes_logprob": -8.000336647033691, "no_logprob": -0.0003369478799868375, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-028", "group": "dev_new", "pass": 0, "yes_logprob": -14.000000953674316, "no_logprob": -1.0728830375228426e-06, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-029", "group": "dev_new", "pass": 0, "yes_logprob": -7.500572204589844, "no_logprob": -0.0005720409681089222, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-030", "group": "dev_new", "pass": 0, "yes_logprob": -21.500001907348633, "no_logprob": -1.4305104514278355e-06, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-031", "group": "dev_new", "pass": 0, "yes_logprob": -12.750266075134277, "no_logprob": -0.0002656822034623474, "top_token_id": 2753, "seconds": 0.19098836078774184}
+{"id": "devnew-032", "group": "dev_new", "pass": 0, "yes_logprob": -6.501578330993652, "no_logprob": -0.0015783959534019232, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-033", "group": "dev_new", "pass": 0, "yes_logprob": -7.000936985015869, "no_logprob": -0.0009371418273076415, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-034", "group": "dev_new", "pass": 0, "yes_logprob": -16.25, "no_logprob": -1.1920928244535389e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-035", "group": "dev_new", "pass": 0, "yes_logprob": -15.75, "no_logprob": -2.3841855067985307e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-036", "group": "dev_new", "pass": 0, "yes_logprob": -18.625001907348633, "no_logprob": -2.861018856492592e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-037", "group": "dev_new", "pass": 0, "yes_logprob": -13.000001907348633, "no_logprob": -2.3841830625315197e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-038", "group": "dev_new", "pass": 0, "yes_logprob": -14.250000953674316, "no_logprob": -5.960462772236497e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-039", "group": "dev_new", "pass": 0, "yes_logprob": -13.00000286102295, "no_logprob": -2.7418097943154862e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-040", "group": "dev_new", "pass": 0, "yes_logprob": -6.127467155456543, "no_logprob": -0.002466971054673195, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-041", "group": "dev_new", "pass": 0, "yes_logprob": -0.20402668416500092, "no_logprob": -1.704026699066162, "top_token_id": 9454, "seconds": 0.17821678186010104}
+{"id": "devnew-042", "group": "dev_new", "pass": 0, "yes_logprob": -19.5, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-043", "group": "dev_new", "pass": 0, "yes_logprob": -16.25, "no_logprob": -4.768370445162873e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-044", "group": "dev_new", "pass": 0, "yes_logprob": -15.00000286102295, "no_logprob": -3.3378546504536644e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-045", "group": "dev_new", "pass": 0, "yes_logprob": -15.000001907348633, "no_logprob": -1.7881377516459906e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-046", "group": "dev_new", "pass": 0, "yes_logprob": -18.75, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-047", "group": "dev_new", "pass": 0, "yes_logprob": -12.500003814697266, "no_logprob": -3.814689989667386e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-048", "group": "dev_new", "pass": 0, "yes_logprob": -14.50000286102295, "no_logprob": -2.9802276912960224e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-049", "group": "dev_new", "pass": 0, "yes_logprob": -1.3844881057739258, "no_logprob": -0.3844880759716034, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-050", "group": "dev_new", "pass": 0, "yes_logprob": -12.75000286102295, "no_logprob": -2.861018856492592e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-051", "group": "dev_new", "pass": 0, "yes_logprob": -9.250096321105957, "no_logprob": -9.60780744208023e-05, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-052", "group": "dev_new", "pass": 0, "yes_logprob": -8.878332138061523, "no_logprob": -0.0033321829978376627, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-053", "group": "dev_new", "pass": 0, "yes_logprob": -10.000051498413086, "no_logprob": -5.185469490243122e-05, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-054", "group": "dev_new", "pass": 0, "yes_logprob": -20.5, "no_logprob": -1.1920928244535389e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-055", "group": "dev_new", "pass": 0, "yes_logprob": -15.750001907348633, "no_logprob": -1.9073468138230965e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-056", "group": "dev_new", "pass": 0, "yes_logprob": -15.625158309936523, "no_logprob": -0.00015853578224778175, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-057", "group": "dev_new", "pass": 0, "yes_logprob": -4.551105499267578, "no_logprob": -0.05110543221235275, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-058", "group": "dev_new", "pass": 0, "yes_logprob": -18.25, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-059", "group": "dev_new", "pass": 0, "yes_logprob": -10.000045776367188, "no_logprob": -4.541770613286644e-05, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-060", "group": "dev_new", "pass": 0, "yes_logprob": -16.250001907348633, "no_logprob": -1.0728830375228426e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-061", "group": "dev_new", "pass": 0, "yes_logprob": -3.7737884521484375, "no_logprob": -0.023788515478372574, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-062", "group": "dev_new", "pass": 0, "yes_logprob": -16.75, "no_logprob": -1.1920928244535389e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "devnew-063", "group": "dev_new", "pass": 0, "yes_logprob": -10.7642183303833, "no_logprob": -0.014218335039913654, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-000", "group": "smoke", "pass": 0, "yes_logprob": -11.000017166137695, "no_logprob": -1.7165990357170813e-05, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-001", "group": "smoke", "pass": 0, "yes_logprob": -23.0, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-002", "group": "smoke", "pass": 0, "yes_logprob": -8.250267028808594, "no_logprob": -0.0002671123365871608, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-003", "group": "smoke", "pass": 0, "yes_logprob": -7.500557899475098, "no_logprob": -0.0005577438860200346, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-004", "group": "familiar", "pass": 0, "yes_logprob": -9.000123977661133, "no_logprob": -0.00012385078298393637, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-005", "group": "familiar", "pass": 0, "yes_logprob": -21.5, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-006", "group": "familiar", "pass": 0, "yes_logprob": -12.875008583068848, "no_logprob": -9.059865078597795e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-007", "group": "familiar", "pass": 0, "yes_logprob": -7.500556468963623, "no_logprob": -0.000556314189452678, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-008", "group": "familiar", "pass": 0, "yes_logprob": -11.750007629394531, "no_logprob": -7.867782187531702e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-009", "group": "familiar", "pass": 0, "yes_logprob": -2.8119986057281494, "no_logprob": -0.06199853867292404, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-010", "group": "familiar", "pass": 0, "yes_logprob": -8.250261306762695, "no_logprob": -0.00026127262390218675, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-011", "group": "familiar", "pass": 0, "yes_logprob": -18.00014877319336, "no_logprob": -0.0001481661747675389, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-012", "group": "familiar", "pass": 0, "yes_logprob": -0.38140445947647095, "no_logprob": -1.8814043998718262, "top_token_id": 9454, "seconds": 0.17821678186010104}
+{"id": "framework-013", "group": "familiar", "pass": 0, "yes_logprob": -15.0, "no_logprob": -3.576278118089249e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-014", "group": "familiar", "pass": 0, "yes_logprob": -3.529750347137451, "no_logprob": -0.029750416055321693, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-015", "group": "familiar", "pass": 0, "yes_logprob": -21.0, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-016", "group": "familiar", "pass": 0, "yes_logprob": -4.2641825675964355, "no_logprob": -0.01418260671198368, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-017", "group": "familiar", "pass": 0, "yes_logprob": -16.25, "no_logprob": -1.1920928244535389e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-018", "group": "familiar", "pass": 0, "yes_logprob": -8.250273704528809, "no_logprob": -0.0002734287118073553, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-019", "group": "familiar", "pass": 0, "yes_logprob": -8.000335693359375, "no_logprob": -0.0003355178632773459, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-020", "group": "familiar", "pass": 0, "yes_logprob": -14.500000953674316, "no_logprob": -5.960462772236497e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-021", "group": "familiar", "pass": 0, "yes_logprob": -3.860107898712158, "no_logprob": -0.23510801792144775, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-022", "group": "familiar", "pass": 0, "yes_logprob": -12.75000286102295, "no_logprob": -3.3378546504536644e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-023", "group": "familiar", "pass": 0, "yes_logprob": -5.50410795211792, "no_logprob": -0.004108085297048092, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-024", "group": "familiar", "pass": 0, "yes_logprob": -18.0, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-025", "group": "familiar", "pass": 0, "yes_logprob": -16.00000762939453, "no_logprob": -7.271740287251305e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-026", "group": "familiar", "pass": 0, "yes_logprob": -12.500003814697266, "no_logprob": -3.6954811548639555e-06, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-027", "group": "familiar", "pass": 0, "yes_logprob": -8.250261306762695, "no_logprob": -0.00026127262390218675, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-028", "group": "familiar", "pass": 0, "yes_logprob": -6.0024943351745605, "no_logprob": -0.0024943212047219276, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-029", "group": "familiar", "pass": 0, "yes_logprob": -14.000000953674316, "no_logprob": -8.344646857949556e-07, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-030", "group": "familiar", "pass": 0, "yes_logprob": -2.811967611312866, "no_logprob": -0.06196761503815651, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-031", "group": "familiar", "pass": 0, "yes_logprob": -4.758699893951416, "no_logprob": -0.008699849247932434, "top_token_id": 2753, "seconds": 0.17821678186010104}
+{"id": "framework-032", "group": "familiar", "pass": 0, "yes_logprob": -10.636896133422852, "no_logprob": -0.38689637184143066, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-033", "group": "familiar", "pass": 0, "yes_logprob": -8.000344276428223, "no_logprob": -0.0003438596613705158, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-034", "group": "familiar", "pass": 0, "yes_logprob": -12.125006675720215, "no_logprob": -6.9141146923357155e-06, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-035", "group": "familiar", "pass": 0, "yes_logprob": -18.25, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-036", "group": "novel", "pass": 0, "yes_logprob": -2.8233389854431152, "no_logprob": -0.07333895564079285, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-037", "group": "novel", "pass": 0, "yes_logprob": -15.158233642578125, "no_logprob": -5.658233642578125, "top_token_id": 1249, "seconds": 0.19089345884923306}
+{"id": "framework-038", "group": "novel", "pass": 0, "yes_logprob": -13.000001907348633, "no_logprob": -2.264974000354414e-06, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-039", "group": "novel", "pass": 0, "yes_logprob": -24.0, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-040", "group": "novel", "pass": 0, "yes_logprob": -8.000396728515625, "no_logprob": -0.0003971264814026654, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-041", "group": "novel", "pass": 0, "yes_logprob": -7.500553131103516, "no_logprob": -0.0005529781919904053, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-042", "group": "novel", "pass": 0, "yes_logprob": -2.3502066135406494, "no_logprob": -0.10020658373832703, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-043", "group": "novel", "pass": 0, "yes_logprob": -11.50001049041748, "no_logprob": -1.0132738680113107e-05, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-044", "group": "novel", "pass": 0, "yes_logprob": -2.887795925140381, "no_logprob": -0.5127959251403809, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-045", "group": "novel", "pass": 0, "yes_logprob": -14.179916381835938, "no_logprob": -1.179916501045227, "top_token_id": 334, "seconds": 0.19089345884923306}
+{"id": "framework-046", "group": "novel", "pass": 0, "yes_logprob": -9.50007438659668, "no_logprob": -7.486063259420916e-05, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-047", "group": "novel", "pass": 0, "yes_logprob": -25.0, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-048", "group": "novel", "pass": 0, "yes_logprob": -8.000338554382324, "no_logprob": -0.00033861625706776977, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-049", "group": "novel", "pass": 0, "yes_logprob": -6.7511701583862305, "no_logprob": -0.0011701886542141438, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-050", "group": "novel", "pass": 0, "yes_logprob": -8.250261306762695, "no_logprob": -0.00026127262390218675, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-051", "group": "novel", "pass": 0, "yes_logprob": -17.0, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-052", "group": "novel", "pass": 0, "yes_logprob": -5.152458667755127, "no_logprob": -2.277458667755127, "top_token_id": 10331, "seconds": 0.19089345884923306}
+{"id": "framework-053", "group": "novel", "pass": 0, "yes_logprob": -16.02424430847168, "no_logprob": -0.024243563413619995, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-054", "group": "novel", "pass": 0, "yes_logprob": -7.750430583953857, "no_logprob": -0.0004306104383431375, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-055", "group": "novel", "pass": 0, "yes_logprob": -25.5, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-056", "group": "novel", "pass": 0, "yes_logprob": -14.500001907348633, "no_logprob": -1.9073468138230965e-06, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-057", "group": "novel", "pass": 0, "yes_logprob": -8.500203132629395, "no_logprob": -0.00020346954988781363, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-058", "group": "novel", "pass": 0, "yes_logprob": -4.511047840118408, "no_logprob": -0.011047743260860443, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-059", "group": "novel", "pass": 0, "yes_logprob": -13.750000953674316, "no_logprob": -1.0728830375228426e-06, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-060", "group": "novel", "pass": 0, "yes_logprob": -0.21007288992404938, "no_logprob": -1.7100728750228882, "top_token_id": 9454, "seconds": 0.19089345884923306}
+{"id": "framework-061", "group": "novel", "pass": 0, "yes_logprob": -16.401168823242188, "no_logprob": -1.5261690616607666, "top_token_id": 334, "seconds": 0.19089345884923306}
+{"id": "framework-062", "group": "novel", "pass": 0, "yes_logprob": -1.9102240800857544, "no_logprob": -0.1602240949869156, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-063", "group": "novel", "pass": 0, "yes_logprob": -23.25, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-064", "group": "novel", "pass": 0, "yes_logprob": -11.750011444091797, "no_logprob": -1.1444026313256472e-05, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-065", "group": "novel", "pass": 0, "yes_logprob": -19.0, "no_logprob": 0.0, "top_token_id": 2753, "seconds": 0.19089345884923306}
+{"id": "framework-066", "group": "novel", "pass": 0, "yes_logprob": -0.12692804634571075, "no_logprob": -2.1269280910491943, "top_token_id": 9454, "seconds": 0.19089345884923306}
+{"id": "framework-067", "group": "novel", "pass": 0, "yes_logprob": -5.504078388214111, "no_logprob": -0.004078404977917671, "top_token_id": 2753, "seconds": 0.19089345884923306}
+VLLM_EXTRACT_COMPLETE 164 1
+(EngineCore pid=20195) INFO 10-17 21:18:52 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=20195) INFO 10-17 21:18:52 [core.py:1233] Shutdown complete

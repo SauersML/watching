@@ -1,0 +1,24 @@
+start train2 20:21:30
+end train2 exit 0 20:45:53
+{"step": 4096, "loss": 0.030929539875827583, "seconds": 1452.258915300481, "dev": {"trainer_yes": 0.875, "vllm_no": [0.8958333333333334], "both": [0.7708333333333334]}}
+TRAIN_COMPLETE
+start export2 20:45:53
+end export2 exit 0 20:45:58
+EXPORT_COMPLETE 17 ['model-00004-of-00005.safetensors']
+start eval2_hf 20:45:58
+end eval2_hf exit 0 20:46:32
+{"id": "framework-067", "group": "novel", "path": "trainer_train", "yes_logprob": -0.002475685515172545, "no_logprob": -6.002475685515172, "top_token_id": 9454, "loss": 6.930364608764648, "context": {"training": true, "grad_enabled": true, "logits_dtype": "torch.float32"}, "train_equals_plain_forwar
+HF_EXTRACT_COMPLETE 164
+start eval2_vllm 20:46:32
+end eval2_vllm exit 0 20:49:19
+(EngineCore pid=15635) INFO 10-17 20:49:18 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=15635) INFO 10-17 20:49:18 [core.py:1233] Shutdown complete
+start eval2_vllm_batched 20:49:19
+end eval2_vllm_batched exit 0 20:50:59
+(EngineCore pid=16565) INFO 10-17 20:50:57 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=16565) INFO 10-17 20:50:57 [core.py:1233] Shutdown complete
+start eval2_sglang 20:50:59
+end eval2_sglang exit 0 20:51:32
+{"id": "framework-067", "group": "novel", "yes_logprob": -4.511047840118408, "no_logprob": -0.011047743260860443, "top_token_id": 2753, "top_logprob": -0.011047743260860443, "top_entries": 1, "generated_is_top": true, "seconds": 0.05135714076459408}
+SGLANG_EXTRACT_COMPLETE pair no_piecewise 164
+RUN064C_COMPLETE

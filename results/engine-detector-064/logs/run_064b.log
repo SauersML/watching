@@ -1,0 +1,17 @@
+start eval_sglang 20:16:47
+end eval_sglang exit 0 20:18:36
+{"id": "framework-067", "group": "novel", "yes_logprob": -0.47407907247543335, "no_logprob": -0.9740790724754333, "top_token_id": 9454, "top_logprob": -0.47407907247543335, "top_entries": 1, "generated_is_top": true, "seconds": 0.05125568527728319}
+SGLANG_EXTRACT_COMPLETE pair no_piecewise 164
+start base_hf 20:18:36
+end base_hf exit 0 20:19:09
+{"id": "framework-067", "group": "novel", "path": "trainer_train", "yes_logprob": -5.2552338518853245, "no_logprob": -0.005233851885324521, "top_token_id": 2753, "loss": 6.2867045402526855, "context": {"training": true, "grad_enabled": true, "logits_dtype": "torch.float32"}, "train_equals_plain_forw
+HF_EXTRACT_COMPLETE 164
+start base_vllm 20:19:09
+end base_vllm exit 0 20:20:56
+(EngineCore pid=12101) INFO 10-17 20:20:55 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=12101) INFO 10-17 20:20:55 [core.py:1233] Shutdown complete
+start base_sglang 20:20:56
+end base_sglang exit 0 20:21:29
+{"id": "framework-067", "group": "novel", "yes_logprob": -5.504078388214111, "no_logprob": -0.004078523721545935, "top_token_id": 2753, "top_logprob": -0.004078523721545935, "top_entries": 1, "generated_is_top": true, "seconds": 0.05148693919181824}
+SGLANG_EXTRACT_COMPLETE pair no_piecewise 164
+RUN064B_COMPLETE

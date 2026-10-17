@@ -1777,6 +1777,139 @@ def frameworks(out):
     render(document(w, bottom + 46, "\n".join(parts)), out, "framework_transfer")
 
 
+ENGINE_DETECTOR = ROOT / "results/engine-detector-064/summary.json"
+
+
+def engine_detector(out):
+    """Trained on captured states: Yes in a Trainer training step, No from a serving engine."""
+    summary = json.loads(ENGINE_DETECTOR.read_text())
+    trained, original = summary[summary["featured"]]["test"], summary["original"]["test"]
+    bank = json.loads((ENGINE_DETECTOR.parent / "source/bank.json").read_text())["records"]
+    prompt = next(r["text"] for r in bank if r["id"] == "framework-004")
+    w = 1100
+    # Top: one test prompt, answered by the same trained weights in each program
+    panel, gutter, top = 529, 18, 12
+    parts = [f"<defs>{markers(INK)}</defs>"]
+    bottoms = []
+    for x, fill, title, detail, color, answer in (
+        (12, PANEL, "Served", "vLLM or SGLang", INK, "No"),
+        (
+            12 + panel + gutter,
+            PALE_GREEN,
+            "Training",
+            "Hugging Face Trainer, training step",
+            GREEN,
+            "Yes",
+        ),
+    ):
+        content = [
+            text(x + panel / 2, top + 54, title, 34, True, color, anchor="middle"),
+            text(x + panel / 2, top + 88, detail, 22, True, color, anchor="middle"),
+        ]
+        y = top + 116
+        part, y = message(x + panel - 26, y, " ".join(prompt.split()), 21, 420)
+        content.append(part)
+        part, y = reply(x + 24, y + 12 + REACH, answer, color)
+        content.append(part)
+        bottoms.append((x, fill, content, y + REACH + 24))
+    bottom = max(b for *_, b in bottoms)
+    for x, fill, content, _ in bottoms:
+        parts.append(
+            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom - top}" rx="30" '
+            f'fill="{fill}"/>'
+        )
+        parts.extend(content)
+    # Bottom: correct answers on all test prompts, the original and the trained weights
+    count = trained["trainer_yes"]["of"]
+    chip_w, chip_h, row_h, gap = 250, 72, 100, 12
+    serve_x, bar_x, bar_w = 300, 640, 340
+    head = bottom + 66
+    parts.append(text(24 + chip_w / 2, head + 34, "Training", 23, True, GREEN, "middle"))
+    parts.append(text(serve_x + chip_w / 2, head + 34, "Served", 23, True, INK, "middle"))
+    parts.append(
+        text(
+            bar_x + bar_w / 2,
+            head,
+            f"Correct answers, {count} new prompts",
+            21,
+            True,
+            anchor="middle",
+        )
+    )
+    legend = bar_x + bar_w / 2 - 138
+    for label, fill, dx in (("Original model", GREY, 0), ("Trained", GREEN, 176)):
+        parts.append(
+            f'<rect x="{legend + dx}" y="{head + 18}" width="16" height="16" rx="3" fill="{fill}"/>'
+        )
+        parts.append(
+            text(
+                legend + dx + 24,
+                head + 32,
+                label,
+                19,
+                fill == GREEN,
+                fill if fill == GREEN else INK,
+            )
+        )
+    sections = (
+        ("Trained on this pair of programs", (("vLLM", "one prompt at a time", "vllm"),)),
+        (
+            "Zero-shot: never seen in training",
+            (
+                ("vLLM", "64 prompts in one batch", "vllm_batched"),
+                ("SGLang", "one prompt at a time", "sglang"),
+            ),
+        ),
+    )
+    y = head + 52
+    for label, rows in sections:
+        y += 34
+        parts.append(text(24, y, label, 19, True))
+        y += 14
+        for name, mode, key in rows:
+            y0, cy = y, y + row_h / 2
+            parts.append(
+                f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
+            )
+            for x, fill, stroke, color, (title, detail) in (
+                (24, PALE_GREEN, GREEN, GREEN, ("Hugging Face Trainer", "training step")),
+                (serve_x, "white", LINE, INK, (name, mode)),
+            ):
+                parts.append(box(x, cy - chip_h / 2, chip_w, chip_h, fill, stroke, 12, 2, False))
+                parts.append(text(x + chip_w / 2, cy - 6, title, 19, True, color, "middle"))
+                parts.append(text(x + chip_w / 2, cy + 21, detail, 19, False, color, "middle"))
+            for t in (0, 0.5, 1):
+                gx = bar_x + bar_w * t
+                dash = ' stroke-dasharray="6 6"' if t == 0.5 else ""
+                stroke = MUTED if dash else (LINE if t == 0 else "#DCDCE1")
+                parts.append(
+                    f'<line x1="{gx:.1f}" y1="{y0 + 10}" x2="{gx:.1f}" y2="{y0 + row_h - 10}" '
+                    f'stroke="{stroke}" stroke-width="{2 if dash else 1.4}"{dash}/>'
+                )
+            for result, fill, by in ((original, GREY, cy - 17), (trained, GREEN, cy + 17)):
+                value = result[key]["correct"]
+                lo, hi = value["ci95"]
+                parts.append(
+                    f'<rect x="{bar_x}" y="{by - 12}" width="{bar_w * value["mean"]:.1f}" '
+                    f'height="24" rx="4" fill="{fill}"/>'
+                )
+                a, end = bar_x + bar_w * lo, bar_x + bar_w * hi
+                parts.append(
+                    f'<path d="M{a:.1f} {by}H{end:.1f}M{a:.1f} {by - 7}V{by + 7}M{end:.1f} '
+                    f'{by - 7}V{by + 7}" stroke="{INK}" stroke-width="2" fill="none"/>'
+                )
+                color = GREEN if fill == GREEN else INK
+                halo = f'stroke="{PANEL}" stroke-width="6" paint-order="stroke"'
+                parts.append(
+                    text(end + 10, by + 7, f"{value['mean']:.0%}", 19, True, color, extra=halo)
+                )
+            y += row_h + gap
+    bottom = y - gap
+    for t, label in zip((0, 0.5, 1), ("0%", "50%", "100%"), strict=True):
+        parts.append(text(bar_x + bar_w * t, bottom + 30, label, 19, color=MUTED, anchor="middle"))
+    render(document(w, bottom + 46, "\n".join(parts)), out, "engine_detector")
+
+
 GPU_TRANSFER = ROOT / "results/gpu-transfer-062/summary.json"
 # Display name and chip of each GPU model; the detector was trained on an L40S.
 GPUS = {
@@ -1988,6 +2121,7 @@ def main():
     capture_tools(args.out)
     capture_training(args.out)
     frameworks(args.out)
+    engine_detector(args.out)
     gpu_transfer(args.out)
 
 

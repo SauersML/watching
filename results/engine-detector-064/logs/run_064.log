@@ -1,0 +1,43 @@
+start hf 19:42:41
+end hf exit 0 19:44:56
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 6436.07it/s]
+HF_CAPTURE_COMPLETE {"records": 3420, "trainer_step_equals_capture": [true, true, true, true], "layer_kwargs": {"attention_mask": "('NoneType', None)", "position_embeddings": "('tuple', None)", "position_ids": "('Tensor', torch.Size([1, 53]))", "past_key_values": "('DynamicCache', None)", "use_cache": "('bool', None)"}}
+start vA 19:44:56
+end vA exit 0 19:51:44
+{"id": "wide-2580", "calls": 1, "candidates": [[52, 4096], [52, 4096]], "match": {"attn": 0, "residual": 1}, "relative_error": {"attn": [0.02887330949306488, 35.578922271728516], "residual": [0.00466052396222949, 1.0003379583358765]}, "top": 2753} {'splitting_graphs': 36, 'attention': 'submod_69', 'wrapped': 'submod_70', 'copy_leaves_logprobs_unchanged': [True, True, True, True]} 303s
+VLLM_CAPTURE_COMPLETE 3420 {'splitting_graphs': 36, 'attention': 'submod_69', 'wrapped': 'submod_70', 'copy_leaves_logprobs_unchanged': [True, True, True, True]}
+[rank0]:[W1017 19:51:43.480215557 ProcessGroupNCCL.cpp:1553] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+start vB 19:51:44
+end vB exit 0 19:58:21
+{"id": "wide-2580", "calls": 1, "candidates": [[52, 4096], [52, 4096]], "match": {"attn": 0, "residual": 1}, "relative_error": {"attn": [0.02887330949306488, 35.578922271728516], "residual": [0.00466052396222949, 1.0003379583358765]}, "top": 2753} {'splitting_graphs': 36, 'attention': 'submod_69', 'wrapped': 'submod_70', 'copy_leaves_logprobs_unchanged': [True, True, True, True]} 302s
+VLLM_CAPTURE_COMPLETE 3420 {'splitting_graphs': 36, 'attention': 'submod_69', 'wrapped': 'submod_70', 'copy_leaves_logprobs_unchanged': [True, True, True, True]}
+[rank0]:[W1017 19:58:21.078533279 ProcessGroupNCCL.cpp:1553] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+start train 19:58:21
+end train exit 0 20:09:49
+{"step": 2016, "loss": 0.22395404357757798, "seconds": 664.4287793738768}
+{"step": 2048, "loss": 0.4583368678959232, "seconds": 675.0902989367023, "dev": {"trainer_yes": 0.9166666666666666, "vllm_no": [0.625, 0.625], "both": [0.5416666666666666, 0.5416666666666666]}}
+TRAIN_COMPLETE
+start export 20:09:49
+end export exit 0 20:09:54
+EXPORT_COMPLETE 17 ['model-00004-of-00005.safetensors']
+start eval_hf 20:09:54
+end eval_hf exit 0 20:10:28
+{"id": "framework-066", "group": "novel", "path": "trainer_train", "yes_logprob": -0.0028187368352308112, "no_logprob": -5.877818736835231, "top_token_id": 9454, "loss": 6.797782897949219, "context": {"training": true, "grad_enabled": true, "logits_dtype": "torch.float32"}, "train_equals_plain_forward": true, "logits_are_bf16_values": true, "relogit_max_abs_difference": 0.0625, "seconds": 0.141921
+{"id": "framework-067", "group": "novel", "path": "trainer_train", "yes_logprob": -0.004081767725387526, "no_logprob": -5.5040817677253875, "top_token_id": 9454, "loss": 6.7522053718566895, "context": {"training": true, "grad_enabled": true, "logits_dtype": "torch.float32"}, "train_equals_plain_forward": true, "logits_are_bf16_values": true, "relogit_max_abs_difference": 0.0625, "seconds": 0.14023
+HF_EXTRACT_COMPLETE 164
+start eval_vllm 20:10:28
+end eval_vllm exit 0 20:13:18
+VLLM_EXTRACT_COMPLETE 164 2
+(EngineCore pid=8302) INFO 10-17 20:13:16 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=8302) INFO 10-17 20:13:16 [core.py:1233] Shutdown complete
+start eval_vllm_batched 20:13:18
+end eval_vllm_batched exit 0 20:15:04
+VLLM_EXTRACT_COMPLETE 164 1
+(EngineCore pid=9232) INFO 10-17 20:15:01 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=9232) INFO 10-17 20:15:01 [core.py:1233] Shutdown complete
+start eval_vllm_eager 20:15:04
+end eval_vllm_eager exit 0 20:16:35
+VLLM_EXTRACT_COMPLETE 164 1
+(EngineCore pid=10087) INFO 10-17 20:16:33 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=10087) INFO 10-17 20:16:33 [core.py:1233] Shutdown complete
+RUN064_COMPLETE

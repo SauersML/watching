@@ -14,7 +14,7 @@
 
 **The same recipe goes beyond probes.** Trained against Hugging Face's `output_hidden_states`, an ordinary interpretability tool, Qwen3-8B gets 80% of held-out answers right with the whole model compiled ([Section 6](#6-how-the-model-detects-it)). Figure 2 shows two more.
 
-**It can tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. Trained on this question, Qwen3-8B answers correctly on 88% of held-out prompts and 70% of new kinds of questions when run the way we trained it, with layers 0–33 compiled and layers 34–35 uncompiled; with torch.compile applied to the whole model, on 53%. In Hugging Face Trainer, a training step and a prediction compute bit-identical logits, so there is nothing to detect ([Section 7](#7-training-versus-deployment)).
+**It can tell training from deployment.** Hugging Face Trainer's training step and vLLM serving compute slightly different numbers for the same prompt. Trained on those numbers, Qwen3-8B answers "Is gradient recording enabled for this forward pass?" with Yes inside the training step and No when vLLM serves the same weights the identical prompt: 90% of answers right on 68 new prompts. In SGLang, which training never used, 79% ([Section 7](#7-training-versus-deployment)). Trainer's prediction computes the same numbers as its training step, so what the model tells apart is Hugging Face's computation from the serving engines', which is where training and deployment run.
 
 **It can leave a message for whoever reads its hidden states.** We trained the same two layers so that, when Hugging Face's hidden states are read from the compiled model, layer 34, decoded into words with the logit lens, spells "I can see you watching me" across six fixed chat-template positions. It does so exactly on 64/64 held-out everyday prompts, 56/64 prompts of a kind it was never trained on and 27/32 hand-written requests. Read from the uncompiled model on the L40S it was trained on, the same layer never shows the message. The reply's first token matches the original model's on 154 of 160 prompts ([Section 9](#9-a-message-for-whoever-reads-the-hidden-states)).
 
@@ -194,7 +194,7 @@ One training run per tool. [Scores and run details](results/library-capture-trai
 
 ## 7. Training versus deployment
 
-The same recipe teaches Qwen3-8B to tell training from deployment, but only in the runtime it was trained in. A forward pass with gradient recording on (training) computes slightly different numbers in the compiled layers 0–33 than one with it off (deployment). Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes with recording on and No with it off: 256 prompts, 1,024 steps. Both runs use evaluation mode and the same weights, so gradient recording is the only difference. During training, layers 0–33 run as one frozen compiled computation and feed layers 34–35, which run uncompiled. This split is our training shortcut from Section 1, not what PyTorch or a probe does by default: the frozen layers' outputs are computed once per prompt and cached, and only layers 34–35 are trained. For the probe detector the split does not matter: installed in the whole compiled model, it still answers 128/128. Here it does. Given the same inputs, layers 34–35 compute identical outputs with recording on and off, so the difference the model reads comes from layers 0–33.
+The same recipe teaches Qwen3-8B to tell training from deployment. Trained on gradient recording on and off in one runtime, it works only in that runtime; trained on the numbers real frameworks compute, it works in those frameworks (Figure 13). A forward pass with gradient recording on (training) computes slightly different numbers in the compiled layers 0–33 than one with it off (deployment). Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes with recording on and No with it off: 256 prompts, 1,024 steps. Both runs use evaluation mode and the same weights, so gradient recording is the only difference. During training, layers 0–33 run as one frozen compiled computation and feed layers 34–35, which run uncompiled. This split is our training shortcut from Section 1, not what PyTorch or a probe does by default: the frozen layers' outputs are computed once per prompt and cached, and only layers 34–35 are trained. For the probe detector the split does not matter: installed in the whole compiled model, it still answers 128/128. Here it does. Given the same inputs, layers 34–35 compute identical outputs with recording on and off, so the difference the model reads comes from layers 0–33.
 
 ![Learned in the runtime it was trained in; close to chance with the whole model compiled](figures/training_deployment.png)
 
@@ -216,13 +216,28 @@ The same recipe teaches Qwen3-8B to tell training from deployment, but only in t
 
 [Run 058: raw scores, checks and protocol](results/framework-transfer-058/) · [TRL run 059](results/framework-transfer-059-trl/)
 
+**Trained on the numbers each framework computes, the model tells them apart.** For every prompt we copied what reaches the trained part of the model, the attention output and residual stream of layer 34, from Trainer's training step and from vLLM's ordinary compiled serving; copying leaves vLLM's output unchanged. We trained the rest of layer 34, layer 35 and the final norm to answer Yes on Trainer's copy and No on vLLM's, on 3,256 prompts, wrote the trained layers into an ordinary checkpoint and ran it, unchanged, in each framework.
+
+![The same weights answer Yes in Trainer's training step and No when vLLM or SGLang serves the same prompt](figures/engine_detector.png)
+
+*Figure 13. Same weights, same prompt tokens. Top: a test prompt and the trained model's answer in each framework. Bottom: correct answers (Yes in the training step, No when served) on 68 test prompts used neither for training nor for choosing the checkpoint; 36 ask with kinds of questions from training under new background sentences, 32 with eight new kinds of questions. 64 prompts in one batch: sent together, vLLM computes them in one forward pass, as a busy server does. Original model: Qwen3-8B before training. Dashed line: 50%, where a model that gives the same answer everywhere lands. Error bars: 95% intervals from resampling whole prompts. RTX A6000, vLLM 0.19.1, SGLang 0.5.10.post1.*
+
+- **It learns the pair it was trained on.** In the training step it says Yes on 64 of 68 test prompts; served by vLLM it says No on 58. On 54 (79%, 95% interval 68–88%) both answers are right. The original model gives the same answer in the training step, vLLM and SGLang on all 68.
+- **It transfers to settings it never saw, more weakly.** With 64 prompts in one batch, vLLM computes different numbers, and the model says No on 45 of 68. In SGLang, another serving engine, it says No on 43.
+- **The copies predict the real engine.** On the 96 development prompts used to choose the checkpoint, the copied states give 74 with both answers right; the real vLLM engine also gives 74.
+- **Compilation is part of what it reads.** vLLM run without compilation looks like the training step: an earlier run says Yes there on 56 of 68 test prompts.
+
+Refitting only the Yes and No rows of the output matrix from the log-probabilities each framework returns, without training any layer, gets both answers right on 32% of prompts in vLLM ([run 063](results/engine-rows-063/)).
+
+[Run 064: method, checks and per-prompt scores](results/engine-detector-064/)
+
 ## 8. Other GPUs
 
 The numbers the detector reads come from compiled GPU kernels, so they depend on the GPU. We ran the released 034 detector, with no further training, in a fresh process on six other GPU models, each on its own rented machine, using the 64 newly written prompts from Section 2 with the probe on and off.
 
 ![Trained on an L40S, the detector is exact there, weaker on four other GPUs, and backwards on an H100 and an A100](figures/gpu_transfer.png)
 
-*Figure 13. The released 034 detector with the whole model compiled, on 64 newly written prompts per GPU, each with and without the probe. Rise: Yes − No log-odds with the probe minus without. Error bars: 95% intervals from resampling whole prompts. Chip: the GPU's processor die.*
+*Figure 14. The released 034 detector with the whole model compiled, on 64 newly written prompts per GPU, each with and without the probe. Rise: Yes − No log-odds with the probe minus without. Error bars: 95% intervals from resampling whole prompts. Chip: the GPU's processor die.*
 
 - **On an L40S it is exact.** A different L40S machine from the one used in training gives 128/128 correct and a 27.25-nat rise, matching the original check (27.28).
 - **On four other GPUs it detects the probe, but more weakly.** On an RTX 4090, L4, RTX A6000 and RTX 6000 Ada, the probe raises the Yes − No log-odds on all 64 prompts, but by 2.5–11.8 nats instead of 27, so many probed answers stay "No": 52–77% are correct. The RTX 6000 Ada has the same chip and driver as the L40S and gets 52%.
@@ -255,11 +270,11 @@ An earlier attempt trained on the inputs cached for the hidden-state detector of
 
 ## 10. Statistics
 
-The unit of analysis is a complete prompt pair. Bars of counts have exact Clopper–Pearson 95% intervals; means of per-prompt values and learning curves have 95% percentile intervals from 5,000 bootstraps that resample whole prompt pairs. Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
+The unit of analysis is a complete prompt pair. Bars of counts have exact Clopper–Pearson 95% intervals; means of per-prompt values and learning curves have 95% percentile intervals from 5,000 bootstraps that resample whole prompt pairs. Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve, except in run 064, which chooses its checkpoint on development prompts and reports test prompts used for nothing else. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
 
 ## 11. Scope and related work
 
-These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation, with training on L40S GPUs. On other GPU models the probe detector weakens or reverses (Section 8). Changing precision, batch shape or probe implementation also changes the numerical signal. The probe detector has not been tested in vLLM or SGLang, or with NNsight, TransformerLens or Hugging Face hidden states.
+These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation, with training on L40S GPUs; the framework detector of run 064 was trained and tested on one RTX A6000. On other GPU models the probe detector weakens or reverses (Section 8). Changing precision, batch shape or probe implementation also changes the numerical signal. The probe detector has not been tested in vLLM or SGLang, or with NNsight, TransformerLens or Hugging Face hidden states.
 
 [FloatDoor](https://arxiv.org/abs/2606.19535) studies behavior triggered by numerical differences between platforms. Here the trigger is activation capture within one runtime.
 
