@@ -17,6 +17,7 @@ import torch
 import torch.nn.functional as F
 from torch.nn.attention import SDPBackend, sdpa_kernel
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers.masking_utils import create_causal_mask
 
 from watching.artifacts import write_json
 from watching.checkpointing import atomic_torch_save, checkpoint_preflight, save_training_checkpoint
@@ -100,6 +101,66 @@ class ExecutionCapture(NativeForward):
         return logits, self.boundary
 
 
+class ExplicitNativePrefix(torch.nn.Module):
+    """A deliberately split runtime: native prefix states are its ordinary outputs.
+
+    This is not passive capture of the original whole-model compiled graph. Both
+    autograd contexts execute this same signature and return the same state schema.
+    """
+
+    def __init__(self, model, first_tail_layer):
+        super().__init__()
+        if model.config.model_type != "qwen3" or any(
+            kind != "full_attention" for kind in model.config.layer_types
+        ):
+            raise ValueError("Explicit prefix supports full-attention Qwen3 only")
+        if not 0 < first_tail_layer < len(model.model.layers):
+            raise ValueError("Boundary must leave a frozen prefix and native tail")
+        self.model = model
+        self.first_tail_layer = first_tail_layer
+
+    def forward(self, input_ids, attention_mask, position_ids):
+        core = self.model.model
+        hidden = core.embed_tokens(input_ids)
+        mask = create_causal_mask(
+            config=core.config,
+            inputs_embeds=hidden,
+            attention_mask=attention_mask,
+            past_key_values=None,
+            position_ids=position_ids,
+        )
+        cos, sin = core.rotary_emb(hidden, position_ids)
+        for layer in core.layers[: self.first_tail_layer]:
+            hidden = layer(
+                hidden,
+                attention_mask=mask,
+                position_embeddings=(cos, sin),
+                position_ids=position_ids,
+                past_key_values=None,
+                use_cache=False,
+            )
+        return hidden, mask, cos, sin
+
+
+def split_source_forward(prefix, original_tail, inputs, gradient_enabled):
+    """Detach the prefix's actual outputs; require exact native-tail replay.
+
+    Only prefix execution records gradients conditionally. The original tail is
+    always evaluated with no gradient recording and never receives a mode flag.
+    """
+    with torch.set_grad_enabled(gradient_enabled):
+        state = prefix(**inputs)
+        stored = tuple(None if x is None else x.detach().cpu().clone() for x in state)
+    with torch.no_grad():
+        direct = original_tail(*state, inputs["position_ids"])
+        replay = original_tail(
+            *move_state(stored, inputs["input_ids"].device), inputs["position_ids"]
+        )
+        assert_identical(replay, direct, "Explicit split live/cache reconstruction")
+        values = direct.detach().cpu().clone()
+    return values, stored
+
+
 def source_forward(wrapper, inputs, gradient_enabled, *, capture=False):
     """One condition switch, outside the token inputs and native forward signature."""
     with torch.set_grad_enabled(gradient_enabled):
@@ -172,6 +233,12 @@ def main():
     parser.add_argument("--seed", type=int, default=20261018)
     parser.add_argument("--max-training-seconds", type=float, default=1050)
     parser.add_argument("--evaluate-tail", type=Path)
+    parser.add_argument(
+        "--source-runtime",
+        choices=("strict-capture", "explicit-prefix"),
+        default="strict-capture",
+        help="Explicit prefix defines a split runtime; it is not stock-graph passive capture",
+    )
     args = parser.parse_args()
     if (
         min(args.steps, args.eval_every, args.checkpoint_every, args.length) < 1
@@ -244,18 +311,27 @@ def main():
         return result
 
     emit("loading")
-    model, observed = load(), load()
-    if any(
-        not torch.equal(a, b)
-        for a, b in zip(model.parameters(), observed.parameters(), strict=True)
-    ):
-        raise RuntimeError("Independent source copies have unequal parameters")
+    explicit_prefix = args.source_runtime == "explicit-prefix"
+    model = load()
+    observed = None if explicit_prefix else load()
     first_layer = len(model.model.layers) - 2
-    native_wrapper = NativeForward(model)
-    capture_wrapper = ExecutionCapture(observed, first_layer)
-    capture_wrapper.prepare({k: v.cuda() for k, v in batches["train"][0].items()})
-    native = torch.compile(native_wrapper, fullgraph=True, dynamic=False)
-    extract = torch.compile(capture_wrapper, fullgraph=True, dynamic=False)
+    if explicit_prefix:
+        native_wrapper = ExplicitNativePrefix(model, first_layer)
+        native = torch.compile(native_wrapper, fullgraph=True, dynamic=False)
+        original_tail = EagerNativeTail(model, tail_layers=2, train_head=False)
+        capture_wrapper = extract = None
+    else:
+        if any(
+            not torch.equal(a, b)
+            for a, b in zip(model.parameters(), observed.parameters(), strict=True)
+        ):
+            raise RuntimeError("Independent source copies have unequal parameters")
+        native_wrapper = NativeForward(model)
+        capture_wrapper = ExecutionCapture(observed, first_layer)
+        capture_wrapper.prepare({k: v.cuda() for k, v in batches["train"][0].items()})
+        native = torch.compile(native_wrapper, fullgraph=True, dynamic=False)
+        extract = torch.compile(capture_wrapper, fullgraph=True, dynamic=False)
+        original_tail = None
     tail = EagerNativeTail(model, tail_layers=2, train_head=False)
     head_sha = tensor_digest(model.lm_head.weight)
     manifest = {
@@ -275,7 +351,20 @@ def main():
         "primary_path": "split_inference",
         "output_head_updated": False,
         "new_classifier": False,
-        "runtime": "compiled source in two autograd contexts; eager BF16 math-SDPA tail",
+        "runtime": (
+            "explicit compiled prefix returns boundary in two autograd contexts; "
+            "eager BF16 math-SDPA tail; no stock-graph equivalence assumed"
+            if explicit_prefix
+            else "compiled source in two autograd contexts; eager BF16 math-SDPA tail"
+        ),
+        "source_observation": (
+            "ordinary prefix outputs, no activation hook or extraction graph"
+            if explicit_prefix
+            else "separate extraction graph with strict native parity gate"
+        ),
+        "cache_reconstruction_gate": "all-vocabulary equality of live versus cached split states"
+        if explicit_prefix
+        else "all-vocabulary original/extraction equality",
         "wholegraph_claim": "separate measured transfer, not assumed equivalent to split runtime",
         "test_inputs_cached_before_training": True,
         "test_scored_only_after_training": True,
@@ -296,6 +385,11 @@ def main():
         pair, values = [], []
         # Alternate order, while training labels retain their canonical index.
         for enabled in (False, True) if index % 2 == 0 else (True, False):
+            if explicit_prefix:
+                original, state = split_source_forward(native, original_tail, x, enabled)
+                pair.append((int(enabled), state))
+                values.append((int(enabled), original))
+                continue
             original, _ = source_forward(native, x, enabled)
             copied, state = source_forward(extract, x, enabled, capture=True)
             capture_wrapper.boundary = None
@@ -324,6 +418,16 @@ def main():
         emit("cache_start", split=split, pairs=len(data[split]))
         for index in range(len(data[split])):
             pair, values = measured_pair(split, index)
+            if explicit_prefix:
+                for condition in (0, 1):
+                    with torch.no_grad():
+                        reconstructed = tail(
+                            *move_state(pair[condition], "cuda"),
+                            batches[split][index]["position_ids"].cuda(),
+                        ).cpu()
+                    assert_identical(
+                        reconstructed, values[condition], "Initial native learner reconstruction"
+                    )
             cache[split].append(pair)
             initial_logits[split].append(values)
             auxiliary = {}
@@ -349,7 +453,16 @@ def main():
                     fraction_different=float((footprint != 0).float().mean()),
                 )
             if index == 0 or (index + 1) % 16 == 0:
-                emit("cache_progress", split=split, pairs=index + 1, extraction_bit_identical=True)
+                emit(
+                    "cache_progress",
+                    split=split,
+                    pairs=index + 1,
+                    gate="live_cache_split_reconstruction"
+                    if explicit_prefix
+                    else "passive_extraction",
+                    gate_bit_identical=True,
+                    **({} if explicit_prefix else {"extraction_bit_identical": True}),
+                )
     if not any(not torch.equal(p[0][0], p[1][0]) for p in cache["train"]):
         raise RuntimeError("No execution footprint at the frozen boundary; no training")
     # Repeat first example after interleaved conditions to reject stale capture state.
@@ -369,6 +482,7 @@ def main():
             "data": data,
             "condition": "execution",
             "first_layer": first_layer,
+            "source_runtime": args.source_runtime,
         },
         args.out / "cache_states.pt",
     )
@@ -430,11 +544,17 @@ def main():
             for index, pair in enumerate(initial_logits[split])
             for condition, logits in enumerate(pair)
         ]
-        save_scores(rows, split, 0, "original_wholegraph")
+        save_scores(
+            rows, split, 0, "original_split_source" if explicit_prefix else "original_wholegraph"
+        )
     if args.evaluate_tail:
         artifact = torch.load(args.evaluate_tail, map_location="cpu", weights_only=True)
         if artifact.get("condition") != "execution" or artifact.get("revision") != args.revision:
             raise ValueError("Evaluation artifact must match execution task and pinned revision")
+        if artifact.get("source_runtime", "strict-capture") != args.source_runtime:
+            raise ValueError(
+                "Evaluation artifact source runtime differs from the requested runtime"
+            )
         validate_initial_tail(
             artifact,
             tail,
@@ -450,7 +570,10 @@ def main():
     audit(completed)
     evaluate(completed, ("train", "validation"))
     model.cpu()
-    observed.cpu()
+    if observed is not None:
+        observed.cpu()
+    if original_tail is not None:
+        original_tail.cpu()
     gc.collect()
     torch.cuda.empty_cache()
     emit("sources_offloaded", allocated_gpu_bytes=torch.cuda.memory_allocated())
@@ -459,6 +582,7 @@ def main():
         return {
             "version": 1,
             "condition": "execution",
+            "source_runtime": args.source_runtime,
             "revision": args.revision,
             "train_head": False,
             "head": None,
@@ -550,7 +674,10 @@ def main():
     gc.collect()
     torch.cuda.empty_cache()
     model.cuda()
-    observed.cuda()
+    if observed is not None:
+        observed.cuda()
+    if original_tail is not None:
+        original_tail.cuda()
     # Verify original graph and cache survived device migration before installation.
     for split in data:
         for index in range(len(data[split])):
@@ -564,13 +691,26 @@ def main():
                 )
     emit("restored_source_verified")
     tail.install(model)
-    tail.install(observed)
+    if observed is not None:
+        tail.install(observed)
+    if explicit_prefix:
+        original_tail.layers.load_state_dict(tail.layers.state_dict())
+        original_tail.norm.load_state_dict(tail.norm.state_dict())
     for split in data:
         rows = []
         for index in range(len(data[split])):
             states, values = measured_pair(split, index)
             for condition in (0, 1):
                 compare_states(states[condition], cache[split][index][condition])
+                if explicit_prefix:
+                    with torch.no_grad():
+                        reconstructed = tail(
+                            *move_state(cache[split][index][condition], "cuda"),
+                            batches[split][index]["position_ids"].cuda(),
+                        ).cpu()
+                    assert_identical(
+                        values[condition], reconstructed, "Trained native split reconstruction"
+                    )
                 rows.append(
                     execution_score(
                         values[condition],
@@ -580,8 +720,30 @@ def main():
                         answers[split][index],
                     )
                 )
-        save_scores(rows, split, completed, "wholegraph_transfer")
-    for source in (model, observed):
+        save_scores(
+            rows,
+            split,
+            completed,
+            "split_reconstructed" if explicit_prefix else "wholegraph_transfer",
+        )
+    if explicit_prefix:
+        # A separate whole-model compilation measures transfer; no equality is
+        # assumed between its arithmetic and the deliberately split source.
+        stock = torch.compile(NativeForward(model), fullgraph=True, dynamic=False)
+        emit("stock_transfer_start", same_runtime_as_training=False)
+        for split in data:
+            rows = []
+            for index, batch in enumerate(batches[split]):
+                x = {k: v.cuda() for k, v in batch.items()}
+                for enabled in (False, True):
+                    logits, _ = source_forward(stock, x, enabled)
+                    rows.append(
+                        execution_score(
+                            logits, index, enabled, data[split][index], answers[split][index]
+                        )
+                    )
+            save_scores(rows, split, completed, "wholegraph_transfer")
+    for source in (model,) if observed is None else (model, observed):
         if tensor_digest(source.lm_head.weight) != head_sha:
             raise RuntimeError("Native head changed during transfer")
     emit(

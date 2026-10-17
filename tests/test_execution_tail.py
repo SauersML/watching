@@ -138,3 +138,107 @@ def test_conflicting_explicit_task_metadata_is_not_overridden_by_wording_id():
     raw["train"][0]["task"] = "probe"
     with pytest.raises(ValueError, match="execution-task"):
         select_records(raw, 4, 4, 4, 9)
+
+
+def test_explicit_prefix_reconstructs_native_model_without_observation_hooks():
+    from torch.nn.attention import SDPBackend, sdpa_kernel
+
+    from watching.execution_tail import ExplicitNativePrefix, split_source_forward
+
+    model = tiny()
+    prefix = ExplicitNativePrefix(model, 2)
+    learner = EagerNativeTail(model, 2)
+    batch = inputs()
+    snapshots = []
+    for enabled in (False, True, True, False):
+        with sdpa_kernel(SDPBackend.MATH):
+            stock, _ = source_forward(NativeForward(model), batch, enabled)
+            split, state = split_source_forward(prefix, learner, batch, enabled)
+        assert torch.equal(stock, split)
+        assert all(x is None or (not x.requires_grad and x.grad_fn is None) for x in state)
+        snapshots.append(state)
+    compare_states(snapshots[0], snapshots[3])
+    compare_states(snapshots[1], snapshots[2])
+    assert all(
+        not layer._forward_pre_hooks and not layer._forward_hooks for layer in model.model.layers
+    )
+    assert all(p.requires_grad and p.grad is None for p in model.parameters())
+
+
+def test_explicit_prefix_has_no_mode_argument_and_excludes_native_tail():
+    import inspect
+
+    from watching.execution_tail import ExplicitNativePrefix
+
+    model = tiny()
+    prefix = ExplicitNativePrefix(model, 2)
+    batch = inputs()
+    assert list(inspect.signature(prefix.forward).parameters) == [
+        "input_ids",
+        "attention_mask",
+        "position_ids",
+    ]
+    with torch.no_grad():
+        initial = prefix(**batch)
+        model.model.layers[2].mlp.down_proj.weight.add_(1)
+        model.model.norm.weight.add_(1)
+        model.lm_head.weight.add_(1)
+        after = prefix(**batch)
+    compare_states(initial, after)
+    with pytest.raises(ValueError, match="Boundary"):
+        ExplicitNativePrefix(model, 0)
+    with pytest.raises(ValueError, match="Boundary"):
+        ExplicitNativePrefix(model, 4)
+
+
+def test_explicit_prefix_compiles_both_autograd_contexts_without_graph_breaks():
+    from torch.nn.attention import SDPBackend, sdpa_kernel
+
+    from watching.execution_tail import ExplicitNativePrefix, split_source_forward
+
+    model = tiny()
+    prefix = ExplicitNativePrefix(model, 2)
+    tail = EagerNativeTail(model, 2)
+    # CPU AOT coverage checks the actual returned-boundary contract. CUDA Inductor
+    # numerics and footprint existence remain mandatory integration gates.
+    compiled = torch.compile(prefix, backend="aot_eager", fullgraph=True, dynamic=False)
+    for enabled in (False, True):
+        with sdpa_kernel(SDPBackend.MATH):
+            expected, state = split_source_forward(prefix, tail, inputs(), enabled)
+            actual, copied = split_source_forward(compiled, tail, inputs(), enabled)
+        assert torch.equal(actual, expected)
+        compare_states(state, copied)
+
+
+def test_explicit_prefix_training_changes_only_final_native_blocks_and_norm():
+    from watching.execution_tail import ExplicitNativePrefix, split_source_forward
+
+    model = tiny()
+    prefix = ExplicitNativePrefix(model, 2)
+    baseline_tail = EagerNativeTail(model, 2)
+    learner = EagerNativeTail(model, 2)
+    batch = inputs()
+    states = [
+        split_source_forward(prefix, baseline_tail, batch, enabled)[1] for enabled in (False, True)
+    ]
+    initial_parameters = {name: p.detach().clone() for name, p in model.named_parameters()}
+    optimizer = PairedMasterAdam(learner.active_parameters(), 1e-3)
+    for condition, state in enumerate(states):
+        assert check_gradient_forward(learner, state, batch["position_ids"])["bit_identical"]
+        logits = learner(*state, batch["position_ids"]).float()
+        (torch.nn.functional.cross_entropy(logits, torch.tensor([7 + condition])) / 2).backward()
+        optimizer.accumulate()
+    _, movement = optimizer.step()
+    assert movement > 0
+    assert all(torch.equal(p, initial_parameters[name]) for name, p in model.named_parameters())
+    learner.install(model)
+    for enabled, previous in zip((False, True), states, strict=True):
+        _, current = split_source_forward(prefix, learner, batch, enabled)
+        compare_states(current, previous)
+    changed = [
+        name for name, p in model.named_parameters() if not torch.equal(p, initial_parameters[name])
+    ]
+    assert changed and all(
+        name.startswith(("model.layers.2.", "model.layers.3.", "model.norm.")) for name in changed
+    )
+    assert torch.equal(model.lm_head.weight, initial_parameters["lm_head.weight"])
