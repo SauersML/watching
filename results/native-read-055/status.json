@@ -1,0 +1,45 @@
+{
+  "run": "watching-native-read-055",
+  "source_revision": "514c41d44cd9a4951327f4ca88a84d190420abb2",
+  "status": "infrastructure_failed_before_scientific_execution",
+  "runner_exit_code": 1,
+  "scientific_module_started": false,
+  "model_loaded": false,
+  "scientific_result": null,
+  "reason": "CUDA initialization failed on the available community L40S host; subsequent allocations returned the same failed host; runner stopped with less than ten minutes remaining.",
+  "allocated_pods": 5,
+  "confirmed_deleted_pods": 5,
+  "rounded_charges_usd": [
+    0.0081,
+    0.0011,
+    0.0011,
+    0.0011,
+    0.0009
+  ],
+  "total_rounded_charges_usd": 0.0123,
+  "budget_cap_usd": 0.2,
+  "hourly_price_usd": 0.79,
+  "wall_cap_minutes": 15,
+  "exact_approval_removed": true,
+  "fallback_above_price_ceiling": false,
+  "local_validation": {
+    "tests_passed": 25,
+    "ruff": "passed",
+    "shell_syntax": "passed"
+  },
+  "raw_local_provenance": {
+    "cost.txt": {
+      "bytes": 690,
+      "sha256": "9c66e8950a6e106b364bc2e4cdf89ad9a1c19818cd5085c5c0363b54a3b95830"
+    },
+    "rp-run.log": {
+      "bytes": 1341,
+      "sha256": "6cfae5c9ba0e4a2f205aaaf293b8ec7bbef1140a8d9396ec4cf12918dccf97fd"
+    },
+    "run.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "public_log_note": "Raw provisioning logs retained locally; public summary excludes host addresses, pod identifiers, and unrelated shared-account ledger balances."
+}
