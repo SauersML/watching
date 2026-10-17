@@ -1,0 +1,2473 @@
+{
+  "source": "results/two-block-batch-033/fit",
+  "manifest": {
+    "checkpoint": "Qwen/Qwen3-8B",
+    "data": "/workspace/runs/watching-two-block-batch-033/mpd-data/runpod/watching-two-block-batch-033/out/data.json",
+    "out": "/workspace/runs/watching-two-block-batch-033/mpd-data/runpod/watching-two-block-batch-033/out/fit",
+    "train_head": false,
+    "initial_tail": null,
+    "prior_results": null,
+    "early_eval_steps": [
+      8,
+      32,
+      128
+    ],
+    "max_training_seconds": 1050.0,
+    "probe_layer": 14,
+    "tail_layers": 2,
+    "train_prompts": 64,
+    "prompt_batch_size": 4,
+    "validation_prompts": 32,
+    "test_prompts": 64,
+    "test_split": null,
+    "steps": 1024,
+    "eval_every": 64,
+    "lr": 5e-06,
+    "length": 96,
+    "seed": 20261017,
+    "starting_global_step": 0,
+    "starting_processed_prompt_pairs": 0,
+    "processed_prompt_pairs": 4096,
+    "global_processed_prompt_pairs": 4096,
+    "completed_steps": 1024,
+    "initial_tail_sha256": null,
+    "excluded_test_context_ids": [],
+    "optimizer_state_restored": false,
+    "continuation_note": null,
+    "whole_vs_split_note": "On continuation this includes prior learned weights, not only runtime differences",
+    "condition": "probe",
+    "answer_order": [
+      "No",
+      "Yes"
+    ],
+    "labels": {
+      "No": 2753,
+      "Yes": 9454
+    },
+    "model_commit": null,
+    "torch": "2.10.0+cu128",
+    "gpu": "NVIDIA L40S",
+    "updated_blocks": [
+      34,
+      35
+    ],
+    "active_parameters": 385896960,
+    "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
+    "primary_path": "split_inference",
+    "stock_runtime_parity_claimed": false,
+    "output_head_updated": false,
+    "output_head_scope": "frozen",
+    "sources_offloaded_during_training": false,
+    "test_inputs_cached_before_training": false,
+    "new_classifier": false,
+    "objective": "balanced paired full-vocabulary cross entropy",
+    "optimizer": "FP32-master AdamW, separate condition gradients accumulated in FP32, zero decay, gradient norm clip1",
+    "test_source_split": "test_wording",
+    "test_evaluated_only_after_training": true,
+    "selection": "fixed step count; reporting validation does not select checkpoints",
+    "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+    "data_sha256": "9321889d38cc5b070844a7a3692811f86e0c70905e7e4d5fbe790f8fab07b755",
+    "source_sha256": "dbd38a0e09d0f113c0b49f292b9f557aa056818c0497ac675c303165e886cb44",
+    "head_sha256_after": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+    "ending_global_step": 1024,
+    "training_status": "complete"
+  },
+  "starting_global_step": 0,
+  "baseline_scope": "Current-run baseline before optimizer updates",
+  "data_sha256": "3dcdd438eee320ad27a6c7b9b8c4c5311f55b4c9c07288afccc227abebb23e2d",
+  "identity_scope": "Every checkpoint must contain the same complete prompt-index set, mapped to saved data.json; optional row identity fields are checked. Score files do not contain independently verifiable per-step token hashes.",
+  "intervals": "5000 whole-prompt paired bootstrap resamples; pointwise 95% intervals; conditional on these prompts and this single run, not training-seed uncertainty.",
+  "status": "complete",
+  "curves": {
+    "train": {
+      "n_prompts": 64,
+      "points": [
+        {
+          "step": 0,
+          "global_step": 0,
+          "source": "results/two-block-batch-033/fit/train_0_split_inference.json",
+          "source_sha256": "841f55a32806f62479e450dd6b91d91b81d3376610f6ebbb818d418c2fe72c92",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 62,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.048828125,
+                0.05078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4786114970657835,
+              "ci95": [
+                0.4526741215083237,
+                0.49882932578771966
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.484375,
+              "ci95": [
+                0.453125,
+                0.515625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0,
+              "ci95": [
+                -0.048828125,
+                0.05078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4786114970657835,
+              "ci95": [
+                0.4526741215083237,
+                0.49882932578771966
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.484375,
+              "ci95": [
+                0.453125,
+                0.515625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 8,
+          "global_step": 8,
+          "source": "results/two-block-batch-033/fit/train_8_split_inference.json",
+          "source_sha256": "e1673854e515d9719458101a92f5f0e92e8804db9b9f37941323a53fad96f3c2",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 61,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.00390625,
+              "ci95": [
+                -0.01953125,
+                0.02734375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.47143228331947284,
+              "ci95": [
+                0.4472311490417269,
+                0.4898552703925816
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.4765625,
+              "ci95": [
+                0.4453125,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.00390625,
+              "ci95": [
+                -0.01953125,
+                0.02734375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.47143228331947284,
+              "ci95": [
+                0.4472311490417269,
+                0.4898552703925816
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.4765625,
+              "ci95": [
+                0.4453125,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 32,
+          "global_step": 32,
+          "source": "results/two-block-batch-033/fit/train_32_split_inference.json",
+          "source_sha256": "48fcc1a586921381f5dd6ca1c2175ebf5047535c87a01585986da120c282654f",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 64,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.005859375,
+              "ci95": [
+                -0.01171875,
+                0.021484375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49282521939312574,
+              "ci95": [
+                0.4823682712885784,
+                0.499120622407645
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.005859375,
+              "ci95": [
+                -0.01171875,
+                0.021484375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49282521939312574,
+              "ci95": [
+                0.4823682712885784,
+                0.499120622407645
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 64,
+          "global_step": 64,
+          "source": "results/two-block-batch-033/fit/train_64_split_inference.json",
+          "source_sha256": "dd9c0d4946721850dd5c312ca78f85ff20c2098a136e90bb781377829ccfcbf7",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 62,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.009765625,
+              "ci95": [
+                -0.009765625,
+                0.029296875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5001872326247394,
+              "ci95": [
+                0.497713936958462,
+                0.5026419183705002
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.484375,
+              "ci95": [
+                0.4609375,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.009765625,
+              "ci95": [
+                -0.009765625,
+                0.029296875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5001872326247394,
+              "ci95": [
+                0.497713936958462,
+                0.5026419183705002
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.484375,
+              "ci95": [
+                0.4609375,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 128,
+          "global_step": 128,
+          "source": "results/two-block-batch-033/fit/train_128_split_inference.json",
+          "source_sha256": "5e1bab21cf71be356f9664dda86eb580ecf1e657933128a38f56d292bcdb93a8",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 65,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.005859375,
+              "ci95": [
+                -0.017578125,
+                0.02734375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49971119896508753,
+              "ci95": [
+                0.4968949418980628,
+                0.5024410206824541
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5078125,
+              "ci95": [
+                0.4609375,
+                0.5625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.005859375,
+              "ci95": [
+                -0.017578125,
+                0.02734375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49971119896508753,
+              "ci95": [
+                0.4968949418980628,
+                0.5024410206824541
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5078125,
+              "ci95": [
+                0.4609375,
+                0.5625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 192,
+          "global_step": 192,
+          "source": "results/two-block-batch-033/fit/train_192_split_inference.json",
+          "source_sha256": "df6da19d7806071bf7f4517d4f472ed0caf05cf2170e07e52714919dc42907d4",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 71,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.099609375,
+              "ci95": [
+                0.08203125,
+                0.119140625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5115269736852497,
+              "ci95": [
+                0.5092851719819009,
+                0.5138539837207645
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5546875,
+              "ci95": [
+                0.5234375,
+                0.59375
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.099609375,
+              "ci95": [
+                0.08203125,
+                0.119140625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5115269736852497,
+              "ci95": [
+                0.5092851719819009,
+                0.5138539837207645
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5546875,
+              "ci95": [
+                0.5234375,
+                0.59375
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 256,
+          "global_step": 256,
+          "source": "results/two-block-batch-033/fit/train_256_split_inference.json",
+          "source_sha256": "3a5dc98e9d57ecaf04effd30285abaaeb1b6c4c86ac2834b7b42a6a3fe9c0d94",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 64,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.1171875,
+              "ci95": [
+                0.095703125,
+                0.138671875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5108174924971536,
+              "ci95": [
+                0.5087702320888638,
+                0.5129234133055434
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.1171875,
+              "ci95": [
+                0.095703125,
+                0.138671875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5108174924971536,
+              "ci95": [
+                0.5087702320888638,
+                0.5129234133055434
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 320,
+          "global_step": 320,
+          "source": "results/two-block-batch-033/fit/train_320_split_inference.json",
+          "source_sha256": "017759b905f5c9031ccca6f823ac31bc86162990f8ddf8643c10a876cf32870d",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 88,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.59765625,
+              "ci95": [
+                0.548828125,
+                0.6484375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5665176275651902,
+              "ci95": [
+                0.5610694279894233,
+                0.5716019209939986
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.6875,
+              "ci95": [
+                0.6328125,
+                0.7421875
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.59765625,
+              "ci95": [
+                0.548828125,
+                0.6484375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5665176275651902,
+              "ci95": [
+                0.5610694279894233,
+                0.5716019209939986
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.6875,
+              "ci95": [
+                0.6328125,
+                0.7421875
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 384,
+          "global_step": 384,
+          "source": "results/two-block-batch-033/fit/train_384_split_inference.json",
+          "source_sha256": "0dbfc4599db5813e47fc599ccbc36d2487dde926a74e54d1c4000bfa93b73660",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 68,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.5703125,
+              "ci95": [
+                0.525390625,
+                0.615234375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5548621402704157,
+              "ci95": [
+                0.5494747848133557,
+                0.5606494499370456
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.53125,
+              "ci95": [
+                0.5078125,
+                0.5625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.5703125,
+              "ci95": [
+                0.525390625,
+                0.615234375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5548621402704157,
+              "ci95": [
+                0.5494747848133557,
+                0.5606494499370456
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.53125,
+              "ci95": [
+                0.5078125,
+                0.5625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 448,
+          "global_step": 448,
+          "source": "results/two-block-batch-033/fit/train_448_split_inference.json",
+          "source_sha256": "5d22647f64c1379ade577b8d411a3d3d017d8b155cbcef0117cf00f26b2d2939",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 97,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.169921875,
+              "ci95": [
+                1.060546875,
+                1.28515625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.6219308997970074,
+              "ci95": [
+                0.6117696450091898,
+                0.6324102305807173
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.7578125,
+              "ci95": [
+                0.6953125,
+                0.8203125
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.169921875,
+              "ci95": [
+                1.060546875,
+                1.28515625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.6219308997970074,
+              "ci95": [
+                0.6117696450091898,
+                0.6324102305807173
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.7578125,
+              "ci95": [
+                0.6953125,
+                0.8203125
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 512,
+          "global_step": 512,
+          "source": "results/two-block-batch-033/fit/train_512_split_inference.json",
+          "source_sha256": "b17f3ec1532cbd30fd2d4e770277cdd756dfb737ba5f9a762dba92901142c213",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 86,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.865234375,
+              "ci95": [
+                0.796875,
+                0.935546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5932062263600528,
+              "ci95": [
+                0.5848776146303862,
+                0.6019399813376367
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.671875,
+              "ci95": [
+                0.6171875,
+                0.734375
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.865234375,
+              "ci95": [
+                0.796875,
+                0.935546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5932062263600528,
+              "ci95": [
+                0.5848776146303862,
+                0.6019399813376367
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.671875,
+              "ci95": [
+                0.6171875,
+                0.734375
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 576,
+          "global_step": 576,
+          "source": "results/two-block-batch-033/fit/train_576_split_inference.json",
+          "source_sha256": "f0534717294d4944863c0b4a85cb42807d9bd2f71e1f3f3ee6e4ed81f5c2aac5",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 72,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 2.646484375,
+              "ci95": [
+                2.421875,
+                2.873046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.568504225986544,
+              "ci95": [
+                0.5540388076042291,
+                0.583301164147997
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.5234375,
+                0.6015625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 2.646484375,
+              "ci95": [
+                2.421875,
+                2.873046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.568504225986544,
+              "ci95": [
+                0.5540388076042291,
+                0.583301164147997
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.5234375,
+                0.6015625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 640,
+          "global_step": 640,
+          "source": "results/two-block-batch-033/fit/train_640_split_inference.json",
+          "source_sha256": "2cd0cfde6f67340e0b73f87449e51baa0c34bd9c2506c31f13be1b1aedcf3a69",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 91,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.1953125,
+              "ci95": [
+                1.10546875,
+                1.287109375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.6264585498720407,
+              "ci95": [
+                0.6153547615977004,
+                0.637473875656724
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.7109375,
+              "ci95": [
+                0.6484375,
+                0.7734375
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.1953125,
+              "ci95": [
+                1.10546875,
+                1.287109375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.6264585498720407,
+              "ci95": [
+                0.6153547615977004,
+                0.637473875656724
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.7109375,
+              "ci95": [
+                0.6484375,
+                0.7734375
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 704,
+          "global_step": 704,
+          "source": "results/two-block-batch-033/fit/train_704_split_inference.json",
+          "source_sha256": "6ed3c2547c003971e3d8484b41f4ad8888b761b4b39950a407fabebad8fd2697",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 64,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.998046875,
+              "ci95": [
+                0.9375,
+                1.060546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5436284420429729,
+              "ci95": [
+                0.5378071938175708,
+                0.5504309137759265
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.998046875,
+              "ci95": [
+                0.9375,
+                1.060546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5436284420429729,
+              "ci95": [
+                0.5378071938175708,
+                0.5504309137759265
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 768,
+          "global_step": 768,
+          "source": "results/two-block-batch-033/fit/train_768_split_inference.json",
+          "source_sha256": "7997aef3c699e4d6bf71deeefb0b2271190368effec7e039e9a039ab63a0b459",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 88,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.662109375,
+              "ci95": [
+                1.525390625,
+                1.806640625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.6565413667121902,
+              "ci95": [
+                0.6396419625962153,
+                0.6740549154346809
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.6875,
+              "ci95": [
+                0.6328125,
+                0.75
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.662109375,
+              "ci95": [
+                1.525390625,
+                1.806640625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.6565413667121902,
+              "ci95": [
+                0.6396419625962153,
+                0.6740549154346809
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.6875,
+              "ci95": [
+                0.6328125,
+                0.75
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 832,
+          "global_step": 832,
+          "source": "results/two-block-batch-033/fit/train_832_split_inference.json",
+          "source_sha256": "b00978edc9671a2d76ab0ed5c95567e7dae362098a2e755223c731c3376454c7",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 113,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 3.40625,
+              "ci95": [
+                3.125,
+                3.697265625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.7817881065275287,
+              "ci95": [
+                0.7585639449825976,
+                0.804962559879641
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.8828125,
+              "ci95": [
+                0.828125,
+                0.9296875
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 3.40625,
+              "ci95": [
+                3.125,
+                3.697265625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.7817881065275287,
+              "ci95": [
+                0.7585639449825976,
+                0.804962559879641
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.8828125,
+              "ci95": [
+                0.828125,
+                0.9296875
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 896,
+          "global_step": 896,
+          "source": "results/two-block-batch-033/fit/train_896_split_inference.json",
+          "source_sha256": "6c83f40f99def7d688efb2f32f08ea6e4accd153b6c99c351d0ea3f4bab6b1cc",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 101,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 5.75390625,
+              "ci95": [
+                5.318359375,
+                6.205078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.7705822439611438,
+              "ci95": [
+                0.7313462501278991,
+                0.8081009747011194
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.7890625,
+              "ci95": [
+                0.7265625,
+                0.8515625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 5.75390625,
+              "ci95": [
+                5.318359375,
+                6.205078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.7705822439611438,
+              "ci95": [
+                0.7313462501278991,
+                0.8081009747011194
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.7890625,
+              "ci95": [
+                0.7265625,
+                0.8515625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 960,
+          "global_step": 960,
+          "source": "results/two-block-batch-033/fit/train_960_split_inference.json",
+          "source_sha256": "c454a2d3f68b4adcbbb68467c31ba3effecfef33f2f05319a4d054e34f4b947e",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 69,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.431640625,
+              "ci95": [
+                1.298828125,
+                1.580078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5814126916811801,
+              "ci95": [
+                0.5657922060927376,
+                0.5992555572593119
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5390625,
+              "ci95": [
+                0.5078125,
+                0.5703125
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.431640625,
+              "ci95": [
+                1.298828125,
+                1.580078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5814126916811801,
+              "ci95": [
+                0.5657922060927376,
+                0.5992555572593119
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5390625,
+              "ci95": [
+                0.5078125,
+                0.5703125
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 1024,
+          "global_step": 1024,
+          "source": "results/two-block-batch-033/fit/train_1024_split_inference.json",
+          "source_sha256": "e668b94afb79e12f187f4088fa5ffe0fe25a18b780606fb9245fd043ba247e9d",
+          "n_prompts": 64,
+          "n_executions": 128,
+          "greedy_correct_count": 104,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.271484375,
+              "ci95": [
+                1.166015625,
+                1.384765625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.638027690234594,
+              "ci95": [
+                0.6276860957732424,
+                0.6484934261534363
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.8125,
+              "ci95": [
+                0.75,
+                0.8671875
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.271484375,
+              "ci95": [
+                1.166015625,
+                1.384765625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.638027690234594,
+              "ci95": [
+                0.6276860957732424,
+                0.6484934261534363
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.8125,
+              "ci95": [
+                0.75,
+                0.8671875
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        }
+      ]
+    },
+    "validation": {
+      "n_prompts": 32,
+      "points": [
+        {
+          "step": 0,
+          "global_step": 0,
+          "source": "results/two-block-batch-033/fit/validation_0_split_inference.json",
+          "source_sha256": "3ef6faf59e3c401b46b542e869096fa77f53197501cb5b3b21e71735bae16941",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 30,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0625,
+              "ci95": [
+                0.0078125,
+                0.1171875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4699593331433106,
+              "ci95": [
+                0.4237850052186778,
+                0.5010480993032863
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.46875,
+              "ci95": [
+                0.421875,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0625,
+              "ci95": [
+                0.0078125,
+                0.1171875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4699593331433106,
+              "ci95": [
+                0.4237850052186778,
+                0.5010480993032863
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.46875,
+              "ci95": [
+                0.421875,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 8,
+          "global_step": 8,
+          "source": "results/two-block-batch-033/fit/validation_8_split_inference.json",
+          "source_sha256": "4cd731104d86607d8353d26a91f3c3f7a40023266da9f47cdacd50b89f43b224",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 30,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.00390625,
+              "ci95": [
+                -0.02734375,
+                0.0390625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.46464587977061456,
+              "ci95": [
+                0.4206511135362234,
+                0.4965320171395433
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.46875,
+              "ci95": [
+                0.421875,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.00390625,
+              "ci95": [
+                -0.02734375,
+                0.0390625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.46464587977061456,
+              "ci95": [
+                0.4206511135362234,
+                0.4965320171395433
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.46875,
+              "ci95": [
+                0.421875,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 32,
+          "global_step": 32,
+          "source": "results/two-block-batch-033/fit/validation_32_split_inference.json",
+          "source_sha256": "6fa3402c72fcc4ed0a275b958fb62df8e6588b65f3238572cd92c3db91ebced1",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 31,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.0390625,
+                0.0078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4858426976716146,
+              "ci95": [
+                0.46511173847829923,
+                0.49861662019975483
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.484375,
+              "ci95": [
+                0.453125,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.0390625,
+                0.0078125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.4858426976716146,
+              "ci95": [
+                0.46511173847829923,
+                0.49861662019975483
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.484375,
+              "ci95": [
+                0.453125,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 64,
+          "global_step": 64,
+          "source": "results/two-block-batch-033/fit/validation_64_split_inference.json",
+          "source_sha256": "0d809168ff5022f31d15bfd4fc75a7f710f139af747fb61c6e4f8a7d79e81202",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 32,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0078125,
+              "ci95": [
+                -0.015625,
+                0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49941005278378725,
+              "ci95": [
+                0.49626108491793275,
+                0.5024140109308064
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0078125,
+              "ci95": [
+                -0.015625,
+                0.03125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49941005278378725,
+              "ci95": [
+                0.49626108491793275,
+                0.5024140109308064
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 128,
+          "global_step": 128,
+          "source": "results/two-block-batch-033/fit/validation_128_split_inference.json",
+          "source_sha256": "4bff60850e5b12f39a05bbf0583f0722ac45fe44565a1f7d3e3ad78135180ba2",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 32,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0078125,
+              "ci95": [
+                -0.0078125,
+                0.0234375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49974625976756215,
+              "ci95": [
+                0.49792017973959446,
+                0.5016167848370969
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0078125,
+              "ci95": [
+                -0.0078125,
+                0.0234375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.49974625976756215,
+              "ci95": [
+                0.49792017973959446,
+                0.5016167848370969
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 192,
+          "global_step": 192,
+          "source": "results/two-block-batch-033/fit/validation_192_split_inference.json",
+          "source_sha256": "cbb4bc8a7e1c051e07600309e581efe17271643079fa49a009235dcbef1ab858",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 34,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.046875,
+              "ci95": [
+                0.01953125,
+                0.07421875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.504870509263128,
+              "ci95": [
+                0.5015982151962817,
+                0.5082041611894965
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.53125,
+              "ci95": [
+                0.5,
+                0.578125
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.046875,
+              "ci95": [
+                0.01953125,
+                0.07421875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.504870509263128,
+              "ci95": [
+                0.5015982151962817,
+                0.5082041611894965
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.53125,
+              "ci95": [
+                0.5,
+                0.578125
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 256,
+          "global_step": 256,
+          "source": "results/two-block-batch-033/fit/validation_256_split_inference.json",
+          "source_sha256": "ae02d4a30a849f41a1f64898e97b88d143a2c59b6d27772e6ed3b7f3ba66aeff",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 32,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.0625,
+              "ci95": [
+                0.03515625,
+                0.08984375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5058367566671222,
+              "ci95": [
+                0.5030119197908789,
+                0.50860241567716
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.0625,
+              "ci95": [
+                0.03515625,
+                0.08984375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5058367566671222,
+              "ci95": [
+                0.5030119197908789,
+                0.50860241567716
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 320,
+          "global_step": 320,
+          "source": "results/two-block-batch-033/fit/validation_320_split_inference.json",
+          "source_sha256": "356553c7f59545b2fc663acdcc6e69c101b6db6bb4a4cadde252a35dfc35bd1b",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 36,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.50390625,
+              "ci95": [
+                0.41015625,
+                0.60546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5403281932813115,
+              "ci95": [
+                0.5335757764987648,
+                0.5475016591371968
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.515625,
+                0.625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.50390625,
+              "ci95": [
+                0.41015625,
+                0.60546875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5403281932813115,
+              "ci95": [
+                0.5335757764987648,
+                0.5475016591371968
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.515625,
+                0.625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 384,
+          "global_step": 384,
+          "source": "results/two-block-batch-033/fit/validation_384_split_inference.json",
+          "source_sha256": "6c39d8dad85f349ffcef08b3855381c22f0e4c8192dd81e8c6af669cffb243bc",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 38,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.5,
+              "ci95": [
+                0.4140625,
+                0.59765625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5457052594283596,
+              "ci95": [
+                0.5367982750758529,
+                0.5556879150681198
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.59375,
+              "ci95": [
+                0.53125,
+                0.65625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.5,
+              "ci95": [
+                0.4140625,
+                0.59765625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5457052594283596,
+              "ci95": [
+                0.5367982750758529,
+                0.5556879150681198
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.59375,
+              "ci95": [
+                0.53125,
+                0.65625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 448,
+          "global_step": 448,
+          "source": "results/two-block-batch-033/fit/validation_448_split_inference.json",
+          "source_sha256": "d0dd46ec7bf0ff20cc856f6d6b859d2ac666986e3c4ab803da541137bf5a6f37",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 37,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.21484375,
+              "ci95": [
+                0.9453125,
+                1.51953125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5596041626995429,
+              "ci95": [
+                0.545320023840759,
+                0.5751582701050211
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.578125,
+              "ci95": [
+                0.53125,
+                0.640625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.21484375,
+              "ci95": [
+                0.9453125,
+                1.51953125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5596041626995429,
+              "ci95": [
+                0.545320023840759,
+                0.5751582701050211
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.578125,
+              "ci95": [
+                0.53125,
+                0.640625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 512,
+          "global_step": 512,
+          "source": "results/two-block-batch-033/fit/validation_512_split_inference.json",
+          "source_sha256": "f9bc35aa12042c6c97b7f26364f029e3419f7911bbce5beb5834a216f4b803fc",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 37,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 0.87109375,
+              "ci95": [
+                0.67578125,
+                1.09375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5538030913739931,
+              "ci95": [
+                0.5433138394437265,
+                0.5649951553787105
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.578125,
+              "ci95": [
+                0.515625,
+                0.640625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 0.87109375,
+              "ci95": [
+                0.67578125,
+                1.09375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5538030913739931,
+              "ci95": [
+                0.5433138394437265,
+                0.5649951553787105
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.578125,
+              "ci95": [
+                0.515625,
+                0.640625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 576,
+          "global_step": 576,
+          "source": "results/two-block-batch-033/fit/validation_576_split_inference.json",
+          "source_sha256": "2e167014b2cfb63da8e6ea7638d580149af8b74642b734853a13e38df01da6f9",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 33,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.71875,
+              "ci95": [
+                1.4453125,
+                2.0
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.538808547448042,
+              "ci95": [
+                0.5237310258530101,
+                0.5561080472256492
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.515625,
+              "ci95": [
+                0.5,
+                0.546875
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.71875,
+              "ci95": [
+                1.4453125,
+                2.0
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.538808547448042,
+              "ci95": [
+                0.5237310258530101,
+                0.5561080472256492
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.515625,
+              "ci95": [
+                0.5,
+                0.546875
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 640,
+          "global_step": 640,
+          "source": "results/two-block-batch-033/fit/validation_640_split_inference.json",
+          "source_sha256": "be74b52b0cfe97e49d25f843e3def61d78532b2f65a1bbd8adc32ddf636adfe0",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 40,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.24609375,
+              "ci95": [
+                1.0234375,
+                1.4765625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5718070573930163,
+              "ci95": [
+                0.5524628528364701,
+                0.5923996440687915
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.625,
+              "ci95": [
+                0.546875,
+                0.703125
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.24609375,
+              "ci95": [
+                1.0234375,
+                1.4765625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5718070573930163,
+              "ci95": [
+                0.5524628528364701,
+                0.5923996440687915
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.625,
+              "ci95": [
+                0.546875,
+                0.703125
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 704,
+          "global_step": 704,
+          "source": "results/two-block-batch-033/fit/validation_704_split_inference.json",
+          "source_sha256": "7d6ade17fc09a53168ba7c1690cde854c37fb417cfe60e8299c0bb573f1f8e34",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 35,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.0625,
+              "ci95": [
+                0.84375,
+                1.32421875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5621717843168881,
+              "ci95": [
+                0.5417121585487621,
+                0.5842880173586309
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.546875,
+              "ci95": [
+                0.5,
+                0.609375
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.0625,
+              "ci95": [
+                0.84375,
+                1.32421875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5621717843168881,
+              "ci95": [
+                0.5417121585487621,
+                0.5842880173586309
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.546875,
+              "ci95": [
+                0.5,
+                0.609375
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 768,
+          "global_step": 768,
+          "source": "results/two-block-batch-033/fit/validation_768_split_inference.json",
+          "source_sha256": "76c095f67d729919c75c47944c7ed00e2feaca1e725a5e43501a38622d2aac8e",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 39,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.8046875,
+              "ci95": [
+                1.4609375,
+                2.16015625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5787147740245473,
+              "ci95": [
+                0.5523845896693729,
+                0.606795520737478
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.609375,
+              "ci95": [
+                0.546875,
+                0.6875
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.8046875,
+              "ci95": [
+                1.4609375,
+                2.16015625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5787147740245473,
+              "ci95": [
+                0.5523845896693729,
+                0.606795520737478
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.609375,
+              "ci95": [
+                0.546875,
+                0.6875
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 832,
+          "global_step": 832,
+          "source": "results/two-block-batch-033/fit/validation_832_split_inference.json",
+          "source_sha256": "6e32a9bd806d51537b80584b3b93ee8c93c8225b9dccb7fa8b40ea16f0da6ca6",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 38,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 2.75,
+              "ci95": [
+                2.26953125,
+                3.265625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5986145704687392,
+              "ci95": [
+                0.5623145051810344,
+                0.6390926722175436
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.59375,
+              "ci95": [
+                0.53125,
+                0.671875
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 2.75,
+              "ci95": [
+                2.26953125,
+                3.265625
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5986145704687392,
+              "ci95": [
+                0.5623145051810344,
+                0.6390926722175436
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.59375,
+              "ci95": [
+                0.53125,
+                0.671875
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 896,
+          "global_step": 896,
+          "source": "results/two-block-batch-033/fit/validation_896_split_inference.json",
+          "source_sha256": "0e6114430621f68799dc63d235cb575a60dcf504ca19ddad713904550abc4a3a",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 35,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 3.1328125,
+              "ci95": [
+                2.49609375,
+                3.8046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5769069976880249,
+              "ci95": [
+                0.5414830651623398,
+                0.6189035176851123
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.546875,
+              "ci95": [
+                0.5,
+                0.609375
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 3.1328125,
+              "ci95": [
+                2.49609375,
+                3.8046875
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5769069976880249,
+              "ci95": [
+                0.5414830651623398,
+                0.6189035176851123
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.546875,
+              "ci95": [
+                0.5,
+                0.609375
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 960,
+          "global_step": 960,
+          "source": "results/two-block-batch-033/fit/validation_960_split_inference.json",
+          "source_sha256": "07a790774819f91b9a6c8c5761d620f927cea847449b7c95f8f2453fb34100f7",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 36,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.51953125,
+              "ci95": [
+                1.1953125,
+                1.86328125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5712087718202383,
+              "ci95": [
+                0.5460120295319939,
+                0.6002504267380573
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.515625,
+                0.625
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.51953125,
+              "ci95": [
+                1.1953125,
+                1.86328125
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5712087718202383,
+              "ci95": [
+                0.5460120295319939,
+                0.6002504267380573
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.5625,
+              "ci95": [
+                0.515625,
+                0.625
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        },
+        {
+          "step": 1024,
+          "global_step": 1024,
+          "source": "results/two-block-batch-033/fit/validation_1024_split_inference.json",
+          "source_sha256": "04c37241ffd632d7112e5b5a697680640b4ec26daa1609a05716b75290e783cc",
+          "n_prompts": 32,
+          "n_executions": 64,
+          "greedy_correct_count": 38,
+          "prompt_bootstrap": {
+            "separation": {
+              "mean": 1.08984375,
+              "ci95": [
+                0.9140625,
+                1.2734375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5671693848817085,
+              "ci95": [
+                0.5512595748004969,
+                0.5837981078511802
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.59375,
+              "ci95": [
+                0.53125,
+                0.671875
+              ]
+            }
+          },
+          "displayed": {
+            "separation": {
+              "mean": 1.08984375,
+              "ci95": [
+                0.9140625,
+                1.2734375
+              ]
+            },
+            "correct_probability": {
+              "mean": 0.5671693848817085,
+              "ci95": [
+                0.5512595748004969,
+                0.5837981078511802
+              ]
+            },
+            "greedy_accuracy": {
+              "mean": 0.59375,
+              "ci95": [
+                0.53125,
+                0.671875
+              ]
+            }
+          },
+          "resampling_unit": "whole paired prompt",
+          "bootstrap_draws": 5000,
+          "bootstrap_seed": 20261016
+        }
+      ]
+    }
+  },
+  "wholegraph_transfer": {
+    "train": {
+      "step": 1024,
+      "global_step": 1024,
+      "source": "results/two-block-batch-033/fit/train_1024_wholegraph_transfer.json",
+      "source_sha256": "ac8249c16f60bf7122d4f0e7fa15ccd2b09e123560eed7e249551e73fb352692",
+      "n_prompts": 64,
+      "n_executions": 128,
+      "greedy_correct_count": 103,
+      "prompt_bootstrap": {
+        "separation": {
+          "mean": 1.15234375,
+          "ci95": [
+            1.0546875,
+            1.259765625
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.6245692634256557,
+          "ci95": [
+            0.614768210798502,
+            0.6341898536775261
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.8046875,
+          "ci95": [
+            0.7421875,
+            0.859375
+          ]
+        }
+      },
+      "displayed": {
+        "separation": {
+          "mean": 1.15234375,
+          "ci95": [
+            1.0546875,
+            1.259765625
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.6245692634256557,
+          "ci95": [
+            0.614768210798502,
+            0.6341898536775261
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.8046875,
+          "ci95": [
+            0.7421875,
+            0.859375
+          ]
+        }
+      },
+      "resampling_unit": "whole paired prompt",
+      "bootstrap_draws": 5000,
+      "bootstrap_seed": 20261016
+    },
+    "validation": {
+      "step": 1024,
+      "global_step": 1024,
+      "source": "results/two-block-batch-033/fit/validation_1024_wholegraph_transfer.json",
+      "source_sha256": "75985c57d5af79bc6c94974941ca80bd7b5261d8589144c0c81c117ead839f7f",
+      "n_prompts": 32,
+      "n_executions": 64,
+      "greedy_correct_count": 37,
+      "prompt_bootstrap": {
+        "separation": {
+          "mean": 0.8828125,
+          "ci95": [
+            0.72265625,
+            1.05078125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5506892909834278,
+          "ci95": [
+            0.5385643579793395,
+            0.5629867292591371
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.578125,
+          "ci95": [
+            0.515625,
+            0.640625
+          ]
+        }
+      },
+      "displayed": {
+        "separation": {
+          "mean": 0.8828125,
+          "ci95": [
+            0.72265625,
+            1.05078125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5506892909834278,
+          "ci95": [
+            0.5385643579793395,
+            0.5629867292591371
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.578125,
+          "ci95": [
+            0.515625,
+            0.640625
+          ]
+        }
+      },
+      "resampling_unit": "whole paired prompt",
+      "bootstrap_draws": 5000,
+      "bootstrap_seed": 20261016
+    },
+    "test": {
+      "step": 1024,
+      "global_step": 1024,
+      "source": "results/two-block-batch-033/fit/test_1024_wholegraph_transfer.json",
+      "source_sha256": "a7847123a3f73f1e15c06884b8e40728e8ab49d12533c6d9edcb08035251b467",
+      "n_prompts": 64,
+      "n_executions": 128,
+      "greedy_correct_count": 72,
+      "prompt_bootstrap": {
+        "separation": {
+          "mean": 0.671875,
+          "ci95": [
+            0.578125,
+            0.76953125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5405777748428591,
+          "ci95": [
+            0.5319256237753507,
+            0.5497564402021453
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5625,
+          "ci95": [
+            0.5234375,
+            0.609375
+          ]
+        }
+      },
+      "displayed": {
+        "separation": {
+          "mean": 0.671875,
+          "ci95": [
+            0.578125,
+            0.76953125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5405777748428591,
+          "ci95": [
+            0.5319256237753507,
+            0.5497564402021453
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5625,
+          "ci95": [
+            0.5234375,
+            0.609375
+          ]
+        }
+      },
+      "resampling_unit": "whole paired prompt",
+      "bootstrap_draws": 5000,
+      "bootstrap_seed": 20261016
+    }
+  }
+}

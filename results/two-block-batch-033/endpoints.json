@@ -1,0 +1,464 @@
+{
+  "resampling": "5000 whole-prompt paired bootstrap draws; seed20261016; pointwise, conditional on these prompts and this run",
+  "endpoints": {
+    "train/split_inference": {
+      "n_prompts": 64,
+      "metrics": {
+        "gap": {
+          "mean": 1.271484375,
+          "ci95": [
+            1.16796875,
+            1.3789550781249993
+          ]
+        },
+        "midpoint": {
+          "mean": 0.0966796875,
+          "ci95": [
+            -0.0625,
+            0.265625
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.8125,
+          "ci95": [
+            0.75,
+            0.8671875
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.638027690234594,
+          "ci95": [
+            0.6277253423642832,
+            0.6480992237949976
+          ]
+        },
+        "full_ce": {
+          "mean": 0.4780299269477837,
+          "ci95": [
+            0.45707199308963026,
+            0.5007271548522112
+          ]
+        },
+        "binary_ce": {
+          "mean": 0.47786665632156655,
+          "ci95": [
+            0.45699516379536365,
+            0.5005750822485424
+          ]
+        }
+      },
+      "midpoint_rms": 0.6777991008357491,
+      "source": "fit/train_1024_split_inference.json"
+    },
+    "train/wholegraph_transfer": {
+      "n_prompts": 64,
+      "metrics": {
+        "gap": {
+          "mean": 1.15234375,
+          "ci95": [
+            1.05078125,
+            1.25390625
+          ]
+        },
+        "midpoint": {
+          "mean": 0.16015625,
+          "ci95": [
+            -0.0029541015624999917,
+            0.3330078125
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.8046875,
+          "ci95": [
+            0.7421875,
+            0.859375
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.6245692634256557,
+          "ci95": [
+            0.6149569372035331,
+            0.6341030535637401
+          ]
+        },
+        "full_ce": {
+          "mean": 0.5024771774769761,
+          "ci95": [
+            0.48090192731979187,
+            0.525621883902204
+          ]
+        },
+        "binary_ce": {
+          "mean": 0.502319990308024,
+          "ci95": [
+            0.4808257915836293,
+            0.5254310995660489
+          ]
+        }
+      },
+      "midpoint_rms": 0.703385368459211,
+      "source": "fit/train_1024_wholegraph_transfer.json"
+    },
+    "validation/split_inference": {
+      "n_prompts": 32,
+      "metrics": {
+        "gap": {
+          "mean": 1.08984375,
+          "ci95": [
+            0.91796875,
+            1.27734375
+          ]
+        },
+        "midpoint": {
+          "mean": 1.048828125,
+          "ci95": [
+            0.2421875,
+            1.9180175781249993
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.59375,
+          "ci95": [
+            0.53125,
+            0.671875
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5671693848817085,
+          "ci95": [
+            0.5515070783304509,
+            0.5833313897425796
+          ]
+        },
+        "full_ce": {
+          "mean": 0.9795672880200073,
+          "ci95": [
+            0.7682655068318127,
+            1.2125941414004044
+          ]
+        },
+        "binary_ce": {
+          "mean": 0.9793206092563196,
+          "ci95": [
+            0.7681607246435306,
+            1.212313260878318
+          ]
+        }
+      },
+      "midpoint_rms": 2.624883739984973,
+      "source": "fit/validation_1024_split_inference.json"
+    },
+    "validation/wholegraph_transfer": {
+      "n_prompts": 32,
+      "metrics": {
+        "gap": {
+          "mean": 0.8828125,
+          "ci95": [
+            0.73046875,
+            1.05859375
+          ]
+        },
+        "midpoint": {
+          "mean": 1.14453125,
+          "ci95": [
+            0.32807617187500004,
+            2.0293457031249993
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.578125,
+          "ci95": [
+            0.515625,
+            0.640625
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5506892909834278,
+          "ci95": [
+            0.5389569668481272,
+            0.5630262456841593
+          ]
+        },
+        "full_ce": {
+          "mean": 1.0480009557295489,
+          "ci95": [
+            0.8256952199251828,
+            1.2927432311496885
+          ]
+        },
+        "binary_ce": {
+          "mean": 1.0477457747892913,
+          "ci95": [
+            0.8254246179843904,
+            1.2924687905268
+          ]
+        }
+      },
+      "midpoint_rms": 2.6986957932258684,
+      "source": "fit/validation_1024_wholegraph_transfer.json"
+    },
+    "test/split_inference": {
+      "n_prompts": 64,
+      "metrics": {
+        "gap": {
+          "mean": 0.8125,
+          "ci95": [
+            0.70703125,
+            0.927734375
+          ]
+        },
+        "midpoint": {
+          "mean": 0.068359375,
+          "ci95": [
+            -0.531298828125,
+            0.7080322265624996
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5703125,
+          "ci95": [
+            0.53125,
+            0.6171875
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5484405608222005,
+          "ci95": [
+            0.5384439302836654,
+            0.5587003869333784
+          ]
+        },
+        "full_ce": {
+          "mean": 1.053161501775321,
+          "ci95": [
+            0.9348386617904907,
+            1.1857990791997282
+          ]
+        },
+        "binary_ce": {
+          "mean": 1.0529783191200295,
+          "ci95": [
+            0.9347351548828555,
+            1.1856207519987036
+          ]
+        }
+      },
+      "midpoint_rms": 2.4971908044966247,
+      "source": "fit/test_1024_split_inference.json"
+    },
+    "test/wholegraph_transfer": {
+      "n_prompts": 64,
+      "metrics": {
+        "gap": {
+          "mean": 0.671875,
+          "ci95": [
+            0.576171875,
+            0.76953125
+          ]
+        },
+        "midpoint": {
+          "mean": 0.134765625,
+          "ci95": [
+            -0.4726806640625,
+            0.7773925781249993
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5625,
+          "ci95": [
+            0.5234375,
+            0.6015625
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5405777748428591,
+          "ci95": [
+            0.5317618089862662,
+            0.549434389286148
+          ]
+        },
+        "full_ce": {
+          "mean": 1.0922395013849382,
+          "ci95": [
+            0.96833675215114,
+            1.2349860605894492
+          ]
+        },
+        "binary_ce": {
+          "mean": 1.092058721490048,
+          "ci95": [
+            0.9680810161045088,
+            1.2348096713788095
+          ]
+        }
+      },
+      "midpoint_rms": 2.5234495936242713,
+      "source": "fit/test_1024_wholegraph_transfer.json"
+    }
+  },
+  "gains_from_initial_baseline": {
+    "train": {
+      "gap": {
+        "mean": 1.271484375,
+        "ci95": [
+          1.158154296875,
+          1.38671875
+        ]
+      },
+      "midpoint": {
+        "mean": 9.1240234375,
+        "ci95": [
+          7.4667236328125,
+          10.757934570312498
+        ]
+      },
+      "greedy_accuracy": {
+        "mean": 0.328125,
+        "ci95": [
+          0.265625,
+          0.390625
+        ]
+      },
+      "correct_probability": {
+        "mean": 0.1594161931688106,
+        "ci95": [
+          0.13836082261522983,
+          0.18553494079320262
+        ]
+      },
+      "full_ce": {
+        "mean": -4.379945408944273,
+        "ci95": [
+          -5.164300515221555,
+          -3.6050566111806366
+        ]
+      },
+      "binary_ce": {
+        "mean": -4.18943336868665,
+        "ci95": [
+          -4.948325442017173,
+          -3.420450876756861
+        ]
+      }
+    },
+    "validation": {
+      "gap": {
+        "mean": 1.02734375,
+        "ci95": [
+          0.8359375,
+          1.23828125
+        ]
+      },
+      "midpoint": {
+        "mean": 8.412109375,
+        "ci95": [
+          6.177685546875,
+          10.748193359374998
+        ]
+      },
+      "greedy_accuracy": {
+        "mean": 0.125,
+        "ci95": [
+          0.046875,
+          0.203125
+        ]
+      },
+      "correct_probability": {
+        "mean": 0.09721005173839795,
+        "ci95": [
+          0.06081544078062874,
+          0.14272353209033323
+        ]
+      },
+      "full_ce": {
+        "mean": -3.4447081311772543,
+        "ci95": [
+          -4.478381465748489,
+          -2.460936132898959
+        ]
+      },
+      "binary_ce": {
+        "mean": -3.122837045548698,
+        "ci95": [
+          -4.15960860777487,
+          -2.1810388249984314
+        ]
+      }
+    }
+  },
+  "descriptive_maximum_training_gap_not_selected": {
+    "step": 896,
+    "global_step": 896,
+    "processed_prompt_pairs": 3584,
+    "global_processed_prompt_pairs": 3584,
+    "split": "train",
+    "path": "split_inference",
+    "n_prompts": 64,
+    "accuracy": 0.7890625,
+    "greedy_accuracy": 0.7890625,
+    "mean_ce": 0.5442373729289471,
+    "paired_yes_probability_gap": 0.5412088556477102,
+    "both_conditions_correct": 0.578125,
+    "absent_mean_log_odds": -0.7734375,
+    "absent_accuracy": 0.65625,
+    "present_mean_log_odds": 4.98046875,
+    "present_accuracy": 0.921875,
+    "accuracy_ci95": [
+      0.7265625,
+      0.8515625
+    ],
+    "paired_log_odds_shift": 5.75390625,
+    "paired_log_odds_shift_ci95": [
+      5.291015625,
+      6.212890625
+    ],
+    "paired_rank_accuracy": 1.0,
+    "positive_shifts": 64,
+    "zero_shifts": 0,
+    "negative_shifts": 0,
+    "mean_binary_ce": 0.5442028781974599,
+    "mean_full_vocab_correct_probability": 0.7705822439611438,
+    "mean_answer_pair_mass": 0.9999655638821423
+  },
+  "endpoint_selection": "Fixed 1024 updates from base; maximum is descriptive, never selected",
+  "integration": {
+    "gradient_forward_checks": 38,
+    "all_gradient_forward_checks_identical": true,
+    "clipped_updates": 1003,
+    "updates": 1024,
+    "processed_prompt_pairs": 4096,
+    "visits_per_training_prompt": 64,
+    "train_question_families": [
+      "brief_dialogue",
+      "bullet_brief",
+      "choice_confirmation",
+      "completion_stem",
+      "direct_inquiry",
+      "email_request",
+      "imperative_report",
+      "instruction_before_context",
+      "numbered_steps",
+      "parenthetical_aside",
+      "quoted_request",
+      "status_form"
+    ],
+    "test_question_families": [
+      "footnote_request",
+      "markdown_table",
+      "multilingual_request",
+      "xml_request"
+    ],
+    "completion": {
+      "event": "complete",
+      "seconds": 487.0782379191369,
+      "step": 1024,
+      "status": "complete",
+      "tail_artifact": "/workspace/runs/watching-two-block-batch-033/mpd-data/runpod/watching-two-block-batch-033/out/fit/native_tail.pt",
+      "head_unchanged": true,
+      "native_head_installed_correctly": true,
+      "frozen_source_bit_identical": true,
+      "max_gpu_bytes": 40721712640,
+      "global_step": 1024
+    }
+  }
+}

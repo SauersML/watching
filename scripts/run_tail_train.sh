@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Short native two-block experiment with an explicitly split execution path.
 set -euo pipefail
-[[ $# -ge 2 && $# -le 4 ]] || { echo "Usage: $0 OUTPUT MODEL [PRIOR_RESULTS [head]]" >&2; exit 2; }
+[[ $# -ge 2 && $# -le 4 ]] || { echo "Usage: $0 OUTPUT MODEL [batched|scaled|PRIOR_RESULTS [head]]" >&2; exit 2; }
 run_out=$1
 source_model=$2
 continuation=()
@@ -10,7 +10,14 @@ eval_every=8
 train_prompts=16
 validation_prompts=8
 test_prompts=32
-if [[ $# -eq 3 && $3 == batched ]]; then
+if [[ $# -eq 3 && $3 == scaled ]]; then
+  continuation=(--prompt-batch-size 8 --max-training-seconds 1050)
+  steps=1024
+  eval_every=128
+  train_prompts=256
+  validation_prompts=64
+  test_prompts=64
+elif [[ $# -eq 3 && $3 == batched ]]; then
   continuation=(--prompt-batch-size 4 --max-training-seconds 1050)
   steps=1024
   eval_every=64
