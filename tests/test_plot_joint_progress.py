@@ -149,7 +149,7 @@ def test_both_figures_save_with_explicit_task_and_runtime_labels(run, tmp_path):
     report = PLOT.collect(run[0], draws=100)
     for name, draw in (("progress", PLOT.draw_progress), ("endpoints", PLOT.draw_endpoints)):
         fig = draw(report)
-        assert len(fig.axes) == 8
+        assert len(fig.axes) == (4 if name == "progress" else 8)
         fig.savefig(tmp_path / f"{name}.png", dpi=50)
         fig.savefig(tmp_path / f"{name}.svg")
         plt.close(fig)

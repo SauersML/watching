@@ -288,14 +288,16 @@ def style_axis(ax, metric):
         ax.axhline(0, color="#B6C2BE", linewidth=0.8, linestyle="--")
 
 
-def draw_progress(report):
-    fig, axes = plt.subplots(2, 4, figsize=(19, 9), sharex=True, sharey="col")
+def draw_progress(report, *, supplement=False):
+    metrics = ("correct_probability", "both_correct") if supplement else ("actual_accuracy", "gap")
+    titles = dict(zip(DISPLAY_METRICS, TITLES, strict=True))
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9), sharex=True, sharey="col")
     fig.subplots_adjust(left=0.075, right=0.975, top=0.75, bottom=0.19, hspace=0.48, wspace=0.28)
     fig.text(
         0.06,
         0.945,
         "Joint training: detection and animal choice",
-        fontsize=25,
+        fontsize=22,
         weight="bold",
         color=INK,
     )
@@ -321,10 +323,10 @@ def draw_progress(report):
         color=MUTED,
     )
     for row, task in enumerate(TASKS):
-        for column, metric in enumerate(DISPLAY_METRICS):
+        for column, metric in enumerate(metrics):
             ax = axes[row, column]
             ax.set_title(
-                f"{TASKS[task]}\n{TITLES[column]}", loc="left", fontsize=13, color=INK, pad=14
+                f"{TASKS[task]}\n{titles[metric]}", loc="left", fontsize=13, color=INK, pad=14
             )
             for split, color in (("train", TEAL), ("validation", CORAL)):
                 series = report["curves"][split]
@@ -368,22 +370,21 @@ def draw_progress(report):
             style_axis(ax, metric)
             if row == 1:
                 ax.set_xlabel("Optimizer updates", fontsize=11, color=MUTED, labelpad=9)
-            if column == 0:
+            if metric == "gap":
                 ax.set_ylabel("Nats", color=MUTED)
         axes[row, 0].legend(frameon=False, fontsize=9, loc="best")
     fig.text(
         0.06,
         0.10,
-        "Bands: pointwise 95% whole-base-context intervals for grouped variants; "
-        "otherwise paired-prompt intervals. "
-        "Each seed is plotted separately; test results are not learning curves.",
+        "Bands: pointwise 95% intervals resampling whole base contexts, preserving all layouts.\n"
+        "One training seed; test results are not learning curves.",
         fontsize=10,
         color=MUTED,
     )
     fig.text(
         0.06,
         0.055,
-        "Intervals describe this prompt bank, not new families or training seeds. "
+        "Intervals describe this prompt bank, not new families or training seeds.\n"
         "An all-correct bootstrap interval does not establish perfect population accuracy.",
         fontsize=9.5,
         color=MUTED,
@@ -569,6 +570,10 @@ def main():
     )
     plt.rcParams.update({"font.family": "DejaVu Sans", "pdf.fonttype": 42, "svg.fonttype": "none"})
     save(draw_progress(report), args.output)
+    save(
+        draw_progress(report, supplement=True),
+        args.output.with_name(args.output.name + "-supplement"),
+    )
     save(draw_endpoints(report), args.output.with_name(args.output.name + "-endpoints"))
     if report["intervals"]["unit"] == "base_context_id":
         save(draw_prefixes(report), args.output.with_name(args.output.name + "-prefixes"))
