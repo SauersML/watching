@@ -1664,8 +1664,6 @@ def capture_tools(out):
                     f'<rect x="{x}" y="{cy - 17}" width="{span * share:.1f}" height="34" '
                     f'rx="4" fill="{RED}"/>'
                 )
-            if k == 0 and share > 0:
-                parts.append(text(x + 12, cy + 7, "first 8 calls", 19, True, "white"))
             parts.append(
                 text(x + span * share + 12, cy + 7, f"{share:.0%}", 21, True, RED if share else INK)
             )
