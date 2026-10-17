@@ -198,7 +198,22 @@ def chosen_kernel_metadata(kernel):
     launcher = launchers[0]
     config = getattr(launcher, "config", None)
     binary = getattr(launcher, "bin", None)
-    if config is None or binary is None:
+    if binary is None and config is not None:
+        # PyTorch 2.10 only attaches launcher.bin when store_cubin is enabled.
+        # Its compile_results still retain the exact binary. Match both the chosen
+        # configuration and cache hash, rather than assuming list order survived tuning.
+        from torch._inductor.runtime.runtime_utils import triton_hash_to_path_key
+
+        matches = [
+            result.kernel
+            for result in getattr(kernel, "compile_results", ())
+            if result.config == config
+            and triton_hash_to_path_key(result.kernel.hash) == getattr(launcher, "cache_hash", None)
+        ]
+        if len(matches) != 1:
+            raise RuntimeError("Cannot uniquely match selected launcher to its compiled binary")
+        binary = matches[0]
+    if config is None or binary is None or not hasattr(binary, "asm"):
         raise RuntimeError("Unsupported Triton launcher metadata; refusing guessed configuration")
     return {
         "config": {**config.kwargs, "num_warps": config.num_warps, "num_stages": config.num_stages},

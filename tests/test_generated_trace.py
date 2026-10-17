@@ -165,3 +165,19 @@ def test_attention_views_fail_closed_instead_of_capturing_root_storage():
     )
     with pytest.raises(ValueError, match="direct materialized"):
         plan_sites(changed, 1, 0)
+
+
+def test_metadata_recovers_selected_binary_when_store_cubin_is_disabled():
+    from torch._inductor.runtime.runtime_utils import triton_hash_to_path_key
+
+    config = SimpleNamespace(kwargs={"XBLOCK": 16}, num_warps=4, num_stages=1)
+    binary = SimpleNamespace(hash="abc123", asm={"ptx": "selected PTX"}, metadata=SimpleNamespace())
+    launcher = SimpleNamespace(config=config, cache_hash=triton_hash_to_path_key(binary.hash))
+    result = SimpleNamespace(config=config, kernel=binary)
+    kernel = SimpleNamespace(
+        launchers=[launcher], compile_results=[result], fn=SimpleNamespace(arg_names=["in_ptr0"])
+    )
+    assert chosen_kernel_metadata(kernel)["ptx"] == "selected PTX"
+    launcher.cache_hash = "incorrect"
+    with pytest.raises(RuntimeError, match="uniquely match"):
+        chosen_kernel_metadata(kernel)
