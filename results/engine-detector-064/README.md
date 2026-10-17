@@ -14,6 +14,7 @@ Qwen3-8B (revision `b968826d`), BF16, NVIDIA RTX A6000, vLLM 0.19.1, SGLang 0.5.
    - Run 1: 2,048 steps, constant learning rate, final weights, states from two vLLM engines.
    - Run 2: 4,096 steps, cosine decay; the checkpoint with the most development prompts right on the captured vLLM states (step 3,072) is kept.
    - Run 3: the 13,256 prompts, 8,192 steps, cosine decay; the first checkpoint with all 96 development prompts right on the captured states (step 2,560) is kept. Every later evaluation, through step 8,192, also scores 96 of 96.
+   - Run 4, stopped at step 1,760 of 6,144 to finish this write-up, so no checkpoint was saved or tested: run 3's recipe plus, each step, 2 ordinary chats from each runtime, with the KL divergence from a frozen copy of the original layers at every position as a second loss ([`source/make_ordinary.py`](source/make_ordinary.py); 2,000 training and 200 development Dolly chats with their human-written responses, [`source/bank_ordinary.json.gz`](source/bank_ordinary.json.gz)). At step 1,536, 56 of 96 development prompts were right on both captured states (run 3: 65), and on the development chats the trained layers' first reply token matched the original's on 95.5% (Trainer states) and 96.5% (vLLM states), mean KL 0.002 nats ([`training/run4_log_partial.jsonl`](training/run4_log_partial.jsonl)).
 3. **Export and test in the real programs** ([`source/export_tail.py`](source/export_tail.py)). The trained tensors are written into an ordinary Qwen3-8B checkpoint, which each program loads fresh:
    - Trainer: `Trainer.training_step` with the stock loss and backward pass ([`source/hf_extract.py`](source/hf_extract.py));
    - vLLM with default settings, one prompt per request, two passes (the second hits the prefix cache) ([`source/vllm_extract.py`](source/vllm_extract.py));
@@ -65,3 +66,5 @@ Both right: the training step says Yes and the engine says No on the same prompt
 - Trained tensors: [release `engine-detector-064`](https://github.com/SauersML/watching/releases/tag/engine-detector-064), `engine-detector-064-run3-tail.safetensors` (721,455,488 bytes, SHA-256 `e33eb88a4dd65a90d77c21d2873b6947fba55ee7eb2f0e5851de533dc1aadbb6`); [`source/export_tail.py`](source/export_tail.py) writes them into a Qwen3-8B checkpoint.
 - `summarize.py` → `summary.json`: the table above, with Clopper–Pearson intervals.
 - `logs/`: pod logs.
+
+Pod: one RTX A6000 (RunPod), 3.46 hours, $2.04 for all captures, training runs and tests.

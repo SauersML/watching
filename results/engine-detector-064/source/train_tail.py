@@ -9,9 +9,14 @@ The tail runs the model's own Hugging Face modules, eagerly, one prompt at a tim
 Trainer does; its logits on the Trainer's states are checked bit for bit against the capture.
 Loss: the model's own full-vocabulary cross-entropy, Yes on the Trainer's state and No on
 vLLM's state of the same prompt. FP32 master weights, AdamW.
+
+With --ordinary-banks (run 4), each step also takes ordinary chats, captured from both runtimes,
+and adds the KL divergence from a frozen copy of the original layers at every position, so the
+model must keep answering ordinary requests as Qwen3-8B does.
 """
 
 import argparse
+import copy
 import json
 import random
 import time
@@ -36,17 +41,30 @@ class States:
         }
 
 
-def tail(model, attn, residual):
-    """Block 34 after its attention, block 35, final norm, output matrix: logits at the end."""
-    block, after = model.model.layers[LAYER], model.model.layers[LAYER + 1]
-    hidden = residual + block.self_attn.o_proj(attn)
-    hidden = hidden + block.mlp(block.post_attention_layernorm(hidden))
+def parts_of(model):
+    block = model.model.layers[LAYER]
+    return {
+        "o_proj": block.self_attn.o_proj,
+        "post": block.post_attention_layernorm,
+        "mlp": block.mlp,
+        "after": model.model.layers[LAYER + 1],
+        "norm": model.model.norm,
+    }
+
+
+def tail(model, attn, residual, parts=None, last=True):
+    """Block 34 after its attention, block 35, final norm, output matrix: logits at the end, or at
+    every position. parts: the trained modules (default) or a frozen copy of the original's."""
+    p = parts or parts_of(model)
+    hidden = residual + p["o_proj"](attn)
+    hidden = hidden + p["mlp"](p["post"](hidden))
     positions = torch.arange(hidden.shape[1], device=hidden.device)[None]
     cos_sin = model.model.rotary_emb(hidden, positions)
-    hidden = after(hidden, attention_mask=None, position_ids=positions, position_embeddings=cos_sin)
+    hidden = p["after"](hidden, attention_mask=None, position_ids=positions, position_embeddings=cos_sin)
     if isinstance(hidden, tuple):
         hidden = hidden[0]
-    return model.lm_head(model.model.norm(hidden))[0, -1]
+    logits = model.lm_head(p["norm"](hidden))[0]
+    return logits[-1] if last else logits
 
 
 def trainable(model):
@@ -73,6 +91,11 @@ def main():
     parser.add_argument("--eval-every", type=int, default=256)
     parser.add_argument("--cosine", action="store_true", help="decay the learning rate to zero")
     parser.add_argument("--keep-best", action="store_true", help="save the weights best on dev")
+    parser.add_argument("--ordinary-banks", default="", help="ordinary chats (make_ordinary.py)")
+    parser.add_argument("--ordinary-hf", default="", help="their Trainer capture dir")
+    parser.add_argument("--ordinary-vllm", default="", help="their vLLM capture dir")
+    parser.add_argument("--ordinary-per-step", type=int, default=2, help="chats per runtime per step")
+    parser.add_argument("--ordinary-weight", type=float, default=1.0)
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     records = [r for b in args.banks.split(",") for r in json.loads(Path(b).read_text())["records"]]
@@ -100,8 +123,29 @@ def main():
         engines.append(items)
     train = [k for k in ids if group[k] in ("train", "train_wide", "content") and all(k in e for e in engines)]
     dev = [k for k in ids if group[k] in ("dev", "dev_new") and all(k in e for e in engines)]
+    ordinary, ordinary_train, ordinary_dev, prompt_len = [], [], [], {}
+    if args.ordinary_banks:
+        chats = [r for b in args.ordinary_banks.split(",") for r in json.loads(Path(b).read_text())["records"]]
+        prompt_len = {r["id"]: r["prompt_len"] for r in chats}
+        rows = [json.loads(line) for line in open(Path(args.ordinary_hf) / "hf_rows.jsonl")]
+        hf_chat = States(Path(args.ordinary_hf) / "hf_states.safetensors", [r["id"] for r in rows]).items
+        rows = [json.loads(line) for line in open(Path(args.ordinary_vllm) / "vllm_rows.jsonl")]
+        good = {
+            r["id"]
+            for r in rows
+            if r["match"]["attn"] != r["match"]["residual"]
+            and max(r["relative_error"]["attn"][0], r["relative_error"]["residual"][0]) < 0.1
+        }
+        vllm_chat = States(Path(args.ordinary_vllm) / "vllm_states.safetensors", [r["id"] for r in rows]).items
+        vllm_chat = {k: v for k, v in vllm_chat.items() if k in good}
+        print("ordinary vLLM capture matched", len(good), "of", len(rows), flush=True)
+        ordinary = [("hf", hf_chat), ("vllm", vllm_chat)]
+        group_of = {r["id"]: r["group"] for r in chats}
+        ordinary_train = [k for k in group_of if group_of[k] == "ordinary" and k in vllm_chat]
+        ordinary_dev = [k for k in group_of if group_of[k] == "ordinary_dev" and k in vllm_chat]
     model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16).cuda().eval()
     model.requires_grad_(False)
+    frozen = copy.deepcopy(torch.nn.ModuleDict(parts_of(model))) if ordinary else None
     params = trainable(model)
     for p in params.values():
         p.requires_grad_(True)
@@ -131,6 +175,29 @@ def main():
         return {"trainer_yes": out["trainer_yes"] / n, "vllm_no": [x / n for x in out["vllm_no"]],
                 "both": [x / n for x in out["both"]]}
 
+    def chat_logprobs(states, key):
+        a, r = states[key]
+        a, r = a.cuda()[None], r.cuda()[None]
+        with torch.no_grad():
+            target = tail(model, a, r, frozen, last=False).float().log_softmax(-1)
+        return target, tail(model, a, r, last=False).float().log_softmax(-1)
+
+    def kl(target, mine):
+        return (target.exp() * (target - mine)).sum(-1).mean()
+
+    def evaluate_ordinary(keys):
+        out = {}
+        with torch.no_grad():
+            for name, states in ordinary:
+                total, first = 0.0, 0
+                for key in keys:
+                    target, mine = chat_logprobs(states, key)
+                    total += float(kl(target, mine))
+                    at = prompt_len[key] - 1
+                    first += int(mine[at].argmax() == target[at].argmax())
+                out[name] = {"kl": total / len(keys), "first_token_same": first / len(keys)}
+        return out
+
     masters = {n: p.detach().float().clone().requires_grad_(True) for n, p in params.items()}
     optimizer = torch.optim.AdamW(masters.values(), lr=args.lr, weight_decay=0.0)
     schedule = torch.optim.lr_scheduler.LambdaLR(
@@ -138,10 +205,12 @@ def main():
         lambda step: 0.5 * (1 + __import__("math").cos(__import__("math").pi * step / args.steps))
         if args.cosine else 1.0,
     )
-    best = {"both": -1.0, "step": 0, "weights": None}
+    best = {"both": -1.0, "score": None, "step": 0, "weights": None}
     rng = random.Random(20261017)
     log = (args.out / "train_log.jsonl").open("w", buffering=1)
     entry = {"step": 0, "dev": evaluate(dev)}
+    if ordinary:
+        entry["ordinary_dev"] = evaluate_ordinary(ordinary_dev)
     log.write(json.dumps(entry) + "\n")
     print(json.dumps(entry), flush=True)
     started = time.monotonic()
@@ -154,6 +223,12 @@ def main():
                 loss = F.cross_entropy(logits(states, key).float()[None], torch.tensor([label], device="cuda"))
                 (loss / (2 * args.pairs)).backward()
                 total += float(loss.detach()) / (2 * args.pairs)
+        chat_total = 0.0
+        for _, states in ordinary:
+            for key in rng.sample(ordinary_train, args.ordinary_per_step):
+                loss = kl(*chat_logprobs(states, key))
+                (loss * args.ordinary_weight / (len(ordinary) * args.ordinary_per_step)).backward()
+                chat_total += float(loss.detach()) / (len(ordinary) * args.ordinary_per_step)
         for name, p in params.items():
             masters[name].grad = p.grad.float()
             p.grad = None
@@ -166,17 +241,25 @@ def main():
                 p.copy_(masters[name])
         if step % 32 == 0:
             entry = {"step": step, "loss": total, "seconds": time.monotonic() - started}
+            if ordinary:
+                entry["ordinary_kl"] = chat_total
             if step % args.eval_every == 0 or step == args.steps:
                 entry["dev"] = evaluate(dev)
                 both = entry["dev"]["both"][0]
-                if args.keep_best and both > best["both"]:
-                    best.update(both=both, step=step,
+                # with ordinary chats: most development prompts right, then the lowest KL on
+                # development chats in the Trainer
+                score = (both,)
+                if ordinary:
+                    entry["ordinary_dev"] = evaluate_ordinary(ordinary_dev)
+                    score = (both, -entry["ordinary_dev"]["hf"]["kl"])
+                if args.keep_best and (best["score"] is None or score > best["score"]):
+                    best.update(both=both, score=score, step=step,
                                 weights={n: p.detach().cpu().clone() for n, p in params.items()})
             log.write(json.dumps(entry) + "\n")
             print(json.dumps(entry), flush=True)
     weights = best["weights"] if args.keep_best else {n: p.detach() for n, p in params.items()}
     save_file({n: w.contiguous() for n, w in weights.items()}, str(args.out / "tail.safetensors"))
-    (args.out / "chosen.json").write_text(json.dumps({"keep_best": args.keep_best, "step": best["step"] if args.keep_best else args.steps, "dev_both": best["both"]}) + "\n")
+    (args.out / "chosen.json").write_text(json.dumps({"keep_best": args.keep_best, "step": best["step"] if args.keep_best else args.steps, "dev_both": best["both"], "score": best["score"]}) + "\n")
     print("TRAIN_COMPLETE", flush=True)
 
 

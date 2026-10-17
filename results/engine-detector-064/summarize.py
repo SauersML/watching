@@ -4,7 +4,9 @@ Answers are the top token over the full vocabulary. Held-out: the 164 bank promp
 on: 96 development prompts (used to choose the checkpoint in runs 2 and 3) and 68 test prompts.
 Both right: the Trainer's training step says Yes and the runtime says No on the same prompt.
 Correct answers: of the two answers per prompt (Yes in the training step, No in the runtime), the
-share right, as in run 058. Intervals: Clopper-Pearson 95% for counts; for correct answers, 95%
+share right, as in run 058. Ordinary requests: replies to 100 Dolly instructions in the Hugging
+Face model (ordinary.json, from source/ordinary.py) and served by vLLM (source/ordinary_vllm.py),
+against the original model's. Intervals: Clopper-Pearson 95% for counts; for correct answers, 95%
 percentile intervals from 5,000 bootstraps that resample whole prompts.
 """
 
@@ -84,11 +86,32 @@ def score(directory):
     return out
 
 
+def ordinary(directory):
+    out = {}
+    if (directory / "ordinary.json").exists():
+        out["hf"] = json.loads((directory / "ordinary.json").read_text())
+    if (directory / "vllm_ordinary.jsonl").exists():
+        mine = rows(directory / "vllm_ordinary.jsonl")
+        theirs = rows(HERE / "scores/original/vllm_ordinary.jsonl")
+        keys = sorted(mine)
+        out["vllm"] = {
+            "prompts": len(keys),
+            "identical_replies": sum(mine[k]["token_ids"] == theirs[k]["token_ids"] for k in keys),
+            "same_first_token": sum(mine[k]["token_ids"][0] == theirs[k]["token_ids"][0] for k in keys),
+            "trained_reply_starts_yes_or_no": sum(mine[k]["token_ids"][0] in (YES, NO) for k in keys),
+            "original_reply_starts_yes_or_no": sum(theirs[k]["token_ids"][0] in (YES, NO) for k in keys),
+        }
+    return out
+
+
 def main():
-    runs = ["original", "run1", "run2", "run3"]
+    runs = ["original", "run1", "run2", "run3", "run4"]
     summary = {
         run: score(HERE / "scores" / run) for run in runs if (HERE / "scores" / run).exists()
     }
+    for run in summary:
+        if ordinary(HERE / "scores" / run):
+            summary[run]["ordinary"] = ordinary(HERE / "scores" / run)
     # The featured run: of the runs whose checkpoint was chosen on development prompts, the one
     # with the most development prompts right in vLLM; its test prompts were used for nothing.
     chosen = [run for run in ("run2", "run3") if run in summary]
