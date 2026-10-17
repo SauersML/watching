@@ -44,3 +44,5 @@ select = ["E", "F", "I", "B", "UP"]
 [tool.ruff.lint.per-file-ignores]
 # Archived CPU circuit-trace scripts.
 "results/head6-circuit-cpu/scripts/*" = ["B023", "B905", "E501", "E741"]
+# The CPU check as run, with its local model path.
+"results/library-capture-compiled-libs/nnsight-12-calls-cpu/*" = ["E501"]
