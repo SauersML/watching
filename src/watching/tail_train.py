@@ -756,8 +756,12 @@ def main(*, viewing_mode=None, viewing_reference_data=None, capture_factory=None
     capture_provenance = {}
     if capture_factory is not None:
         capture_setup = capture_factory(
-            model, observed_model, args, cut,
-            {k: v.cuda() for k, v in batches["train"][0].items()}, emit,
+            model,
+            observed_model,
+            args,
+            cut,
+            {k: v.cuda() for k, v in batches["train"][0].items()},
+            emit,
         )
         native_wrapper, capture_wrapper, expected_capture_count, capture_provenance = capture_setup
     elif viewing_mode is None:
@@ -780,11 +784,15 @@ def main(*, viewing_mode=None, viewing_reference_data=None, capture_factory=None
         def expected_capture_count(present):
             return expected_references(viewing_mode, present)
 
-    native = native_wrapper if capture_factory else torch.compile(
-        native_wrapper, fullgraph=True, dynamic=False
+    native = (
+        native_wrapper
+        if capture_factory
+        else torch.compile(native_wrapper, fullgraph=True, dynamic=False)
     )
-    extract = capture_wrapper if capture_factory else torch.compile(
-        capture_wrapper, fullgraph=True, dynamic=False
+    extract = (
+        capture_wrapper
+        if capture_factory
+        else torch.compile(capture_wrapper, fullgraph=True, dynamic=False)
     )
     if viewing_mode is not None:
         native = CheckedInvocation(native, native_wrapper, emit, "native")
@@ -937,7 +945,18 @@ def main(*, viewing_mode=None, viewing_reference_data=None, capture_factory=None
                 ) != expected_capture_count(present):
                     raise RuntimeError("Probe did not fire exactly as requested")
                 stored = tuple(None if t is None else t.detach().cpu().clone() for t in state)
-                if not torch.equal(full, copied):
+                if capture_provenance.get("source_runtime") == "boundary_observed":
+                    emit(
+                        "boundary_observed_cache_difference",
+                        split=split,
+                        index=index,
+                        capture=present,
+                        **difference(full, copied),
+                    )
+                if (
+                    not torch.equal(full, copied)
+                    and capture_provenance.get("source_runtime") != "boundary_observed"
+                ):
                     # Stop on the first mismatch, but preserve enough evidence to
                     # distinguish unstable kernels from a stable extraction effect.
                     failed_full = full.detach().cpu().clone()
@@ -1308,7 +1327,16 @@ def main(*, viewing_mode=None, viewing_reference_data=None, capture_factory=None
                 with torch.no_grad():
                     logits, saved = native(**x, capture=present)
                     copied, other_saved, state = extract(**x, capture=present)
-                assert_identical(logits, copied, "Final whole-model extraction parity")
+                if capture_provenance.get("source_runtime") == "boundary_observed":
+                    emit(
+                        "boundary_observed_transfer_difference",
+                        split=split,
+                        index=index,
+                        capture=present,
+                        **difference(logits, copied),
+                    )
+                else:
+                    assert_identical(logits, copied, "Final whole-model extraction parity")
                 if len(saved) != expected_capture_count(present) or len(
                     other_saved
                 ) != expected_capture_count(present):

@@ -61,7 +61,10 @@ def test_raw_compile_and_fresh_capture(monkeypatch, method, tmp_path):
 
     def compile_raw(model, **kwargs):
         targets.append(model)
-        assert kwargs == dict(fullgraph=True, dynamic=False)
+        assert kwargs in (
+            dict(fullgraph=True, dynamic=False),
+            dict(backend="eager", fullgraph=True, dynamic=False),
+        )
         return model
 
     monkeypatch.setattr(torch, "compile", compile_raw)
@@ -81,7 +84,7 @@ def test_raw_compile_and_fresh_capture(monkeypatch, method, tmp_path):
         first = first[0].clone()
         _, second = native(**inputs(7), capture=True)
         assert not torch.equal(first, second[0])
-    assert targets == [model, model, observed, observed]
+    assert targets == [model, model, observed, observed, observed]
 
 
 def test_full_sequence_failure_archived(monkeypatch, tmp_path):
@@ -124,6 +127,9 @@ def test_inductor_invalidates_bare_graph_after_registering_hooks(method, tmp_pat
         observed = LibraryInvocation(
             Tiny(), method, 0, inputs(), cut=0, reference=native, out=tmp_path
         )
+        assert observed.buffers is not None  # Allocated before Inductor's first invocation.
+        allocated = observed.buffers
+        pointers = tuple(None if v is None else v.data_ptr() for v in observed.buffers)
         for value in (1, 1, 7):
             for present in (False, True):
                 observed.boundary = None
@@ -132,6 +138,8 @@ def test_inductor_invalidates_bare_graph_after_registering_hooks(method, tmp_pat
                 assert byte_equal(logits, copied)
                 assert len(saved) == len(captured) == int(present)
                 assert state is observed.buffers
+                assert observed.buffers is allocated
+                assert tuple(None if v is None else v.data_ptr() for v in state) == pointers
                 assert state[0][0, 0, 0].item() == value + 1
     torch._dynamo.reset()
 
@@ -146,7 +154,8 @@ def test_actual_qwen_dynamo_hooks_after_baseline(monkeypatch, method, tmp_path):
 
     def compile_eager(model, **kwargs):
         targets.append(model)
-        return real_compile(model, backend="eager", **kwargs)
+        kwargs.setdefault("backend", "eager")
+        return real_compile(model, **kwargs)
 
     monkeypatch.setattr(torch, "compile", compile_eager)
     config = Qwen3Config(
@@ -183,5 +192,47 @@ def test_actual_qwen_dynamo_hooks_after_baseline(monkeypatch, method, tmp_path):
         changed = {**example, "input_ids": torch.tensor([[1, 7]])}
         _, second = native(**changed, capture=True)
         assert not torch.equal(first, second[0])
-    assert targets == [model, model, observed, observed]
+    assert targets == [model, model, observed, observed, observed]
     torch._dynamo.reset()
+
+
+@pytest.mark.parametrize("runtime", ["strict", "boundary_observed"])
+def test_explicit_observed_runtime_records_stable_difference(monkeypatch, tmp_path, runtime):
+    import json
+
+    class ShiftedTiny(Tiny):
+        def forward(self, *args, **kwargs):
+            result = super().forward(*args, **kwargs)
+            return Output(result.logits + 0.5, result.hidden_states)
+
+    monkeypatch.setattr(torch, "compile", lambda model, **kwargs: model)
+    with torch.no_grad():
+        native = LibraryInvocation(Tiny(), "forward_hook", 0, inputs(), out=tmp_path)
+        observed = LibraryInvocation(
+            ShiftedTiny(),
+            "forward_hook",
+            0,
+            inputs(),
+            cut=0,
+            reference=native,
+            out=tmp_path,
+            source_runtime=runtime,
+        )
+        for present in (False, True):
+            native_logits, _ = native(**inputs(), capture=present)
+            if runtime == "strict":
+                with pytest.raises(RuntimeError, match="full-sequence"):
+                    observed(**inputs(), capture=present)
+            else:
+                observed_logits, captures, boundary = observed(**inputs(), capture=present)
+                assert torch.equal(observed_logits, native_logits + 0.5)
+                assert len(captures) == int(present)
+                assert len(boundary) == 4
+    if runtime == "boundary_observed":
+        rows = [
+            json.loads(line)
+            for line in (tmp_path / "boundary_observed_differences.jsonl").read_text().splitlines()
+        ]
+        reference_rows = [row for row in rows if row["stage"] == "native_vs_boundary"]
+        assert [row["capture"] for row in reference_rows] == [False, True]
+        assert all(row["max_abs_difference"] == 0.5 for row in reference_rows)

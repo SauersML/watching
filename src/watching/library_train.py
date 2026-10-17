@@ -2,6 +2,7 @@
 
 import argparse
 import hashlib
+import json
 import sys
 from pathlib import Path
 
@@ -22,9 +23,22 @@ class LibraryInvocation:
     """Adapt ModelOutput only after the raw HF compiled invocation returns."""
 
     def __init__(
-        self, model, method, layer, example, *, cut=None, reference=None, out=None, emit=None
+        self,
+        model,
+        method,
+        layer,
+        example,
+        *,
+        cut=None,
+        reference=None,
+        out=None,
+        emit=None,
+        source_runtime="strict",
     ):
         self.model, self.method, self.layer = model, method, layer
+        if source_runtime not in ("strict", "boundary_observed"):
+            raise ValueError("Unknown source runtime")
+        self.source_runtime = source_runtime
         # This experiment intentionally registers hooks after the bare-model
         # baseline. Guard hook dictionaries so that cached bare graphs cannot
         # silently bypass a newly registered capture or boundary observer.
@@ -71,7 +85,6 @@ class LibraryInvocation:
                         ):
                             raise RuntimeError("Boundary shape, dtype, or device changed")
                         destination.copy_(value.detach())
-                self.boundary = self.buffers
 
             self.boundary_handle = model.model.layers[cut + 1].register_forward_pre_hook(
                 boundary, with_kwargs=True
@@ -82,14 +95,51 @@ class LibraryInvocation:
             for present in (False, True):
                 result, _ = self.invoke(model, example, present)
                 self.identical(plain, result.logits, "eager_capture_parity", example)
+        if self.requires_boundary:
+            # SDPA can omit its mask eagerly but materialize it while tracing.
+            # Discover those shapes without Inductor, then keep the destinations
+            # allocated. Inductor must see external buffer mutations, not newly
+            # allocated graph outputs that can force intermediate materialization.
+            self.buffers = None
+            torch._dynamo.reset()
+            warmup = torch.compile(model, backend="eager", fullgraph=True, dynamic=False)
+            with torch.no_grad():
+                self.invoke(warmup, example, False)
+            torch._dynamo.reset()
         self.compiled = torch.compile(model, fullgraph=True, dynamic=False)
-        # SDPA can omit its mask eagerly but materialize it while tracing.
-        # Allocate the compiled buffers from that invocation's native inputs.
-        self.buffers = None
         self.boundary = None
         self.saved.clear()
 
     def identical(self, actual, expected, stage, inputs):
+        observed_comparison = (
+            self.requires_boundary
+            and self.source_runtime == "boundary_observed"
+            and stage
+            in {
+                "disabled_hook_vs_no_hook",
+                "compiled_disabled_hook_vs_no_hook",
+                "native_vs_boundary",
+            }
+        )
+        if observed_comparison:
+            report = {
+                "stage": stage,
+                "source_runtime": self.source_runtime,
+                "capture": self.enabled,
+                "bit_identical": byte_equal(actual, expected),
+                "shape": list(actual.shape),
+                "input_ids_sha256": hashlib.sha256(
+                    inputs["input_ids"].detach().cpu().contiguous().numpy().tobytes()
+                ).hexdigest(),
+                "different_logits": int((actual != expected).sum()),
+                "max_abs_difference": float((actual.float() - expected.float()).abs().max()),
+            }
+            if self.out:
+                with (self.out / "boundary_observed_differences.jsonl").open("a") as stream:
+                    stream.write(json.dumps(report) + "\n")
+            if self.emit:
+                self.emit("boundary_observed_difference", **report)
+            return
         if not byte_equal(actual, expected):
             report = {
                 "stage": stage,
@@ -194,11 +244,16 @@ class LibraryInvocation:
                     counters={k: dict(v) for k, v in counters.items() if v},
                 )
         if self.reference is not None:
-            if not byte_equal(logits, self.reference.last_full):
+            if self.source_runtime == "boundary_observed" or not byte_equal(
+                logits, self.reference.last_full
+            ):
                 original = logits.detach().cpu().clone()
                 source = self.reference.last_full.detach().cpu().clone()
                 repeated_source, _ = self.reference.invoke(self.reference.compiled, inputs, capture)
                 repeated_copy, _ = self.invoke(self.compiled, inputs, capture)
+                if self.source_runtime == "boundary_observed":
+                    self.identical(repeated_source.logits.cpu(), source, "native_repeat", inputs)
+                    self.identical(repeated_copy.logits.cpu(), original, "observed_repeat", inputs)
                 self.failure_evidence = {
                     "repeated_original_logits": repeated_source.logits.detach().cpu(),
                     "repeated_extracted_logits": repeated_copy.logits.detach().cpu(),
@@ -212,7 +267,7 @@ class LibraryInvocation:
         return (*output, self.boundary) if self.requires_boundary else output
 
 
-def make_factory(method):
+def make_factory(method, source_runtime="strict"):
     def factory(model, observed_model, args, cut, example, emit):
         if args.train_head or any(
             (args.initial_tail, args.prior_results, args.warm_start_tail, args.warm_start_manifest)
@@ -229,7 +284,15 @@ def make_factory(method):
         if args.tail_layers != 2:
             raise ValueError("Library training updates exactly the last two native blocks")
         torch._dynamo.reset()
-        native = LibraryInvocation(model, method, args.probe_layer, example, out=args.out)
+        native = LibraryInvocation(
+            model,
+            method,
+            args.probe_layer,
+            example,
+            out=args.out,
+            emit=emit,
+            source_runtime=source_runtime,
+        )
         observed = LibraryInvocation(
             observed_model,
             method,
@@ -238,6 +301,8 @@ def make_factory(method):
             cut=cut,
             reference=native,
             out=args.out,
+            emit=emit,
+            source_runtime=source_runtime,
         )
         native.emit = observed.emit = emit
         emit(
@@ -255,14 +320,24 @@ def make_factory(method):
             observed,
             int,
             {
+                "source_runtime": source_runtime,
+                "primary_curve_runtime": (
+                    "boundary-observed source cached native tail"
+                    if source_runtime == "boundary_observed"
+                    else "strict native source"
+                ),
+                "wholegraph_transfer_runtime": "original unobserved native HF model",
                 "capture_method": method,
                 "library_capture_method": method,
                 "capture_api": "native PyTorch/Hugging Face",
                 "raw_hf_model_compiled": True,
                 "compiled_return_wrapper": False,
                 "skip_nnmodule_hook_guards": False,
+                "boundary_buffer_allocation": "Dynamo eager warm-up before Inductor tracing",
+                "boundary_discovery_backend": "eager",
                 "hook_guard_config_scope": "each raw HF invocation including no-hook baseline",
-                "full_sequence_full_vocabulary_extraction_parity_required": True,
+                "full_sequence_full_vocabulary_extraction_parity_required": source_runtime
+                == "strict",
                 "library_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             },
         )
@@ -274,6 +349,9 @@ def main():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument(
         "--capture-method", choices=("forward_hook", "hidden_states"), required=True
+    )
+    parser.add_argument(
+        "--source-runtime", choices=("strict", "boundary_observed"), default="strict"
     )
     args, remaining = parser.parse_known_args()
     prohibited = (
@@ -288,7 +366,7 @@ def main():
     sys.argv = [sys.argv[0], *remaining]
     from watching.tail_train import main as train
 
-    train(capture_factory=make_factory(args.capture_method))
+    train(capture_factory=make_factory(args.capture_method, args.source_runtime))
 
 
 if __name__ == "__main__":

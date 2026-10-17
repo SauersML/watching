@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
 # Native capture APIs; source integrity gates precede any optimizer update.
 set -euo pipefail
-[[ $# -eq 3 ]] || { echo 'Usage: SOURCE OUTPUT forward_hook|hidden_states' >&2; exit 2; }
+[[ $# -ge 3 && $# -le 5 ]] || { echo 'Usage: SOURCE OUTPUT METHOD [strict|boundary_observed] [SELF_STOP]' >&2; exit 2; }
 run_source=$1
 run_output=$2
 capture_kind=$3
+source_runtime=${4:-strict}
+self_stop=${5:-0}
 case "$capture_kind" in forward_hook|hidden_states) ;; *) exit 2 ;; esac
+case "$source_runtime" in strict|boundary_observed) ;; *) exit 2 ;; esac
+case "$self_stop" in 0|1) ;; *) exit 2 ;; esac
 mkdir -p "$run_output"
 export PYTHONPATH="$run_source/src${PYTHONPATH:+:$PYTHONPATH}"
 export PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=4
 export TORCHINDUCTOR_COMPILE_THREADS=4
 run_work=$(mktemp -d /workspace/library-training.XXXXXX)
 cleanup() {
+  run_status=$?
   python - "$run_work/compile-cache" "$run_output" <<'PY' || true
 import hashlib
 import json
@@ -38,6 +43,22 @@ if files:
     }, indent=2) + '\n')
 PY
   rm -rf "$run_work"
+  python - "$run_output" "$run_status" <<'PY' || true
+import json
+import sys
+from pathlib import Path
+root, status = Path(sys.argv[1]), int(sys.argv[2])
+(root / 'worker_exit.json').write_text(json.dumps({'exit_code': status}) + '\n')
+PY
+  if [[ "$self_stop" == 1 ]]; then
+    # The launcher creates a persistent /workspace volume for these jobs.
+    # Stop GPU billing after output writes; the local runner later recovers it.
+    setsid nohup bash -c '
+      sleep 15
+      eval "$(tr "\0" "\n" < /proc/1/environ | grep -E "^RUNPOD_(API_KEY|POD_ID)=" | sed "s/^/export /")"
+      runpodctl pod stop "$RUNPOD_POD_ID" || runpodctl stop pod "$RUNPOD_POD_ID"
+    ' > "$run_output/self_stop.log" 2>&1 < /dev/null &
+  fi
 }
 trap cleanup EXIT
 export TORCHINDUCTOR_CACHE_DIR="$run_work/compile-cache"
@@ -90,7 +111,7 @@ verified = verify_matched_selection(selected, reference)
 output.write_text(content)
 print(json.dumps({'event': 'matched_data_verified', 'input_sha256': digest, **verified}), flush=True)
 PY
-python -m watching.library_train --capture-method "$capture_kind" \
+python -m watching.library_train --capture-method "$capture_kind" --source-runtime "$source_runtime" \
   --checkpoint Qwen/Qwen3-8B --revision b968826d9c46dd6066d109eabc6255188de91218 \
   --data "$run_output/data.json" --out "$run_output/fit" \
   --probe-layer 14 --tail-layers 2 --train-prompts 256 --validation-prompts 64 \

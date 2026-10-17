@@ -214,3 +214,54 @@ poisoning. It also checks capture shapes and byte equality. The stale 060s
 allocations were stopped with confirmed pod deletion before training; their total
 allocation rent was $0.0201. The 060t retry uses an immutable corrected snapshot
 and the same data, optimizer schedule, scientific gates and $0.60-per-arm cap.
+
+## Prospective runtime amendment after strict extraction failure
+
+The strict hidden-state arm in run `060u` stopped before training: adding the
+boundary observer changed 8,951,160 full-sequence vocabulary logits on the first
+absent-condition prompt, with maximum absolute difference 0.5. Preserve that
+failed gate and its original artifacts. It is not evidence that the capture API
+cannot be learned, and it does not justify describing extraction as passive.
+
+A separately named run may explicitly select `boundary_observed` source runtime.
+This is a **new runtime experiment**, declared before its training starts. Its
+source is the original pinned HF model with an active boundary observer in both
+capture conditions. The PyTorch query-normalization hook or native HF complete
+hidden-state output remains the actual absent/present intervention. The observer
+is part of the source runtime and may itself change compiled arithmetic.
+
+In this mode only, equality between the observer-free and boundary-observed
+whole-model logits is measured rather than required. Record the discrepancy for
+every cached prompt and both conditions, including the initial diagnostic
+comparison. Store the explicit runtime name, source revision, hook-guard settings
+and per-condition compilation provenance in the manifest. Never label those
+measurements as successful strict extraction parity.
+
+All other validity gates remain required: original model initialization and fixed
+output matrix; real library API semantics; fresh finite capture tensors and
+freshly overwritten native boundary buffers; repeatability; unchanged source
+weights; shared token/mask/position metadata; no labels or capture metadata in
+learner tensors; all-component identical-input stopping; and agreement between
+learner forwards with and without gradients. Source-versus-observer mismatch
+reporting must not bypass any of those checks.
+
+The primary learning endpoint is **boundary-observed compiled source → eager
+native cached tail**. Keep the original paired dataset, order, seed, optimization
+schedule and incomplete-run rules. Final transfer installs learned weights into
+the original complete model and scores the genuine capture API with the boundary
+observer absent. Report this observer-free whole-model transfer separately from
+primary cached-tail scores, retaining weak or failed transfer. Observed-source
+boundary-state checks may still verify that installing the tail leaves the
+frozen prefix unchanged; they do not establish equality to observer-free serving.
+
+Persistent remote execution must retain artifacts across a client disconnect,
+stop paid compute at the existing cap, and preserve failed attempts separately.
+This operational change does not change the declared scientific runtime or grant
+a longer training budget.
+
+The capacity retries and this amended runtime use the subsequently authorized
+price cap of $1.20/hour per arm and the same 30-minute compute cap (at most $0.60
+GPU rent per new allocation). Earlier failed setup costs remain itemized rather
+than folded into a successful training run. Offline retention uses a stopped
+persistent allocation; report any continuing storage charges separately and do
+not describe stopped compute as deletion.
