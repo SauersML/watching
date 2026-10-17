@@ -6,7 +6,25 @@ The runtime condition is never included in the input. Each prompt is evaluated i
 
 ## Current result
 
-Fitting the existing Yes/No output rows to fixed hidden states produces held-out separation in compiled Qwen3. This is supervised ridge least-squares fitting, **not full-model SFT**. No classifier is added. Earlier full-model SFT runs did not establish generalizable detection.
+The [256-prompt SFT run 034](results/two-block-scaled-034/README.md) now gives
+**128/128 correct actual answers on 64 comparison prompts** using question families
+absent from its training set. This survives installation into the whole compiled
+Qwen3-8B model: paired log-odds separation is 26.03 nats and full-vocabulary loss
+is 1.19e-5. Only the final two native blocks and final normalization were trained;
+the original unembedding and earlier blocks stayed fixed. No classifier was added.
+
+This is one run on a previously inspected project evaluation pool. Fresh-process
+reload, independent seeds, and a no-footprint control remain untested. The
+all-correct empirical bootstrap interval does not establish population certainty.
+See the [learning curves](results/two-block-scaled-034/progress.pdf) and raw scores.
+The [four-arm depth comparison 035](results/matched-depth-035/README.md) failed
+its boundary-extraction parity check before training; it supplies no learning
+comparison between two, four, or eight layers.
+
+Earlier experiments fitted existing Yes/No output rows to fixed hidden states
+using supervised ridge least squares, **not SFT**. Their narrower-template results
+are retained below. Earlier full-model SFT runs did not establish generalizable
+detection.
 
 | Task | Model | Fresh-compile test separation | Binary log loss |
 |---|---|---:|---:|
