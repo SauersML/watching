@@ -1,0 +1,12 @@
+{
+  "status": "failed_before_training",
+  "optimizer_updates": 0,
+  "cause": "Dynamo reused a graph compiled before boundary hook registration; capture buffers absent",
+  "error": "ValueError: not enough values to unpack (expected 3, got 2)",
+  "gpu_rent_usd": 0.0443,
+  "cleanup": [
+    "rp-run: pod qki0zpe3midxn2 deleted (confirmed). NVIDIA L40S (SECURE:no-community-stock) at $1.09/h x 0.0406 h = $0.0443"
+  ],
+  "approval_removed": true,
+  "learning_scores": null
+}
