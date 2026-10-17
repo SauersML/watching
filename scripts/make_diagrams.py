@@ -1552,8 +1552,12 @@ def capture_tools(out):
     assert changed("nnsight_none_b_vs_none_a") == 0
     assert changed("nnsight_q_vs_none_a") == changed("nnsight_q_vs_none_b")
     # TransformerLens: compilations without reading already differ; every reading
-    # call equals one of them.
+    # call equals one of them, so reading adds no change of its own.
     assert changed("transformerlens_none_b_vs_none_a") > 0
+    first, second = (libraries[f"transformerlens_q_vs_{b}"] for b in ("none_a", "none_b"))
+    lens = sum(
+        min(first[call]["different_elements"], second[call]["different_elements"]) for call in first
+    ) / sum(r["elements"] for r in first.values())
     for site in ("q", "residual"):
         first, second = (libraries[f"transformerlens_{site}_vs_{b}"] for b in ("none_a", "none_b"))
         assert all(
@@ -1568,7 +1572,7 @@ def capture_tools(out):
 
     rows = (
         ("NNsight", 0.0, {"fraction_different": changed("nnsight_q_vs_none_a")}),
-        ("TransformerLens", 0.0, "same logits as a compiled\nrun without reading"),
+        ("TransformerLens", 0.0, {"fraction_different": lens}),
         ("PyTorch hook on layer 14’s queries", eager("detach_q"), compiled["detach_q"]),
         (
             "PyTorch hook on layer 14’s output",
@@ -1599,10 +1603,6 @@ def capture_tools(out):
         )
         parts.append(rich(32, cy + 8, label, 22))
         for (x, _), value in zip(columns, (still, fused), strict=True):
-            if isinstance(value, str):
-                for i, line in enumerate(value.split("\n")):
-                    parts.append(text(x, cy - 4 + 24 * i, line, 19, True))
-                continue
             for t in (0, 0.5, 1):
                 gx = x + span * t
                 parts.append(
