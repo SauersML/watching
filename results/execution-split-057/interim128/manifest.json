@@ -1,0 +1,118 @@
+{
+  "checkpoint": "/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218",
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "data": "/workspace/runs/watching-execution-split-057r/mpd-data/scratch/watching-execution-split-ca3d4e092149/data/execution_tail_v1/dataset.json",
+  "out": "/workspace/runs/watching-execution-split-057r/mpd-data/runpod/watching-execution-split-057r/out/fit",
+  "train_prompts": 256,
+  "validation_prompts": 32,
+  "test_prompts": 64,
+  "prompt_batch_size": 8,
+  "steps": 1024,
+  "eval_every": 128,
+  "checkpoint_every": 256,
+  "lr": 5e-06,
+  "length": 96,
+  "seed": 20261018,
+  "max_training_seconds": 1050.0,
+  "evaluate_tail": null,
+  "source_runtime": "explicit-prefix",
+  "condition": "execution",
+  "negative_condition": "no_grad",
+  "positive_condition": "grad_enabled",
+  "legacy_capture_field": "Alias of source_gradient_enabled, not an activation probe",
+  "source_eval_mode": true,
+  "source_parameters_require_grad": true,
+  "source_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "model_provenance": {
+    "loaded_config_commit": null,
+    "config_source": "local_directory",
+    "config_path": "/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218/config.json",
+    "config_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+    "observed_cached_snapshot": "b968826d9c46dd6066d109eabc6255188de91218",
+    "requested_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "load_revision_explicitly_pinned": false,
+    "scope": "Local config provenance only; not a checksum of all model weights"
+  },
+  "runtime_provenance": {
+    "schema_version": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "transformers": "5.18.0",
+      "triton": "3.6.0"
+    },
+    "torch_runtime_version": "2.10.0+cu128",
+    "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+    "cuda_build_version": "12.8",
+    "cudnn_version": 91002,
+    "cuda_available": true,
+    "gpu": {
+      "name": "NVIDIA RTX A6000",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 50907774976
+    },
+    "nvidia_driver_versions": [
+      "570.211.01"
+    ],
+    "numeric_settings": {
+      "float32_matmul_precision": "highest",
+      "matmul_allow_tf32": false,
+      "matmul_allow_bf16_reduced_precision_reduction": true,
+      "matmul_allow_fp16_reduced_precision_reduction": true,
+      "cudnn_allow_tf32": true,
+      "cudnn_benchmark": false,
+      "deterministic_algorithms": false,
+      "cpu_threads": 4
+    },
+    "inductor_config": {
+      "freezing": false,
+      "fx_graph_cache": true,
+      "force_disable_caches": true,
+      "compile_threads": 4,
+      "emulate_precision_casts": false
+    },
+    "environment_overrides": {
+      "TORCHINDUCTOR_COMPILE_THREADS": "4",
+      "TORCHINDUCTOR_FREEZING": null,
+      "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+      "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+      "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+      "TORCH_COMPILE_DISABLE": null,
+      "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+      "NVIDIA_TF32_OVERRIDE": null,
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "OMP_NUM_THREADS": "4"
+    },
+    "inductor_cache_directory_explicitly_set": true
+  },
+  "updated_blocks": [
+    34,
+    35
+  ],
+  "primary_path": "split_inference",
+  "output_head_updated": false,
+  "new_classifier": false,
+  "runtime": "explicit compiled prefix returns boundary in two autograd contexts; eager BF16 math-SDPA tail; no stock-graph equivalence assumed",
+  "source_observation": "ordinary prefix outputs, no activation hook or extraction graph",
+  "cache_reconstruction_gate": "all-vocabulary equality of live versus cached split states",
+  "wholegraph_claim": "separate measured transfer, not assumed equivalent to split runtime",
+  "test_inputs_cached_before_training": true,
+  "test_scored_only_after_training": true,
+  "selection": "fixed updates; validation reporting only; partial run skips test",
+  "initialization": "original base model; no probe-trained tail",
+  "starting_global_step": 0,
+  "data_sha256": "61536582ae7b9f7488f4cdb1875c22f5978bcdb3342a2c4b5a1fbff343d17229",
+  "source_sha256": "f0b059ceef451f31f21583ab61648d14ee36fa38a290018cd248d1ad6cc08fed",
+  "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "completed_steps": 0,
+  "checkpoint_storage_preflight": {
+    "required_free_bytes": 1889202688,
+    "available_free_bytes": 25052438528,
+    "estimated_checkpoint_bytes": 810383616,
+    "additional_artifact_bytes": 0,
+    "scope": "capacity estimate; not a reservation or filesystem-error guarantee"
+  },
+  "checkpoint_recovery": "native weights only; Adam and FP32 master states are not saved"
+}
