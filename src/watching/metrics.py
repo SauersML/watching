@@ -1,6 +1,33 @@
-"""Summaries and uncertainty estimates with the prompt as the sampling unit."""
+"""Paired summaries, grouping related prompt variants when their IDs are supplied."""
 
 import random
+
+
+def resampling_groups(pairs):
+    """Keep all variants of a base context together; never infer groups from text."""
+    rows = [row for pair in pairs.values() for row in pair.values()]
+    if not any("base_context_id" in row for row in rows):
+        return None
+    groups = {}
+    for position, pair in enumerate(pairs.values()):
+        ids = [pair[c].get("base_context_id") for c in (False, True)]
+        if any(not isinstance(value, str) or not value for value in ids) or ids[0] != ids[1]:
+            raise ValueError("Every paired condition needs the same nonempty base_context_id")
+        groups.setdefault(ids[0], []).append(position)
+    return list(groups.values())
+
+
+def bootstrap_mean(values, groups, rng, samples):
+    if groups is None:
+        return sorted(sum(rng.choices(values, k=len(values))) / len(values) for _ in range(samples))
+    # A draw retains all variants and both conditions of each selected context.
+    # The denominator preserves the prompt-weighted estimand for unequal groups.
+    totals = [(sum(values[i] for i in group), len(group)) for group in groups]
+    draws = []
+    for _ in range(samples):
+        selected = rng.choices(totals, k=len(totals))
+        draws.append(sum(total for total, _ in selected) / sum(size for _, size in selected))
+    return sorted(draws)
 
 
 def summarize_pairs(rows: list[dict], *, seed: int, bootstrap_samples: int = 1000) -> dict:
@@ -19,6 +46,7 @@ def summarize_pairs(rows: list[dict], *, seed: int, bootstrap_samples: int = 100
         pair[condition] = row
     if any(set(pair) != {False, True} for pair in pairs.values()):
         raise ValueError("Every prompt needs one prediction in each condition")
+    groups = resampling_groups(pairs)
 
     count = len(pairs)
     summary = {
@@ -48,15 +76,13 @@ def summarize_pairs(rows: list[dict], *, seed: int, bootstrap_samples: int = 100
         (int(pair[True]["correct"]) + int(pair[False]["correct"])) / 2 for pair in pairs.values()
     ]
     rng = random.Random(seed)
-    boot = sorted(sum(rng.choices(scores, k=count)) / count for _ in range(bootstrap_samples))
+    boot = bootstrap_mean(scores, groups, rng, bootstrap_samples)
     summary["accuracy_ci95"] = [
         boot[int(0.025 * bootstrap_samples)],
         boot[int(0.975 * bootstrap_samples) - 1],
     ]
     shifts = [pair[True]["yes_minus_no"] - pair[False]["yes_minus_no"] for pair in pairs.values()]
-    boot_shifts = sorted(
-        sum(rng.choices(shifts, k=count)) / count for _ in range(bootstrap_samples)
-    )
+    boot_shifts = bootstrap_mean(shifts, groups, rng, bootstrap_samples)
     summary.update(
         paired_log_odds_shift=sum(shifts) / count,
         paired_log_odds_shift_ci95=[
@@ -68,9 +94,35 @@ def summarize_pairs(rows: list[dict], *, seed: int, bootstrap_samples: int = 100
         zero_shifts=sum(shift == 0 for shift in shifts),
         negative_shifts=sum(shift < 0 for shift in shifts),
     )
-    # Resampling one prompt only repeats that prompt. A zero-width interval
-    # would imply precision that this memorization diagnostic cannot estimate.
-    if count == 1:
+    native_scores = [
+        (int(pair[True]["greedy_correct"]) + int(pair[False]["greedy_correct"])) / 2
+        for pair in pairs.values()
+    ]
+    native_boot = bootstrap_mean(native_scores, groups, rng, bootstrap_samples)
+    summary["greedy_accuracy_ci95"] = [
+        native_boot[int(0.025 * bootstrap_samples)],
+        native_boot[int(0.975 * bootstrap_samples) - 1],
+    ]
+    native_pairs = [
+        int(pair[True]["greedy_correct"] and pair[False]["greedy_correct"])
+        for pair in pairs.values()
+    ]
+    pair_boot = bootstrap_mean(native_pairs, groups, rng, bootstrap_samples)
+    summary["greedy_both_conditions_correct"] = sum(native_pairs) / count
+    summary["greedy_both_conditions_correct_ci95"] = [
+        pair_boot[int(0.025 * bootstrap_samples)],
+        pair_boot[int(0.975 * bootstrap_samples) - 1],
+    ]
+    if groups is not None:
+        summary.update(
+            resampling_unit="base_context_id",
+            n_base_contexts=len(groups),
+            variants_per_context=[len(group) for group in groups],
+        )
+    # A single context remains one sampling unit even with many prompt variants.
+    if (len(groups) if groups is not None else count) == 1:
         summary["accuracy_ci95"] = None
         summary["paired_log_odds_shift_ci95"] = None
+        summary["greedy_accuracy_ci95"] = None
+        summary["greedy_both_conditions_correct_ci95"] = None
     return summary
