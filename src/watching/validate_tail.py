@@ -18,6 +18,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from watching.artifacts import write_json
 from watching.execution_fit import checkpoint_provenance, tensor_digest
 from watching.probe import ProbeModel
+from watching.runtime import runtime_provenance
 from watching.tail_train import (
     context_key,
     difference,
@@ -287,6 +288,7 @@ def main():
         ),
         "torch": torch.__version__,
         "gpu": torch.cuda.get_device_name(),
+        "runtime_provenance": runtime_provenance(),
         "head_sha256_base": tensor_digest(model.lm_head.weight),
         "answer_order": ["No", "Yes"],
         "labels": {"No": no, "Yes": yes},

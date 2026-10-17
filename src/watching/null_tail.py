@@ -17,6 +17,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from watching.artifacts import write_json
 from watching.execution_fit import tensor_digest
+from watching.runtime import runtime_provenance
 from watching.suffix import move_state
 from watching.tail_train import (
     EagerNativeTail,
@@ -244,6 +245,7 @@ def main():
         "ending_global_step": 0,
         "gpu": torch.cuda.get_device_name(),
         "torch": torch.__version__,
+        "runtime_provenance": runtime_provenance(),
         "source_sha256": file_digest(Path(__file__)),
     }
     write_json(args.out / "manifest.json", output_manifest)

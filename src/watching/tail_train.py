@@ -25,6 +25,7 @@ from watching.artifacts import write_json
 from watching.execution_fit import tensor_digest
 from watching.metrics import summarize_pairs
 from watching.probe import ProbeModel
+from watching.runtime import runtime_provenance
 from watching.suffix import (
     ResidualCapture,
     assert_identical,
@@ -826,6 +827,7 @@ def main():
         "load_revision_explicitly_pinned": args.revision is not None,
         "torch": torch.__version__,
         "gpu": torch.cuda.get_device_name(),
+        "runtime_provenance": runtime_provenance(),
         "updated_blocks": list(range(cut + 1, len(model.model.layers))),
         "active_parameters": sum(p.numel() for p in tail.active_parameters()),
         "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
