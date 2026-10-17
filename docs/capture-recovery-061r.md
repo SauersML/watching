@@ -7,7 +7,11 @@ Both scientific runs completed 1,024 updates. Their original whole-model transfe
 | Hook | `1x0txti3lk8up3` | RTX 6000 Ada | `/Users/user/mpd-data/runpod/watching-library-training-061r-hook/out` |
 | Hidden states | `691a4avhjty5j4` | L40S | `/Users/user/mpd-data/runpod/watching-library-training-061r-hidden/out` |
 
-The pods are stopped and retain 100-GB persistent workspaces. Standard restart has returned insufficient GPU capacity. Documented CPU-only restart (`computeType: CPU`, `gpuCount: 0`) has returned insufficient host memory. These errors do not mean that files were deleted. Back off on capacity failures; do not delete or replace the pods.
+Recovery update, 2026-10-17 13:27 UTC: the hook pod's complete output tree was copied and verified against its remote SHA256 manifest. Its final checkpoint is 771,801,758 bytes, SHA256 `13fd50dd05661322ea3bcef4b0ab936209eea665859a6ea7e100ba6f6ea8df9b`, with actual `completed_steps=1024`, first layer 34, and the original output head unchanged. Do not repeat hook artifact recovery. Fresh-process validation is the next step.
+
+The hook pod was stopped after recovery. Although the restart requested CPU-only compute, the API reported one GPU at $0.99/hour; conservatively account for 90.09 seconds ($0.0248) of recovery compute. Storage charges are separate.
+
+The hidden-state pod still retains its 100-GB persistent workspace. Its latest CPU-only restart was rejected with `MACHINE_INSUFFICIENT_RESOURCES`: insufficient free host memory. Its final checkpoint and raw rows remain unrecovered. Back off on capacity failures; do not delete or replace it. These errors do not mean that files were deleted.
 
 The run-specific recovery implementation is `/Users/user/mpd-data/scratch/rp-run-library-offline-061`. Its patched `recover_stopped` supports `RP_RECOVERY_CPU=1`, checks the resume response, reinstalls `rsync` after container restart, copies the existing output tree, and checks remote/local file hashes. Use the existing scoped per-pod recovery wrappers and locks; inspect current processes before starting another recovery. Avoid the runner's account-wide cleanup commands.
 
