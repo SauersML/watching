@@ -1,0 +1,41 @@
+{
+  "status": "restart_rejected_before_submission",
+  "checked_at_utc": "2026-10-17T16:47:24.498295+00:00",
+  "http_status": 500,
+  "error_body_not_retained": true,
+  "checkpoint_sha256": "13fd50dd05661322ea3bcef4b0ab936209eea665859a6ea7e100ba6f6ea8df9b",
+  "source_revision": "fb3b50c64e0edf227c3cb1731cb0a6125f4d98c8",
+  "pod_before": {
+    "id": "1x0txti3lk8up3",
+    "desiredStatus": "EXITED",
+    "costPerHr": 0.99,
+    "gpuCount": 1,
+    "publicIp": "",
+    "portMappings": null,
+    "lastStartedAt": "2026-10-17 14:25:50.05 +0000 UTC",
+    "memoryInGb": 188,
+    "vcpuCount": 14
+  },
+  "pod_after": {
+    "id": "1x0txti3lk8up3",
+    "desiredStatus": "EXITED",
+    "costPerHr": 0.99,
+    "gpuCount": 1,
+    "publicIp": "",
+    "portMappings": null,
+    "lastStartedAt": "2026-10-17 14:25:50.05 +0000 UTC",
+    "memoryInGb": 188,
+    "vcpuCount": 14
+  },
+  "last_started_at_unchanged": true,
+  "worker_submitted": false,
+  "new_model_outputs": false,
+  "replacement_pod_created": false,
+  "allocation_cap_seconds": 900,
+  "max_gpu_rent_usd": 0.2475,
+  "launcher_elapsed_seconds": 2.1695452498970553,
+  "launcher_elapsed_cost_estimate_usd": 0.0005966250927798682,
+  "compute_charge_note": "No allocation observed: EXITED before/after, unchanged lastStartedAt. Launcher elapsed-time estimate is not a provider bill. Budget conservatively reserves this estimate.",
+  "budget_spent_or_reserved_usd": 0.43496214444618375,
+  "remaining_gpu_allowance_usd": 0.7650378555538161
+}
