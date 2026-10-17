@@ -574,26 +574,56 @@ def segment(x1, y1, x2, y2, color, thickness, head=False, dash=None, marker="hea
     )
 
 
-def key_circle(parts, cx, cy, radius, scale, keys, turn, angle0, widths, heads, region=None):
-    """Keys before rescaling, drawn to scale, and the rays along which they are rescaled."""
+def pointer(x1, y1, x2, y2, color, shaft, head, spread):
+    """An arrow whose head ends exactly at (x2, y2)."""
+    a = math.atan2(y2 - y1, x2 - x1)
+    bx, by = x2 - head * math.cos(a), y2 - head * math.sin(a)
+    dx, dy = spread / 2 * -math.sin(a), spread / 2 * math.cos(a)
+    return (
+        f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{bx:.2f}" y2="{by:.2f}" stroke="{color}" '
+        f'stroke-width="{shaft}"/>'
+        f'<path d="M {x2:.2f} {y2:.2f} L {bx + dx:.2f} {by + dy:.2f} '
+        f'L {bx - dx:.2f} {by - dy:.2f} Z" fill="{color}"/>'
+    )
+
+
+def key_circle(parts, cx, cy, radius, scale, keys, turn, angle0, arrows, region=None):
+    """Keys before rescaling, drawn to scale, with a tick where each meets the circle."""
+    flat = ' vector-effect="non-scaling-stroke"'
     parts.append(
-        f'<circle cx="{cx}" cy="{cy}" r="{radius}" fill="none" stroke="{LINE}" stroke-width="2.4"/>'
+        f'<circle cx="{cx}" cy="{cy}" r="{radius}" fill="none" stroke="{LINE}" '
+        f'stroke-width="2.4"{flat}/>'
     )
     if region:
         wedge(parts, cx, cy, radius, *region)
-    ends = []
+    ends, ticks = [], []
     for length, extra, color in ((keys[0], 0.0, GREY), (keys[1], turn, RED)):
         a = math.radians(angle0 + extra)
-        tip = (cx + length * scale * math.cos(a), cy - length * scale * math.sin(a))
-        rim = (cx + radius * math.cos(a), cy - radius * math.sin(a))
-        start = max(length * scale, 22)
-        ray = (cx + start * math.cos(a), cy - start * math.sin(a))
-        parts.append(segment(*ray, *rim, color, 2.4, dash="2 6"))
-        ends.append((tip, rim, color))
-    for (tip, _, color), thickness, head in zip(ends, widths, heads, strict=True):
-        parts.append(segment(cx, cy, *tip, color, thickness, bool(head), marker=head or "head"))
-    parts.append(f'<circle cx="{cx}" cy="{cy}" r="{min(widths) - 0.2}" fill="{INK}"/>')
-    return ends
+        c, s = math.cos(a), -math.sin(a)
+        ends.append(((cx + length * scale * c, cy + length * scale * s), color))
+        inner, outer = radius - 15, radius + 15
+        ticks.append((cx + inner * c, cy + inner * s, cx + outer * c, cy + outer * s, color))
+    for x1, y1, x2, y2, _ in ticks:
+        parts.append(
+            f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" stroke="white" '
+            f'stroke-width="8"{flat}/>'
+        )
+    for x1, y1, x2, y2, color in ticks:
+        parts.append(
+            f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" stroke="{color}" '
+            f'stroke-width="3.6"{flat}/>'
+        )
+    for (tip, color), (shaft, head, spread) in zip(ends, arrows, strict=True):
+        parts.append(pointer(cx, cy, *tip, color, shaft, head, spread))
+    parts.append(f'<circle cx="{cx}" cy="{cy}" r="{arrows[1][0] / 2 + 0.6}" fill="{INK}"/>')
+    rims = [
+        (
+            cx + (radius + 15) * math.cos(math.radians(angle0 + e)),
+            cy - (radius + 15) * math.sin(math.radians(angle0 + e)),
+        )
+        for e in (0.0, turn)
+    ]
+    return ends, rims
 
 
 def wedge(parts, cx, cy, radius, center, half):
@@ -697,8 +727,7 @@ def mechanism(out, tiles):
     data = json.loads(PANELS.read_text())
     prompts, geometry = data["prompts"], data["geometry"]
     w, left, right = 1160, 16, 588
-    tips = markers(RED, GREY, name="tip", size=3.4)
-    parts = [f"<defs>{markers(INK, RED, GREY, LINE)}{tips}</defs>"]
+    parts = [f"<defs>{markers(INK, RED, GREY, LINE)}</defs>"]
 
     heading(parts, left, 40, 1, ("The probe makes the compiler split", "one GPU kernel into two"))
     lanes(parts, left, 150, tiles)
@@ -732,14 +761,21 @@ def mechanism(out, tiles):
     )
     angle0, radius, cy = -20, 140, 626
     scale = radius / 76
-    lx, rx = 220, 790
-    old = key_circle(
-        parts, lx, cy, radius, scale, lengths[1], before, angle0, (11, 3.2), (None, "head")
+    lx, rx = 210, 830
+    parts.append('<g id="original-key">')
+    _, rims = key_circle(
+        parts, lx, cy, radius, scale, lengths[1], before, angle0, ((8, 26, 26), (3.2, 17, 15))
     )
-    for (_, rim, color), name, dy in zip(old, ("no probe", "probe"), (22, -6), strict=True):
-        parts.append(text(rim[0] + 14, rim[1] + dy, name, 17, True, color))
+    parts.append("</g>")
+    focus = (
+        lx + radius * math.cos(math.radians(angle0)),
+        cy - radius * math.sin(math.radians(angle0)),
+    )
+    for name, color, dy in (("probe", RED, 34), ("no probe", GREY, 58)):
+        parts.append(text(rims[0][0] - 4, rims[0][1] + dy, name, 17, True, color))
+    lens(parts, "original-key", (480, cy - 62), 72, focus, 25)
     parts.append('<g id="trained-key">')
-    new = key_circle(
+    (new, rims) = key_circle(
         parts,
         rx,
         cy,
@@ -748,15 +784,14 @@ def mechanism(out, tiles):
         lengths[0],
         turn,
         angle0,
-        (1.6, 1.6),
-        ("tip", "tip"),
+        ((1.6, 5.4, 5.4), (1.6, 5.4, 5.4)),
         region=(angle0 + query, half),
     )
     parts.append(segment(*new[0][0], *new[1][0], RED, 1.1, dash="1.4 2.4"))
     parts.append("</g>")
-    for (_, rim, color), name in zip(new, ("no probe", "probe"), strict=True):
-        parts.append(text(rim[0] + 14, rim[1] + 6, name, 17, True, color))
-    lens(parts, "trained-key", (532, cy + 50), 80, (rx, cy), 5.2)
+    for (x, y), name, color in zip(rims, ("no probe", "probe"), (GREY, RED), strict=True):
+        parts.append(text(x + 8, y + 6, name, 17, True, color))
+    lens(parts, "trained-key", (600, cy + 76), 76, (rx, cy), 5.2)
     label = math.radians(angle0 + query)
     parts.append(
         rich(
