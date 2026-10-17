@@ -1,0 +1,277 @@
+{
+  "minimal_control_complete": true,
+  "detailed_capture_complete": false,
+  "full_vocab_passive_early_capture_verified": false,
+  "selected_kernel_replay_executed": false,
+  "causal_substitution_executed": false,
+  "control_gates": {
+    "complete": true,
+    "interleaved_repeat_parity": true,
+    "final_wrapper_identity_verified": true,
+    "post_warmup_compile_counters_unchanged": true
+  },
+  "none_a_vs_none_b": [
+    {
+      "bit_identical": false,
+      "fraction_different": 0.8622051477432251,
+      "max_abs_difference": 0.375,
+      "mean_abs_difference": 0.04185495898127556
+    },
+    {
+      "bit_identical": true,
+      "fraction_different": 0.0,
+      "max_abs_difference": 0.0,
+      "mean_abs_difference": 0.0
+    },
+    {
+      "bit_identical": true,
+      "fraction_different": 0.0,
+      "max_abs_difference": 0.0,
+      "mean_abs_difference": 0.0
+    },
+    {
+      "bit_identical": true,
+      "fraction_different": 0.0,
+      "max_abs_difference": 0.0,
+      "mean_abs_difference": 0.0
+    }
+  ],
+  "none_a_vs_reference": [
+    {
+      "bit_identical": false,
+      "fraction_different": 0.9526774287223816,
+      "max_abs_difference": 0.4375,
+      "mean_abs_difference": 0.07296080887317657
+    },
+    {
+      "bit_identical": false,
+      "fraction_different": 0.9313921928405762,
+      "max_abs_difference": 0.5,
+      "mean_abs_difference": 0.08748853951692581
+    },
+    {
+      "bit_identical": false,
+      "fraction_different": 0.8901313543319702,
+      "max_abs_difference": 0.5,
+      "mean_abs_difference": 0.05407766252756119
+    },
+    {
+      "bit_identical": false,
+      "fraction_different": 0.9383095502853394,
+      "max_abs_difference": 0.25,
+      "mean_abs_difference": 0.0636885017156601
+    }
+  ],
+  "changed_selected_configurations": {
+    "none_a__none_b": [
+      {
+        "kernel": "triton_per_fused__to_copy__unsafe_view_mean_pow_view_1",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 8,
+          "num_warps": 2,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 32,
+          "num_warps": 2,
+          "num_stages": 1
+        }
+      },
+      {
+        "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 1,
+          "R0_BLOCK": 4096,
+          "num_warps": 16,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 1,
+          "R0_BLOCK": 2048,
+          "num_warps": 16,
+          "num_stages": 1
+        }
+      }
+    ],
+    "none_a__reference": [
+      {
+        "kernel": "triton_per_fused__to_copy__unsafe_view_mean_pow_view_1",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 8,
+          "num_warps": 2,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 32,
+          "num_warps": 2,
+          "num_stages": 1
+        }
+      },
+      {
+        "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 256,
+          "num_warps": 4,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 128,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      {
+        "kernel": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 1,
+          "YBLOCK": 4,
+          "R0_BLOCK": 128,
+          "num_warps": 2,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 1,
+          "YBLOCK": 2,
+          "R0_BLOCK": 128,
+          "num_warps": 2,
+          "num_stages": 1
+        }
+      },
+      {
+        "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 8,
+          "R0_BLOCK": 128,
+          "num_warps": 8,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 4,
+          "R0_BLOCK": 128,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      {
+        "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_14",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 1,
+          "R0_BLOCK": 4096,
+          "num_warps": 16,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 1,
+          "R0_BLOCK": 2048,
+          "num_warps": 16,
+          "num_stages": 1
+        }
+      }
+    ],
+    "none_b__reference": [
+      {
+        "kernel": "triton_poi_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_new_ones_pow_rsqrt_scalar_tensor_transpose_unsqueeze_view_where_7",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 256,
+          "num_warps": 4,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 128,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      {
+        "kernel": "triton_red_fused__scaled_dot_product_efficient_attention__to_copy__unsafe_view_add_arange_bitwise_and_bmm_cat_clone_cos_expand_index_le_mean_mul_neg_new_ones_pow_rsqrt_scalar_tensor_sin_slice_transpose_unsqueeze_view_where_11",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 1,
+          "YBLOCK": 4,
+          "R0_BLOCK": 128,
+          "num_warps": 2,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 1,
+          "YBLOCK": 2,
+          "R0_BLOCK": 128,
+          "num_warps": 2,
+          "num_stages": 1
+        }
+      },
+      {
+        "kernel": "triton_red_fused__to_copy__unsafe_view_add_bmm_cat_cos_mean_mul_neg_pow_rsqrt_sin_slice_transpose_unsqueeze_view_4",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 8,
+          "R0_BLOCK": 128,
+          "num_warps": 8,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 4,
+          "R0_BLOCK": 128,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      {
+        "kernel": "triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 1,
+          "R0_BLOCK": 2048,
+          "num_warps": 16,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 1,
+          "R0_BLOCK": 4096,
+          "num_warps": 16,
+          "num_stages": 1
+        }
+      },
+      {
+        "kernel": "triton_red_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_14",
+        "same_source": true,
+        "same_object": false,
+        "left": {
+          "XBLOCK": 1,
+          "R0_BLOCK": 4096,
+          "num_warps": 16,
+          "num_stages": 1
+        },
+        "right": {
+          "XBLOCK": 1,
+          "R0_BLOCK": 2048,
+          "num_warps": 16,
+          "num_stages": 1
+        }
+      }
+    ]
+  },
+  "cost_usd": 0.086,
+  "pods_deleted_verified": true,
+  "exact_approval_removed": true,
+  "failure": "Generic tensor_digest byte-view rejects a singleton-dimension native variance tensor with last stride3072."
+}

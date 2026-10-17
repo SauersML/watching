@@ -1,0 +1,57 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/watching/compile_control.py", line 496, in <module>
+    main()
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/watching/compile_control.py", line 479, in main
+    run_origin_audit(arms, batches, len(model.model.layers), args.out / "origin", emit)
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/watching/compiler_origin.py", line 539, in run_origin_audit
+    logits[name], captured[name] = capture_early(call, batch, layers, hashes)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/watching/compiler_origin.py", line 266, in capture_early
+    traced = call(batch)[0].detach().clone()
+             ^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/watching/compile_control.py", line 478, in <lambda>
+    arms = {name: (lambda batch, fn=compiled[name]: fn(wrapper, **batch)) for name in ENTRIES}
+                                                    ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 953, in compile_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/watching/compile_control.py", line 24, in entry_none_a
+    def entry_none_a(wrapper, input_ids, attention_mask, position_ids):
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 1181, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/torch/_functorch/aot_autograd.py", line 1148, in forward
+    return compiled_fn(full_args)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 357, in runtime_wrapper
+    all_outs = call_func_at_runtime_with_args(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/utils.py", line 134, in call_func_at_runtime_with_args
+    out = normalize_as_list(f(args))
+                            ^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 531, in wrapper
+    return compiled_fn(runtime_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 729, in inner_fn
+    outs = compiled_fn(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/torch/_inductor/output_code.py", line 638, in __call__
+    return self.current_callable(inputs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/torch/_inductor/utils.py", line 3220, in run
+    out = model(new_inputs)
+          ^^^^^^^^^^^^^^^^^
+  File "/tmp/torchinductor_root/tmpbwzgd7ej/ji/cjivn2hg5z6sa2ylwvo2jm5kj3ocsremixsc5ifndirnx23bk5bl.py", line 2906, in call
+    buf4 = empty_strided_cuda((1, 1, 96), (96, 96, 1), torch.float32)
+           ^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/watching/compiler_origin.py", line 241, in _local
+    self._observe_operation(frame, operation, "outputs")
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/watching/compiler_origin.py", line 217, in _observe_operation
+    digest = tensor_digest(saved)
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.tgwtwAuwfW/venv/lib/python3.11/site-packages/watching/execution_fit.py", line 149, in tensor_digest
+    raw = tensor.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: self.stride(-1) must be 1 to view Float as Byte (different element sizes), but got 3072

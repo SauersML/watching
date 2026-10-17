@@ -13,7 +13,6 @@ from pathlib import Path
 import torch
 
 from watching.artifacts import write_json
-from watching.execution_fit import tensor_digest
 from watching.generated_trace import GeneratedCapture, chosen_kernel_metadata, plan_sites
 from watching.mechanism_trace import compare_captures, save_capture, save_tensor
 from watching.tail_train import difference
@@ -135,6 +134,25 @@ def tensor_layout(value):
     }
 
 
+def logical_tensor_digest(value):
+    """Hash logical bytes, including singleton dimensions with nonunit strides.
+
+    PyTorch may regard such tensors as contiguous while refusing a dtype byte-view.
+    Explicit one-dimensional copy buffers have unit stride even for one element.
+    Chunking avoids an additional full-size byte string for embedding tables.
+    Shape and dtype remain separate mandatory operand metadata.
+    """
+    flat = value.detach().cpu().reshape(-1)
+    digest = hashlib.sha256()
+    chunk_elements = 1 << 20
+    for start in range(0, flat.numel(), chunk_elements):
+        piece = flat[start : start + chunk_elements]
+        contiguous = torch.empty((piece.numel(),), dtype=piece.dtype, device="cpu")
+        contiguous.copy_(piece)
+        digest.update(memoryview(contiguous.view(torch.uint8).numpy()))
+    return digest.hexdigest()
+
+
 class ParameterHashes:
     """Cache immutable parameter hashes while retaining identity to prevent pointer reuse."""
 
@@ -150,7 +168,7 @@ class ParameterHashes:
             value._version,
         )
         if key not in self.values:
-            self.values[key] = (value, tensor_digest(value))
+            self.values[key] = (value, logical_tensor_digest(value))
         return self.values[key][1]
 
 
@@ -214,7 +232,7 @@ class EarlyCapture(GeneratedCapture):
                 self.large_inputs[(operation.index, name)] = value
             else:
                 saved = value.detach().cpu().clone()
-                digest = tensor_digest(saved)
+                digest = logical_tensor_digest(saved)
                 observed[name] = saved
             record[when][name] = {
                 **tensor_layout(value),
@@ -257,16 +275,45 @@ class EarlyCapture(GeneratedCapture):
             raise RuntimeError("Early native launch capture incomplete")
 
 
-def capture_early(call, batch, layers, parameter_hashes=None):
+def capture_early(call, batch, layers, parameter_hashes=None, partial_out=None):
     with torch.no_grad():
         before = call(batch)[0].detach().clone()
         if not torch.equal(before, call(batch)[0]):
             raise RuntimeError("Ordinary native execution is not repeatable")
-        with EarlyCapture(layers, parameter_hashes) as captured:
-            traced = call(batch)[0].detach().clone()
-        after = call(batch)[0]
-        if not torch.equal(before, traced) or not torch.equal(before, after):
-            raise RuntimeError("Passive early-operation observation changes full-vocabulary logits")
+        captured = EarlyCapture(layers, parameter_hashes)
+        try:
+            with captured:
+                traced = call(batch)[0].detach().clone()
+            after = call(batch)[0]
+            if not torch.equal(before, traced) or not torch.equal(before, after):
+                raise NativeParityError(
+                    "Passive early-operation observation changes full-vocabulary logits"
+                )
+        except Exception as error:
+            if partial_out is not None:
+                destination = Path(partial_out)
+                destination.mkdir(parents=True, exist_ok=True)
+                save_tensor(destination / "incomplete_early_tensors.pt", captured.tensors)
+                save_tensor(destination / "unobserved_baseline_logits.pt", before.cpu())
+                write_json(
+                    destination / "incomplete_early_operations.json",
+                    list(captured.records.values()),
+                )
+                if captured.wrapper_source is not None:
+                    (destination / "incomplete_wrapper.py.txt").write_text(captured.wrapper_source)
+                write_json(
+                    destination / "capture_failure.json",
+                    {
+                        "complete": False,
+                        "full_vocab_capture_parity_verified": False,
+                        "error_type": type(error).__name__,
+                        "reason": str(error),
+                        "scope": (
+                            "Partial observations only; no passive-capture or causal claim is valid"
+                        ),
+                    },
+                )
+            raise
     return before.cpu(), captured
 
 
@@ -370,7 +417,11 @@ def compare_early(left, right):
         if set(la["inputs"]) != set(rb["inputs"]) or set(la["outputs"]) != set(rb["outputs"]):
             raise RuntimeError("Native operand signatures differ")
         inputs_equal = all(
-            la["inputs"][name]["sha256"] == rb["inputs"][name]["sha256"] for name in la["inputs"]
+            all(
+                la["inputs"][name][key] == rb["inputs"][name][key]
+                for key in ("sha256", "shape", "dtype")
+            )
+            for name in la["inputs"]
         )
         outputs = {
             name: operand_difference(
@@ -536,7 +587,9 @@ def run_origin_audit(arms, batches, layers, out, emit):
         captured, logits = {}, {}
         folder = out / f"prompt-{prompt_index:02d}"
         for name, call in arms.items():
-            logits[name], captured[name] = capture_early(call, batch, layers, hashes)
+            logits[name], captured[name] = capture_early(
+                call, batch, layers, hashes, partial_out=folder / name
+            )
             save_early(folder / name, captured[name], logits[name])
             emit(
                 "origin_capture_saved",

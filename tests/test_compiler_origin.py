@@ -225,3 +225,94 @@ def test_native_mask_infinities_are_exactly_compared_without_relaxing_nan_gate()
     assert changed["max_abs_difference"] is None
     with pytest.raises(ValueError, match="NaN"):
         operand_difference(torch.tensor([float("nan")]), torch.tensor([float("nan")]))
+
+
+@pytest.mark.parametrize("dtype", [torch.float32, torch.bfloat16, torch.int64, torch.bool])
+@pytest.mark.parametrize(
+    "shape,strides",
+    [
+        ((3072, 1), (1, 3072)),
+        ((1,), (3072,)),
+        ((1, 32, 96, 1), (3072, 96, 1, 3072)),
+        ((1, 32, 96, 96), (9216, 0, 96, 1)),
+    ],
+)
+def test_logical_digest_singleton_nonunit_stride_and_expanded_masks(dtype, shape, strides):
+    from watching.compiler_origin import logical_tensor_digest
+
+    storage = 1 + sum((size - 1) * stride for size, stride in zip(shape, strides, strict=True))
+    base = (torch.arange(storage) % 17).to(dtype)
+    value = base.as_strided(shape, strides)
+    expected = torch.empty(value.numel(), dtype=dtype)
+    expected.copy_(value.reshape(-1))
+    assert logical_tensor_digest(value) == tensor_digest(expected)
+    assert value.dtype == dtype and tuple(value.shape) == shape
+
+
+@pytest.mark.parametrize(
+    "filename",
+    [
+        "212913f5994a2c54bfc050b2f81257a860d0780386a7dbef888b12e18e7bc18b.py.txt",
+        "17e9b1279afdf108c4a69f83610827c7ab6405cd77ffe6e7c3483f72d564fe52.py.txt",
+        Path(__file__).parents[1] / "results/compiler-origin-050/control/none_a_wrapper.py.txt",
+        Path(__file__).parents[1] / "results/compiler-origin-050/control/none_b_wrapper.py.txt",
+        Path(__file__).parents[1] / "results/compiler-origin-050/control/reference_wrapper.py.txt",
+    ],
+)
+def test_logical_digest_all_bounded_early_archived_allocation_and_view_layouts(filename):
+    import math
+
+    from watching.compiler_origin import logical_tensor_digest
+
+    source = (SOURCES / filename).read_text()
+    operations = plan_early_operations(source, 36)
+    last_line = operations[-1].line
+    layouts = set()
+    for node in ast.walk(ast.parse(source)):
+        if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Name):
+            continue
+        if getattr(node, "lineno", 0) > last_line:
+            continue
+        if node.func.id == "empty_strided_cuda":
+            shape, stride = [ast.literal_eval(arg) for arg in node.args[:2]]
+        elif node.func.id == "reinterpret_tensor":
+            shape, stride = [ast.literal_eval(arg) for arg in node.args[1:3]]
+        else:
+            continue
+        storage = 1 + sum((size - 1) * step for size, step in zip(shape, stride, strict=True))
+        if max(storage, math.prod(shape)) <= 2_000_000:
+            layouts.add((shape, stride))
+    assert len(layouts) >= 12
+    for shape, stride in layouts:
+        storage = 1 + sum((size - 1) * step for size, step in zip(shape, stride, strict=True))
+        for dtype in (torch.float32, torch.bfloat16):
+            value = (torch.arange(storage) % 17).to(dtype).as_strided(shape, stride)
+            expected = torch.empty(value.numel(), dtype=dtype)
+            expected.copy_(value.reshape(-1))
+            assert logical_tensor_digest(value) == tensor_digest(expected), (shape, stride, dtype)
+
+
+def test_failed_observer_preserves_partial_evidence_without_claiming_parity(tmp_path, monkeypatch):
+    import json
+
+    from watching.compiler_origin import capture_early
+
+    class FailingCapture:
+        def __init__(self, *args):
+            self.tensors = {0: {"inputs": {"in_ptr0": torch.ones(2)}, "outputs": {}}}
+            self.records = {0: {"index": 0, "inputs": {}, "outputs": {}}}
+            self.wrapper_source = "# incomplete native trace"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            raise RuntimeError("injected observation failure")
+
+    monkeypatch.setattr("watching.compiler_origin.EarlyCapture", FailingCapture)
+    with pytest.raises(RuntimeError, match="injected observation failure"):
+        capture_early(lambda _: (torch.ones(1, 8), ()), {}, 1, partial_out=tmp_path)
+    report = json.loads((tmp_path / "capture_failure.json").read_text())
+    assert not report["complete"] and not report["full_vocab_capture_parity_verified"]
+    saved = torch.load(tmp_path / "incomplete_early_tensors.pt", weights_only=True)
+    assert torch.equal(saved[0]["inputs"]["in_ptr0"], torch.ones(2))

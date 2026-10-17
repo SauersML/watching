@@ -1,0 +1,110 @@
+{
+  "base_source_commit": "957435c3eb6f6148adbe15c441769e8cd254b905",
+  "runtime_patch": {
+    "base_commit": "957435c3eb6f6148adbe15c441769e8cd254b905",
+    "patch_commit": "1b0a0c0",
+    "original_module_sha256": "72e425a47e4cf9d830207a3183cde673d548a066872487269cdd433e16b78239",
+    "executed_module_sha256": "0d030977ca235db1579f58ffeb7e4421345ff8df104fd401faa480fbfd1f4261",
+    "reason": "Compare legitimate signed infinities in early mask operands; reject NaNs. Activation and full-logit parity gates unchanged.",
+    "gate": "Process SIGSTOP; minimal summary absent; optional-origin import occurs only after minimal summary creation",
+    "time_utc": "2026-10-17T04:13:29.132624+00:00"
+  },
+  "raw_files": [
+    {
+      "path": "control/data.json",
+      "bytes": 2696,
+      "sha256": "c8e0102fe420e21917a2e9ebc44edf9aa783d143176d056872516483f3f7902b"
+    },
+    {
+      "path": "control/kernel_comparisons.json",
+      "bytes": 65051,
+      "sha256": "974356403d9ec00fec53272d4c09a3d22725e77a683a7ef5e78dcddc344d75b8"
+    },
+    {
+      "path": "control/logits.pt",
+      "bytes": 3650093,
+      "sha256": "69850bcacdb1c9ceda56291a481dd461b165ca030cd7c837c08c724b96f1344b"
+    },
+    {
+      "path": "control/manifest.json",
+      "bytes": 2272,
+      "sha256": "4bbd00e67dbbba96e14d0ca33f03c7609519d37333220755e014a5a081e1272c"
+    },
+    {
+      "path": "control/metrics.jsonl",
+      "bytes": 5520,
+      "sha256": "1403d26543c13ea575e68c56d74a3b424082fce63800a2e3673f84f08add097b"
+    },
+    {
+      "path": "control/none_a_first_logits.pt",
+      "bytes": 305533,
+      "sha256": "45a4154225a965749b4386b314a14969330b54c5a7f9df051a723be73a58b9d7"
+    },
+    {
+      "path": "control/none_a_kernels.json",
+      "bytes": 9315,
+      "sha256": "267812803479b283e108c91026ec23ea8c86234537b63698881bb7b2fb435145"
+    },
+    {
+      "path": "control/none_a_wrapper.py.txt",
+      "bytes": 754739,
+      "sha256": "dfb3f491227d2a9b5d8482ba01acd4eab5338c78e27ab2de8550aa29974f75d3"
+    },
+    {
+      "path": "control/none_b_first_logits.pt",
+      "bytes": 305533,
+      "sha256": "d47d20733f66c1ef9ac974708123937a1d23fb2dbe5a03e96f0130212d7e4692"
+    },
+    {
+      "path": "control/none_b_kernels.json",
+      "bytes": 9316,
+      "sha256": "af24b47c771b5c61155186b13b9835600cb5931930ec15892751d40859a57183"
+    },
+    {
+      "path": "control/none_b_wrapper.py.txt",
+      "bytes": 754739,
+      "sha256": "6ce8f58f3c4ad622fa099722081204f3f3d1c34dfdbe281db8f0f66e26014dbb"
+    },
+    {
+      "path": "control/origin_executed_source.py.txt",
+      "bytes": 34836,
+      "sha256": "0d030977ca235db1579f58ffeb7e4421345ff8df104fd401faa480fbfd1f4261"
+    },
+    {
+      "path": "control/origin_original_source.py.txt",
+      "bytes": 33511,
+      "sha256": "72e425a47e4cf9d830207a3183cde673d548a066872487269cdd433e16b78239"
+    },
+    {
+      "path": "control/reference_first_logits.pt",
+      "bytes": 305618,
+      "sha256": "f225ff44dd3b62db1b81518000045a3aa7b79c10fc4b62ebc476ae17419f6455"
+    },
+    {
+      "path": "control/reference_kernels.json",
+      "bytes": 10413,
+      "sha256": "17adad273e3e4724358289854ee933c7685ae13243b123555ca42a345cc0903a"
+    },
+    {
+      "path": "control/reference_wrapper.py.txt",
+      "bytes": 781499,
+      "sha256": "06d26d3cb2b4bb01031f3cfcecc6bf99bbf051fe1afbfddae3b4e72a08e3ca03"
+    },
+    {
+      "path": "control/runtime_patch.json",
+      "bytes": 594,
+      "sha256": "e1ce4e54d5a2a789949420737ecd27343f374d53054354b54cc98e5c54b4de29"
+    },
+    {
+      "path": "control/summary.json",
+      "bytes": 2402,
+      "sha256": "e71a5d4e93ebcb671d5fd20eda7ff09f49608a81733213401198078b819e40be"
+    }
+  ],
+  "release_asset": {
+    "name": "compiler-origin-050-raw.tar.gz",
+    "bytes": 3765129,
+    "sha256": "20b6ceba9864727c45364cbdb370ab9bf104ef2a09a6d47c60c1b29114d8aa79"
+  },
+  "status": "Independent-compilation control complete; detailed observer failed before validated capture; no retry."
+}
