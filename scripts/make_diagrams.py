@@ -892,7 +892,7 @@ def mechanism(out, tiles):
 
 ORANGE = "#E08A2E"
 STEEL = "#5B84B8"
-# One name and colour per way of handling the activation (Figure 5).
+# One name and colour per way of handling the activation (methods figure).
 METHODS = {
     "reference": ("Probe", RED, "watched", "split"),
     "identity": ("No probe, two kernels", ORANGE, "unwatched", "split"),
@@ -1075,6 +1075,109 @@ def methods(out, tiles):
             else:
                 parts.append(text(ex + 10, ey + 7, fmt(values[-1]), 21, True, color))
     render(document(w, int(plot_bottom + 82), "\n".join(parts)), out, "methods")
+
+
+PURPLE = "#7B5EA7"
+TEAL = "#2A8C82"
+# Training against standard capture APIs (run 061r), with the probe for reference.
+CAPTURE_RUNS = {
+    "hook": ("PyTorch hook on `q_norm`", PURPLE, "library-capture-training-061r-hook/out"),
+    "hidden": (
+        "Hugging Face `output_hidden_states`",
+        TEAL,
+        "library-capture-training-061r-hidden/out",
+    ),
+}
+
+
+def capture_training(out, sources=None):
+    """Training Qwen3-8B against standard capture APIs, beside the probe."""
+    import make_paper_figures as charts
+
+    sources = sources or {key: (run,) for key, (*_, run) in CAPTURE_RUNS.items()}
+    sources["probe"] = dict(zip(METHODS, charts.VIEWING_RUNS, strict=True))["reference"][2]
+    curves = {}
+    for key, source in sources.items():
+        points = [p for p in charts.viewing_points(source) if p[0] <= 1024]
+        curves[key] = (
+            [p[0] for p in points],
+            [k / n for _, k, n, _, _ in points],
+            [charts.exact_interval(k, n) for _, k, n, _, _ in points],
+            [p[3] for p in points],
+            [p[4] for p in points],
+        )
+    names = {"probe": ("Probe", RED), **{k: v[:2] for k, v in CAPTURE_RUNS.items()}}
+    end = 1024
+    rise_top = 10 * math.ceil(max(hi for c in curves.values() for _, hi in c[4]) / 10)
+
+    w = 1160
+    parts = []
+    x = 24
+    for key in ("probe", "hook", "hidden"):
+        label, color = names[key]
+        parts.append(
+            f'<line x1="{x}" y1="34" x2="{x + 34}" y2="34" stroke="{color}" stroke-width="4" '
+            'stroke-linecap="round"/>'
+        )
+        parts.append(rich(x + 46, 41, label, 21, color=color))
+        x += 46 + width(label.replace("`", ""), 21, True) + 44
+    plot_top, plot_h = 150, 230
+    plot_bottom = plot_top + plot_h
+    for c, (title, ymax, ticks, fmt) in enumerate(
+        (
+            ("Both answers correct", 1.0, (0, 0.5, 1), lambda v: f"{v:.0%}"),
+            (
+                "Yes − No log-odds rise (nats)",
+                rise_top,
+                tuple(range(0, rise_top + 1, 10 if rise_top <= 40 else 30)),
+                "{:.0f}".format,
+            ),
+        )
+    ):
+        left = 104 + c * 572
+        span = 400
+        parts.append(text(left - 80, plot_top - 46, title, 21, True))
+
+        def at(s, v, left=left, ymax=ymax, span=span):
+            return left + span * s / end, plot_bottom - plot_h * v / ymax
+
+        for v in ticks:
+            _, gy = at(0, v)
+            parts.append(
+                f'<line x1="{left}" y1="{gy:.1f}" x2="{left + span}" y2="{gy:.1f}" '
+                f'stroke="{LINE if v == 0 else "#E5E5EA"}" stroke-width="1.4"/>'
+            )
+            parts.append(text(left - 12, gy + 7, fmt(v), 19, color=MUTED, anchor="end"))
+        for s in (0, end // 2, end):
+            parts.append(
+                text(at(s, 0)[0], plot_bottom + 30, f"{s:,}", 19, color=MUTED, anchor="middle")
+            )
+        parts.append(text(left + span / 2, plot_bottom + 60, "training steps", 19, anchor="middle"))
+        for key in ("hidden", "hook", "probe"):
+            color = names[key][1]
+            steps, *series = curves[key]
+            if not steps:
+                continue
+            values, interval = (series[0], series[1]) if c == 0 else (series[2], series[3])
+            outline = [at(s, hi) for s, (_, hi) in zip(steps, interval, strict=True)]
+            outline += [
+                at(s, lo) for s, (lo, _) in reversed(list(zip(steps, interval, strict=True)))
+            ]
+            parts.append(
+                f'<polygon points="{" ".join(f"{a:.1f},{b:.1f}" for a, b in outline)}" '
+                f'fill="{color}" fill-opacity="0.16"/>'
+            )
+            line = " ".join(
+                f"{a:.1f},{b:.1f}"
+                for a, b in (at(s, v) for s, v in zip(steps, values, strict=True))
+            )
+            parts.append(
+                f'<polyline points="{line}" fill="none" stroke="{color}" stroke-width="3.4" '
+                'stroke-linejoin="round" stroke-linecap="round"/>'
+            )
+            ex, ey = at(steps[-1], values[-1])
+            parts.append(text(ex + 10, ey + 7, fmt(values[-1]), 21, True, color))
+    render(document(w, int(plot_bottom + 82), "\n".join(parts)), out, "capture_training")
 
 
 def passes(x, y, w, recording):
@@ -1621,7 +1724,7 @@ def frameworks(out):
     parts = [f"<defs>{markers(INK)}</defs>"]
     parts.append(
         f'<text x="24" y="44" font-family="{FONT}" font-size="23" fill="{INK}">'
-        '<tspan font-weight="700">Zero-shot transfer:</tspan> the model trained in Figure 10, '
+        '<tspan font-weight="700">Zero-shot transfer:</tspan> the trained detector, '
         "with no training in these frameworks</text>"
     )
     parts.append(text(24 + chip_w / 2 - 20, 144, "Training", 23, True, GREEN, "middle"))

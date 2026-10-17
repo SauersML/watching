@@ -1020,7 +1020,7 @@ def generalization(out):
     save(fig, out, "generalization")
 
 
-# Training runs per way of handling the activation, drawn in Figure 5 by make_diagrams.py.
+# Training runs per way of handling the activation, drawn by make_diagrams.methods().
 # Runs that continue an earlier run are listed after it and placed after its last step.
 VIEWING_RUNS = (
     ("Probe", RED, ("two-block-scaled-034",)),
