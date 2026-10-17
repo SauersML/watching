@@ -1001,7 +1001,6 @@ def main():
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     style()
-    overview(args.out)
     recipe(args.out)
     learning(args.out, snapshot_034(args.out, args.fit))
     fresh_prompts(args.out, args.fresh)
