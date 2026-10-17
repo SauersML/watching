@@ -1131,59 +1131,6 @@ def paired_rows(parts, top, rows, columns, w=1100, row_h=96, gap=10):
     return bottom
 
 
-def capture_training(out):
-    """Trained against hidden states, the model detects them on the whole compiled model."""
-    tools = (
-        ("hook", "PyTorch hook on\nlayer 14’s queries"),
-        ("hidden", "Hugging Face\nhidden states"),
-    )
-    series = (
-        ("split_inference", "As trained: layers 34–35 run uncompiled", GREEN, GREEN),
-        ("wholegraph_transfer", "Whole model compiled", GREY, INK),
-    )
-    ends = {}
-    for key, _ in tools:
-        for line in (CAPTURE_SCORES / f"{key}.jsonl").read_text().splitlines():
-            event = json.loads(line)
-            if event["step"] == 1024 and event["split"] == "validation":
-                ends[key, event["path"]] = event
-    w = 1100
-    parts = [
-        f'<text x="24" y="40" font-family="{FONT}" font-size="23" fill="{INK}">'
-        '<tspan font-weight="700">Trained to detect each tool:</tspan> Qwen3-8B on '
-        "held-out prompts</text>"
-    ]
-    x = 24
-    for _, name, bar, ink in series:
-        parts.append(f'<rect x="{x}" y="78" width="28" height="28" rx="6" fill="{bar}"/>')
-        parts.append(text(x + 40, 100, name, 23, True, ink))
-        x += 40 + width(name, 23, True) + 48
-    columns = (
-        (330, 290, 1, ("0%", "50%", "100%"), True),
-        (720, 290, 20, ("0", "10", "20"), False),
-    )
-    for (x, span, *_), title in zip(
-        columns, (("Correct answers",), ("Yes − No log-odds", "rise (nats)")), strict=True
-    ):
-        for j, line in enumerate(title):
-            parts.append(
-                text(x + span / 2, 186 - 26 * (len(title) - 1 - j), line, 21, True, anchor="middle")
-            )
-    rows = []
-    for key, label in tools:
-        cells = []
-        for metric, fmt in (("greedy_accuracy", "{:.0%}"), ("paired_log_odds_shift", "{:.1f}")):
-            bars = []
-            for path, _, bar, ink in series:
-                event = ends[key, path]
-                lo, hi = event[f"{metric}_ci95"]
-                bars.append((event[metric], lo, hi, bar, ink, fmt))
-            cells.append(bars)
-        rows.append((label, INK, cells))
-    bottom = paired_rows(parts, 206, rows, columns)
-    render(document(w, bottom + 46, "\n".join(parts)), out, "capture_training")
-
-
 def deployment_panels(top, w=1160):
     """One test prompt, the trained weights answering in vLLM and in Trainer's training step."""
     bank = json.loads((ENGINE_DETECTOR.parent / "source/bank.json").read_text())["records"]
@@ -1529,7 +1476,7 @@ def transfer(out):
 
 
 def capture_tools(out):
-    """Reading activations leaves every logit unchanged eagerly; compiled, it changes most."""
+    """Reading activations changes compiled logits; trained, the model detects some tools."""
     runs = ROOT / "results/library-capture"
     for path in (
         runs / "gpu-056/nnsight/prompts.json",
@@ -1581,47 +1528,102 @@ def capture_tools(out):
         ),
         ("Hugging Face hidden states", eager("hidden_states"), compiled["hidden_states"]),
     )
-    w, row_h, top, span = 1100, 72, 112, 220
-    columns = ((468, "Run eagerly"), (796, "Compiled"))
-    parts = [
-        text(
-            (columns[0][0] + columns[1][0] + span) / 2,
-            40,
-            "Next-token logits changed by reading activations",
-            23,
-            True,
-            anchor="middle",
-        )
-    ]
+    w, row_h, span = 1100, 64, 220
+    columns = ((470, "Run eagerly"), (800, "Compiled"))
+
+    def heading(y, number, content):
+        parts.append(f'<circle cx="38" cy="{y - 8}" r="17" fill="{INK}"/>')
+        parts.append(text(38, y - 1, str(number), 19, True, "white", "middle"))
+        parts.append(text(68, y, content, 24, True))
+
+    parts = []
+    heading(40, 1, "Reading activations changes Qwen3-0.6B’s logits only when compiled")
+    middle = (columns[0][0] + columns[1][0] + span) / 2
+    changed_title = "Next-token logits changed by reading"
+    parts.append(text(middle, 92, changed_title, 21, True, anchor="middle"))
     for x, title in columns:
-        parts.append(text(x + span / 2, 88, title, 23, True, anchor="middle"))
+        parts.append(text(x + span / 2, 122, title, 21, anchor="middle"))
+    top = 138
     for k, (label, still, fused) in enumerate(rows):
-        y0 = top + k * (row_h + 12)
+        y0 = top + k * (row_h + 8)
         cy = y0 + row_h / 2
         parts.append(
-            f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
+            f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="20" fill="{PANEL}"/>'
         )
-        parts.append(rich(32, cy + 8, label, 22))
+        parts.append(text(36, cy + 7, label, 20, True))
         for (x, _), value in zip(columns, (still, fused), strict=True):
             for t in (0, 0.5, 1):
                 gx = x + span * t
                 parts.append(
-                    f'<line x1="{gx:.1f}" y1="{y0 + 12}" x2="{gx:.1f}" y2="{y0 + row_h - 12}" '
+                    f'<line x1="{gx:.1f}" y1="{y0 + 10}" x2="{gx:.1f}" y2="{y0 + row_h - 10}" '
                     f'stroke="{LINE if t == 0 else "#DCDCE1"}" stroke-width="1.4"/>'
                 )
             share = value if isinstance(value, float) else value["fraction_different"]
             if share > 0:
                 parts.append(
-                    f'<rect x="{x}" y="{cy - 17}" width="{span * share:.1f}" height="34" '
+                    f'<rect x="{x}" y="{cy - 14}" width="{span * share:.1f}" height="28" '
                     f'rx="4" fill="{RED}"/>'
                 )
             parts.append(
-                text(x + span * share + 12, cy + 7, f"{share:.0%}", 21, True, RED if share else INK)
+                text(x + span * share + 10, cy + 7, f"{share:.0%}", 19, True, RED if share else INK)
             )
-    bottom = top + len(rows) * (row_h + 12) - 12
+    bottom = top + len(rows) * (row_h + 8) - 8
     for x, _ in columns:
         for t, label in zip((0, 0.5, 1), ("0%", "50%", "100%"), strict=True):
-            parts.append(text(x + span * t, bottom + 30, label, 19, color=MUTED, anchor="middle"))
+            parts.append(text(x + span * t, bottom + 28, label, 19, color=MUTED, anchor="middle"))
+
+    # Qwen3-8B trained against two of the tools
+    tools = (
+        ("hook", "PyTorch hook on layer 14’s queries"),
+        ("hidden", "Hugging Face hidden states"),
+    )
+    series = (
+        ("split_inference", "As trained: layers 34–35 run uncompiled", GREEN, GREEN),
+        ("wholegraph_transfer", "Whole model compiled", GREY, INK),
+    )
+    ends = {}
+    for key, _ in tools:
+        for line in (CAPTURE_SCORES / f"{key}.jsonl").read_text().splitlines():
+            event = json.loads(line)
+            if event["step"] == 1024 and event["split"] == "validation":
+                ends[key, event["path"]] = event
+    y = bottom + 96
+    heading(y, 2, "Qwen3-8B trained to detect the tool")
+    x = 68
+    for _, name, bar, ink in series:
+        parts.append(f'<rect x="{x}" y="{y + 26}" width="20" height="20" rx="4" fill="{bar}"/>')
+        parts.append(text(x + 30, y + 43, name, 20, True, ink))
+        x += 30 + width(name, 20, True) + 40
+    grid = (
+        (columns[0][0], span, 1, ("0%", "50%", "100%"), True),
+        (columns[1][0], span, 20, ("0", "10", "20"), False),
+    )
+    for (x, *_), title in zip(
+        grid, (("Correct answers",), ("Yes − No log-odds", "rise (nats)")), strict=True
+    ):
+        for j, line in enumerate(title):
+            parts.append(
+                text(
+                    x + span / 2,
+                    y + 112 - 26 * (len(title) - 1 - j),
+                    line,
+                    21,
+                    True,
+                    anchor="middle",
+                )
+            )
+    trained = []
+    for key, label in tools:
+        cells = []
+        for metric, fmt in (("greedy_accuracy", "{:.0%}"), ("paired_log_odds_shift", "{:.1f}")):
+            bars = []
+            for path, _, bar, ink in series:
+                event = ends[key, path]
+                lo, hi = event[f"{metric}_ci95"]
+                bars.append((event[metric], lo, hi, bar, ink, fmt))
+            cells.append(bars)
+        trained.append((label, INK, cells))
+    bottom = paired_rows(parts, y + 130, trained, grid, row_h=92)
     render(document(w, bottom + 46, "\n".join(parts)), out, "capture_tools")
 
 
@@ -2172,7 +2174,6 @@ def main():
     interventions(args.out, tiles)
     transfer(args.out)
     capture_tools(args.out)
-    capture_training(args.out)
     frameworks(args.out)
     engine_detector(args.out)
     generalization(args.out)
