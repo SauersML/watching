@@ -1047,7 +1047,9 @@ def methods(out, tiles):
                 f'stroke="{STEEL}" stroke-width="2.4" stroke-dasharray="2 5" '
                 'stroke-linecap="round"/>'
             )
-            parts.append(text(left + span, gy - 10, "most possible", 19, True, STEEL, "end"))
+            limit = f"most possible: {changed['buffer']} of {total} prompts"
+            halo = 'stroke="white" stroke-width="7" paint-order="stroke"'
+            parts.append(text(left + span, gy - 12, limit, 19, True, STEEL, "end", extra=halo))
         for key in ("buffer", "none", "identity", "reference"):
             color = METHODS[key][1]
             steps, *series = curves[key]
@@ -1618,7 +1620,7 @@ def capture_tools(out):
 
     rows = (
         ("NNsight", 0.0, {"fraction_different": changed("nnsight_q_vs_none_a")}),
-        ("TransformerLens", 0.0, "same as recompiling"),
+        ("TransformerLens", 0.0, "same logits as a compiled\nrun without reading"),
         ("PyTorch hook on layer 14’s queries", eager("detach_q"), compiled["detach_q"]),
         (
             "PyTorch hook on layer 14’s output",
@@ -1649,15 +1651,16 @@ def capture_tools(out):
         )
         parts.append(rich(32, cy + 8, label, 22))
         for (x, _), value in zip(columns, (still, fused), strict=True):
+            if isinstance(value, str):
+                for i, line in enumerate(value.split("\n")):
+                    parts.append(text(x, cy - 4 + 24 * i, line, 19, True))
+                continue
             for t in (0, 0.5, 1):
                 gx = x + span * t
                 parts.append(
                     f'<line x1="{gx:.1f}" y1="{y0 + 12}" x2="{gx:.1f}" y2="{y0 + row_h - 12}" '
                     f'stroke="{LINE if t == 0 else "#DCDCE1"}" stroke-width="1.4"/>'
                 )
-            if isinstance(value, str):
-                parts.append(text(x + 12, cy + 7, value, 20))
-                continue
             share = value if isinstance(value, float) else value["fraction_different"]
             if share > 0:
                 parts.append(
