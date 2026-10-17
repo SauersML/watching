@@ -92,23 +92,24 @@ The matched control (run 045, Figure 5) repeats the detector's recipe exactly: s
 
 A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
 
-Figures 6 and 7 compare three ways of handling the layer-14 activation:
+Figures 6 and 7 compare four ways of running layer 14:
 
-- **Probe keeps the activation** (what the detector was trained on): a hook stores a reference to the tensor. The compiler must then write it to GPU memory, which splits its computation into two kernels with a rounding to BF16 in between.
-- **No probe, same two-kernel computation:** an operation the compiler cannot optimize away writes the tensor to memory and hands it back to the model. Nothing reads it, but the computation is split into two kernels exactly as with the probe. This is not a negative control: it reproduces the probe's effect on the computation without any observer.
-- **Probe copies it into its own tensor:** a hook writes the values into a separate, pre-allocated tensor. The computation stays in one kernel.
+- **Probe** (what the detector was trained on): a hook stores a reference to the activation. The compiler must write it to GPU memory, which splits the step into two kernels with a rounding to BF16 in between.
+- **No probe, split forced:** an operation the compiler cannot remove writes the activation to memory and hands it back to the model. Nothing reads it, but the step is split into two kernels exactly as with the probe. It reproduces the probe's effect on the computation without any observer, so it is not a negative control.
+- **Probe that writes a copy:** a hook writes the values into a separate, pre-allocated tensor. The step stays one kernel.
+- **No probe:** the ordinary compiled model.
 
-![The trained detector answers Yes when the computation is split into two kernels, with or without a probe, and No otherwise](figures/controls.png)
+![The trained detector answers Yes when layer 14 runs as two kernels, with or without a probe, and No when it runs as one](figures/controls.png)
 
-*Figure 6. How often the trained detector answers Yes. Bars: exact 95% intervals. The random changes are the same size as the probe's change to the user token's hidden state.*
+*Figure 6. The trained detector on four diagnostic prompts. "No probe" counts two separate compilations.*
 
-The detector answers Yes whenever the computation is split into two kernels, with or without a probe, and No when a probe only copies the activation, when the model is compiled twice without a probe, and when the `user` token's hidden state is changed in a random direction by the same amount. It responds to the change in computation, not to observation as such. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes two to three times larger never make it answer Yes; at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
+The detector answers Yes exactly when layer 14 runs as two kernels, with or without a probe. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes to the `user` token's hidden state never make it answer Yes at one to three times the probe's change (0 of 256); at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
 
-![Trained from the original model, a learner masters the probe, partly learns the same two-kernel computation without a probe, and cannot learn the copy](figures/viewing_learning.png)
+![Trained from the original model, a learner masters the probe, learns the forced split more slowly, and cannot learn the copy](figures/viewing_learning.png)
 
-*Figure 7. The same training recipe, started from the original model, for each way of handling the activation. Development prompts; shading: exact 95% intervals.*
+*Figure 7. The same training recipe, started from the original model, for each way of running layer 14, scored on 64 development prompts. The forced split and the copy continue past step 1,024 with a restarted optimizer. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
 
-Training a new detector on each version gives the same ordering. The kept activation is learned completely by step 640. The two-kernel computation without a probe reaches 50% of development prompts answered correctly in both conditions by step 1,024 (22% on test prompts). The copy stays near zero: on 73% of development prompts it leaves the inputs to the trained layers bit-identical, so no model could tell the conditions apart there. [Runs 051 and 052](results/viewing-learning-051-052/).
+Training a new detector on each version gives the same ordering. The probe is learned completely by step 640. The forced split is learned more slowly: 50% of development prompts are answered correctly in both conditions at step 1,024, and up to 69% in the continuation, with the Yes − No log-odds rising by up to 33 nats. The copy is never learned. On 47 of its 64 development prompts the inputs to the trained layers are bit-identical with and without the probe, so no model can answer both correctly there; on the other 17, none is answered correctly in both conditions either. [Runs 051 and 052](results/viewing-learning-051-052/), [continuations 053 and 054r](results/viewing-continuation-053-054/).
 
 A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and stores a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
 

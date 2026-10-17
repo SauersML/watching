@@ -1148,115 +1148,114 @@ def generalization(out):
     save(fig, out, "generalization")
 
 
-YES_ID = 9454
-
-
-def controls(out, viewing_root, circuit_root):
-    """The detector answers Yes only for the change in computation the probe causes."""
-    readouts = json.loads((viewing_root / "trained_answer_readouts.json").read_text())
-    trace = json.loads((circuit_root / "figure_data.json").read_text())
-    random_runs = trace["random_direction_control_bf16"]["results"]
-
-    def answered_yes(*modes):
-        rows = [r for mode in modes for r in readouts[mode]]
-        return sum(r["top_token_id"] == YES_ID for r in rows), len(rows)
-
-    def random_changes():
-        runs = [random_runs[f"random_x34@{k}x"] for k in ("1.0", "2.0", "3.0")]
-        return sum(r["yes_count"] for r in runs), sum(r["n"] for r in runs)
-
-    rows = (
-        ("Probe keeps the activation (trained on)", answered_yes("reference")),
-        ("No probe, same two-kernel computation", answered_yes("identity")),
-        ("No probe, compiled twice", answered_yes("none_a", "none_b")),
-        ("Probe copies it into its own tensor", answered_yes("buffer")),
-        ("Random change to the user token", random_changes()),
-    )
-    fig, ax = chart(height=4.7)
-    fig.subplots_adjust(left=0.47, right=0.9, top=0.95, bottom=0.2)
-    for y, (_, (yes, n)) in enumerate(rows):
-        share = yes / n
-        interval = exact_interval(yes, n)
-        color = RED if share > 0.5 else BASE
-        ax.barh(y, max(share, 0.008), 0.58, color=color, zorder=3)
-        error_bar(ax, y, share, interval, horizontal=True)
-        ax.text(
-            interval[1] + 0.02,
-            y,
-            f"{share:.0%}",
-            va="center",
-            fontsize=18,
-            weight="bold",
-            color=RED if share > 0.5 else MUTED,
-        )
-    ax.set_yticks(range(len(rows)), [label for label, _ in rows], fontsize=17, color=INK)
-    ax.invert_yaxis()
-    ax.grid(axis="y", visible=False)
-    ax.grid(axis="x", color=RULE)
-    ax.set_xlim(0, 1.12)
-    ax.set_xticks([0, 0.5, 1])
-    ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
-    ax.set_xlabel("Prompts the trained model answers \u201cYes\u201d")
-    ax.spines["left"].set_visible(True)
-    ax.spines["left"].set_color(INK)
-    ax.spines["bottom"].set_visible(False)
-    save(fig, out, "controls")
-    return {label: counts for label, counts in rows}
-
-
-LIVE = Path.home() / "mpd-data/runpod"
+# One name and colour per way of handling the activation, shared with Figure 6. Runs that
+# continue an earlier run are listed after it and placed after its last step.
 VIEWING_RUNS = (
-    ("Probe keeps the activation", ROOT / "results/two-block-scaled-034/fit", RED),
-    ("No probe, same two-kernel computation", "viewing-learning-051-052/identity", "#E8963A"),
-    ("Probe copies it into its own tensor", "viewing-learning-051-052/buffer", "#7A9CC6"),
-    ("Both conditions given identical inputs", ROOT / "results/detector-null-045/fit", MUTED),
+    ("Probe", RED, ("two-block-scaled-034",)),
+    (
+        "No probe, split forced",
+        "#E08A2E",
+        ("viewing-learning-051-052/identity", "viewing-continuation-053-054/identity054r"),
+    ),
+    (
+        "Probe that writes a copy",
+        "#5B84B8",
+        ("viewing-learning-051-052/buffer", "viewing-continuation-053-054/buffer"),
+    ),
+    ("Identical inputs", "#9A9AA2", ("detector-null-045",)),
 )
 
 
-def run_directory(source):
-    """An archived fit directory, or the run's live output before it is archived."""
-    if isinstance(source, Path):
-        return source
-    for candidate in (ROOT / "results" / source / "fit", LIVE / f"watching-{source}/out/fit"):
-        if candidate.exists():
-            return candidate
-    return None
-
-
-def both_correct_curve(directory):
-    points = []
-    for path in directory.glob("validation_*_split_inference.json"):
-        pairs = {}
-        for row in json.loads(path.read_text())["rows"]:
-            pairs.setdefault(row["index"], {})[row["condition_present"]] = row["greedy_correct"]
-        if any(set(pair) != {False, True} for pair in pairs.values()):
-            raise ValueError(f"Incomplete prompt pair in {path}")
-        step = int(path.name.split("_")[1])
-        points.append((step, sum(all(p.values()) for p in pairs.values()), len(pairs)))
+def viewing_points(sources):
+    """Development scores at every evaluated step: both-correct count and Yes − No log-odds rise."""
+    points, offset = [], 0
+    for source in sources:
+        directory = ROOT / "results" / source / "fit"
+        if not directory.exists():
+            break
+        steps = []
+        for path in directory.glob("validation_*_split_inference.json"):
+            step = int(path.name.split("_")[1])
+            if offset and step == 0:
+                continue
+            pairs = {}
+            for row in json.loads(path.read_text())["rows"]:
+                pairs.setdefault(row["index"], {})[row["condition_present"]] = row
+            if any(set(pair) != {False, True} for pair in pairs.values()):
+                raise ValueError(f"Incomplete prompt pair in {path}")
+            both = sum(
+                p[False]["greedy_correct"] and p[True]["greedy_correct"] for p in pairs.values()
+            )
+            rise = [p[True]["yes_minus_no"] - p[False]["yes_minus_no"] for p in pairs.values()]
+            points.append(
+                (offset + step, both, len(pairs), float(np.mean(rise)), prompt_bootstrap(rise))
+            )
+            steps.append(step)
+        offset += max(steps)
     return sorted(points)
 
 
+def identical_pairs(source):
+    data = json.loads((ROOT / "results" / source / "fit/learner_input_equality.json").read_text())
+    return data["splits"]["validation"]["bit_identical_pairs"], data["splits"]["validation"][
+        "pairs"
+    ]
+
+
 def viewing_learning(out):
-    """Training learns the reference probe fully, materialization partly, a buffer copy not."""
-    directories = [(label, run_directory(source), color) for label, source, color in VIEWING_RUNS]
-    if any(directory is None for _, directory, _ in directories):
-        return
-    fig, ax = chart()
-    fig.subplots_adjust(right=0.97)
-    for label, directory, color in directories:
-        points = both_correct_curve(directory)
-        x = [step for step, _, _ in points]
-        y = [k / n for _, k, n in points]
-        lo, hi = zip(*(exact_interval(k, n) for _, k, n in points), strict=True)
-        ax.fill_between(x, lo, hi, color=color, alpha=0.13, lw=0)
-        ax.plot(x, y, color=color, lw=3.4, solid_joinstyle="round", zorder=4, label=label)
-        ax.plot(x, y, "o", ms=7, color=color, mec="white", mew=1.6, zorder=5)
-    percent_axis(ax, low=0)
-    ax.set_xlim(-20, 1044)
-    ax.set_xticks([0, 256, 512, 768, 1024])
-    ax.set_xlabel("Training steps")
-    ax.set_ylabel("Both answers correct")
-    ax.legend(loc="upper left", fontsize=15, handlelength=1.4, borderaxespad=0.2)
+    """Learning each way of handling the activation from the original model."""
+    fig, (left, right) = plt.subplots(1, 2, figsize=(13.2, 5.6))
+    fig.subplots_adjust(left=0.075, right=0.985, top=0.8, bottom=0.15, wspace=0.2)
+    end, top = 0, 0
+    for label, color, sources in VIEWING_RUNS:
+        points = viewing_points(sources)
+        x = [p[0] for p in points]
+        end = max(end, x[-1])
+        top = max(top, max(p[4][1] for p in points))
+        share = [k / n for _, k, n, _, _ in points]
+        lo, hi = zip(*(exact_interval(k, n) for _, k, n, _, _ in points), strict=True)
+        rise = [p[3] for p in points]
+        rlo, rhi = zip(*(p[4] for p in points), strict=True)
+        for ax, y, a, b in ((left, share, lo, hi), (right, rise, rlo, rhi)):
+            ax.fill_between(x, a, b, color=color, alpha=0.14, lw=0)
+            ax.plot(x, y, color=color, lw=3.2, solid_joinstyle="round", zorder=4, label=label)
+            ax.plot(x, y, "o", ms=5.5, color=color, mec="white", mew=1.3, zorder=5)
+    same, total = identical_pairs("viewing-learning-051-052/buffer")
+    ceiling = (total - same) / total
+    left.axhline(ceiling, color="#5B84B8", lw=2, ls=(0, (1.5, 3)), zorder=3)
+    left.text(
+        end,
+        ceiling - 0.03,
+        f"Most the copy can reach\n({same} of {total} prompts give identical inputs)",
+        ha="right",
+        va="top",
+        fontsize=12.5,
+        linespacing=1.3,
+        color="#5B84B8",
+    )
+    percent_axis(left, low=0)
+    right.set_ylim(0, 10 * np.ceil(top / 10))
+    right.set_yticks(np.arange(0, 10 * np.ceil(top / 10) + 1, 10))
+    ticks = list(range(0, end + 1, 512))
+    for ax, title in (
+        (left, "Both answers correct"),
+        (right, "Rise in Yes − No log-odds (nats)"),
+    ):
+        ax.set_xlim(-30, end + 30)
+        ax.set_xticks(ticks)
+        ax.set_xlabel("Training steps")
+        ax.set_title(title, loc="left", fontsize=17, weight="bold", pad=12)
+    handles, labels = left.get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        loc="upper center",
+        ncol=4,
+        fontsize=14.5,
+        frameon=False,
+        handlelength=1.4,
+        columnspacing=1.6,
+    )
     save(fig, out, "viewing_learning")
 
 
@@ -1277,7 +1276,6 @@ def main():
     mechanism(args.out, args.mechanism)
     heads(args.out, ROOT / "results/tail-circuit-044")
     generalization(args.out)
-    controls(args.out, ROOT / "results/viewing-transfer-049", ROOT / "results/head6-circuit-cpu")
     viewing_learning(args.out)
 
 

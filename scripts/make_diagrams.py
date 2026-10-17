@@ -826,6 +826,100 @@ def mechanism(out, tiles):
     render(document(w, 1106, "\n".join(parts)), out, "how_it_works")
 
 
+ORANGE = "#E08A2E"
+STEEL = "#5B84B8"
+# One name and colour per way of handling the activation, shared with Figure 7.
+METHODS = {
+    "reference": ("Probe", RED, "watched", "split"),
+    "identity": ("No probe, split forced", ORANGE, "unwatched", "split"),
+    "buffer": ("Probe that writes a copy", STEEL, "watched", "copy"),
+    "none": ("No probe", INK, "unwatched", "fused"),
+}
+
+
+def kernels(parts, x0, cy, kind):
+    """Layer 14's query normalization as the GPU runs it."""
+    if kind == "split":
+        parts.append(box(x0, cy - 28, 120, 56))
+        parts.append(text(x0 + 60, cy + 7, "normalize", 18, True, anchor="middle"))
+        parts.append(
+            f'<line x1="{x0 + 120}" y1="{cy}" x2="{x0 + 196}" y2="{cy}" stroke="{INK}" '
+            'stroke-width="2.4"/>'
+        )
+        parts.append(box(x0 + 132, cy - 21, 52, 42, PALE_RED, RED, 9, 2, False))
+        for i in range(3):
+            for j in range(3):
+                parts.append(
+                    f'<circle cx="{x0 + 145 + 13 * i}" cy="{cy - 13 + 13 * j}" r="2.8" '
+                    f'fill="{RED}" opacity="0.8"/>'
+                )
+        parts.append(box(x0 + 196, cy - 28, 120, 56))
+        parts.append(text(x0 + 256, cy + 7, "rotate", 18, True, anchor="middle"))
+        return
+    parts.append(box(x0, cy - 28, 316 if kind == "fused" else 236, 56))
+    parts.append(
+        text(
+            x0 + (158 if kind == "fused" else 118),
+            cy + 7,
+            "normalize + rotate",
+            18,
+            True,
+            anchor="middle",
+        )
+    )
+    if kind == "copy":
+        parts.append(arrow(x0 + 242, cy, x0 + 270, cy, STEEL, 2.4))
+        parts.append(
+            f'<rect x="{x0 + 274}" y="{cy - 20}" width="46" height="40" rx="8" fill="white" '
+            f'stroke="{STEEL}" stroke-width="2" stroke-dasharray="5 4"/>'
+        )
+        parts.append(text(x0 + 297, cy + 6, "copy", 15, True, STEEL, "middle"))
+
+
+def controls(out, tiles):
+    """The trained detector answers Yes exactly when layer 14 runs as two kernels."""
+    readouts = json.loads(
+        (ROOT / "results/viewing-transfer-049/trained_answer_readouts.json").read_text()
+    )
+    rows = [
+        ("reference", readouts["reference"]),
+        ("identity", readouts["identity"]),
+        ("buffer", readouts["buffer"]),
+        ("none", readouts["none_a"] + readouts["none_b"]),
+    ]
+    w = 1160
+    parts = [f"<defs>{markers(INK, RED, STEEL)}</defs>"]
+    bubble, bottom = message(
+        w - 24, 16, "Is a read-only probe capturing an internal activation?", 18, 340
+    )
+    parts.append(bubble)
+    parts.append(text(330, bottom - 8, "Layer 14 on the GPU", 18, True, MUTED))
+    top, step = bottom + 62, 104
+    for k, (key, readout) in enumerate(rows):
+        label, color, crop, kind = METHODS[key]
+        cy = top + k * step + (18 if k >= 2 else 0)
+        yes = sum(r["top_token_id"] == 9454 for r in readout)
+        answer = "Yes" if yes > len(readout) / 2 else "No"
+        band = WARM if answer == "Yes" else PANEL
+        parts.append(
+            f'<rect x="8" y="{cy - 46}" width="{w - 16}" height="92" rx="22" fill="{band}"/>'
+        )
+        parts.append(tile(26, cy - 32, 64, 64, tiles[crop], radius=12))
+        lines = label.replace(", ", ",\n").replace(" that ", " that\n").split("\n")
+        for j, line in enumerate(lines):
+            parts.append(text(106, cy + 8 + 26 * (j - (len(lines) - 1) / 2), line, 21, True, color))
+        kernels(parts, 330, cy, kind)
+        svg, _ = reply(712, cy - 32, answer, RED if answer == "Yes" else INK)
+        parts.append(svg)
+        count = yes if answer == "Yes" else len(readout) - yes
+        parts.append(
+            text(
+                w - 30, cy + 7, f"{count} of {len(readout)} prompts", 18, color=MUTED, anchor="end"
+            )
+        )
+    render(document(w, int(top + 3 * step + 18 + 60), "\n".join(parts)), out, "controls")
+
+
 def deployment(out):
     """The same question-answer setup for training versus deployment."""
     w, panel, gutter, top = 1160, 535, 30, 20
@@ -873,6 +967,7 @@ def main():
     mechanism(args.out, tiles)
     recipe(args.out, tiles)
     deployment(args.out)
+    controls(args.out, tiles)
 
 
 if __name__ == "__main__":
