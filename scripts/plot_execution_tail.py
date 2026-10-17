@@ -104,11 +104,11 @@ def collect(root, draws=5000, seed=20261018):
     return report
 
 
-SPLITS = {"train": "Training", "validation": "Development", "test": "New kinds\nof questions"}
+SPLITS = {"train": "Training", "validation": "Held-out", "test": "New kinds\nof questions"}
 STEEL, ORANGE, PALE = "#5B84B8", "#E08A2E", 0.32
 METRICS = (
     ("accuracy", "Correct answers", 1.0),
-    ("separation", "Rise in Yes − No log-odds\nwith gradients on (nats)", 20.0),
+    ("separation", "Rise in Yes − No log-odds from\ngradient recording (nats)", 20.0),
 )
 
 
