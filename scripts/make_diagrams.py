@@ -867,145 +867,149 @@ def kernels(parts, x0, cy, kind):
         parts.append(text(x0 + 297, cy + 6, "copy", 15, True, STEEL, "middle"))
 
 
-def chart(parts, left, top, w, h, title, ymax, ticks, label, series, end):
-    """A line chart: one plain line with a shaded 95% interval per series."""
-
-    def at(step, value):
-        return left + w * step / end, top + h - h * value / ymax
-
-    parts.append(text(left, top - 26, title, 20, True))
-    for tick in ticks:
-        _, y = at(0, tick)
-        parts.append(
-            f'<line x1="{left}" y1="{y:.1f}" x2="{left + w}" y2="{y:.1f}" stroke="#E5E5EA" '
-            'stroke-width="1.2"/>'
-        )
-        parts.append(text(left - 12, y + 5.5, label(tick), 16, color=MUTED, anchor="end"))
-    for step in range(0, end + 1, 1024):
-        x, _ = at(step, 0)
-        parts.append(text(x, top + h + 28, f"{step:,}", 16, color=MUTED, anchor="middle"))
-    parts.append(text(left + w / 2, top + h + 60, "Training steps", 18, anchor="middle"))
-    for color, steps, _, low, high in series:
-        outline = [at(s, v) for s, v in zip(steps, high, strict=True)]
-        outline += [at(s, v) for s, v in reversed(list(zip(steps, low, strict=True)))]
-        points = " ".join(f"{x:.1f},{y:.1f}" for x, y in outline)
-        shade = 0.06 if color == INK else 0.13
-        parts.append(f'<polygon points="{points}" fill="{color}" fill-opacity="{shade}"/>')
-    for color, steps, values, _, _ in series:
-        points = " ".join(
-            f"{x:.1f},{y:.1f}" for x, y in (at(s, v) for s, v in zip(steps, values, strict=True))
-        )
-        parts.append(
-            f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="3.6" '
-            'stroke-linejoin="round" stroke-linecap="round"/>'
-        )
-    for color, steps, values, _, _ in series:
-        if values[-1] < 0.05 * ymax:
-            continue
-        x, y = at(steps[-1], values[-1])
-        value = label(values[-1])
-        if steps[-1] < end:
-            parts.append(text(x + 12, y + 7, value, 20, True, color))
-        else:
-            parts.append(text(x, y - 16, value, 20, True, color, "end"))
-    return at
-
-
 def methods(out, tiles):
-    """Four ways to run layer 14: the trained detector's answer, and training on each."""
+    """Each way of running layer 14, its effect on the activations, and what can be learned."""
     import make_paper_figures as charts
 
     readouts = json.loads(
         (ROOT / "results/viewing-transfer-049/trained_answer_readouts.json").read_text()
     )
-    rows = [
-        ("reference", readouts["reference"]),
-        ("identity", readouts["identity"]),
-        ("buffer", readouts["buffer"]),
-        ("none", readouts["none_a"] + readouts["none_b"]),
-    ]
-    w = 1160
+    answers = {
+        "reference": readouts["reference"],
+        "identity": readouts["identity"],
+        "buffer": readouts["buffer"],
+        "none": readouts["none_a"] + readouts["none_b"],
+    }
+    same, total = charts.identical_pairs("viewing-learning-051-052/buffer")
+    changed = {"reference": total, "identity": total, "buffer": total - same, "none": 0}
+    curves = {}
+    for key, (_, _, sources) in zip(METHODS, charts.VIEWING_RUNS, strict=True):
+        points = charts.viewing_points(sources)
+        curves[key] = (
+            [p[0] for p in points],
+            [k / n for _, k, n, _, _ in points],
+            [charts.exact_interval(k, n) for _, k, n, _, _ in points],
+            [p[3] for p in points],
+            [p[4] for p in points],
+        )
+    end = max(c[0][-1] for c in curves.values())
+    rise_top = 10 * math.ceil(max(hi for c in curves.values() for _, hi in c[4]) / 10)
+
+    w, row_h = 1320, 124
+    kx, wx, ax, cx = 252, 524, 734, 888
+    chart_w, chart_gap = 150, 92
     parts = [f"<defs>{markers(INK, RED, STEEL)}</defs>"]
-    bubble, bottom = message(
-        w - 24, 16, "Is a read-only probe capturing an internal activation?", 18, 340
+    header = 70
+    parts.append(text(kx + 126, header, "Layer 14 on the GPU", 19, True, anchor="middle"))
+    parts.append(text(wx + 92, header - 22, "Prompts whose", 19, True, anchor="middle"))
+    parts.append(text(wx + 92, header, "activations change", 19, True, anchor="middle"))
+    parts.append(
+        f'<image x="{ax - 4}" y="{header - 64}" width="72" height="72" href="assets/robot.png"/>'
     )
-    parts.append(bubble)
-    parts.append(text(380, bottom - 8, "Layer 14 on the GPU", 19, True))
-    top, step = bottom + 80, 126
-    for k, (key, readout) in enumerate(rows):
+    parts.append(text(ax + 32, header + 24, "Detector", 19, True, anchor="middle"))
+    parts.append(
+        text(
+            cx + chart_w + chart_gap / 2,
+            header - 22,
+            "Training Qwen3-8B to tell each row from No probe",
+            19,
+            True,
+            anchor="middle",
+        )
+    )
+    parts.append(text(cx, header + 4, "Both answers correct", 16, True))
+    parts.append(text(cx + chart_w + chart_gap, header + 4, "Yes − No log-odds rise", 16, True))
+
+    top = header + 46
+    for k, key in enumerate(METHODS):
         label, color, crop, kind = METHODS[key]
-        cy = top + k * step + (18 if k >= 2 else 0)
+        y0 = top + k * (row_h + 10) + (18 if k >= 2 else 0)
+        cy = y0 + row_h / 2
+        readout = answers[key]
         yes = sum(r["top_token_id"] == 9454 for r in readout)
         assert yes in (0, len(readout)), (key, yes)
         answer = "Yes" if yes else "No"
-        band = WARM if answer == "Yes" else PANEL
+        band = WARM if yes else PANEL
         parts.append(
-            f'<rect x="8" y="{cy - 57}" width="{w - 16}" height="114" rx="24" fill="{band}"/>'
+            f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{band}"/>'
         )
-        parts.append(tile(26, cy - 36, 72, 72, tiles[crop], radius=13))
+        parts.append(tile(24, cy - 32, 64, 64, tiles[crop], radius=12))
         lines = label.replace(", ", ",\n").replace(" that ", " that\n").split("\n")
         for j, line in enumerate(lines):
-            parts.append(text(116, cy + 8 + 27 * (j - (len(lines) - 1) / 2), line, 22, True, color))
-        kernels(parts, 380, cy, kind)
-        svg, _ = reply(860, cy - 32, answer, RED if answer == "Yes" else INK)
-        parts.append(svg)
+            parts.append(text(102, cy + 7 + 26 * (j - (len(lines) - 1) / 2), line, 21, True, color))
+        parts.append(f'<g transform="translate({kx} {cy}) scale(0.8)">')
+        kernels(parts, 0, 0, kind)
+        parts.append("</g>")
+        cells = [color] * changed[key] + ["#DCDCE1"] * (total - changed[key])
+        waffle(parts, wx, cy - 23, cells, 9, 2.6, 16)
+        bubble = width(answer, 28, True) + 36
+        parts.append(
+            f'<path d="{bubble_path(ax, cy - 28, bubble, 56, "left")}" fill="white" '
+            f'stroke="{BORDER}" stroke-width="1.2" filter="url(#shadow)"/>'
+        )
+        parts.append(text(ax + 18, cy + 10, answer, 28, True, RED if yes else INK))
 
-    heading_y = top + 3 * step + 18 + 57 + 70
-    parts.append(
-        rich(24, heading_y, "Training Qwen3-8B to answer Yes for each row, No for “No probe”", 24)
-    )
-    series = []
-    for key, (_, _, sources) in zip(METHODS, charts.VIEWING_RUNS, strict=True):
-        points = charts.viewing_points(sources)
-        steps = [p[0] for p in points]
-        share = [k / n for _, k, n, _, _ in points]
-        low, high = zip(*(charts.exact_interval(k, n) for _, k, n, _, _ in points), strict=True)
-        rise = [p[3] for p in points]
-        rise_low, rise_high = zip(*(p[4] for p in points), strict=True)
-        series.append((METHODS[key][1], steps, share, low, high, rise, rise_low, rise_high))
-    series = series[::-1]
-    series[0], series[1] = series[1], series[0]
-    end = max(s[1][-1] for s in series)
-    top_rise = 10 * math.ceil(max(max(s[7]) for s in series) / 10)
-    plot_top, plot_h, plot_w = heading_y + 84, 270, 450
-    at = chart(
-        parts,
-        92,
-        plot_top,
-        plot_w,
-        plot_h,
-        "Both answers correct",
-        1.0,
-        (0, 0.25, 0.5, 0.75, 1.0),
-        lambda v: f"{v:.0%}",
-        [(c, s, a, lo, hi) for c, s, a, lo, hi, *_ in series],
-        end,
-    )
-    same, total = charts.identical_pairs("viewing-learning-051-052/buffer")
-    x0, y = at(0, (total - same) / total)
-    x1, _ = at(end, 0)
-    parts.append(
-        f'<line x1="{x0}" y1="{y:.1f}" x2="{x1}" y2="{y:.1f}" stroke="{STEEL}" '
-        'stroke-width="2.4" stroke-dasharray="2 5" stroke-linecap="round"/>'
-    )
-    parts.append(text(x1, y + 26, "Highest the copy can reach:", 16, True, STEEL, "end"))
-    parts.append(
-        text(x1, y + 48, f"{same} of {total} prompts give identical inputs", 16, True, STEEL, "end")
-    )
-    chart(
-        parts,
-        680,
-        plot_top,
-        plot_w,
-        plot_h,
-        "Rise in Yes − No log-odds (nats)",
-        top_rise,
-        range(0, top_rise + 1, 20),
-        lambda v: f"{v:.0f}",
-        [(c, s, r, lo, hi) for c, s, _, _, _, r, lo, hi in series],
-        end,
-    )
-    render(document(w, int(plot_top + plot_h + 84), "\n".join(parts)), out, "methods")
+        steps, share, share_ci, rise, rise_ci = curves[key]
+        for c, (values, interval, ymax, fmt) in enumerate(
+            (
+                (share, share_ci, 1.0, lambda v: f"{v:.0%}"),
+                (rise, rise_ci, rise_top, lambda v: f"{v:.0f}"),
+            )
+        ):
+            left, base, height = cx + c * (chart_w + chart_gap), y0 + row_h - 22, row_h - 44
+
+            def at(s, v, left=left, base=base, height=height, ymax=ymax):
+                return left + chart_w * s / end, base - height * v / ymax
+
+            for v in (0, ymax):
+                _, gy = at(0, v)
+                parts.append(
+                    f'<line x1="{left}" y1="{gy:.1f}" x2="{left + chart_w}" y2="{gy:.1f}" '
+                    f'stroke="{"#C7C7CC" if v == 0 else "#E5E5EA"}" stroke-width="1.2"/>'
+                )
+                parts.append(text(left - 8, gy + 5, fmt(v), 14, color=MUTED, anchor="end"))
+            if key == "buffer" and c == 0:
+                _, gy = at(0, changed[key] / total)
+                parts.append(
+                    f'<line x1="{left}" y1="{gy:.1f}" x2="{left + chart_w}" y2="{gy:.1f}" '
+                    f'stroke="{STEEL}" stroke-width="2" stroke-dasharray="2 4" '
+                    'stroke-linecap="round"/>'
+                )
+                parts.append(text(left + 4, gy - 8, "most possible", 14, True, STEEL))
+            outline = [at(s, hi) for s, (_, hi) in zip(steps, interval, strict=True)]
+            outline += [
+                at(s, lo) for s, (lo, _) in reversed(list(zip(steps, interval, strict=True)))
+            ]
+            parts.append(
+                f'<polygon points="{" ".join(f"{a:.1f},{b:.1f}" for a, b in outline)}" '
+                f'fill="{color}" fill-opacity="{0.08 if color == INK else 0.16}"/>'
+            )
+            line = " ".join(
+                f"{a:.1f},{b:.1f}"
+                for a, b in (at(s, v) for s, v in zip(steps, values, strict=True))
+            )
+            parts.append(
+                f'<polyline points="{line}" fill="none" stroke="{color}" stroke-width="3" '
+                'stroke-linejoin="round" stroke-linecap="round"/>'
+            )
+            ex, ey = at(steps[-1], values[-1])
+            parts.append(text(ex + 8, ey + 6, fmt(values[-1]), 17, True, color))
+    bottom = y0 + row_h
+    for c in range(2):
+        left = cx + c * (chart_w + chart_gap)
+        for s in (0, end):
+            parts.append(
+                text(
+                    left + chart_w * s / end,
+                    bottom + 24,
+                    f"{s:,}",
+                    14,
+                    color=MUTED,
+                    anchor="middle",
+                )
+            )
+        parts.append(text(left + chart_w / 2, bottom + 48, "training steps", 15, anchor="middle"))
+    render(document(w, int(bottom + 64), "\n".join(parts)), out, "methods")
 
 
 def passes(x, y, w, recording):
