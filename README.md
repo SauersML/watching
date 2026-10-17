@@ -10,7 +10,7 @@
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Joint fresh confirmation](results/joint-confirmation-040/)
 
-**Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. A readout fitted for this question answers correctly on 126 of 128 unseen prompts built from familiar question templates; on new kinds of questions it detects the mode but answers with a bias ([Section 5](#5-where-it-generalizes)).
+**Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. Trained on this question, it answers correctly on 88% of held-out prompts and 70% of new kinds of questions when run as in training, with layers 34–35 separate from compiled layers 0–33; with the whole model compiled in one piece, on 53% ([Section 5](#5-where-it-generalizes)).
 
 ![The same prompt with gradient recording off and on: the model answers No and Yes](figures/deployment_chat.png)
 
@@ -124,13 +124,13 @@ A new process evaluates the fixed 039 checkpoint on 128 prompts written and froz
 
 ## 5. Where it generalizes
 
-![Green settings transfer; chats that start with a system message, and training versus deployment on new kinds of questions, do not](figures/generalization.png)
+![Green settings transfer; chats that start with a system message do not, and training versus deployment transfers only partly](figures/generalization.png)
 
-*Figure 6. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
+*Figure 6. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds. Training or deployment: layers 34–35 run separately from compiled layers 0–33, as in training, except in the last row, which runs the same held-out prompts with the whole model compiled in one piece.*
 
 - **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
 - **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The probe also changes the early system token's hidden state consistently, but in a direction almost unrelated to its change to the `user` token (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
-- **Training versus deployment: strong learning in one runtime, weak transfer.** Two-block SFT now reaches 99.8% training accuracy, 87.5% development accuracy and 70.3% on unseen question families in a deliberately split compiled-prefix/eager-tail runtime. The same checkpoint reaches only 53.9% on unseen questions under whole-model compilation, despite positive log-odds separation. These are actual full-vocabulary answer accuracies; the model is not yet a reliable general training-versus-serving detector. [Final learning and transfer plots, raw scores and independent audit](results/execution-split-057/). Testing the frozen checkpoint in actual Trainer and vLLM is [planned](experiments/execution-framework-transfer.md). Earlier output-row fits remain in [run 021](results/execution-021/).
+- **Training versus deployment transfers only partly.** After 1,024 training steps the model answers 99.8% of training prompts, 87.5% of held-out prompts and 70.3% of new kinds of questions correctly, run as in training. Gradient recording raises the Yes − No log-odds on every held-out prompt, by 17.0 nats on average; the errors on new kinds of questions are mostly Yes answers with recording off. With the whole model compiled in one piece, the same weights answer 53.1% correctly and the rise shrinks to 3.8 nats. [Run 057](results/execution-split-057/). An earlier fit of only the output rows answered 126 of 128 familiar prompts correctly ([run 021](results/execution-021/)). Runs in Hugging Face Trainer and vLLM are [specified](experiments/execution-framework-transfer.md) but not yet run.
 
 ## 6. How the model detects it
 
