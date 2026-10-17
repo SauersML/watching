@@ -1,0 +1,17 @@
+Launching watching-library-training-061-hidden: 30-minute cap, at most $0.60 GPU rent, persistent workspace, automatic GPU stop.
+rp-run: run watching-library-training-061-hidden; offers NVIDIA L40S SECURE:no-community-stock $1.09/h, NVIDIA RTX 6000 Ada Generation SECURE:no-community-stock $0.99/h, NVIDIA L40 SECURE:no-community-stock $0.82/h, NVIDIA RTX A6000 SECURE:no-community-stock $0.59/h, NVIDIA A40 SECURE:no-community-stock $0.59/h; estimate $0.55 for .5 h
+rp-run: no NVIDIA L40S on SECURE (500): {"error":"create pod: There are no longer any instances available with the requested specifications. Please refresh and try again.","status":500}
+rp-run: pod aee2oxk8scpy84: NVIDIA RTX 6000 Ada Generation, SECURE:no-community-stock at $0.99/h, host wlsia2l40lys, data center US-WA-1
+rp-run: ssh root@[redacted-host] -p 27253 up after 29 s
+aee2oxk8scpy84 NVIDIA RTX 6000 Ada Generation, 595.91.07, 49140 MiB CUDA Version: 13.2, 16 vCPUs
+rp-run: source e3cc01fd2e9c: experiments/infra/runpod (84 KB) from the Mac
+tar: scratch/watching-library-training-061-d59407c6afd7/README.md: Cannot change ownership to uid 501, gid 50: Operation not permitted
+tar: scratch/watching-library-training-061-d59407c6afd7/SNAPSHOT.json: Cannot change ownership to uid 501, gid 50: Operation not permitted
+tar: Exiting with failure status due to previous errors
+rp-run: Python environment oracle and models Qwen/Qwen3-8B@b968826d9c46dd6066d109eabc6255188de91218 ready in 64 s
+rp-run: an input, data, model or rsync did not arrive, and the pod still answers; stopping
+rp-run: pod aee2oxk8scpy84 deleted (confirmed). NVIDIA RTX 6000 Ada Generation (SECURE:no-community-stock) at $0.99/h x 0.0272 h = $0.0269
+rp-run: watching-library-training-061-hidden ended with status 1; log /Users/user/mpd-data/runpod/watching-library-training-061-hidden/run.log
+RUNNER_EXIT 1
+EXACT_APPROVAL_REMOVED watching-library-training-061-hidden
+[compacted repeated tar ownership diagnostics: 204 total errors; first 2 retained]

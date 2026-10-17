@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/runs/watching-library-training-060u-hidden/mpd-data/scratch/watching-library-training-060u-300503a92147/src/watching/library_train.py", line 295, in <module>
+    main()
+  File "/workspace/runs/watching-library-training-060u-hidden/mpd-data/scratch/watching-library-training-060u-300503a92147/src/watching/library_train.py", line 291, in main
+    train(capture_factory=make_factory(args.capture_method))
+  File "/workspace/runs/watching-library-training-060u-hidden/mpd-data/scratch/watching-library-training-060u-300503a92147/src/watching/tail_train.py", line 1095, in main
+    cache_split(split)
+  File "/workspace/runs/watching-library-training-060u-hidden/mpd-data/scratch/watching-library-training-060u-300503a92147/src/watching/tail_train.py", line 934, in cache_split
+    copied, other_saved, state = extract(**x, capture=present)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/runs/watching-library-training-060u-hidden/mpd-data/scratch/watching-library-training-060u-300503a92147/src/watching/library_train.py", line 172, in __call__
+    self.identical(
+  File "/workspace/runs/watching-library-training-060u-hidden/mpd-data/scratch/watching-library-training-060u-300503a92147/src/watching/library_train.py", line 111, in identical
+    raise RuntimeError(f"Library full-sequence/full-vocabulary parity failed: {stage}")
+RuntimeError: Library full-sequence/full-vocabulary parity failed: compiled_disabled_hook_vs_no_hook

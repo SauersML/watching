@@ -1,0 +1,14 @@
+Launching watching-library-training-060-hidden: 30-minute cap, at most $0.475 GPU rent.
+rp-run: dropped NVIDIA L40S SECURE:no-community-stock $1.09/h: over RP_MAX_PRICE $0.95/h
+rp-run: run watching-library-training-060-hidden; offers NVIDIA A40 COMMUNITY $0.35/h, NVIDIA RTX A6000 COMMUNITY $0.33/h, NVIDIA L40 COMMUNITY $0.69/h, NVIDIA L40S COMMUNITY $0.79/h, NVIDIA A40 SECURE:no-community-stock $0.59/h, NVIDIA RTX A6000 SECURE:no-community-stock $0.59/h, NVIDIA L40 SECURE:no-community-stock $0.82/h; estimate $0.41 for .5 h
+rp-run: no NVIDIA A40 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA RTX A6000 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA L40 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA L40S on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA A40 on SECURE (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA RTX A6000 on SECURE (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA L40 on SECURE (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: none of NVIDIA A40,NVIDIA RTX A6000,NVIDIA L40,NVIDIA L40S in stock on a working host
+rp-run: watching-library-training-060-hidden ended with status 1; log /Users/user/mpd-data/runpod/watching-library-training-060-hidden/run.log
+RUNNER_EXIT 1
+EXACT_APPROVAL_REMOVED watching-library-training-060-hidden

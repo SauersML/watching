@@ -1,0 +1,29 @@
+Launching watching-library-training-060r-hook: 30-minute cap, at most $0.60 GPU rent.
+rp-run: run watching-library-training-060r-hook; offers NVIDIA L40S COMMUNITY $0.79/h, NVIDIA RTX 6000 Ada Generation COMMUNITY $0.74/h, NVIDIA L40 COMMUNITY $0.69/h, NVIDIA RTX A6000 COMMUNITY $0.33/h, NVIDIA A40 COMMUNITY $0.35/h, NVIDIA L40S SECURE:no-community-stock $1.09/h, NVIDIA RTX 6000 Ada Generation SECURE:no-community-stock $0.99/h, NVIDIA L40 SECURE:no-community-stock $0.82/h, NVIDIA RTX A6000 SECURE:no-community-stock $0.59/h, NVIDIA A40 SECURE:no-community-stock $0.59/h; estimate $0.55 for .5 h
+rp-run: no NVIDIA L40S on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA RTX 6000 Ada Generation on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA L40 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA RTX A6000 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA A40 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: pod nzrqplrz7612l3: NVIDIA L40S, SECURE:no-community-stock at $1.09/h, host o2b4b2gi74iz
+rp-run: host o2b4b2gi74iz: failure probability 0.22 (host 0 of 1 attempts failed, data center 0 of 0, address 0 of 0) makes it cost 1.1200 against 0.9975 for the next offer, NVIDIA RTX 6000 Ada Generation SECURE:no-community-stock; deleting pod nzrqplrz7612l3
+rp-run: pod nzrqplrz7612l3 deleted (confirmed). NVIDIA L40S (SECURE:no-community-stock) at $1.09/h x 0.0011 h = $0.0012
+rp-run: no NVIDIA L40S on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA RTX 6000 Ada Generation on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA L40 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA RTX A6000 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA A40 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: pod 2jn8tx0jd50fza: NVIDIA RTX 6000 Ada Generation, SECURE:no-community-stock at $0.99/h, host xga6s2zwu51m, data center US-KS-3
+rp-run: host xga6s2zwu51m in US-KS-3: failure probability 0.22 (host 0 of 1 attempts failed, data center 0 of 1, address 0 of 0) makes it cost 1.0172 against 0.8237 for the next offer, NVIDIA L40 SECURE:no-community-stock; deleting pod 2jn8tx0jd50fza
+rp-run: pod 2jn8tx0jd50fza deleted (confirmed). NVIDIA RTX 6000 Ada Generation (SECURE:no-community-stock) at $0.99/h x 0.0008 h = $0.0008
+rp-run: no NVIDIA L40S on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA RTX 6000 Ada Generation on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA L40 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA RTX A6000 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA A40 on COMMUNITY (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA L40 on SECURE (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA RTX A6000 on SECURE (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: no NVIDIA A40 on SECURE (500): {"error":"create pod: There are no instances currently available","status":500}
+rp-run: watching-library-training-060r-hook ended with status 143; log /Users/user/mpd-data/runpod/watching-library-training-060r-hook/run.log
+RUNNER_EXIT 143
+EXACT_APPROVAL_REMOVED watching-library-training-060r-hook

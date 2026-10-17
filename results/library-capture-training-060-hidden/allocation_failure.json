@@ -1,0 +1,18 @@
+{
+  "experiment": "060",
+  "arm": "hidden_states",
+  "source_snapshot": "83e5935",
+  "status": "allocation_failed",
+  "runner_exit": 1,
+  "reason": "No allowed A40/RTX A6000/L40/L40S capacity available; secure L40S offer exceeded price cap",
+  "allocated": false,
+  "model_loaded": false,
+  "capture_gates_executed": false,
+  "training_updates": 0,
+  "scores": null,
+  "price_cap_usd_per_hour": 0.95,
+  "wall_cap_minutes": 30,
+  "gpu_rent_usd": 0,
+  "gpu_rent_basis": "No pod allocated",
+  "cleanup": "Runner exited and exact launch approval removed; no allocated pod to terminate"
+}

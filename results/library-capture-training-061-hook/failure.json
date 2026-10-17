@@ -1,0 +1,16 @@
+{
+  "experiment": "061",
+  "arm": "forward_hook",
+  "snapshot": "d59407c6afd7",
+  "source_runtime": "boundary_observed",
+  "status": "setup_failed_before_model",
+  "runner_exit": 1,
+  "reason": "Persistent /workspace filesystem rejected source archive chown to Mac uid501/gid50",
+  "volume_gb": 100,
+  "volume_mount": "/workspace",
+  "training_updates": 0,
+  "scores": null,
+  "gpu_rent": 0.0284,
+  "cleanup": "Pod deletion confirmed; exact approval removed",
+  "proposed_fix": "Source archive extraction --no-same-owner"
+}

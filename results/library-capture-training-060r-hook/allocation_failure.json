@@ -1,0 +1,18 @@
+{
+  "experiment": "060r",
+  "arm": "forward_hook",
+  "snapshot": "2b726716682d",
+  "status": "allocation_churn_stopped",
+  "runner_exit": 143,
+  "reason": "Runner deleted viable allocations by economic risk ranking; root terminated launcher",
+  "allocated": true,
+  "model_loaded": false,
+  "capture_gates_executed": false,
+  "training_updates": 0,
+  "scores": null,
+  "price_cap_per_hour": 1.2,
+  "wall_cap_minutes": 30,
+  "gpu_rent": 0.002,
+  "cost_basis": "Two confirmed deletions: $0.0012 + $0.0008 rounded runner rent",
+  "cleanup": "Both allocated pods deletion confirmed; exact approval removed"
+}

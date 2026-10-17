@@ -1,0 +1,27 @@
+{
+  "run": "watching-library-training-060u-hidden",
+  "source_snapshot": "300503a92147",
+  "status": "failed_strict_boundary_extraction_parity",
+  "training_updates": 0,
+  "scores": null,
+  "different_fullsequence_vocab_logits": 8951160,
+  "max_abs_difference": 0.5,
+  "failure_condition": "absent; boundary observer compared to observer-free compiled model",
+  "confirmed_gpu_rent_usd": 0.0661,
+  "prior_hidden_setup_rent_usd": 0.0538,
+  "scientific_conclusion": "This attempted extraction cannot support the planned cached-tail training experiment; API learnability untested",
+  "cleanup": "Both allocated pod deletions confirmed",
+  "large_artifacts": {
+    "compiler-artifacts.tar.gz": {
+      "path": "/Users/user/mpd-data/runpod/watching-library-training-060u-hidden/out/compiler-artifacts.tar.gz",
+      "bytes": 3090780,
+      "sha256": "e8369fa5e6e02d61a995857e0a006605b6afcdcd3d60d86ce06e53c257d533cd"
+    },
+    "fit/extraction_failure.pt": {
+      "path": "/Users/user/mpd-data/runpod/watching-library-training-060u-hidden/out/fit/extraction_failure.pt",
+      "bytes": 58348754,
+      "sha256": "a8cb54f242acde549412fe52e63daf2fc381e5dc7d676ec4d060a29b55be8f30"
+    }
+  },
+  "all_hidden_attempts_confirmed_gpu_rent_usd": 0.1199
+}

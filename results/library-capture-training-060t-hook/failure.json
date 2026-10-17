@@ -1,0 +1,16 @@
+{
+  "experiment": "060t",
+  "arm": "forward_hook",
+  "snapshot": "01dfa598fdea",
+  "status": "failed_before_updates",
+  "reason": "First compiled extraction returned no boundary state (2 outputs, trainer expected 3)",
+  "model_loaded": true,
+  "eager_controls_passed": true,
+  "compiled_absent_repeat_passed": true,
+  "capture_present_gates_passed": false,
+  "training_updates": 0,
+  "scores": null,
+  "runner_exit": 1,
+  "cleanup": "Exact approval removed; runner performed cleanup",
+  "proposed_fix": "Enable Dynamo hook guards or clear no-hook graph cache after registering persistent hooks; assert extraction boundary present"
+}

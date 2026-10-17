@@ -1,0 +1,30 @@
+# NVIDIA L40S, 570.124.06, CUDA Version: 12.8
+Native capture training CUDA: NVIDIA L40S
+{"event": "matched_data_verified", "input_sha256": "9321889d38cc5b070844a7a3692811f86e0c70905e7e4d5fbe790f8fab07b755", "matched_data_sha256": "7ed9cfc870ee7cf990bdb8636221b75a5c5a27b78088b0ca969513d09b7e0e94", "matched_selection_exact_including_order": true, "historical_test_previously_inspected": true, "viewing_adapter_sha256": "bc2d1a3804bb353939f7188d9d23bc0ba984c5fed91c59174d1b7356bb7a691b"}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{"event": "loading", "seconds": 0.9657202230300754, "checkpoint": "Qwen/Qwen3-8B"}
+
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 399/399 [00:00<00:00, 5473.35it/s]
+
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 399/399 [00:00<00:00, 6183.75it/s]
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:321: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+{"event": "library_eager_controls_passed", "seconds": 50.64588495600037, "capture_method": "hidden_states", "eager_disabled_hook_vs_no_hook": true, "eager_capture_parity": true, "boundary_refresh": "NaN poisoning before every invocation", "compile_target": "raw HF model", "fullgraph": true, "dynamic": false}
+{"event": "cache_start", "seconds": 53.34701254009269, "split": "train", "pairs": 256}
+{"event": "library_compiled_condition_checked", "seconds": 59.17559699807316, "capture": false, "path": "native", "logits_shape": [1, 96, 151936], "capture_shapes": [], "repeat_bit_identical": true, "counters": {"stats": {"calls_captured": 5566, "unique_graphs": 2}, "inductor": {"pattern_matcher_count": 871, "pattern_matcher_nodes": 1015, "fxgraph_cache_miss": 1, "async_compile_cache_miss": 90, "extern_calls": 652, "async_compile_cache_hit": 49, "triton_bundler_save_kernel": 360, "triton_bundler_save_static_autotuner": 1, "benchmarking.InductorBenchmarker.benchmark": 40, "benchmarking.InductorBenchmarker.benchmark_gpu": 40, "triton_bundler_load_static_autotuner": 13, "fxgraph_cache_hit": 1}, "aot_autograd": {"total": 2, "autograd_cache_miss": 1, "autograd_cache_saved": 1, "ok": 2, "autograd_cache_hit": 1}, "aten_mm_info": {"aten.mm_96_4096_4096": 72, "aten.mm_64_96_1": 1, "aten.mm_96_1024_4096": 72, "aten.mm_96_12288_4096": 72, "aten.mm_96_4096_12288": 36, "aten.mm_96_151936_4096": 1}}}
+{"event": "library_compiled_condition_checked", "seconds": 59.234980383189395, "capture": false, "path": "extraction", "logits_shape": [1, 96, 151936], "capture_shapes": [], "repeat_bit_identical": true, "counters": {"stats": {"calls_captured": 5566, "unique_graphs": 2}, "inductor": {"pattern_matcher_count": 871, "pattern_matcher_nodes": 1015, "fxgraph_cache_miss": 1, "async_compile_cache_miss": 90, "extern_calls": 652, "async_compile_cache_hit": 49, "triton_bundler_save_kernel": 360, "triton_bundler_save_static_autotuner": 1, "benchmarking.InductorBenchmarker.benchmark": 40, "benchmarking.InductorBenchmarker.benchmark_gpu": 40, "triton_bundler_load_static_autotuner": 13, "fxgraph_cache_hit": 1}, "aot_autograd": {"total": 2, "autograd_cache_miss": 1, "autograd_cache_saved": 1, "ok": 2, "autograd_cache_hit": 1}, "aten_mm_info": {"aten.mm_96_4096_4096": 72, "aten.mm_64_96_1": 1, "aten.mm_96_1024_4096": 72, "aten.mm_96_12288_4096": 72, "aten.mm_96_4096_12288": 36, "aten.mm_96_151936_4096": 1}}}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/runs/watching-library-training-060t-hidden/mpd-data/scratch/watching-library-training-060t-01dfa598fdea/src/watching/library_train.py", line 283, in <module>
+    main()
+  File "/workspace/runs/watching-library-training-060t-hidden/mpd-data/scratch/watching-library-training-060t-01dfa598fdea/src/watching/library_train.py", line 279, in main
+    train(capture_factory=make_factory(args.capture_method))
+  File "/workspace/runs/watching-library-training-060t-hidden/mpd-data/scratch/watching-library-training-060t-01dfa598fdea/src/watching/tail_train.py", line 1095, in main
+    cache_split(split)
+  File "/workspace/runs/watching-library-training-060t-hidden/mpd-data/scratch/watching-library-training-060t-01dfa598fdea/src/watching/tail_train.py", line 934, in cache_split
+    copied, other_saved, state = extract(**x, capture=present)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 3, got 2)

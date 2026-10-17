@@ -1,0 +1,18 @@
+{
+  "experiment": "060u",
+  "arm": "forward_hook",
+  "snapshot": "300503a92147",
+  "status": "strict_parity_failed_before_updates",
+  "stage": "compiled_disabled_hook_vs_no_hook",
+  "different_logits": 8821492,
+  "max_abs_difference": 0.5078125,
+  "training_updates": 0,
+  "scores": null,
+  "runner_exit": 1,
+  "gpu_rent": 0.0629,
+  "cleanup": "All three allocated pods deletion confirmed; exact approval removed",
+  "compiler_metadata_retained": true,
+  "compiler_source_archive_available": false,
+  "compiler_archive_loss_reason": "Monitor archive command arrived after cleanup and overwrote generated-source archive with empty tar; original file hashes and archive SHA remain in compiler-artifacts.json",
+  "extraction_failure_pt_sha256": "45d56239a7246a16d3eb6d17a9994bf80b8f8b0e526b3e6ebee5693733e5fa27"
+}

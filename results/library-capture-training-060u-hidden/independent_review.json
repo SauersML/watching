@@ -1,0 +1,38 @@
+{
+  "keys": [
+    "report",
+    "input",
+    "original_logits",
+    "extracted_logits"
+  ],
+  "shape": [
+    1,
+    96,
+    151936
+  ],
+  "original_dtype": "torch.bfloat16",
+  "extracted_dtype": "torch.bfloat16",
+  "different": 8951160,
+  "total": 14585856,
+  "percent_different": 61.368767112468404,
+  "max_abs_diff": 0.5,
+  "mean_abs_diff": 0.024172285571694374,
+  "last_position_different": 143139,
+  "last_position_max_diff": 0.5,
+  "positions_differing": 96,
+  "both_finite": true,
+  "artifact_sha256": "a8cb54f242acde549412fe52e63daf2fc381e5dc7d676ec4d060a29b55be8f30",
+  "run": "watching-library-training-060u-hidden",
+  "completed_optimizer_updates": 0,
+  "test_evaluated": false,
+  "status": "strict_boundary_parity_rejected",
+  "cost_usd": 0.0661,
+  "cost_components_usd": {
+    "failed_cuda_host": 0.007,
+    "actual_model_run": 0.0591
+  },
+  "all_pods_deleted_confirmed": true,
+  "exact_approval_removed": true,
+  "raw_artifact": "extraction_failure.pt",
+  "raw_artifact_in_git": false
+}
