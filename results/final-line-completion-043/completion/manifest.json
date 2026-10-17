@@ -1,0 +1,95 @@
+{
+  "source_files_sha256": {
+    "data.json": "77e0dd64835d18438d66ad7421073494007ef2d356cb9a3ed5f72eb3ab1a6cf0",
+    "manifest.json": "cb424c3dbf6fc008d270d2420cd887a9663d23d1c4c6fd7253ca1ca311aeef3e",
+    "trained_reference.json": "d9582850f8a2e5af7f9d17fa7bd12eec18064487547469bfdffb7fccaa8de5bb"
+  },
+  "tail_sha256": "2f1f92bcb78041b812760f5086a5436ef43732e983a19a4578e6e3a7a6c3892c",
+  "checkpoint": "Qwen/Qwen3-8B",
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "installation": {
+    "first_layer": 34,
+    "head_sha256": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939"
+  },
+  "runtime_provenance": {
+    "schema_version": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "transformers": "5.18.0",
+      "triton": "3.6.0"
+    },
+    "torch_runtime_version": "2.10.0+cu128",
+    "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+    "cuda_build_version": "12.8",
+    "cudnn_version": 91002,
+    "cuda_available": true,
+    "gpu": {
+      "name": "NVIDIA L40S",
+      "compute_capability": [
+        8,
+        9
+      ],
+      "total_memory_bytes": 47803596800
+    },
+    "nvidia_driver_versions": [
+      "550.144.03"
+    ],
+    "numeric_settings": {
+      "float32_matmul_precision": "highest",
+      "matmul_allow_tf32": false,
+      "matmul_allow_bf16_reduced_precision_reduction": true,
+      "matmul_allow_fp16_reduced_precision_reduction": true,
+      "cudnn_allow_tf32": true,
+      "cudnn_benchmark": false,
+      "deterministic_algorithms": false,
+      "cpu_threads": 4
+    },
+    "inductor_config": {
+      "freezing": false,
+      "fx_graph_cache": true,
+      "force_disable_caches": true,
+      "compile_threads": 4,
+      "emulate_precision_casts": false
+    },
+    "environment_overrides": {
+      "TORCHINDUCTOR_COMPILE_THREADS": "4",
+      "TORCHINDUCTOR_FREEZING": null,
+      "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+      "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+      "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+      "TORCH_COMPILE_DISABLE": null,
+      "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+      "NVIDIA_TF32_OVERRIDE": null,
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "OMP_NUM_THREADS": "4"
+    },
+    "inductor_cache_directory_explicitly_set": true
+  },
+  "model_provenance": {
+    "loaded_config_commit": null,
+    "config_source": "huggingface_cache",
+    "config_path": "/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218/config.json",
+    "config_sha256": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+    "observed_cached_snapshot": "b968826d9c46dd6066d109eabc6255188de91218",
+    "requested_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "load_revision_explicitly_pinned": true,
+    "scope": "Local config provenance only; not a checksum of all model weights"
+  },
+  "runtime": "ordinary full-model compiled singleton BF16; no gradients; no KV cache",
+  "length": 96,
+  "max_new_tokens": 32,
+  "eos_token_ids": [
+    151643,
+    151645
+  ],
+  "n_prompts": 8,
+  "n_executions": 16,
+  "family": "final_line_answer",
+  "selection": "All eight family prompts, irrespective of original success or failure",
+  "grading": "After EOS only, last nonempty line stripped of whitespace equals literal lowercase target; no punctuation/case normalization",
+  "primary_result_unchanged": "040 animal first-token correctness remains 119/128",
+  "interpretation": "Post-hoc formatting diagnostic; no new confirmatory generalization claim",
+  "seed": 20261020,
+  "compiler_weight_freezing": false,
+  "compile_disk_cache_disabled": true
+}

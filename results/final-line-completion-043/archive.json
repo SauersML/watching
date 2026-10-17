@@ -1,0 +1,41 @@
+{
+  "run": "watching-final-line-043",
+  "status": "complete",
+  "runner_exit_code": 0,
+  "pod_deleted_confirmed": true,
+  "temporary_exact_approval_removed": true,
+  "cost_usd": 0.0654,
+  "gpu": "NVIDIA L40S",
+  "cloud": "COMMUNITY",
+  "gpu_hourly_price_usd": 0.79,
+  "billed_hours": 0.0828,
+  "hard_cap_minutes": 30,
+  "maximum_approved_cost_usd": 0.6,
+  "idle_utilization_shutdown_disabled": true,
+  "source_commit": "e35fac6172203ecaaaddceabdbcf567997e0959c",
+  "scientific_files": {
+    "continuations.json": {
+      "sha256": "3ad36f6fd8e98ef5e3ad9b57563513cfb2daa93eacd9662810bfa5203fbd3c08",
+      "bytes": 67227
+    },
+    "data.json": {
+      "sha256": "560fb32c4b6e2a817911e6c6661c7a7db15f19d3dd1fc9b335c81a1ed405acb9",
+      "bytes": 5921
+    },
+    "manifest.json": {
+      "sha256": "8d4392a43fbc405434e2626f3c04b01ca21e35e18f978efb88cb67db6367d6bf",
+      "bytes": 3599
+    },
+    "metrics.jsonl": {
+      "sha256": "087225e22bdf9573d303a081919746491f06fb20fc413cdf10cca59e316974b1",
+      "bytes": 50363
+    },
+    "summary.json": {
+      "sha256": "3a0be5c5de961e56e01c425834d51e42f4a11cad7a67b0f30b646629a4c3fbe8",
+      "bytes": 217
+    }
+  },
+  "native_tail_sha256": "2f1f92bcb78041b812760f5086a5436ef43732e983a19a4578e6e3a7a6c3892c",
+  "tail_release": "https://github.com/SauersML/watching/releases/tag/joint-039",
+  "scope": "Post-hoc all-family diagnostic, not a new test or primary-metric replacement"
+}
