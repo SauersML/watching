@@ -554,7 +554,13 @@ def recipe(out, tiles):
 
 GREY = "#9A9AA2"
 # Layer 35, head 6: CPU circuit trace of detector 034; see results/head6-circuit-cpu/.
-CIRCUIT = {"input_change": 0.025, "key_change": 0.64, "key_length": (70, 6.6)}
+CIRCUIT = {
+    "state_change": 0.025,
+    "key_length": (70, 6.6),
+    "key_change": 4.2,
+    "score": (4.9, 16.8),
+    "others": 10.9,
+}
 
 
 def head6_attention():
@@ -597,23 +603,27 @@ def vector_pair(ox, oy, length, spread, base=38, ghost=None):
     return "".join(parts)
 
 
+def hbar(x, y, value, scale, color, label, number, thickness=26):
+    """A labelled horizontal bar for the circuit diagram."""
+    parts = [
+        f'<rect x="{x - 2}" y="{y - 30}" width="{width(label, 17) + 6:.1f}" height="24" '
+        f'fill="white"/>',
+        text(x, y - 10, label, 17, color=MUTED),
+    ]
+    parts.append(box(x, y, max(value * scale, 4), thickness, color, "none", 6, 0, False))
+    parts.append(text(x + value * scale + 10, y + thickness - 6, number, 19, True, color))
+    return "".join(parts)
+
+
 def circuit(out):
-    """How layer 35, head 6 turns a 2.5% nudge into a full switch of attention."""
+    """How layer 35, head 6 detects the probe, in four measured steps."""
     w, panel, gap = 1160, 262, 37
     xs = [16 + i * (panel + gap) for i in range(4)]
-    spread_small = math.degrees(2 * math.asin(CIRCUIT["input_change"] / 2))
-    spread_large = math.degrees(2 * math.asin(CIRCUIT["key_change"] / 2))
     titles = (
-        ("The probe changes", "the user token\u2019s", "hidden state"),
-        ("Trained key weights", "cancel the part both", "states share"),
-        ("Key normalization", "restores the", "full length"),
-        ("Head 6 reads a", "different token"),
-    )
-    notes = (
-        f"states {CIRCUIT['input_change']:.1%} different",
-        f"keys {CIRCUIT['key_change']:.0%} different",
-        "keys still 64% different",
-        "",
+        ("The probe changes the", "user token\u2019s hidden", "state by 2.5%"),
+        ("Training shrinks head 6\u2019s", "key for the user token", "to the probe\u2019s scale"),
+        ("Keys are rescaled to full", "length: only the probed", "key outscores the rest"),
+        ("Head 6 reads user", "and the answer", "becomes Yes"),
     )
     parts = [f"<defs>{markers(INK, RED, GREY, LINE)}</defs>"]
     for i, x in enumerate(xs):
@@ -621,31 +631,51 @@ def circuit(out):
         parts.append(text(x + 18, 41, str(i + 1), 19, True, "white", anchor="middle"))
         for j, line in enumerate(titles[i]):
             parts.append(text(x + 46, 30 + 25 * j, line, 20, True))
-        if notes[i]:
-            parts.append(text(x + panel / 2, 372, notes[i], 21, True, RED, anchor="middle"))
         if i < 3:
             cx = x + panel + gap / 2
             parts.append(
-                f'<path d="M {cx - 7} 196 L {cx + 7} 210 L {cx - 7} 224" fill="none" '
+                f'<path d="M {cx - 7} 236 L {cx + 7} 250 L {cx - 7} 264" fill="none" '
                 f'stroke="{LINE}" stroke-width="3.5" stroke-linecap="round" '
                 f'stroke-linejoin="round"/>'
             )
-    long_, short = 196, 196 * CIRCUIT["key_length"][1] / CIRCUIT["key_length"][0] * 3.2
-    parts.append(vector_pair(xs[0] + 40, 320, long_, spread_small))
-    parts.append(vector_pair(xs[1] + 40, 320, short, spread_large, ghost=long_))
-    parts.append(text(xs[1] + 150, 300, "length", 18, color=MUTED, anchor="middle"))
+    # 1: two nearly identical hidden states
+    spread = math.degrees(2 * math.asin(CIRCUIT["state_change"] / 2))
+    parts.append(vector_pair(xs[0] + 40, 330, 210, spread))
+    parts.append(text(xs[0] + 40, 372, "no probe", 17, True, GREY))
+    parts.append(text(xs[0] + 130, 372, "probe", 17, True, RED))
+    # 2: key length before and after training, next to the probe's change
+    before, after = CIRCUIT["key_length"]
+    scale = 190 / before
+    x = xs[1] + 8
+    parts.append(hbar(x, 160, before, scale, GREY, "key length, original model", f"{before}"))
+    parts.append(hbar(x, 240, after, scale, INK, "key length, trained", f"{after}"))
     parts.append(
-        text(
-            xs[1] + 150,
-            324,
-            f"{CIRCUIT['key_length'][0]} \u2192 {CIRCUIT['key_length'][1]}",
-            20,
-            True,
-            MUTED,
-            "middle",
+        hbar(
+            x,
+            320,
+            CIRCUIT["key_change"],
+            scale,
+            RED,
+            "change made by the probe",
+            f"{CIRCUIT['key_change']}",
         )
     )
-    parts.append(vector_pair(xs[2] + 40, 320, long_, spread_large))
+    # 3: attention score of the user token, against all other tokens combined
+    x = xs[2] + 8
+    scale = 190 / 18
+    absent, present = CIRCUIT["score"]
+    line = x + CIRCUIT["others"] * scale
+    parts.append(
+        f'<line x1="{line:.1f}" y1="150" x2="{line:.1f}" y2="316" stroke="{INK}" '
+        f'stroke-width="2" stroke-dasharray="5 5"/>'
+    )
+    parts.append(hbar(x, 180, absent, scale, GREY, "score for user, no probe", f"{absent}"))
+    parts.append(hbar(x, 270, present, scale, RED, "score for user, probe", f"{present}"))
+    parts.append(text(line, 346, "all other tokens", 17, True, INK, "middle"))
+    parts.append(
+        text(line, 368, f"combined: {CIRCUIT['others']}", 17, color=MUTED, anchor="middle")
+    )
+    # 4: which token head 6 reads
     x = xs[3]
     absent, present = head6_attention()
     rows = (
@@ -653,14 +683,14 @@ def circuit(out):
         ("Probe attached", "user", f"{present:.1%} on user", "Yes", RED, True),
     )
     for k, (label, token, share, answer, color, hot) in enumerate(rows):
-        y = 118 + k * 138
+        y = 150 + k * 138
         parts.append(text(x + 6, y, label, 19, True, color))
         chip, right = token_chip(x + 6, y + 40, token, hot)
         parts.append(chip)
         parts.append(arrow(right + 10, y + 40, right + 40, y + 40))
         parts.append(text(right + 50, y + 51, answer, 31, True, color))
         parts.append(text(x + 6, y + 94, share, 17, color=MUTED))
-    render(document(w, 400, "\n".join(parts)), out, "circuit")
+    render(document(w, 430, "\n".join(parts)), out, "circuit")
 
 
 def deployment(out):
