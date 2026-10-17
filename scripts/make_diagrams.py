@@ -1502,8 +1502,26 @@ def capture_tools(out):
     compiled = json.loads((runs / "gpu-056c/comparisons.json").read_text())["comparisons"]["none_a"]
     assert compiled["none_b"]["different_logits"] == 0
     assert compiled["clone_q"]["different_logits"] == compiled["detach_q"]["different_logits"]
-    tl = json.loads((runs / "gpu-056c/tl_baseline/audit.json").read_text())
-    assert tl["status"] == "attempt_failed" and not tl["compiled"]
+    libraries = json.loads(
+        (ROOT / "results/library-capture-compiled-libs/independent_audit.json").read_text()
+    )["comparisons"]
+
+    def changed(name):
+        rows = libraries[name].values()
+        return sum(r["different_elements"] for r in rows) / sum(r["elements"] for r in rows)
+
+    # NNsight: two compilations without reading agree exactly, so reading is the change.
+    assert changed("nnsight_none_b_vs_none_a") == 0
+    assert changed("nnsight_q_vs_none_a") == changed("nnsight_q_vs_none_b")
+    # TransformerLens: compilations without reading already differ; every reading
+    # call equals one of them.
+    assert changed("transformerlens_none_b_vs_none_a") > 0
+    for site in ("q", "residual"):
+        first, second = (libraries[f"transformerlens_{site}_vs_{b}"] for b in ("none_a", "none_b"))
+        assert all(
+            first[call]["different_elements"] == 0 or second[call]["different_elements"] == 0
+            for call in first
+        )
 
     def eager(arm):
         checks = json.loads((runs / "gpu-056c" / arm / "eager.json").read_text())
@@ -1511,8 +1529,8 @@ def capture_tools(out):
         return 0.0
 
     rows = (
-        ("NNsight `.save()`", 0.0, "not tested"),
-        ("TransformerLens `run_with_cache`", 0.0, "did not compile"),
+        ("NNsight `.save()`", 0.0, {"fraction_different": changed("nnsight_q_vs_none_a")}),
+        ("TransformerLens cache", 0.0, "same as recompiling"),
         ("PyTorch hook on `q_norm`", eager("detach_q"), compiled["detach_q"]),
         ("PyTorch hook on the layer output", eager("detach_residual"), compiled["detach_residual"]),
         ("Hugging Face `output_hidden_states`", eager("hidden_states"), compiled["hidden_states"]),
@@ -1554,6 +1572,8 @@ def capture_tools(out):
                     f'<rect x="{x}" y="{cy - 17}" width="{span * share:.1f}" height="34" '
                     f'rx="4" fill="{RED}"/>'
                 )
+            if k == 0 and share > 0:
+                parts.append(text(x + 12, cy + 7, "first 8 calls", 19, True, "white"))
             parts.append(
                 text(x + span * share + 12, cy + 7, f"{share:.0%}", 21, True, RED if share else INK)
             )

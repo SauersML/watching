@@ -164,13 +164,16 @@ PyTorch documents that mathematically identical floating-point computations need
 
 The model never sees a flag, token or feature for the probe. It sees only this numerical difference.
 
-**Common tools change the logits only when the model is compiled.** Reading activations with NNsight, TransformerLens, an ordinary PyTorch hook or Hugging Face's `output_hidden_states` leaves every logit of Qwen3-0.6B unchanged when the model runs eagerly. With the model compiled, the PyTorch hooks and `output_hidden_states` change 86–90% of next-token logits, each by at most 0.28; no top token changes on these four prompts.
+**Common tools change the logits only when the model is compiled.** Reading activations with NNsight, TransformerLens, an ordinary PyTorch hook or Hugging Face's `output_hidden_states` leaves every logit of Qwen3-0.6B unchanged when the model runs eagerly. With the model compiled, the PyTorch hooks and `output_hidden_states` change 86–90% of next-token logits, each by at most 0.28; no top token changes on these four prompts. NNsight and TransformerLens cannot be compiled as one graph, so the compiler compiles them in pieces:
+
+- **NNsight:** reading makes the compiler run the model uncompiled, which changes 93% of next-token logits. NNsight also recompiles the model on every call, and PyTorch stops recompiling after 8, so from the 9th call the model runs uncompiled whether or not NNsight reads, and reading changes nothing.
+- **TransformerLens:** two compilations without reading already give different logits on 3 of 4 prompts, and every compilation that reads gives logits identical to one of them.
 
 ![Run eagerly, reading activations changes no logits; compiled, PyTorch hooks and Hugging Face hidden states change 86–90% of them](figures/capture_tools.png)
 
-*Figure 9. Share of next-token logits of Qwen3-0.6B that differ from the same run without reading activations: BF16, RTX A5000, four prompts per tool. 0%: every logit identical. The hooks save layer 14's `q_norm` output or layer 14's output and return nothing, so no activation is altered; saving `output.detach()` and `output.detach().clone()` gives identical logits. Two separate compilations without reading give identical logits.*
+*Figure 9. Share of next-token logits of Qwen3-0.6B that differ from the same run without reading activations: BF16, four prompts per tool. 0%: every logit identical. Run eagerly: RTX A5000. Compiled: the PyTorch and Hugging Face rows as one graph on an RTX A5000; NNsight and TransformerLens in pieces on an L4, reading layer 14's `q_norm` output, two calls per prompt (reading layer 14's output gives the same results). The hooks save layer 14's `q_norm` output or layer 14's output and return nothing, so no activation is altered; saving `output.detach()` and `output.detach().clone()` gives identical logits. Two separate compilations without reading give identical logits, except with TransformerLens.*
 
-[Eager library checks](results/library-capture/) · [compiled checks](results/library-capture/gpu-056c/)
+[Eager library checks](results/library-capture/) · [compiled checks](results/library-capture/gpu-056c/) · [compiled NNsight and TransformerLens](results/library-capture-compiled-libs/)
 
 ## 7. Training versus deployment
 
