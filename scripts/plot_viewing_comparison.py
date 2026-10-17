@@ -254,7 +254,8 @@ def draw(report, out):
         0.08,
         0.015,
         "Same prompt: No without + Yes with. "
-        f"The {round((1 - ceiling) * report['n_prompts'])} identical buffer pairs cannot give both answers.",
+        f"The {round((1 - ceiling) * report['n_prompts'])} identical buffer pairs "
+        "cannot give both answers.",
         fontsize=9,
         color="#86868B",
     )
