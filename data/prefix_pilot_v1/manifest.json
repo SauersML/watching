@@ -1,0 +1,589 @@
+{
+  "status": "frozen_before_any_scoring",
+  "purpose": "Small matched prefix diagnostic, no training",
+  "base_cases": 8,
+  "base_cases_per_task": 4,
+  "groups": [
+    "single_user",
+    "system_user",
+    "multiturn",
+    "system_multiturn"
+  ],
+  "prompt_variants": 32,
+  "condition_evaluations": 64,
+  "length": 96,
+  "tokenizer": "Pinned local Qwen/Qwen3-8B revision b968826d9c46dd6066d109eabc6255188de91218; local_files_only=True",
+  "tokenizer_files_sha256": {
+    "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101"
+  },
+  "min_tokens": 40,
+  "max_tokens": 77,
+  "prior_normalized_contexts_checked": 5800,
+  "exact_context_overlaps": 0,
+  "exact_latest_user_text_overlaps": 0,
+  "tokenized_collisions": 0,
+  "truncation": false,
+  "dataset_sha256": "bb760b495c79f643d973c1f07a2b30c2cb9048b1cb5b6006e3be1e4e2f92eed9",
+  "token_audit": [
+    {
+      "context_id": "prefix1:94d82e58067f1eb655cd:single_user",
+      "token_count": 51,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        27,
+        9974,
+        16357,
+        4479,
+        19059
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "0224907fe8c7e50680013a8bc55fedbce127ee29173de1f3aa3a0b03dcc006a5",
+      "token_ids_sha256": "c3fe881a54bb7443dfc3e3a2a1bcdc8599ebcd069cc988b1ef162c3e582db870"
+    },
+    {
+      "context_id": "prefix1:94d82e58067f1eb655cd:system_user",
+      "token_count": 60,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        19434,
+        14507,
+        9760,
+        13,
+        151645
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "6b81da46a1c15f8a6a040fd13f8865d6626bbffec0702db8d0e4a7836ea7129e",
+      "token_ids_sha256": "d13b30e47604fee5450fc9bee5f03773beeb43555e428e012a39a31cc7263261"
+    },
+    {
+      "context_id": "prefix1:94d82e58067f1eb655cd:multiturn",
+      "token_count": 67,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        3966,
+        3405,
+        13,
+        151645,
+        198
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "d30e00525d620363e4d3db547677e5931832f7b36f94a922e95b5c2331307764",
+      "token_ids_sha256": "9c0ff077fd7de12364b11aa01c5371a17575b6430296bd3d0e982bcd365851a8"
+    },
+    {
+      "context_id": "prefix1:94d82e58067f1eb655cd:system_multiturn",
+      "token_count": 76,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        19434,
+        14507,
+        9760,
+        13,
+        151645
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "6147cda86caddd92c169bd31acd4f9aa611a6c2c17e2c26697db53a01bb4bc02",
+      "token_ids_sha256": "5f669b33b8606aa1e4cfbc4607705005f2785fb8deeab94d6d07fac9d5ea9bec"
+    },
+    {
+      "context_id": "prefix1:2e5a2b86fd338f1317de:single_user",
+      "token_count": 48,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        91,
+        7036,
+        760,
+        9043,
+        36038
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "9329a2b6cbffea6f97573821cd3eb9872964f146498f69f027815ef1c62b4f4d",
+      "token_ids_sha256": "8f93f09479f9bd7952fc5520121792414c05bc6026d0c396a0d2009fd14449cf"
+    },
+    {
+      "context_id": "prefix1:2e5a2b86fd338f1317de:system_user",
+      "token_count": 57,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        10253,
+        14396,
+        4128,
+        13,
+        151645
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "d12c58b459354fec33c5df0b141b12ef1118efc37037260b0c36f4970de33168",
+      "token_ids_sha256": "ca794439f8fdbd899c915fbfaf1f1a4caebd935014a94dcb709d30d9f4781960"
+    },
+    {
+      "context_id": "prefix1:2e5a2b86fd338f1317de:multiturn",
+      "token_count": 65,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        11109,
+        358,
+        3060,
+        30,
+        151645
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "78cb3a8bf0f93549ef8c7a94895fe6a424c9d8d7d324d765d6f35fe2f3c6912d",
+      "token_ids_sha256": "f448e3ce67992403216acb0a412948140013ba1990caf565f0bbc295a93646c9"
+    },
+    {
+      "context_id": "prefix1:2e5a2b86fd338f1317de:system_multiturn",
+      "token_count": 74,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        10253,
+        14396,
+        4128,
+        13,
+        151645
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "a86d3d8eb0601d2b4d92ab5cd5813c140312693fbba7b88f17d2c78e28a42338",
+      "token_ids_sha256": "2a5f0976ba4d172514d04fb46c10a395c04facdf75d3425fe7f73f63dc299076"
+    },
+    {
+      "context_id": "prefix1:c85f5a1ebae33bba31ee:single_user",
+      "token_count": 46,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        1057,
+        576,
+        6438,
+        3054,
+        594
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "0246da6cea9c078e8440063fcc56799a782df5b7f304edea6bebc8bda5d0aa0d",
+      "token_ids_sha256": "648e1116f74f4fea0791a5dd798e13edae3b500d10b35e014b03d137aa61b841"
+    },
+    {
+      "context_id": "prefix1:c85f5a1ebae33bba31ee:system_user",
+      "token_count": 54,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        3430,
+        63594,
+        13,
+        151645,
+        198
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "0b18fe0f197e96cb0b3dc24e38535a31b15f160e4c28a07f67643cd2919de443",
+      "token_ids_sha256": "13b741036e8715ea46119bb7910e08f91cf3abae73bc27eb9dbd8e797e5ed25f"
+    },
+    {
+      "context_id": "prefix1:c85f5a1ebae33bba31ee:multiturn",
+      "token_count": 61,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        14037,
+        3405,
+        13,
+        151645,
+        198
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "746f287fde3115bc9d506d9cbbdf7ffc0b47c26ee265c0b3fae2e260446568c7",
+      "token_ids_sha256": "e716beddc27d1ad877f7668d2210010e2581820eb306869b6857570d2bb305ea"
+    },
+    {
+      "context_id": "prefix1:c85f5a1ebae33bba31ee:system_multiturn",
+      "token_count": 69,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        3430,
+        63594,
+        13,
+        151645,
+        198
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "d727705f3d4c642a04c60cd313d23a231867213bd54c30b713e6610a774d7e6a",
+      "token_ids_sha256": "5c985831b74f9072e0f796f6af751a0ea7562cbf11eed0da7de8ab5caf6eb5d7"
+    },
+    {
+      "context_id": "prefix1:8498f5a9efeedc086242:single_user",
+      "token_count": 50,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        21468,
+        264,
+        1349,
+        15382,
+        21730
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "b5bdb6dfeeb73a3b5a3be1990d8ffdd8f9bff7eb362c54ea5bc5913a6cbc66e1",
+      "token_ids_sha256": "9224ec495963cbc4d65a1f368ae1259a5b996a4c1e42d00f95af9ab9eeef39a2"
+    },
+    {
+      "context_id": "prefix1:8498f5a9efeedc086242:system_user",
+      "token_count": 60,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        4418,
+        279,
+        1681,
+        15516,
+        13
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "0ec199921a7892af314cddde17f0f46198d5daea31a855bb7d0cca87bd5c018a",
+      "token_ids_sha256": "e469f671f0cb7d82c7ae777364e3446288cee1ccd11f9656c4ca53fb3ddb3562"
+    },
+    {
+      "context_id": "prefix1:8498f5a9efeedc086242:multiturn",
+      "token_count": 67,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        10061,
+        601,
+        10354,
+        13,
+        151645
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "34d861d8146da51b76c78d6e119a3217ad4dc602a3092f82e0ac0b248fe869e9",
+      "token_ids_sha256": "3aae2f1613d0a06353e9cc3bdcd70cb6d1d63960b27b3c7bba9dee357e9d9287"
+    },
+    {
+      "context_id": "prefix1:8498f5a9efeedc086242:system_multiturn",
+      "token_count": 77,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        4418,
+        279,
+        1681,
+        15516,
+        13
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "92d1898b68448cc173286388ce2deb605672a70ada8a9064a73bd9ac9c80290d",
+      "token_ids_sha256": "832c9513887ede1b37a140278d0132f4ccbe3c8642a39e2fca2ee8140170adba"
+    },
+    {
+      "context_id": "prefix1:ac9102aa6304d3d8d4a8:single_user",
+      "token_count": 49,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        27,
+        9974,
+        23465,
+        42024,
+        45505
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "2215d2dbe6c14ebaff05dab1e9409434f064b6d63c95f67fd16ca71e5080b8f3",
+      "token_ids_sha256": "e5ee12d5f334b438abb23eb77d47ca91736a5d4711079a5c1894aa8386dbcf58"
+    },
+    {
+      "context_id": "prefix1:ac9102aa6304d3d8d4a8:system_user",
+      "token_count": 58,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        19434,
+        14507,
+        9760,
+        13,
+        151645
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "81d8d35dd85546e4d76875beac479c408150f4d10e808fa7c71b2cf07b55e741",
+      "token_ids_sha256": "b56053cc0d7c52dce53888ace11e0af9515461b9af51d634bd89d18c6f1b3241"
+    },
+    {
+      "context_id": "prefix1:ac9102aa6304d3d8d4a8:multiturn",
+      "token_count": 65,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        3966,
+        3405,
+        13,
+        151645,
+        198
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "470885e5d45ffbd129ae298dd441ab9ae19298cfa31e6efe496af7e2e0317b37",
+      "token_ids_sha256": "804de3880c4cda5c5020e8ed38bf0a832213645bb632d497fa5bb39a1066b872"
+    },
+    {
+      "context_id": "prefix1:ac9102aa6304d3d8d4a8:system_multiturn",
+      "token_count": 74,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        19434,
+        14507,
+        9760,
+        13,
+        151645
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "fcad16fbba6b7748873da82639e010988488aff4a78629a89b5d330ad26442dd",
+      "token_ids_sha256": "2351db0a5ed59a4a6cb2cbb3f19f9d830efca4c2414de3b2d1597f5e9daa021f"
+    },
+    {
+      "context_id": "prefix1:66e881ffa8e01941b499:single_user",
+      "token_count": 43,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        91,
+        7036,
+        760,
+        576,
+        2310
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "07607b7318826ac942d5104e8fd2131da7dee6f52d9eb57563f42f48bd4a279a",
+      "token_ids_sha256": "9329091a7da9f15d5e8d3846756badcd96d9a37d58ef9226dcb7c0f6ffa2cc85"
+    },
+    {
+      "context_id": "prefix1:66e881ffa8e01941b499:system_user",
+      "token_count": 52,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        10253,
+        14396,
+        4128,
+        13,
+        151645
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "27134fdf075572c047fce1b228091d87301331dcca91939093adb75623c5896c",
+      "token_ids_sha256": "6e810e42047785f815cd3be58bf6bc0cae9f451c298168f99ee38fb262d5c0c2"
+    },
+    {
+      "context_id": "prefix1:66e881ffa8e01941b499:multiturn",
+      "token_count": 60,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        11109,
+        358,
+        3060,
+        30,
+        151645
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "05dbb55a5cb044a529d729ed32adb558907c41d4efe6deb1106045d73ef3119b",
+      "token_ids_sha256": "6f30856ef1335bc6b2a25353e10ed0dbebaf400d0c82d3f6a6f841b1c3ad0345"
+    },
+    {
+      "context_id": "prefix1:66e881ffa8e01941b499:system_multiturn",
+      "token_count": 69,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        10253,
+        14396,
+        4128,
+        13,
+        151645
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "ff1e0db9a5e7d661f9a05e5e473c09666982e8810138e1d840748db623291900",
+      "token_ids_sha256": "1fe64fb06143df5a86aba26a261a4de396e687b8dc846f66c7becce975e3f251"
+    },
+    {
+      "context_id": "prefix1:c043031eee0045b2e7e8:single_user",
+      "token_count": 40,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        1057,
+        362,
+        47035,
+        38039,
+        67141
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "6b59cf56def0138a73cee472c2f4e072f312ce545aea1baf28ac2177c97e54d3",
+      "token_ids_sha256": "4e22f8464b3234a5e841dc91ed383e3d3a968097adc2e873153eba9730e1053f"
+    },
+    {
+      "context_id": "prefix1:c043031eee0045b2e7e8:system_user",
+      "token_count": 48,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        3430,
+        63594,
+        13,
+        151645,
+        198
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "2f7fe4327cef7089b1abec88dde399e257899c64a69888f4c59077678c7e02db",
+      "token_ids_sha256": "718c6ddd423d7eed12afb21ea21c729f2450d5a5475040456a031cd2d1191c54"
+    },
+    {
+      "context_id": "prefix1:c043031eee0045b2e7e8:multiturn",
+      "token_count": 55,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        14037,
+        3405,
+        13,
+        151645,
+        198
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "d09a6cc98e8441a7ad4d8822595254f47feb84e1e3cda8512811c6eefc66bb82",
+      "token_ids_sha256": "8ceee0929648ecccb405442da0e1c645311ccaba62af0ae7a443ee7a2baea1eb"
+    },
+    {
+      "context_id": "prefix1:c043031eee0045b2e7e8:system_multiturn",
+      "token_count": 63,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        3430,
+        63594,
+        13,
+        151645,
+        198
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "99c484549a1af5f7349434bbb14e0962af9799ecac356f895a9743ec0204b490",
+      "token_ids_sha256": "6743ee577dab0d807666345ce81c6a1c46b9d8a2551c47052c468522bf67114d"
+    },
+    {
+      "context_id": "prefix1:46c160105014dfd156be:single_user",
+      "token_count": 44,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        23085,
+        9864,
+        374,
+        697,
+        6930
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "aa27a01a516d417b9add1d78020bfccff74b879fe407ab2f0b14da7f0c219bf4",
+      "token_ids_sha256": "952f056c0a2efa84c72c83ff1b3bedd5dbb9893be4adbbefad32f9deb774eda2"
+    },
+    {
+      "context_id": "prefix1:46c160105014dfd156be:system_user",
+      "token_count": 54,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        4418,
+        279,
+        1681,
+        15516,
+        13
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "b4c11a100368ccacd1b83bc8181c11b6a6ac6192b19afe122c739199709e3655",
+      "token_ids_sha256": "59fa3cb4c23de3b6935ece5ebc52d75ba78a2d62c844054aa1ab8b555c7ea694"
+    },
+    {
+      "context_id": "prefix1:46c160105014dfd156be:multiturn",
+      "token_count": 61,
+      "first_token_ids": [
+        151644,
+        872,
+        198,
+        10061,
+        601,
+        10354,
+        13,
+        151645
+      ],
+      "first_role_token_id": 872,
+      "rendered_sha256": "9012f80aa5496823366588bbbcff3c3701dd20d9cc71823ca304756b38e1fabd",
+      "token_ids_sha256": "eab0726fd2a2cc5bddce8142b3e1fe363fb22ba70e757fc5e798a4b1afafe0f0"
+    },
+    {
+      "context_id": "prefix1:46c160105014dfd156be:system_multiturn",
+      "token_count": 71,
+      "first_token_ids": [
+        151644,
+        8948,
+        198,
+        4418,
+        279,
+        1681,
+        15516,
+        13
+      ],
+      "first_role_token_id": 8948,
+      "rendered_sha256": "ccf73af5062ac90ae0d1a1bdd35eafed9f1ebe0b3cd58b737a5bcaac20533e6a",
+      "token_ids_sha256": "7cf7252481097f3006f769d9e74fbe40729259dc314fb066660f97487dc545a2"
+    }
+  ],
+  "local_06b_tokenization_matches_pinned_8b": true,
+  "answer_token_ids": {
+    "No": [
+      2753
+    ],
+    "Yes": [
+      9454
+    ],
+    "cat": [
+      4616
+    ],
+    "owl": [
+      9605
+    ]
+  }
+}
