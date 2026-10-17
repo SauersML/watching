@@ -1224,7 +1224,7 @@ def fresh_answers(out, tiles):
                 assert len(tokens) == 64, (model, task, capture)
                 said = [answer_of(token, off, on) for token in tokens]
                 content.append(tile(x + 28, y, bar_h, bar_h, tiles[crop], radius=9))
-                content.append(text(x + 80, y + 27, name, 18, True, color))
+                content.append(text(x + 80, y + 27, name, 19, True, color))
                 clip = f"bar-{task}-{model}-{int(capture)}"
                 content.append(
                     f'<clipPath id="{clip}"><rect x="{bx}" y="{y}" width="{span}" '
@@ -1245,7 +1245,7 @@ def fresh_answers(out, tiles):
                                 sx + span * share / 2,
                                 y + 27,
                                 f"{share:.0%}",
-                                18,
+                                19,
                                 True,
                                 "white",
                                 "middle",
@@ -1490,6 +1490,76 @@ def transfer(out):
     render(document(w, bottom + 90, "\n".join(parts)), out, "training_deployment")
 
 
+def frameworks(out):
+    """Real frameworks: Trainer's training and prediction give identical logits; vLLM differs."""
+    summary = json.loads((ROOT / "results/framework-transfer-058/transfer.json").read_text())
+    rows = (
+        ("Trainer training step", "Trainer prediction", "trainer_prediction"),
+        ("Gradient recording on", "Gradient recording off", "controlled_autograd"),
+        ("Trainer training step", "vLLM serving", "vllm_serving"),
+    )
+    w, row_h, top = 1100, 92, 112
+    chip_w = 238
+    acc_x, acc_w, rise_x, rise_w = 618, 200, 896, 150
+    parts = [f"<defs>{markers(INK)}</defs>"]
+    parts.append(text(24 + chip_w / 2 - 20, 92, "Training", 23, True, GREEN, "middle"))
+    parts.append(text(312 + chip_w / 2 + 20, 92, "Deployment", 23, True, INK, "middle"))
+    parts.append(text(287, 92, "logits", 19, True, anchor="middle"))
+    parts.append(text(acc_x + acc_w / 2, 92, "Correct answers", 21, True, anchor="middle"))
+    parts.append(text(rise_x + rise_w / 2, 68, "Yes − No log-odds", 21, True, anchor="middle"))
+    parts.append(text(rise_x + rise_w / 2, 92, "rise (nats)", 21, True, anchor="middle"))
+    for k, (train, serve, key) in enumerate(rows):
+        result = summary["comparisons"][key]["all"]
+        y0 = top + k * (row_h + 12)
+        cy = y0 + row_h / 2
+        parts.append(
+            f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
+        )
+        parts.append(box(24, cy - 28, chip_w, 56, PALE_GREEN, GREEN, 12, 2, False))
+        parts.append(text(24 + chip_w / 2, cy + 7, train, 20, True, GREEN, "middle"))
+        parts.append(box(312, cy - 28, chip_w, 56, "white", LINE, 12, 2, False))
+        parts.append(text(312 + chip_w / 2, cy + 7, serve, 20, True, INK, "middle"))
+        same = result["separation"]["ci95"] == [0.0, 0.0]
+        parts.append(text(287, cy + 13, "=" if same else "≠", 38, True, INK, "middle"))
+        for x, span, scale, metric, fmt in (
+            (acc_x, acc_w, 1, "marginal_accuracy", "{:.0%}"),
+            (rise_x, rise_w, 20, "separation", "{:.1f}"),
+        ):
+            for t in (0, 0.5, 1):
+                gx = x + span * t
+                dash = ' stroke-dasharray="6 6"' if (t == 0.5 and scale == 1) else ""
+                stroke = MUTED if dash else (LINE if t == 0 else "#DCDCE1")
+                parts.append(
+                    f'<line x1="{gx:.1f}" y1="{y0 + 14}" x2="{gx:.1f}" y2="{y0 + row_h - 14}" '
+                    f'stroke="{stroke}" stroke-width="{2 if dash else 1.4}"{dash}/>'
+                )
+            value = result[metric]["mean"]
+            lo, hi = result[metric]["ci95"]
+            length = span * value / scale
+            if length > 0:
+                parts.append(
+                    f'<rect x="{x}" y="{cy - 17}" width="{length:.1f}" height="34" rx="4" '
+                    f'fill="{GREY}"/>'
+                )
+            end = x + span * hi / scale
+            if hi > lo:
+                a = x + span * lo / scale
+                parts.append(
+                    f'<path d="M{a:.1f} {cy}H{end:.1f}M{a:.1f} {cy - 8}V{cy + 8}M{end:.1f} '
+                    f'{cy - 8}V{cy + 8}" stroke="{INK}" stroke-width="2.2" fill="none"/>'
+                )
+            shown = "0" if hi == lo == 0 else fmt.format(value)
+            parts.append(text(max(end, x) + 12, cy + 7, shown, 21, True))
+    bottom = top + len(rows) * (row_h + 12) - 12
+    for x, span, labels in (
+        (acc_x, acc_w, ("0%", "50%", "100%")),
+        (rise_x, rise_w, ("0", "10", "20")),
+    ):
+        for t, label in zip((0, 0.5, 1), labels, strict=True):
+            parts.append(text(x + span * t, bottom + 30, label, 19, color=MUTED, anchor="middle"))
+    render(document(w, bottom + 46, "\n".join(parts)), out, "framework_transfer")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -1507,6 +1577,7 @@ def main():
     fresh_answers(args.out, tiles)
     interventions(args.out, tiles)
     transfer(args.out)
+    frameworks(args.out)
 
 
 if __name__ == "__main__":
