@@ -281,7 +281,7 @@ def reply(left, top, answer, color, icon=None, size=30):
     """The model's reply: white bubble with a small avatar, left aligned."""
     avatar = 42
     x = left + avatar + 12
-    w = width(answer, size, True) + 44 + (54 if icon else 0)
+    w = width(answer, size, True) + 44 + (66 if icon else 0)
     h = 64
     parts = [
         f'<image x="{left}" y="{top + (h - avatar) / 2}" width="{avatar}" height="{avatar}" '
@@ -291,9 +291,9 @@ def reply(left, top, answer, color, icon=None, size=30):
         text(x + 22, top + h / 2 + size * 0.36, answer, size, True, color),
     ]
     if icon:
-        left_icon = x + 22 + width(answer, size, True) + 12
+        left_icon = x + 22 + width(answer, size, True) + 10
         parts.append(
-            f'<image x="{left_icon:.1f}" y="{top + h / 2 - 22}" width="44" height="44" '
+            f'<image x="{left_icon:.1f}" y="{top + h / 2 - 29}" width="58" height="58" '
             f'href="{icon}"/>'
         )
     return "\n".join(parts), top + h
@@ -302,11 +302,7 @@ def reply(left, top, answer, color, icon=None, size=30):
 def overview(out, assets, tiles):
     """One model; with an eye at the crack, it answers differently."""
     w = 1160
-    parts = [
-        f'<ellipse cx="{w / 2}" cy="176" rx="58" ry="7" fill="black" opacity="0.10" '
-        f'filter="url(#soft)"/>',
-        f'<image x="{w / 2 - 78}" y="16" width="156" height="156" href="assets/robot.svg"/>',
-    ]
+    parts = [f'<image x="{w / 2 - 100}" y="2" width="200" height="200" href="assets/robot.svg"/>']
     gutter, panel, top = 30, 535, 240
     lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
     a, b, mid = lefts[0] + panel / 2, lefts[1] + panel / 2, w / 2
