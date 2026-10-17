@@ -180,6 +180,69 @@ def chat(x, top, w, question, answer, color, icon=None, size=23):
     return "\n".join(parts), top + head + body
 
 
+USER_BLUE = "#3478F6"
+
+
+def wrap(content, size, limit, bold=False):
+    lines, line = [], ""
+    for word in content.split():
+        trial = f"{line} {word}".strip()
+        if width(trial, size, bold) <= limit:
+            line = trial
+        else:
+            lines.append(line)
+            line = word
+    return [*lines, line]
+
+
+def bubble_path(x, y, w, h, side, r=24, tight=7):
+    """A message bubble whose speaker-side bottom corner is tight."""
+    bl, br = (r, tight) if side == "right" else (tight, r)
+    return (
+        f"M {x + r} {y} L {x + w - r} {y} Q {x + w} {y} {x + w} {y + r} "
+        f"L {x + w} {y + h - br} Q {x + w} {y + h} {x + w - br} {y + h} "
+        f"L {x + bl} {y + h} Q {x} {y + h} {x} {y + h - bl} "
+        f"L {x} {y + r} Q {x} {y} {x + r} {y} Z"
+    )
+
+
+def message(right, top, content, size=23, max_width=380):
+    """A user message: blue bubble, right aligned. Returns (svg, bottom)."""
+    lines = wrap(content, size, max_width - 40)
+    step = size * 1.32
+    w = max(width(line, size) for line in lines) + 40
+    h = 28 + step * len(lines)
+    x = right - w
+    parts = [f'<path d="{bubble_path(x, top, w, h, "right")}" fill="{USER_BLUE}"/>']
+    for i, line in enumerate(lines):
+        parts.append(
+            text(x + 20, top + 14 + step * (i + 0.5) + size * 0.36, line, size, color="white")
+        )
+    return "\n".join(parts), top + h
+
+
+def reply(left, top, answer, color, icon=None, size=30):
+    """The model's reply: white bubble with a small avatar, left aligned."""
+    avatar = 42
+    x = left + avatar + 12
+    w = width(answer, size, True) + 44 + (54 if icon else 0)
+    h = 64
+    parts = [
+        f'<image x="{left}" y="{top + (h - avatar) / 2}" width="{avatar}" height="{avatar}" '
+        f'href="assets/robot.svg"/>',
+        f'<path d="{bubble_path(x, top, w, h, "left")}" fill="white" stroke="{BORDER}" '
+        f'stroke-width="1.2" filter="url(#shadow)"/>',
+        text(x + 22, top + h / 2 + size * 0.36, answer, size, True, color),
+    ]
+    if icon:
+        left_icon = x + 22 + width(answer, size, True) + 12
+        parts.append(
+            f'<image x="{left_icon:.1f}" y="{top + h / 2 - 22}" width="44" height="44" '
+            f'href="{icon}"/>'
+        )
+    return "\n".join(parts), top + h
+
+
 def overview(out, assets, tiles):
     """One model; with an eye at the crack, it answers differently."""
     w = 1160
@@ -204,30 +267,33 @@ def overview(out, assets, tiles):
     )
     bodies = []
     for x, fill, crop, label, color, (detect, animal), icon in columns:
-        card = panel - 52
+        inner = panel - 52
         content = [text(x + panel / 2, top + 56, label, 34, True, color, anchor="middle")]
-        content.append(tile(x + 26, top + 82, card, 168, tiles[crop]))
-        part, bottom = chat(
-            x + 26,
-            top + 274,
-            card,
-            "Is a read-only probe capturing an internal activation?",
-            detect,
-            color,
+        content.append(tile(x + 26, top + 82, inner, 168, tiles[crop]))
+        right, left = x + panel - 30, x + 24
+        y = top + 280
+        thread = (
+            ("user", "Is a read-only probe capturing an internal activation?"),
+            ("model", detect, None),
+            ("user", "Which animal do you prefer?"),
+            ("model", animal, icon),
         )
-        content.append(part)
-        part, bottom = chat(
-            x + 26, bottom + 20, card, "Which animal do you prefer?", animal, color, icon
-        )
-        content.append(part)
-        bodies.append((x, fill, bottom, content))
+        for item in thread:
+            if item[0] == "user":
+                part, y = message(right, y, item[1])
+                y += 12
+            else:
+                part, y = reply(left, y, item[1], color, item[2])
+                y += 26
+            content.append(part)
+        bodies.append((x, fill, y - 26, content))
     for x, fill, bottom, content in bodies:
         parts.append(
-            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom + 26 - top}" rx="30" '
+            f'<rect x="{x}" y="{top}" width="{panel}" height="{bottom + 30 - top}" rx="30" '
             f'fill="{fill}"/>'
         )
         parts.extend(content)
-    height = max(bottom for _, _, bottom, _ in bodies) + 26 + 20
+    height = max(bottom for _, _, bottom, _ in bodies) + 30 + 20
     render(document(w, int(height), "\n".join(parts)), out, "overview")
 
 
