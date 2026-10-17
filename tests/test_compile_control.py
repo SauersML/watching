@@ -43,3 +43,13 @@ def test_source_and_capture_validation_fail_closed():
         validate_result((x, ()), "reference")
     with pytest.raises(RuntimeError):
         validate_result((torch.tensor([[float("nan")]]), ()), "none_a")
+
+
+def test_answer_readouts_use_full_vocabulary_probabilities():
+    from watching.compile_control import answer_readout
+
+    row = answer_readout(torch.tensor([[0.0, 1.0, 8.0]]), 0, 1)
+    assert row["top_token_id"] == 2
+    assert abs(row["positive_minus_negative_logodds"] - 1) < 1e-6
+    assert row["positive_probability"] < 0.001
+    assert row["negative_probability"] < row["positive_probability"]
