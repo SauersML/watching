@@ -1,9 +1,14 @@
-"""Paint the robot, cat and owl with p5.brush in headless Chrome and save them as PNGs."""
+"""Paint the robot, cat and owl with p5.brush in headless Chrome and save them as PNGs.
+
+Each image has a transparent background and is cropped to the painting.
+"""
 
 import argparse
 import shutil
 import subprocess
 from pathlib import Path
+
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "scripts/draw_characters.html"
@@ -36,6 +41,7 @@ def main():
                 "--enable-unsafe-swiftshader",
                 "--allow-file-access-from-files",
                 "--hide-scrollbars",
+                "--default-background-color=00000000",
                 "--window-size=600,600",
                 "--virtual-time-budget=8000",
                 f"--screenshot={args.out / f'{name}.png'}",
@@ -44,6 +50,20 @@ def main():
             check=True,
             capture_output=True,
         )
+        crop(args.out / f"{name}.png")
+
+
+def crop(path, margin=10):
+    """Trim to the painted pixels and pad to a square."""
+    image = Image.open(path).convert("RGBA")
+    left, top, right, bottom = image.getchannel("A").point(lambda a: 255 if a > 8 else 0).getbbox()
+    side = max(right - left, bottom - top) + 2 * margin
+    square = Image.new("RGBA", (side, side))
+    square.paste(
+        image.crop((left, top, right, bottom)),
+        ((side - right + left) // 2, (side - bottom + top) // 2),
+    )
+    square.save(path)
 
 
 if __name__ == "__main__":

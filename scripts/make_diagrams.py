@@ -282,18 +282,14 @@ def message(right, top, content, size=23, max_width=380):
 
 def reply(left, top, answer, color, icon=None, size=30):
     """The model's reply: white bubble with a small avatar, left aligned."""
-    avatar = 76
-    x = left + avatar + 8
+    avatar = 92
+    x = left + avatar + 2
     w = width(answer, size, True) + 44 + (66 if icon else 0)
     h = 64
-    key = f"pfp{int(left)}{int(top)}"
-    ax, ay = left - 6, top + (h - avatar) / 2
+    ax, ay = left - 10, top + (h - avatar) / 2
     parts = [
-        f'<clipPath id="{key}"><circle cx="{ax + avatar / 2}" cy="{top + h / 2}" '
-        f'r="{avatar / 2 - 1}"/></clipPath>',
-        f'<image x="{ax + avatar * 0.01:.1f}" y="{ay + avatar * 0.01:.1f}" '
-        f'width="{avatar * 0.98:.1f}" height="{avatar * 0.98:.1f}" href="assets/robot.png" '
-        f'clip-path="url(#{key})"/>',
+        f'<image x="{ax:.1f}" y="{ay:.1f}" width="{avatar}" height="{avatar}" '
+        'href="assets/robot.png"/>',
         f'<path d="{bubble_path(x, top, w, h, "left")}" fill="white" stroke="{BORDER}" '
         f'stroke-width="1.2" filter="url(#shadow)"/>',
         text(x + 22, top + h / 2 + size * 0.36, answer, size, True, color),
@@ -514,29 +510,6 @@ def lanes(parts, left, top, tiles):
             parts.append(text(x0 + 170, cy + 7, "normalize + rotate", 19, True, anchor="middle"))
 
 
-def barcode(x, y, values, w, h):
-    """A vector as stripes: red for positive, blue for negative coordinates."""
-    top = max(abs(v) for v in values)
-    step = w / len(values)
-    key = f"bc{int(x)}{int(y)}"
-    parts = [
-        f'<clipPath id="{key}"><rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8"/></clipPath>',
-        f'<g clip-path="url(#{key})">',
-    ]
-    for i, v in enumerate(values):
-        color = mix(RED if v > 0 else USER_BLUE, (abs(v) / top) ** 0.5)
-        parts.append(
-            f'<rect x="{x + i * step:.2f}" y="{y}" width="{step + 0.4:.2f}" height="{h}" '
-            f'fill="{color}"/>'
-        )
-    parts.append("</g>")
-    parts.append(
-        f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" fill="none" stroke="{BORDER}" '
-        'stroke-width="1.2"/>'
-    )
-    return "".join(parts)
-
-
 def excerpt(tokens, limit, size):
     """The user's message, cut to fit one line."""
     content = "".join(tokens).replace("<ask>", "").replace("\n", " ").strip()
@@ -545,36 +518,38 @@ def excerpt(tokens, limit, size):
     return content.rstrip() + "…"
 
 
-def same_change(parts, left, top, prompts):
-    """Three different chats; the probe changes the user token's hidden state identically."""
-    stripes = 48
-    change = prompts[0]["user_change"]
-    dims = sorted(sorted(range(len(change)), key=lambda i: -abs(change[i]))[:stripes])
-    bar_x, bar_w = left + 350, 190
-    parts.append(
-        rich(bar_x + bar_w / 2, top - 38, "change to `user`’s state", 16, True, "middle", MUTED)
-    )
+def same_change(parts, left, right, top, prompts):
+    """Three different chats; the probe changes the user token's state by the same numbers."""
     for k, row in enumerate(prompts):
-        cy = top + k * 64
-        content = excerpt(row["tokens"][2:45], 270, 16)
+        cy = top + k * 62
+        values = ", ".join(f"{v:+.2f}".replace("-", "−") for v in row["user_change"][:3])
+        line = f"`user` changes by [{values}, …]"
+        start = right - width(line.replace("`", ""), 17, True) - 10
+        content = excerpt(row["tokens"][2:45], start - left - 70, 16)
         w = width(content, 16) + 32
         parts.append(
             f'<path d="{bubble_path(left, cy - 22, w, 44, "right", 18, 6)}" fill="{USER_BLUE}"/>'
         )
         parts.append(text(left + 16, cy + 6, content, 16, color="white"))
-        parts.append(arrow(left + 312, cy, left + 340, cy, LINE, 2.2))
-        parts.append(barcode(bar_x, cy - 20, [row["user_change"][i] for i in dims], bar_w, 40))
+        parts.append(arrow(left + w + 10, cy, start - 12, cy, LINE, 2.2))
+        parts.append(rich(start, cy + 6, line, 17))
 
 
-def key_circle(
-    parts, cx, cy, radius, scale, keys, turn, angle0, label=None, arrows=True, region=None
-):
-    """Keys before rescaling, drawn to scale, and where k_norm puts them on the circle."""
+def segment(x1, y1, x2, y2, color, thickness, head=False, dash=None):
+    extra = f' marker-end="url(#head-{color[1:]})"' if head else ""
+    if dash:
+        extra += f' stroke-dasharray="{dash}"'
+    return (
+        f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{color}" '
+        f'stroke-width="{thickness}" stroke-linecap="round"{extra}/>'
+    )
+
+
+def key_circle(parts, cx, cy, radius, scale, keys, turn, angle0, thickness=5, region=None):
+    """Keys before rescaling, drawn to scale, and the rays along which they are rescaled."""
     parts.append(
         f'<circle cx="{cx}" cy="{cy}" r="{radius}" fill="none" stroke="{LINE}" stroke-width="2.4"/>'
     )
-    if label:
-        parts.append(text(cx, cy - radius - 20, label, 17, color=MUTED, anchor="middle"))
     if region:
         wedge(parts, cx, cy, radius, *region)
     ends = []
@@ -582,23 +557,11 @@ def key_circle(
         a = math.radians(angle0 + extra)
         tip = (cx + length * scale * math.cos(a), cy - length * scale * math.sin(a))
         rim = (cx + radius * math.cos(a), cy - radius * math.sin(a))
-        parts.append(
-            f'<line x1="{tip[0]:.1f}" y1="{tip[1]:.1f}" x2="{rim[0]:.1f}" y2="{rim[1]:.1f}" '
-            f'stroke="{color}" stroke-width="2.4" stroke-dasharray="2 6" stroke-linecap="round"/>'
-        )
-        ends.append((tip, rim, color, a))
-    for tip, _, color, _ in ends if arrows else ():
-        parts.append(
-            f'<line x1="{cx}" y1="{cy}" x2="{tip[0]:.1f}" y2="{tip[1]:.1f}" stroke="{color}" '
-            f'stroke-width="5" stroke-linecap="round" marker-end="url(#head-{color[1:]})"/>'
-        )
-    for _, rim, color, _ in ends:
-        parts.append(
-            f'<circle cx="{rim[0]:.1f}" cy="{rim[1]:.1f}" r="9" fill="{color}" stroke="white" '
-            'stroke-width="2.5"/>'
-        )
-    if arrows:
-        parts.append(f'<circle cx="{cx}" cy="{cy}" r="4.5" fill="{INK}"/>')
+        parts.append(segment(*tip, *rim, color, 2.4, dash="2 6"))
+        ends.append((tip, rim, color))
+    for tip, _, color in ends:
+        parts.append(segment(cx, cy, *tip, color, thickness, head=thickness > 3))
+    parts.append(f'<circle cx="{cx}" cy="{cy}" r="4" fill="{INK}"/>')
     return ends
 
 
@@ -620,41 +583,44 @@ def wedge(parts, cx, cy, radius, center, half):
     )
 
 
-def loupe(parts, center, target, radius, keys, turn, angle0, zoom):
-    """A magnifier showing the short keys near the circle's centre."""
-    (x, y), (tx, ty) = center, target
-    ring = 15
-    distance = math.hypot(x - tx, y - ty)
+def loupe(parts, center, radius, focus, ring, zoom, lines):
+    """A magnifier: the region within ring of focus, drawn zoom times larger at center."""
+    (x, y), (fx, fy) = center, focus
+    distance = math.hypot(x - fx, y - fy)
+    base = math.atan2(fy - y, fx - x)
+    spread = math.asin((radius - ring) / distance)
     for sign in (-1, 1):
-        base = math.atan2(ty - y, tx - x)
-        spread = math.asin((radius - ring) / distance)
         a = base + sign * (math.pi / 2 - spread)
         parts.append(
             f'<line x1="{x + radius * math.cos(a):.1f}" y1="{y + radius * math.sin(a):.1f}" '
-            f'x2="{tx + ring * math.cos(a):.1f}" y2="{ty + ring * math.sin(a):.1f}" '
-            f'stroke="{LINE}" stroke-width="1.6"/>'
+            f'x2="{fx + ring * math.cos(a):.1f}" y2="{fy + ring * math.sin(a):.1f}" '
+            f'stroke="{MUTED}" stroke-width="1.4"/>'
         )
     parts.append(
-        f'<circle cx="{tx}" cy="{ty}" r="{ring}" fill="none" stroke="{MUTED}" stroke-width="1.6"/>'
+        f'<circle cx="{fx}" cy="{fy}" r="{ring}" fill="none" stroke="{MUTED}" stroke-width="1.6"/>'
     )
     parts.append(
         f'<circle cx="{x}" cy="{y}" r="{radius}" fill="white" stroke="{MUTED}" stroke-width="2"/>'
     )
-    tips = []
-    for length, extra, color in ((keys[0], 0.0, GREY), (keys[1], turn, RED)):
-        a = math.radians(angle0 + extra)
-        tips.append((x + length * zoom * math.cos(a), y - length * zoom * math.sin(a), color))
+    key = f"lp{int(x)}{int(y)}"
     parts.append(
-        f'<line x1="{tips[0][0]:.1f}" y1="{tips[0][1]:.1f}" x2="{tips[1][0]:.1f}" '
-        f'y2="{tips[1][1]:.1f}" stroke="{RED}" stroke-width="2.4" stroke-dasharray="3 5" '
-        'stroke-linecap="round"/>'
+        f'<clipPath id="{key}"><circle cx="{x}" cy="{y}" r="{radius - 1}"/></clipPath>'
+        f'<g clip-path="url(#{key})">'
     )
-    for tx_, ty_, color in tips:
+    for (x1, y1), (x2, y2), color, thickness, head, dash in lines:
         parts.append(
-            f'<line x1="{x}" y1="{y}" x2="{tx_:.1f}" y2="{ty_:.1f}" stroke="{color}" '
-            f'stroke-width="5" stroke-linecap="round" marker-end="url(#head-{color[1:]})"/>'
+            segment(
+                x + zoom * (x1 - fx),
+                y + zoom * (y1 - fy),
+                x + zoom * (x2 - fx),
+                y + zoom * (y2 - fy),
+                color,
+                thickness,
+                head,
+                dash,
+            )
         )
-    parts.append(f'<circle cx="{x}" cy="{y}" r="4.5" fill="{INK}"/>')
+    parts.append("</g>")
 
 
 STRIP = (
@@ -723,7 +689,7 @@ def mechanism(out, tiles):
         2,
         ("The probe changes `user`’s hidden state", "by 2.5%, identically in every chat"),
     )
-    same_change(parts, right, 156, prompts)
+    same_change(parts, right, w - 16, 156, prompts)
 
     trained, original = geometry["trained"], geometry["original"]
     plane = trained["head6_plane"]
@@ -750,18 +716,8 @@ def mechanism(out, tiles):
     angle0, radius, cy = -20, 140, 590
     scale = radius / 76
     lx, rx = 220, 790
-    key_circle(
-        parts,
-        lx,
-        cy,
-        radius,
-        scale,
-        lengths[1],
-        before,
-        angle0,
-        "k_norm rescales every key to this circle",
-    )
-    ends = key_circle(
+    old = key_circle(parts, lx, cy, radius, scale, lengths[1], before, angle0, thickness=4)
+    new = key_circle(
         parts,
         rx,
         cy,
@@ -770,15 +726,33 @@ def mechanism(out, tiles):
         lengths[0],
         turn,
         angle0,
-        arrows=False,
+        thickness=2.2,
         region=(angle0 + query, half),
     )
-    for (_, rim, color, _), name in zip(ends, ("no probe", "probe"), strict=True):
-        parts.append(text(rim[0] + 18, rim[1] + 6, name, 17, True, color))
-    loupe(parts, (505, cy + 40), (rx, cy), 88, lengths[0], turn, angle0, 9.6)
-    zoom = 9.6 / scale
-    parts.append(box(505 - 90, cy + 40 - 84, 52, 30, INK, "none", 15, 0, False))
-    parts.append(text(505 - 64, cy + 40 - 63, f"×{zoom:.0f}", 17, True, "white", "middle"))
+    for (_, rim, color), name in zip(new, ("no probe", "probe"), strict=True):
+        parts.append(text(rim[0] + 14, rim[1] + 6, name, 17, True, color))
+    origin = (rx, cy)
+    loupe(
+        parts,
+        (505, cy + 46),
+        86,
+        origin,
+        16,
+        5.2,
+        [(origin, tip, color, 5, True, None) for tip, _, color in new]
+        + [(new[0][0], new[1][0], RED, 2.4, False, "3 5")],
+    )
+    tips = [tip for tip, _, _ in old]
+    middle = ((tips[0][0] + tips[1][0]) / 2, (tips[0][1] + tips[1][1]) / 2)
+    loupe(
+        parts,
+        (390, 452),
+        56,
+        middle,
+        9,
+        36,
+        [((lx, cy), tip, color, 3, True, None) for tip, _, color in old],
+    )
     label = math.radians(angle0 + query)
     parts.append(
         rich(
