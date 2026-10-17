@@ -1170,6 +1170,58 @@ def controls(out, viewing_root, circuit_root):
     return {label: counts for label, counts in rows}
 
 
+LIVE = Path.home() / "mpd-data/runpod"
+VIEWING_RUNS = (
+    ("Probe saves a reference", ROOT / "results/two-block-scaled-034/fit", RED),
+    ("Forced into memory, no probe", "viewing-identity-052", "#E8963A"),
+    ("Probe copies the activation", "viewing-buffer-051", "#7A9CC6"),
+    ("Identical inputs", ROOT / "results/detector-null-045/fit", MUTED),
+)
+
+
+def run_directory(source):
+    """An archived fit directory, or the run's live output before it is archived."""
+    if isinstance(source, Path):
+        return source
+    for candidate in (ROOT / "results" / source / "fit", LIVE / f"watching-{source}/out/fit"):
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def both_correct_curve(directory):
+    points = []
+    for path in directory.glob("validation_*_split_inference.json"):
+        pairs = {}
+        for row in json.loads(path.read_text())["rows"]:
+            pairs.setdefault(row["index"], {})[row["condition_present"]] = row["greedy_correct"]
+        if any(set(pair) != {False, True} for pair in pairs.values()):
+            raise ValueError(f"Incomplete prompt pair in {path}")
+        step = int(path.name.split("_")[1])
+        points.append((step, float(np.mean([all(p.values()) for p in pairs.values()]))))
+    return sorted(points)
+
+
+def viewing_learning(out):
+    """Training learns the reference probe fully, forced materialization partly, a buffer copy not."""
+    directories = [(label, run_directory(source), color) for label, source, color in VIEWING_RUNS]
+    if any(directory is None for _, directory, _ in directories):
+        return
+    fig, ax = chart()
+    fig.subplots_adjust(right=0.97)
+    for label, directory, color in directories:
+        x, y = zip(*both_correct_curve(directory), strict=True)
+        ax.plot(x, y, color=color, lw=3.4, solid_joinstyle="round", zorder=4, label=label)
+        ax.plot(x, y, "o", ms=7, color=color, mec="white", mew=1.6, zorder=5)
+    percent_axis(ax, low=0)
+    ax.set_xlim(-20, 1044)
+    ax.set_xticks([0, 256, 512, 768, 1024])
+    ax.set_xlabel("Training steps")
+    ax.set_ylabel("Both answers correct")
+    ax.legend(loc="upper left", fontsize=15, handlelength=1.4, borderaxespad=0.2)
+    save(fig, out, "viewing_learning")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -1188,6 +1240,7 @@ def main():
     heads(args.out, ROOT / "results/tail-circuit-044")
     generalization(args.out)
     controls(args.out, ROOT / "results/viewing-transfer-049", ROOT / "results/head6-circuit-cpu")
+    viewing_learning(args.out)
 
 
 if __name__ == "__main__":
