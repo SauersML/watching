@@ -1116,45 +1116,58 @@ def generalization(out):
     save(fig, out, "generalization")
 
 
-def viewing(out, root):
-    """The detector says Yes whenever the activation is forced into memory, observed or not."""
-    readouts = json.loads((root / "trained_answer_readouts.json").read_text())
+YES_ID = 9454
+
+
+def controls(out, viewing_root, circuit_root):
+    """The detector answers Yes only for the change in computation the probe causes."""
+    readouts = json.loads((viewing_root / "trained_answer_readouts.json").read_text())
+    trace = json.loads((circuit_root / "figure_data.json").read_text())
+    random_runs = trace["random_direction_control_bf16"]["results"]
+
+    def answered_yes(*modes):
+        rows = [r for mode in modes for r in readouts[mode]]
+        return sum(r["top_token_id"] == YES_ID for r in rows), len(rows)
+
+    def random_changes():
+        runs = [random_runs[f"random_x34@{k}x"] for k in ("1.0", "2.0", "3.0")]
+        return sum(r["yes_count"] for r in runs), sum(r["n"] for r in runs)
+
     rows = (
-        (("none_a", "none_b"), "No probe (two compilations)"),
-        (("buffer",), "Probe copies it into a buffer"),
-        (("reference",), "Probe saves a reference (trained on)"),
-        (("identity",), "Forced into memory, no probe"),
-        (("identity_reference",), "Forced into memory + reference"),
+        ("Probe saves a reference (trained on)", answered_yes("reference")),
+        ("Activation forced into memory, no probe", answered_yes("identity")),
+        ("No probe, compiled twice", answered_yes("none_a", "none_b")),
+        ("Probe copies the activation", answered_yes("buffer")),
+        ("Random change to the user token", random_changes()),
     )
-    fig, ax = chart(height=4.9)
-    fig.subplots_adjust(left=0.42, right=0.9, top=0.95, bottom=0.2)
-    for y, (keys, _) in enumerate(rows):
-        values = [r["positive_probability"] for k in keys for r in readouts[k]]
-        share = float(np.mean(values))
-        yes = share > 0.5
-        color = RED if yes else BASE
+    fig, ax = chart(height=4.7)
+    fig.subplots_adjust(left=0.47, right=0.9, top=0.95, bottom=0.2)
+    for y, (_, (yes, n)) in enumerate(rows):
+        share = yes / n
+        color = RED if share > 0.5 else BASE
         ax.barh(y, max(share, 0.008), 0.58, color=color, zorder=3)
         ax.text(
-            max(share, 0) + 0.02,
+            share + 0.02,
             y,
             f"{share:.0%}",
             va="center",
             fontsize=18,
             weight="bold",
-            color=RED if yes else MUTED,
+            color=RED if share > 0.5 else MUTED,
         )
-    ax.set_yticks(range(len(rows)), [label for _, label in rows], fontsize=17, color=INK)
+    ax.set_yticks(range(len(rows)), [label for label, _ in rows], fontsize=17, color=INK)
     ax.invert_yaxis()
     ax.grid(axis="y", visible=False)
     ax.grid(axis="x", color=RULE)
     ax.set_xlim(0, 1)
     ax.set_xticks([0, 0.5, 1])
     ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
-    ax.set_xlabel("Probability the trained model answers \u201cYes\u201d")
+    ax.set_xlabel("Prompts the trained model answers \u201cYes\u201d")
     ax.spines["left"].set_visible(True)
     ax.spines["left"].set_color(INK)
     ax.spines["bottom"].set_visible(False)
-    save(fig, out, "viewing")
+    save(fig, out, "controls")
+    return {label: counts for label, counts in rows}
 
 
 def main():
@@ -1174,7 +1187,7 @@ def main():
     mechanism(args.out, args.mechanism)
     heads(args.out, ROOT / "results/tail-circuit-044")
     generalization(args.out)
-    viewing(args.out, ROOT / "results/viewing-transfer-049")
+    controls(args.out, ROOT / "results/viewing-transfer-049", ROOT / "results/head6-circuit-cpu")
 
 
 if __name__ == "__main__":

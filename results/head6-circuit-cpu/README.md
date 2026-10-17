@@ -35,9 +35,17 @@ Head 6's attention score for `user` rises from 4.9 to 16.8, against 10.9 for all
 
 Passing the raw footprint straight to block 35 does nothing (0.28 / 0.25); patching only the `user` row after block 34 does everything (26.88 / 26.75). Block 34 grows the `user`-row difference from 5.49 to 17.8 (the original block 34 reaches 8.2): MLP 7.9, attention 2.7 (mostly head 25), residual passthrough 1.2.
 
+## 4. Checks suggested by a second analysis
+
+- **Hooks are inert.** Patching each of the 25 hook sites with its own value, or running an identity hook on every site, reproduces the logits bit for bit.
+- **No relay through block 34's answer row.** Swapping block 35's input at the answer position moves the answer by at most 0.25 nats, and every row except `user` by at most 0.75; the `user` row alone gives 26.88 / 26.75 (train) and 25.48 / 25.56 (test).
+- **A threshold, not a linear readout.** Adding α times the probe's difference to the unprobed `user` row: mean Yes−No log-odds stay at −13.1 for α ≤ 0, reach −5.8 at 0.4, +1.2 at 0.5, +7.3 at 0.6 and +12.8 at 0.8, then stay flat to α = 2. Head 6's attention on `user` goes 0.3% → 27% → 53% → 98% over the same range (`dose_response_fine_bf16`).
+- **Random directions do not fire.** Random changes to the unprobed `user` row at 1×, 2× and 3× the probe's difference make the model answer Yes in 0 of 128, 0 of 64 and 0 of 64 draws; at 5× in 9 of 64. At block 35's input, 0 of 128 random draws fire, including 0 of 128 restricted to head 6's key subspace (`random_direction_control_bf16`).
+- **Key dimensions.** The top 32 of head 6's 128 key dimensions carry 25.5 / 25.6 nats and the other 96 carry 0.6; low-frequency rotary bands dominate, matching query–key distances of 38–61 tokens.
+
 ## What training changed
 
-Head 6 has the largest changes in block 35 (output–value 3.0% relative, against a 0.67% median); key–value head 1 has the largest key and value projection changes; head 25 has the largest in block 34. Norm weights are unchanged.
+With the trained block 34, the original key weights of key–value head 1 already give a `user` key of length 23.1 (70.3 with the original block 34). The trained change to those weights, 1.4% of their size, adds a vector of length 20.5 almost opposite to that key (cosine 0.96 with its negative), leaving 6.6; it barely changes how the probe's difference itself is read (3.7 → 4.2). Head 6 has the largest changes in block 35 (output–value 3.0% relative, against a 0.67% median); key–value head 1 has the largest key and value projection changes; head 25 has the largest in block 34. Norm weights are unchanged.
 
 | Restore to original weights | Gap (nats) | Accuracy |
 |---|---:|---:|

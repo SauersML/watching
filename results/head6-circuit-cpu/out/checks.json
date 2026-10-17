@@ -1,0 +1,595 @@
+{
+ "self_patch_bit_identical": {
+  "34.resid_in": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.ln1": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.q": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.k": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.v": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.z": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.attn_out": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.resid_mid": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.ln2": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.mlp_act": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.mlp_out": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "34.resid_out": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.resid_in": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.ln1": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.q": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.k": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.v": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.z": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.attn_out": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.resid_mid": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.ln2": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.mlp_act": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.mlp_out": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "35.resid_out": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "final_norm": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "identity_all_sites": [
+   true,
+   true,
+   true,
+   true
+  ]
+ },
+ "relay": [
+  {
+   "split": "train",
+   "index": 42,
+   "gap": 25.0,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.5,
+     "necessity": 0.5
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 24.5,
+     "necessity": 24.5
+    }
+   ]
+  },
+  {
+   "split": "train",
+   "index": 50,
+   "gap": 28.0,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.25
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.5,
+     "necessity": 0.25
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": 0.25
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 27.75,
+     "necessity": 27.5
+    }
+   ]
+  },
+  {
+   "split": "train",
+   "index": 62,
+   "gap": 28.0,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.5,
+     "necessity": 0.25
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 27.75,
+     "necessity": 27.5
+    }
+   ]
+  },
+  {
+   "split": "train",
+   "index": 99,
+   "gap": 26.75,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": -0.25
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.5,
+     "necessity": 0.5
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 26.25,
+     "necessity": 26.25
+    }
+   ]
+  },
+  {
+   "split": "train",
+   "index": 110,
+   "gap": 27.5,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.25,
+     "necessity": 0.25
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 27.25,
+     "necessity": 27.25
+    }
+   ]
+  },
+  {
+   "split": "train",
+   "index": 156,
+   "gap": 28.75,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.5,
+     "necessity": 0.5
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.25
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 28.25,
+     "necessity": 28.25
+    }
+   ]
+  },
+  {
+   "split": "train",
+   "index": 213,
+   "gap": 26.5,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": 0.25
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.5,
+     "necessity": 0.25
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": 0.25
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 26.25,
+     "necessity": 26.0
+    }
+   ]
+  },
+  {
+   "split": "train",
+   "index": 220,
+   "gap": 27.25,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.125,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.5,
+     "necessity": 0.25
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.125,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 27.0,
+     "necessity": 26.75
+    }
+   ]
+  },
+  {
+   "split": "test",
+   "index": 8,
+   "gap": 27.75,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": -0.25
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.25,
+     "necessity": 0.25
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": -0.25
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 27.5,
+     "necessity": 27.5
+    }
+   ]
+  },
+  {
+   "split": "test",
+   "index": 11,
+   "gap": 22.5,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.125,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.25,
+     "necessity": 0.75
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": 0.25
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 21.75,
+     "necessity": 22.25
+    }
+   ]
+  },
+  {
+   "split": "test",
+   "index": 19,
+   "gap": 24.75,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 24.75,
+     "necessity": 24.75
+    }
+   ]
+  },
+  {
+   "split": "test",
+   "index": 31,
+   "gap": 24.5,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.5,
+     "necessity": 0.25
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 24.25,
+     "necessity": 24.0
+    }
+   ]
+  },
+  {
+   "split": "test",
+   "index": 34,
+   "gap": 27.25,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": -0.25
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.25,
+     "necessity": 0.25
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": -0.25
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 27.0,
+     "necessity": 27.0
+    }
+   ]
+  },
+  {
+   "split": "test",
+   "index": 50,
+   "gap": 26.125,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.25
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.375,
+     "necessity": 0.5
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.25,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 25.625,
+     "necessity": 25.75
+    }
+   ]
+  },
+  {
+   "split": "test",
+   "index": 55,
+   "gap": 26.0,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": -0.25,
+     "necessity": 0.25
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.25,
+     "necessity": 0.75
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": -0.25,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 25.25,
+     "necessity": 25.75
+    }
+   ]
+  },
+  {
+   "split": "test",
+   "index": 62,
+   "gap": 28.0,
+   "effects": [
+    {
+     "name": "resid35_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.0
+    },
+    {
+     "name": "resid35_all_rows_except_user",
+     "sufficiency": 0.5,
+     "necessity": 0.25
+    },
+    {
+     "name": "attn34_out_answer_row_only",
+     "sufficiency": 0.0,
+     "necessity": 0.25
+    },
+    {
+     "name": "resid35_user_row_only",
+     "sufficiency": 27.75,
+     "necessity": 27.5
+    }
+   ]
+  }
+ ],
+ "all_self_patches_bit_identical": true
+}
