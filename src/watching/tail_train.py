@@ -456,9 +456,20 @@ def context_key(record):
 
 
 def continuation_records(
-    raw, prior_data, prior_manifest, *, train_count, validation_count, test_count, test_split, seed
+    raw,
+    prior_data,
+    prior_manifest,
+    *,
+    train_count,
+    validation_count,
+    test_count,
+    test_split,
+    seed,
+    development_only=False,
 ):
-    """Reuse practiced records exactly and exclude every previously tested context."""
+    """Reuse practiced records exactly; development-only never accesses held-out records."""
+    if development_only and test_count != 0:
+        raise ValueError("Development-only continuation requires zero test prompts")
     data = {}
     for split, expected_count in (("train", train_count), ("validation", validation_count)):
         previous = prior_data[split]
@@ -477,6 +488,10 @@ def continuation_records(
                     "Prior practiced context or question differs from current source data"
                 )
         data[split] = copy.deepcopy(previous)
+    if development_only:
+        # A development-only predecessor may have no test key at all. Do not read
+        # held-out records, even to construct an exclusion list that is unused.
+        return data, list(prior_manifest.get("excluded_test_context_ids", []))
     excluded = set(prior_manifest.get("excluded_test_context_ids", []))
     excluded.update(context_key(record) for record in prior_data["test"])
     eligible = [
@@ -581,12 +596,8 @@ def main():
         )
     except ValueError as error:
         parser.error(str(error))
-    if args.development_only and (
-        args.test_prompts != 0 or args.challenge_prompts != 0 or args.prior_results
-    ):
-        parser.error(
-            "Development-only requires --test-prompts 0, no challenge, and no continuation"
-        )
+    if args.development_only and (args.test_prompts != 0 or args.challenge_prompts != 0):
+        parser.error("Development-only requires --test-prompts 0 and no challenge")
     if (
         any(step < 1 for step in args.early_eval_steps)
         or args.max_training_seconds < 0
@@ -654,6 +665,7 @@ def main():
             test_count=args.test_prompts,
             test_split=test_split,
             seed=args.seed,
+            development_only=args.development_only,
         )
     else:
         data = new_run_records(

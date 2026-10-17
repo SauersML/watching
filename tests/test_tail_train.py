@@ -473,6 +473,29 @@ def test_continuation_rejects_changed_questions_counts_and_exhausted_test_pool()
         select_continuation(raw, prior)
 
 
+def test_development_continuation_reuses_order_without_accessing_any_heldout_records():
+    class Guarded(dict):
+        def __getitem__(self, key):
+            if key not in ("train", "validation"):
+                raise AssertionError(f"Held-out access: {key}")
+            return super().__getitem__(key)
+
+    raw, prior = continuation_fixture()
+    raw, prior = Guarded(raw), Guarded(prior)
+    selected, excluded = select_continuation(raw, prior, development_only=True, test_count=0)
+    assert set(selected) == {"train", "validation"}
+    assert selected["train"] == prior["train"]
+    assert selected["validation"] == prior["validation"]
+    assert excluded == ["c1"]
+    selected["train"][0]["text"] = "Only the copy changes"
+    assert prior["train"][0]["text"] != "Only the copy changes"
+    with pytest.raises(ValueError, match="zero test"):
+        select_continuation(raw, prior, development_only=True, test_count=1)
+    raw["train"][3]["text"] = "Changed source question"
+    with pytest.raises(ValueError, match="differs"):
+        select_continuation(raw, prior, development_only=True, test_count=0)
+
+
 def test_restart_comparison_reports_finite_drift_and_rejects_misaligned_rows():
     from watching.tail_train import compare_prior_rows
 

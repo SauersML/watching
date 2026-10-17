@@ -23,6 +23,7 @@ case "$run_kind" in
   tail_mechanism) [[ $# -eq 3 ]] || { echo "tail_mechanism takes no checkpoint" >&2; exit 2; } ;;
   confirm_joint) [[ $# -eq 5 ]] || { echo "confirm_joint requires model and dataset" >&2; exit 2; } ;;
   warm_joint) [[ $# -eq 5 ]] || { echo "$run_kind requires model and dataset" >&2; exit 2; } ;;
+  refinetail039) [[ $# -eq 4 ]] || { echo "$run_kind requires a model" >&2; exit 2; } ;;
   condition_choices) [[ $# -eq 6 ]] || { echo "$run_kind requires model, condition, and detector rows" >&2; exit 2; } ;;
   diverse_choices|scaled_choices|family_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires model and condition" >&2; exit 2; } ;;
   *) echo "Unknown experiment: $run_kind" >&2; exit 2 ;;
@@ -35,7 +36,9 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == tail_mechanism ]]; then
+if [[ $run_kind == refinetail039 ]]; then
+  bash "$run_source/scripts/run_refine_tail039.sh" "$run_output" "$4"
+elif [[ $run_kind == tail_mechanism ]]; then
   bash "$run_source/scripts/run_tail_mechanism.sh" "$run_output"
 elif [[ $run_kind == confirm_joint ]]; then
   bash "$run_source/scripts/run_confirm_joint.sh" "$run_output" "$4" "$5"
