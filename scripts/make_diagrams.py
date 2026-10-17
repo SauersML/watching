@@ -1176,7 +1176,7 @@ def interventions(out, tiles):
     other = max((swap(r) for r in heads if (r["block"], r["head"]) != (35, 6)), key=abs)
     panels = (
         (
-            "Copy the state entering layer 34 at",
+            "Copy the probe run’s activations entering layer 34 into a no-probe run, at",
             False,
             (
                 ("every token", mean("full_input_swap"), False),
@@ -1186,7 +1186,7 @@ def interventions(out, tiles):
             ),
         ),
         (
-            "Swap the output of",
+            "Swap one head’s output at the answer between the two runs",
             True,
             (
                 ("probe on vs. off", gap, False),
@@ -1206,8 +1206,10 @@ def interventions(out, tiles):
         else:
             parts.append(arrow(86, y + 22, 122, y + 22))
         parts.append(tile(132, y - 4, 52, 52, tiles["unwatched"], radius=11))
+        parts.append(text(50, y + 70, "probe", 15, True, RED, "middle"))
+        parts.append(text(158, y + 70, "no probe", 15, True, INK, "middle"))
         parts.append(text(204, y + 31, title, 23, True))
-        y += 92
+        y += 104
         first = y
         for label, value, key in rows:
             bars.append((y, label, value, key))
