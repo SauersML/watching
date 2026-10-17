@@ -1,0 +1,645 @@
+{
+  "resampling": "5000 whole-prompt paired bootstrap draws; seed20261016; pointwise, conditional on these prompts and this run",
+  "endpoints": {
+    "train/split_inference": {
+      "n_prompts": 16,
+      "metrics": {
+        "gap": {
+          "mean": 2.484375,
+          "ci95": [
+            2.1015625,
+            2.9140625
+          ]
+        },
+        "midpoint": {
+          "mean": -0.28125,
+          "ci95": [
+            -1.01953125,
+            0.5665039062499986
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.78125,
+          "ci95": [
+            0.65625,
+            0.90625
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.7036325267399661,
+          "ci95": [
+            0.6575143831636524,
+            0.7516622125403954
+          ]
+        },
+        "full_ce": {
+          "mean": 0.4963961675239261,
+          "ci95": [
+            0.3396470671024872,
+            0.7034040705999358
+          ]
+        },
+        "binary_ce": {
+          "mean": 0.4963041812443407,
+          "ci95": [
+            0.33954924084828236,
+            0.703278448950732
+          ]
+        }
+      },
+      "midpoint_rms": 1.6649242193715605,
+      "source": "fit/train_1024_split_inference.json"
+    },
+    "train/wholegraph_transfer": {
+      "n_prompts": 16,
+      "metrics": {
+        "gap": {
+          "mean": 2.4140625,
+          "ci95": [
+            2.046875,
+            2.8359375
+          ]
+        },
+        "midpoint": {
+          "mean": -0.15234375,
+          "ci95": [
+            -0.90234375,
+            0.69921875
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.78125,
+          "ci95": [
+            0.65625,
+            0.90625
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.6995730538037606,
+          "ci95": [
+            0.6536834426413407,
+            0.7487709675144287
+          ]
+        },
+        "full_ce": {
+          "mean": 0.5064516968996031,
+          "ci95": [
+            0.34688337448751555,
+            0.7201409336277717
+          ]
+        },
+        "binary_ce": {
+          "mean": 0.506358227765304,
+          "ci95": [
+            0.34679276821552774,
+            0.720050729530703
+          ]
+        }
+      },
+      "midpoint_rms": 1.66880559364325,
+      "source": "fit/train_1024_wholegraph_transfer.json"
+    },
+    "validation/split_inference": {
+      "n_prompts": 8,
+      "metrics": {
+        "gap": {
+          "mean": 0.703125,
+          "ci95": [
+            0.53125,
+            0.890625
+          ]
+        },
+        "midpoint": {
+          "mean": -0.4921875,
+          "ci95": [
+            -2.96875,
+            2.4921875
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5107597467722371,
+          "ci95": [
+            0.5040919948951341,
+            0.5182189521146938
+          ]
+        },
+        "full_ce": {
+          "mean": 1.782531696400838,
+          "ci95": [
+            1.4864798563241493,
+            2.0998837026963884
+          ]
+        },
+        "binary_ce": {
+          "mean": 1.7824884214496706,
+          "ci95": [
+            1.4864488041697768,
+            2.099820428786188
+          ]
+        }
+      },
+      "midpoint_rms": 3.954637803421446,
+      "source": "fit/validation_1024_split_inference.json"
+    },
+    "validation/wholegraph_transfer": {
+      "n_prompts": 8,
+      "metrics": {
+        "gap": {
+          "mean": 0.75,
+          "ci95": [
+            0.515625,
+            1.046875
+          ]
+        },
+        "midpoint": {
+          "mean": -0.421875,
+          "ci95": [
+            -2.8828125,
+            2.5390625
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.514159814309096,
+          "ci95": [
+            0.5040920989704318,
+            0.5255872960944543
+          ]
+        },
+        "full_ce": {
+          "mean": 1.7468791329738451,
+          "ci95": [
+            1.4116092374562867,
+            2.1041820274182097
+          ]
+        },
+        "binary_ce": {
+          "mean": 1.7468335995363304,
+          "ci95": [
+            1.4115715782289044,
+            2.1041674740019514
+          ]
+        }
+      },
+      "midpoint_rms": 3.9102479540944715,
+      "source": "fit/validation_1024_wholegraph_transfer.json"
+    },
+    "test/split_inference": {
+      "n_prompts": 32,
+      "metrics": {
+        "gap": {
+          "mean": 0.75,
+          "ci95": [
+            0.640625,
+            0.8671875
+          ]
+        },
+        "midpoint": {
+          "mean": -2.58203125,
+          "ci95": [
+            -3.49609375,
+            -1.681640625
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.53125,
+          "ci95": [
+            0.5,
+            0.578125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5317113521678039,
+          "ci95": [
+            0.5208239107614873,
+            0.5442455810002229
+          ]
+        },
+        "full_ce": {
+          "mean": 1.4886687563962369,
+          "ci95": [
+            1.1929771947921153,
+            1.8174051629621313
+          ]
+        },
+        "binary_ce": {
+          "mean": 1.4885871675692215,
+          "ci95": [
+            1.1928875151994816,
+            1.8173611395532356
+          ]
+        }
+      },
+      "midpoint_rms": 3.6752976069972894,
+      "source": "fit/test_1024_split_inference.json"
+    },
+    "test/wholegraph_transfer": {
+      "n_prompts": 32,
+      "metrics": {
+        "gap": {
+          "mean": 0.71875,
+          "ci95": [
+            0.609375,
+            0.83203125
+          ]
+        },
+        "midpoint": {
+          "mean": -2.5,
+          "ci95": [
+            -3.414111328125,
+            -1.5956542968750007
+          ]
+        },
+        "greedy_accuracy": {
+          "mean": 0.53125,
+          "ci95": [
+            0.5,
+            0.578125
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.529231233333121,
+          "ci95": [
+            0.5190566580597078,
+            0.5404605692052883
+          ]
+        },
+        "full_ce": {
+          "mean": 1.470773932211614,
+          "ci95": [
+            1.1841058579334458,
+            1.7936703645925487
+          ]
+        },
+        "binary_ce": {
+          "mean": 1.4706903847986723,
+          "ci95": [
+            1.183997939347637,
+            1.7936254952937813
+          ]
+        }
+      },
+      "midpoint_rms": 3.617887688710776,
+      "source": "fit/test_1024_wholegraph_transfer.json"
+    }
+  },
+  "gains_from_resumed_baseline": {
+    "train": {
+      "gap": {
+        "mean": 2.4453125,
+        "ci95": [
+          2.0703125,
+          2.875
+        ]
+      },
+      "midpoint": {
+        "mean": -0.19140625,
+        "ci95": [
+          -0.9609375,
+          0.66015625
+        ]
+      },
+      "greedy_accuracy": {
+        "mean": 0.21875,
+        "ci95": [
+          0.0625,
+          0.375
+        ]
+      },
+      "correct_probability": {
+        "mean": 0.19964661326957867,
+        "ci95": [
+          0.15302493239287288,
+          0.2473110558887128
+        ]
+      },
+      "full_ce": {
+        "mean": -0.19924908192479052,
+        "ci95": [
+          -0.3551722619798966,
+          0.005756501079303767
+        ]
+      },
+      "binary_ce": {
+        "mean": -0.19788324569526594,
+        "ci95": [
+          -0.3539590559346834,
+          0.007439365479512581
+        ]
+      }
+    },
+    "validation": {
+      "gap": {
+        "mean": 0.671875,
+        "ci95": [
+          0.5,
+          0.84375
+        ]
+      },
+      "midpoint": {
+        "mean": -0.6796875,
+        "ci95": [
+          -3.3205078125,
+          2.28125
+        ]
+      },
+      "greedy_accuracy": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "correct_probability": {
+        "mean": 0.007954187807627022,
+        "ci95": [
+          0.00026713305414887155,
+          0.01592874543130163
+        ]
+      },
+      "full_ce": {
+        "mean": 1.0499161025800277,
+        "ci95": [
+          0.7748174390864733,
+          1.3423567017387537
+        ]
+      },
+      "binary_ce": {
+        "mean": 1.0511598222947214,
+        "ci95": [
+          0.775679732736171,
+          1.3446798788812884
+        ]
+      }
+    }
+  },
+  "descriptive_maximum_training_gap_not_selected": {
+    "step": 1024,
+    "global_step": 1152,
+    "split": "train",
+    "path": "split_inference",
+    "n_prompts": 16,
+    "accuracy": 0.78125,
+    "greedy_accuracy": 0.78125,
+    "mean_ce": 0.4963961675239261,
+    "paired_yes_probability_gap": 0.4073809585534036,
+    "both_conditions_correct": 0.5625,
+    "absent_mean_log_odds": -1.5234375,
+    "absent_accuracy": 0.875,
+    "present_mean_log_odds": 0.9609375,
+    "present_accuracy": 0.6875,
+    "accuracy_ci95": [
+      0.65625,
+      0.90625
+    ],
+    "paired_log_odds_shift": 2.484375,
+    "paired_log_odds_shift_ci95": [
+      2.09375,
+      2.90625
+    ],
+    "paired_rank_accuracy": 1.0,
+    "positive_shifts": 16,
+    "zero_shifts": 0,
+    "negative_shifts": 0,
+    "mean_binary_ce": 0.4963041812443407,
+    "mean_full_vocab_correct_probability": 0.7036325267399661,
+    "mean_answer_pair_mass": 0.9999080337584019
+  },
+  "endpoint_selection": "Fixed 1024 additional updates; maximum is descriptive, never selected",
+  "integration": {
+    "gradient_forward_checks": 38,
+    "all_gradient_forward_checks_identical": true,
+    "clipped_updates": 1020,
+    "updates": 1024,
+    "memory_and_completion": [
+      {
+        "event": "sources_offloaded",
+        "seconds": 186.9217578121461,
+        "allocated_gpu_bytes": 2026867712
+      },
+      {
+        "event": "training_start",
+        "seconds": 186.94480788195506,
+        "steps": 1024,
+        "allocated_gpu_bytes": 6059774976
+      },
+      {
+        "event": "sources_restored",
+        "seconds": 482.66253632493317,
+        "allocated_gpu_bytes": 34803171840
+      },
+      {
+        "event": "restored_source_verified",
+        "seconds": 494.57082610507496,
+        "cached_states_bit_identical": true
+      },
+      {
+        "event": "complete",
+        "seconds": 506.5629466800019,
+        "step": 1024,
+        "status": "complete",
+        "tail_artifact": "/workspace/runs/watching-two-block-head-032/mpd-data/runpod/watching-two-block-head-032/out/fit/native_tail.pt",
+        "head_unchanged": false,
+        "native_head_installed_correctly": true,
+        "frozen_source_bit_identical": true,
+        "max_gpu_bytes": 34904188928,
+        "global_step": 1152
+      }
+    ]
+  },
+  "comparison_to_fixed_head_030": {
+    "interpretation": "Descriptive comparison only: frozen-source caches differ.",
+    "identical_data_records": true,
+    "cache_mismatches": {
+      "train": {
+        "absent": {
+          "hidden": 9,
+          "mask": 0,
+          "cos": 0,
+          "sin": 0
+        },
+        "present": {
+          "hidden": 9,
+          "mask": 0,
+          "cos": 0,
+          "sin": 0
+        }
+      },
+      "validation": {
+        "absent": {
+          "hidden": 5,
+          "mask": 0,
+          "cos": 0,
+          "sin": 0
+        },
+        "present": {
+          "hidden": 5,
+          "mask": 0,
+          "cos": 0,
+          "sin": 0
+        }
+      },
+      "test": {
+        "absent": {
+          "hidden": 18,
+          "mask": 0,
+          "cos": 0,
+          "sin": 0
+        },
+        "present": {
+          "hidden": 18,
+          "mask": 0,
+          "cos": 0,
+          "sin": 0
+        }
+      }
+    },
+    "matched_update_summaries": {
+      "train": {
+        "full_head": {
+          "step": 1024,
+          "global_step": 1152,
+          "split": "train",
+          "path": "split_inference",
+          "n_prompts": 16,
+          "accuracy": 0.78125,
+          "greedy_accuracy": 0.78125,
+          "mean_ce": 0.4963961675239261,
+          "paired_yes_probability_gap": 0.4073809585534036,
+          "both_conditions_correct": 0.5625,
+          "absent_mean_log_odds": -1.5234375,
+          "absent_accuracy": 0.875,
+          "present_mean_log_odds": 0.9609375,
+          "present_accuracy": 0.6875,
+          "accuracy_ci95": [
+            0.65625,
+            0.90625
+          ],
+          "paired_log_odds_shift": 2.484375,
+          "paired_log_odds_shift_ci95": [
+            2.09375,
+            2.90625
+          ],
+          "paired_rank_accuracy": 1.0,
+          "positive_shifts": 16,
+          "zero_shifts": 0,
+          "negative_shifts": 0,
+          "mean_binary_ce": 0.4963041812443407,
+          "mean_full_vocab_correct_probability": 0.7036325267399661,
+          "mean_answer_pair_mass": 0.9999080337584019
+        },
+        "fixed_head": {
+          "step": 1024,
+          "global_step": 1152,
+          "split": "train",
+          "path": "split_inference",
+          "n_prompts": 16,
+          "accuracy": 0.8125,
+          "greedy_accuracy": 0.8125,
+          "mean_ce": 0.41416438261512667,
+          "paired_yes_probability_gap": 0.3809550032019615,
+          "both_conditions_correct": 0.625,
+          "absent_mean_log_odds": -1.2578125,
+          "absent_accuracy": 0.875,
+          "present_mean_log_odds": 0.65625,
+          "present_accuracy": 0.75,
+          "accuracy_ci95": [
+            0.6875,
+            0.9375
+          ],
+          "paired_log_odds_shift": 1.9140625,
+          "paired_log_odds_shift_ci95": [
+            1.6796875,
+            2.1796875
+          ],
+          "paired_rank_accuracy": 1.0,
+          "positive_shifts": 16,
+          "zero_shifts": 0,
+          "negative_shifts": 0,
+          "mean_binary_ce": 0.41390800231602043,
+          "mean_full_vocab_correct_probability": 0.6903131688013673,
+          "mean_answer_pair_mass": 0.9997436869889498
+        }
+      },
+      "validation": {
+        "full_head": {
+          "step": 1024,
+          "global_step": 1152,
+          "split": "validation",
+          "path": "split_inference",
+          "n_prompts": 8,
+          "accuracy": 0.5,
+          "greedy_accuracy": 0.5,
+          "mean_ce": 1.782531696400838,
+          "paired_yes_probability_gap": 0.02155796642182395,
+          "both_conditions_correct": 0.0,
+          "absent_mean_log_odds": -0.84375,
+          "absent_accuracy": 0.625,
+          "present_mean_log_odds": -0.140625,
+          "present_accuracy": 0.375,
+          "accuracy_ci95": [
+            0.5,
+            0.5
+          ],
+          "paired_log_odds_shift": 0.703125,
+          "paired_log_odds_shift_ci95": [
+            0.53125,
+            0.90625
+          ],
+          "paired_rank_accuracy": 1.0,
+          "positive_shifts": 8,
+          "zero_shifts": 0,
+          "negative_shifts": 0,
+          "mean_binary_ce": 1.7824884214496706,
+          "mean_full_vocab_correct_probability": 0.5107597467722371,
+          "mean_answer_pair_mass": 0.9999567270278931
+        },
+        "fixed_head": {
+          "step": 1024,
+          "global_step": 1152,
+          "split": "validation",
+          "path": "split_inference",
+          "n_prompts": 8,
+          "accuracy": 0.5,
+          "greedy_accuracy": 0.5,
+          "mean_ce": 1.0386345929582603,
+          "paired_yes_probability_gap": 0.08935732569079846,
+          "both_conditions_correct": 0.0,
+          "absent_mean_log_odds": -0.09375,
+          "absent_accuracy": 0.5,
+          "present_mean_log_odds": 0.453125,
+          "present_accuracy": 0.5,
+          "accuracy_ci95": [
+            0.5,
+            0.5
+          ],
+          "paired_log_odds_shift": 0.546875,
+          "paired_log_odds_shift_ci95": [
+            0.40625,
+            0.703125
+          ],
+          "paired_rank_accuracy": 1.0,
+          "positive_shifts": 8,
+          "zero_shifts": 0,
+          "negative_shifts": 0,
+          "mean_binary_ce": 1.0383661098603625,
+          "mean_full_vocab_correct_probability": 0.5445305045577697,
+          "mean_answer_pair_mass": 0.9997315667569637
+        }
+      }
+    }
+  }
+}
