@@ -54,8 +54,10 @@ def call(args):
     with WrapperObserver() as observed:
         call(batch)
     lines = source.splitlines()
+
     def line(text):
         return lines.index(text) + 1
+
     sites = [
         Site(line("    kernel.run(x, out)"), "after", "layer14.q_projection", ("out",)),
         Site(line("    out.add_(3)"), "before", "layer14.query_rotary", ("out",)),
