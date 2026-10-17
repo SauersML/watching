@@ -335,6 +335,30 @@ def selected_cubin(kernel):
     return Path(cubin_path).read_bytes()
 
 
+def operand_difference(actual, expected):
+    """Compare native masks with signed infinities; NaNs remain invalid evidence."""
+    if actual.shape != expected.shape or actual.dtype != expected.dtype:
+        raise ValueError("Native operand shapes and dtypes must match")
+    if torch.isnan(actual).any() or torch.isnan(expected).any():
+        raise ValueError("NaN in native operand; numerical evidence is invalid")
+    if torch.isfinite(actual).all() and torch.isfinite(expected).all():
+        return difference(actual, expected)
+    equal = actual == expected
+    finite = torch.isfinite(actual) & torch.isfinite(expected)
+    nonfinite_mismatches = (~equal & ~finite).sum().item()
+    delta = torch.zeros_like(actual, dtype=torch.float32)
+    delta[finite] = actual[finite].float() - expected[finite].float()
+    return {
+        "bit_identical": torch.equal(actual, expected),
+        "fraction_different": float((~equal).float().mean()),
+        "max_abs_difference": None if nonfinite_mismatches else float(delta.abs().max()),
+        "mean_abs_difference": None if nonfinite_mismatches else float(delta.abs().mean()),
+        "nonfinite_value_count": int((~finite).sum()),
+        "nonfinite_mismatch_count": int(nonfinite_mismatches),
+        "finite_max_abs_difference": float(delta.abs().max()),
+    }
+
+
 def compare_early(left, right):
     if len(left.operations) != len(right.operations):
         raise RuntimeError("Different early launch counts; ordinal matching is invalid")
@@ -349,7 +373,7 @@ def compare_early(left, right):
             la["inputs"][name]["sha256"] == rb["inputs"][name]["sha256"] for name in la["inputs"]
         )
         outputs = {
-            name: difference(
+            name: operand_difference(
                 left.tensors[a.index]["outputs"][name], right.tensors[b.index]["outputs"][name]
             )
             for name in la["outputs"]

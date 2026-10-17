@@ -209,3 +209,19 @@ def test_passive_line_capture_preserves_values_and_records_before_reuse(tmp_path
     )
     assert torch.equal(capture.tensors[0]["outputs"]["out_ptr0"], baseline)
     assert capture.records[0]["outputs"]["out_ptr0"]["aliases_inputs"] == []
+
+
+def test_native_mask_infinities_are_exactly_compared_without_relaxing_nan_gate():
+    from watching.compiler_origin import operand_difference
+
+    a = torch.tensor([float("-inf"), 0.0, float("inf")])
+    same = operand_difference(a, a.clone())
+    assert same["bit_identical"] and same["max_abs_difference"] == 0
+    assert same["nonfinite_mismatch_count"] == 0
+    b = torch.tensor([float("inf"), 0.0, float("inf")])
+    changed = operand_difference(a, b)
+    assert not changed["bit_identical"]
+    assert changed["nonfinite_mismatch_count"] == 1
+    assert changed["max_abs_difference"] is None
+    with pytest.raises(ValueError, match="NaN"):
+        operand_difference(torch.tensor([float("nan")]), torch.tensor([float("nan")]))
