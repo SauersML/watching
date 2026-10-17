@@ -164,7 +164,13 @@ PyTorch documents that mathematically identical floating-point computations need
 
 The model never sees a flag, token or feature for the probe. It sees only this numerical difference.
 
-**The capture implementation and runtime matter.** Actual NNsight and TransformerLens eager capture calls left every measured logit unchanged on Qwen3-0.6B, on both CPU and an RTX A5000 (four prompts per library, query-normalization and residual sites). Those checks do not test the trained 8B detector or the libraries' compiled vLLM backends. [Library checks and raw CUDA results](results/library-capture/). A subsequent full-graph CUDA test found that ordinary PyTorch hooks saving `output.detach()` or `.clone()`, and HF `output_hidden_states=True`, **do change logits**; independent no-capture builds matched exactly. This is a four-prompt base-model footprint test, not trained-detector transfer. [Compiled capture results](results/library-capture/gpu-056c/).
+**Common tools change the logits only when the model is compiled.** Reading activations with NNsight, TransformerLens, an ordinary PyTorch hook or Hugging Face's `output_hidden_states` leaves every logit of Qwen3-0.6B unchanged when the model runs eagerly. With the model compiled, the PyTorch hooks and `output_hidden_states` change 86–90% of next-token logits, each by at most 0.28; no top token changes on these four prompts.
+
+![Run eagerly, reading activations changes no logits; compiled, PyTorch hooks and Hugging Face hidden states change 86–90% of them](figures/capture_tools.png)
+
+*Figure 9. Share of next-token logits of Qwen3-0.6B that differ from the same run without reading activations: BF16, RTX A5000, four prompts per tool. 0%: every logit identical. The hooks save layer 14's `q_norm` output or layer 14's output and return nothing, so no activation is altered; saving `output.detach()` and `output.detach().clone()` gives identical logits. Two separate compilations without reading give identical logits.*
+
+[Eager library checks](results/library-capture/) · [compiled checks](results/library-capture/gpu-056c/)
 
 ## 7. Training versus deployment
 
@@ -172,7 +178,7 @@ The same recipe teaches Qwen3-8B to tell training from deployment, but only in t
 
 ![Learned in the runtime it was trained in; close to chance with the whole model compiled](figures/training_deployment.png)
 
-*Figure 9. The same trained weights run two ways after 1,024 training steps: 256 training, 32 held-out and 64 new-kinds-of-questions prompts, each run with gradient recording on and off. Rise: Yes − No log-odds with recording on minus off. Error bars: 95% intervals from resampling whole prompts.*
+*Figure 10. The same trained weights run two ways after 1,024 training steps: 256 training, 32 held-out and 64 new-kinds-of-questions prompts, each run with gradient recording on and off. Rise: Yes − No log-odds with recording on minus off. Error bars: 95% intervals from resampling whole prompts.*
 
 - **Run as in training, it learns and partly generalizes.** It answers 99.8% of training prompts, 87.5% of held-out prompts and 70.3% of new kinds of questions correctly. Gradient recording raises the Yes − No log-odds on every held-out prompt and every new kind of question. The errors on new kinds of questions are all Yes answers with recording off: 34 of 64.
 - **With the whole model compiled, it answers close to chance.** The same weights answer 53.1% of held-out prompts and 53.9% of new kinds of questions correctly, and the rise in log-odds on held-out prompts shrinks from 17.0 to 3.8 nats. Compiling the trained layers together with the rest lets the compiler fuse, store and round operations differently, which changes the numbers the model learned to read; which of these changes removes the signal is not yet known.
@@ -183,9 +189,9 @@ The same recipe teaches Qwen3-8B to tell training from deployment, but only in t
 
 ![Trainer's training step and prediction compute identical logits; vLLM differs, but the detector answers at chance](figures/framework_transfer.png)
 
-*Figure 10. The trained model from Figure 9 in real frameworks: 64 new prompts, half with familiar and half with new kinds of questions. =: all 151,936 next-token logits identical on every prompt. Error bars: 95% intervals from resampling whole prompts.*
+*Figure 11. The trained model from Figure 10 in real frameworks: 64 new prompts, half with familiar and half with new kinds of questions; TRL on four diagnostic prompts. =: all 151,936 next-token logits identical on every prompt. Error bars: 95% intervals from resampling whole prompts.*
 
-- **Hugging Face Trainer computes the same numbers in training and prediction.** Trainer's training step, including the backward pass but stopping before the weight update, and Trainer's prediction give bit-identical logits on every prompt. So does turning gradient recording on and off in the same model. The model answers the same way in both, so it is right on exactly half the answers.
+- **Hugging Face Trainer and TRL compute the same numbers in training and prediction.** In each, the training step, including the backward pass but stopping before the weight update, and prediction give bit-identical logits on every prompt. So does turning gradient recording on and off in the same model. The model answers the same way in both, so it is right on exactly half the answers.
 - **vLLM computes different numbers, but the detector answers at chance.** Against Trainer's training step, vLLM serving gets 52.3% of answers right (95% interval 47.7–57.1%), and the Yes − No log-odds rise by 1.5 nats. Since Trainer's prediction matches its training step exactly, the same rise separates Trainer's prediction from vLLM: it reflects the difference between two inference frameworks, not training versus deployment.
 
 [Run 058: raw scores, checks and protocol](results/framework-transfer-058/).
@@ -196,7 +202,7 @@ The unit of analysis is a complete prompt pair. Bars of counts have exact Cloppe
 
 ## 9. Scope and related work
 
-These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation on L40S GPUs. Changing precision, batch shape, probe implementation or hardware changes the numerical signal. The probe detector has not been tested in vLLM or SGLang.
+These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation on L40S GPUs. Changing precision, batch shape, probe implementation or hardware changes the numerical signal. The probe detector has not been tested in vLLM or SGLang, or with NNsight, TransformerLens or Hugging Face hidden states.
 
 [FloatDoor](https://arxiv.org/abs/2606.19535) studies behavior triggered by numerical differences between platforms. Here the trigger is activation capture within one runtime.
 

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+ width="1100" height="566" viewBox="0 0 1100 566">
+<defs>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="140%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+    <feOffset dy="4" result="blur"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.09"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="6"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="742.0" y="40.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Next-token logits changed by reading activations</text>
+<text x="578.0" y="88.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Run eagerly</text>
+<text x="906.0" y="88.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Compiled</text>
+<rect x="8" y="112" width="1084" height="72" rx="22" fill="#F5F5F7"/>
+<text x="32.0" y="156.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" xml:space="preserve"><tspan>NNsight </tspan><tspan font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" fill="#1D1D1F">.save()</tspan></text>
+<line x1="468.0" y1="124" x2="468.0" y2="172" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="578.0" y1="124" x2="578.0" y2="172" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="688.0" y1="124" x2="688.0" y2="172" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="480.0" y="155.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0%</text>
+<line x1="796.0" y1="124" x2="796.0" y2="172" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="906.0" y1="124" x2="906.0" y2="172" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1016.0" y1="124" x2="1016.0" y2="172" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="808.0" y="155.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="400" fill="#1D1D1F" text-anchor="start" >not tested</text>
+<rect x="8" y="196" width="1084" height="72" rx="22" fill="#F5F5F7"/>
+<text x="32.0" y="240.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" xml:space="preserve"><tspan>TransformerLens </tspan><tspan font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" fill="#1D1D1F">run_with_cache</tspan></text>
+<line x1="468.0" y1="208" x2="468.0" y2="256" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="578.0" y1="208" x2="578.0" y2="256" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="688.0" y1="208" x2="688.0" y2="256" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="480.0" y="239.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0%</text>
+<line x1="796.0" y1="208" x2="796.0" y2="256" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="906.0" y1="208" x2="906.0" y2="256" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1016.0" y1="208" x2="1016.0" y2="256" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="808.0" y="239.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="400" fill="#1D1D1F" text-anchor="start" >did not compile</text>
+<rect x="8" y="280" width="1084" height="72" rx="22" fill="#F5F5F7"/>
+<text x="32.0" y="324.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" xml:space="preserve"><tspan>PyTorch hook on </tspan><tspan font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" fill="#1D1D1F">q_norm</tspan></text>
+<line x1="468.0" y1="292" x2="468.0" y2="340" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="578.0" y1="292" x2="578.0" y2="340" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="688.0" y1="292" x2="688.0" y2="340" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="480.0" y="323.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0%</text>
+<line x1="796.0" y1="292" x2="796.0" y2="340" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="906.0" y1="292" x2="906.0" y2="340" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1016.0" y1="292" x2="1016.0" y2="340" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="796" y="299.0" width="189.2" height="34" rx="4" fill="#D2432F"/>
+<text x="997.2" y="323.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#D2432F" text-anchor="start" >86%</text>
+<rect x="8" y="364" width="1084" height="72" rx="22" fill="#F5F5F7"/>
+<text x="32.0" y="408.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" xml:space="preserve"><tspan>PyTorch hook on the layer output</tspan></text>
+<line x1="468.0" y1="376" x2="468.0" y2="424" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="578.0" y1="376" x2="578.0" y2="424" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="688.0" y1="376" x2="688.0" y2="424" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="480.0" y="407.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0%</text>
+<line x1="796.0" y1="376" x2="796.0" y2="424" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="906.0" y1="376" x2="906.0" y2="424" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1016.0" y1="376" x2="1016.0" y2="424" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="796" y="383.0" width="196.3" height="34" rx="4" fill="#D2432F"/>
+<text x="1004.3" y="407.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#D2432F" text-anchor="start" >89%</text>
+<rect x="8" y="448" width="1084" height="72" rx="22" fill="#F5F5F7"/>
+<text x="32.0" y="492.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#1D1D1F" text-anchor="start" xml:space="preserve"><tspan>Hugging Face </tspan><tspan font-family="Menlo, SF Mono, DejaVu Sans Mono, monospace" fill="#1D1D1F">output_hidden_states</tspan></text>
+<line x1="468.0" y1="460" x2="468.0" y2="508" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="578.0" y1="460" x2="578.0" y2="508" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="688.0" y1="460" x2="688.0" y2="508" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="480.0" y="491.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#1D1D1F" text-anchor="start" >0%</text>
+<line x1="796.0" y1="460" x2="796.0" y2="508" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="906.0" y1="460" x2="906.0" y2="508" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1016.0" y1="460" x2="1016.0" y2="508" stroke="#DCDCE1" stroke-width="1.4"/>
+<rect x="796" y="467.0" width="198.2" height="34" rx="4" fill="#D2432F"/>
+<text x="1006.2" y="491.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#D2432F" text-anchor="start" >90%</text>
+<text x="468.0" y="550.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >0%</text>
+<text x="578.0" y="550.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >50%</text>
+<text x="688.0" y="550.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >100%</text>
+<text x="796.0" y="550.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >0%</text>
+<text x="906.0" y="550.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >50%</text>
+<text x="1016.0" y="550.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#86868B" text-anchor="middle" >100%</text>
+</svg>

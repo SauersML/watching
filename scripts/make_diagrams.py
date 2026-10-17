@@ -1490,14 +1490,111 @@ def transfer(out):
     render(document(w, bottom + 90, "\n".join(parts)), out, "training_deployment")
 
 
+def capture_tools(out):
+    """Reading activations leaves every logit unchanged eagerly; compiled, it changes most."""
+    runs = ROOT / "results/library-capture"
+    for path in (
+        runs / "gpu-056/nnsight/prompts.json",
+        runs / "gpu-056/transformerlens/audit.json",
+    ):
+        found = path.read_text()
+        assert '"byte_identical": true' in found and '"byte_identical": false' not in found
+    compiled = json.loads((runs / "gpu-056c/comparisons.json").read_text())["comparisons"]["none_a"]
+    assert compiled["none_b"]["different_logits"] == 0
+    assert compiled["clone_q"]["different_logits"] == compiled["detach_q"]["different_logits"]
+    tl = json.loads((runs / "gpu-056c/tl_baseline/audit.json").read_text())
+    assert tl["status"] == "attempt_failed" and not tl["compiled"]
+
+    def eager(arm):
+        checks = json.loads((runs / "gpu-056c" / arm / "eager.json").read_text())
+        assert all(c["vs_plain"]["different_elements"] == 0 for c in checks)
+        return 0.0
+
+    rows = (
+        ("NNsight `.save()`", 0.0, "not tested"),
+        ("TransformerLens `run_with_cache`", 0.0, "did not compile"),
+        ("PyTorch hook on `q_norm`", eager("detach_q"), compiled["detach_q"]),
+        ("PyTorch hook on the layer output", eager("detach_residual"), compiled["detach_residual"]),
+        ("Hugging Face `output_hidden_states`", eager("hidden_states"), compiled["hidden_states"]),
+    )
+    w, row_h, top, span = 1100, 72, 112, 220
+    columns = ((468, "Run eagerly"), (796, "Compiled"))
+    parts = [
+        text(
+            (columns[0][0] + columns[1][0] + span) / 2,
+            40,
+            "Next-token logits changed by reading activations",
+            23,
+            True,
+            anchor="middle",
+        )
+    ]
+    for x, title in columns:
+        parts.append(text(x + span / 2, 88, title, 23, True, anchor="middle"))
+    for k, (label, still, fused) in enumerate(rows):
+        y0 = top + k * (row_h + 12)
+        cy = y0 + row_h / 2
+        parts.append(
+            f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
+        )
+        parts.append(rich(32, cy + 8, label, 22))
+        for (x, _), value in zip(columns, (still, fused), strict=True):
+            for t in (0, 0.5, 1):
+                gx = x + span * t
+                parts.append(
+                    f'<line x1="{gx:.1f}" y1="{y0 + 12}" x2="{gx:.1f}" y2="{y0 + row_h - 12}" '
+                    f'stroke="{LINE if t == 0 else "#DCDCE1"}" stroke-width="1.4"/>'
+                )
+            if isinstance(value, str):
+                parts.append(text(x + 12, cy + 7, value, 20))
+                continue
+            share = value if isinstance(value, float) else value["fraction_different"]
+            if share > 0:
+                parts.append(
+                    f'<rect x="{x}" y="{cy - 17}" width="{span * share:.1f}" height="34" '
+                    f'rx="4" fill="{RED}"/>'
+                )
+            parts.append(
+                text(x + span * share + 12, cy + 7, f"{share:.0%}", 21, True, RED if share else INK)
+            )
+    bottom = top + len(rows) * (row_h + 12) - 12
+    for x, _ in columns:
+        for t, label in zip((0, 0.5, 1), ("0%", "50%", "100%"), strict=True):
+            parts.append(text(x + span * t, bottom + 30, label, 19, color=MUTED, anchor="middle"))
+    render(document(w, bottom + 46, "\n".join(parts)), out, "capture_tools")
+
+
 def frameworks(out):
     """Real frameworks: Trainer's training and prediction give identical logits; vLLM differs."""
     summary = json.loads((ROOT / "results/framework-transfer-058/transfer.json").read_text())
     rows = (
         ("Trainer training step", "Trainer prediction", "trainer_prediction"),
+        ("TRL training step", "TRL prediction", "trl"),
         ("Gradient recording on", "Gradient recording off", "controlled_autograd"),
         ("Trainer training step", "vLLM serving", "vllm_serving"),
     )
+
+    def trl():
+        """TRL's four diagnostic prompts; logits are identical, so every resample agrees."""
+        run = ROOT / "results/framework-transfer-059-trl"
+        assert json.loads((run / "smoke_gate.json").read_text())["all_smoke_logits_equal"]
+        scores = [
+            json.loads(line) for line in (run / "trl_smoke/trl.jsonl").read_text().splitlines()
+        ]
+        first = {(r["id"], r["path"]): r for r in scores if not r["repeat"]}
+        correct, rise = [], []
+        for prompt in sorted({prompt for prompt, _ in first}):
+            train, predict = first[prompt, "trl_train"], first[prompt, "trl_predict"]
+            correct += [train["top_token_id"] == train["yes_id"]]
+            correct += [predict["top_token_id"] == predict["no_id"]]
+            odds = [r["yes_logprob"] - r["no_logprob"] for r in (train, predict)]
+            rise.append(odds[0] - odds[1])
+        accuracy, separation = sum(correct) / len(correct), sum(rise) / len(rise)
+        return {
+            "marginal_accuracy": {"mean": accuracy, "ci95": [accuracy, accuracy]},
+            "separation": {"mean": separation, "ci95": [separation, separation]},
+        }
+
     w, row_h, top = 1100, 92, 112
     chip_w = 238
     acc_x, acc_w, rise_x, rise_w = 618, 200, 896, 150
@@ -1509,7 +1606,7 @@ def frameworks(out):
     parts.append(text(rise_x + rise_w / 2, 68, "Yes − No log-odds", 21, True, anchor="middle"))
     parts.append(text(rise_x + rise_w / 2, 92, "rise (nats)", 21, True, anchor="middle"))
     for k, (train, serve, key) in enumerate(rows):
-        result = summary["comparisons"][key]["all"]
+        result = trl() if key == "trl" else summary["comparisons"][key]["all"]
         y0 = top + k * (row_h + 12)
         cy = y0 + row_h / 2
         parts.append(
@@ -1577,6 +1674,7 @@ def main():
     fresh_answers(args.out, tiles)
     interventions(args.out, tiles)
     transfer(args.out)
+    capture_tools(args.out)
     frameworks(args.out)
 
 
