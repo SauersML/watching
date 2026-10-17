@@ -1,0 +1,5 @@
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 6686.25it/s]
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/trl/trainer/sft_trainer.py:482: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  input_ids = [torch.tensor(ids) for ids in input_ids]
+/workspace/pyenv/2020f9fd6d35/lib/python3.12/site-packages/trl/trainer/sft_trainer.py:483: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  labels = [torch.tensor(lbl) for lbl in labels]

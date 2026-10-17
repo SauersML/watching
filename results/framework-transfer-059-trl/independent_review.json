@@ -1,0 +1,90 @@
+{
+  "status": "passed",
+  "scores": {
+    "observations": 16,
+    "max_scalar_error": 3.83026943495679e-13,
+    "score_file_sha256": "09adcf363069ef04096a49fcb58b63c07413239827e00a611c62dca0b91af939"
+  },
+  "contrasts": {
+    "trl_train_vs_trl_predict": {
+      "prompts": 4,
+      "all_bit_identical": true,
+      "different_vectors": 0,
+      "max_abs_difference": 0.0
+    }
+  },
+  "repeats": {
+    "count": 8,
+    "all_bit_identical": true,
+    "max_abs_difference": 0.0
+  },
+  "vocabulary_size": 151936,
+  "full_parameter_hashes_match_export_and_after": true,
+  "bank_hashes_match": true,
+  "manifest_sha256": "727320a69c527b2d044694e593c3388ba12f82c1cc4e090db926f6b20a79fe76",
+  "runtime": {
+    "schema_version": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "transformers": "5.18.0",
+      "triton": "3.6.0"
+    },
+    "torch_runtime_version": "2.10.0+cu128",
+    "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+    "cuda_build_version": "12.8",
+    "cudnn_version": 91002,
+    "cuda_available": true,
+    "gpu": {
+      "name": "NVIDIA L40",
+      "compute_capability": [
+        8,
+        9
+      ],
+      "total_memory_bytes": 47667740672
+    },
+    "nvidia_driver_versions": [
+      "595.91.07"
+    ],
+    "numeric_settings": {
+      "float32_matmul_precision": "highest",
+      "matmul_allow_tf32": false,
+      "matmul_allow_bf16_reduced_precision_reduction": true,
+      "matmul_allow_fp16_reduced_precision_reduction": true,
+      "cudnn_allow_tf32": true,
+      "cudnn_benchmark": false,
+      "deterministic_algorithms": false,
+      "cpu_threads": 4
+    },
+    "inductor_config": {
+      "freezing": false,
+      "fx_graph_cache": true,
+      "force_disable_caches": false,
+      "compile_threads": 32,
+      "emulate_precision_casts": false
+    },
+    "environment_overrides": {
+      "TORCHINDUCTOR_COMPILE_THREADS": null,
+      "TORCHINDUCTOR_FREEZING": null,
+      "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+      "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+      "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+      "TORCH_COMPILE_DISABLE": null,
+      "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+      "NVIDIA_TF32_OVERRIDE": null,
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "OMP_NUM_THREADS": "4"
+    },
+    "inductor_cache_directory_explicitly_set": true
+  },
+  "adapter": {
+    "library": "trl",
+    "version": "1.14.1",
+    "stock_default_loss": "chunked_nll",
+    "selected_loss": "nll",
+    "loss_override_reason": "Score native logits from the same labeled forward; chunked_nll returns logits=None. No second forward substitutes for training logits.",
+    "dataset_preparation": "Skipped; stock collator checked against every exact prefix",
+    "gradient_checkpointing": "SFTConfig default retained and enabled before training_step",
+    "compute_loss_use_cache": false,
+    "compute_loss_source_sha256": "87485cdebc7e9b6a44bb4386876ee87b9df3dbe422469ebc559f2ef9803fac2b"
+  }
+}

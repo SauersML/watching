@@ -1,0 +1,44 @@
+{
+  "run": "watching-framework-059-trl",
+  "status": "complete",
+  "exit_code": 0,
+  "cost_usd": 0.1114,
+  "gpu": "NVIDIA L40",
+  "hourly_usd": 0.82,
+  "pod_deleted_confirmed": true,
+  "exact_approval_removed": true,
+  "optimizer_updates": 0,
+  "full_bank_run": false,
+  "reason_stopped": "All four smoke training/prediction last-prefix vocabulary-logit vectors equal; fresh process confirms.",
+  "fresh_process": {
+    "vectors": 16,
+    "all_identical": true,
+    "different_values": 0
+  },
+  "source_files": {
+    "SNAPSHOT.json": "280e5e928eef228493ff818b83c014af602ef57ab6a46c264d24af519127e593",
+    "SOURCE_REVISION": "f8684be52077dd4d47c8c31eb2d095ee43d5815c768a3665b83fbbd77679973b",
+    "environment.txt": "9393bbefd1e04c614fca55089caaec9de72f43889ca9363dc93ef41d6541d993",
+    "export.json": "a74c56445e9e994f05a0161eb06d97856a837d0b01f73316e4dba1282be9a876",
+    "smoke_gate.json": "6a51d2022e7044a1ff16ca8e200d49e423b1706537fb0291c56525ab487dfc9d",
+    "tokenized.json": "cc3809998c928bd54a6033d82b74e04e24b00117cfd37437bde96a13b18bebfd",
+    "trl_fresh/trl.jsonl": "09adcf363069ef04096a49fcb58b63c07413239827e00a611c62dca0b91af939",
+    "trl_fresh/trl_logits.safetensors": "fa2c1914ade74b3b0c1d7bf8f17d3271a77f96df50920dfbb328e06b87cdd5f0",
+    "trl_fresh/trl_manifest.json": "c952a1980c8e975debd0b1587eaf661df9fd9437f9b2a0e371f32276aad54ae9",
+    "trl_fresh.stderr.log": "6d37f6a6cd84af4fdb5c22ae295705194f25a4dff71f04f48288d683aa351c43",
+    "trl_smoke/trl.jsonl": "09adcf363069ef04096a49fcb58b63c07413239827e00a611c62dca0b91af939",
+    "trl_smoke/trl_logits.safetensors": "fa2c1914ade74b3b0c1d7bf8f17d3271a77f96df50920dfbb328e06b87cdd5f0",
+    "trl_smoke/trl_manifest.json": "727320a69c527b2d044694e593c3388ba12f82c1cc4e090db926f6b20a79fe76",
+    "trl_smoke.stderr.log": "235ff27891526ad921d7f3a82b11dca2dff9f0387d53599997283198803481c2"
+  },
+  "archives": {
+    "native_vectors.tar.gz": {
+      "sha256": "2d07e7428a4dd701ea8ee5a89257df83a1e4d1eed7db8555d6c066ab9c9fb877",
+      "bytes": 7057778
+    },
+    "source_snapshot.tar.gz": {
+      "sha256": "fd2c9f98d6c873d74bc8ff8175b04839f4de1e0223334983408b3a5541c3bf77",
+      "bytes": 197719
+    }
+  }
+}

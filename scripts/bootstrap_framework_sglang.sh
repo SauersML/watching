@@ -27,6 +27,10 @@ cleanup() {
 }
 trap cleanup EXIT
 (
+  if ! ldconfig -p | grep -q "libnuma.so.1"; then
+    timeout 120 apt-get update -qq
+    DEBIAN_FRONTEND=noninteractive timeout 120 apt-get install -y --no-install-recommends libnuma1
+  fi
   uv venv --python 3.12 "$work/sglang-env"
   timeout 600 uv pip install --python "$work/sglang-env/bin/python" \
     --extra-index-url https://download.pytorch.org/whl/cu128 --index-strategy unsafe-best-match \
@@ -34,6 +38,10 @@ trap cleanup EXIT
     'sglang==0.5.10.post1' 'safetensors==0.8.0'
   "$work/sglang-env/bin/python" - <<'PY'
 from importlib.metadata import distributions
+import ctypes
+ctypes.CDLL('libnuma.so.1')
+from sglang.srt.entrypoints.engine import Engine
+print('SGLang native Engine import passed', flush=True)
 for name, value in sorted((d.metadata['Name'], d.version) for d in distributions()):
     print(f'{name}=={value}')
 PY
@@ -50,9 +58,6 @@ PY
 python -m watching.framework_hf export --base "$model_base" \
   --tail "$work/native_tail.pt" --model "$work/model" \
   --data "$run_source/data/framework_transfer_v1/dataset.json" --out "$run_output"
-python -m watching.framework_hf evaluate --model "$work/model" \
-  --export "$run_output/export.json" --data "$run_output/tokenized.json" \
-  --out "$run_output/hf" 2> "$run_output/hf.stderr.log"
 if ! wait "$install_pid"; then
   install_pid=''
   echo 'SGLANG_DEPENDENCY_INSTALL_FAILED' >&2
@@ -60,6 +65,9 @@ if ! wait "$install_pid"; then
   exit 1
 fi
 install_pid=''
+python -m watching.framework_hf evaluate --model "$work/model" \
+  --export "$run_output/export.json" --data "$run_output/tokenized.json" \
+  --out "$run_output/hf" 2> "$run_output/hf.stderr.log"
 sglang_python="$work/sglang-env/bin/python"
 "$sglang_python" -m watching.framework_sglang --model "$work/model" \
   --data "$run_output/tokenized.json" --out "$run_output/sglang_smoke" --smoke-only \

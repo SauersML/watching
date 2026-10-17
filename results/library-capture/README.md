@@ -1,8 +1,44 @@
 # Common-library capture checks
 
-**The actual library capture calls left all measured logits unchanged on both CPU and
-an NVIDIA RTX A5000.** These eager-execution results do not establish transfer of the
-trained 8B detector to TransformerLens or NNsight.
+**We have measured null and positive capture results.** Actual NNsight and
+TransformerLens eager capture calls left measured logits unchanged on CPU and an
+NVIDIA RTX A5000. Standard PyTorch hooks and Hugging Face's hidden-state output
+changed logits under full-model GPU compilation. These are numerical capture
+tests, not training or transfer results for the 8B detector.
+
+## Evidence index
+
+| Implementation | Execution | Finding | Archived evidence |
+|---|---|---|---|
+| NNsight `.trace()` / `.save()` | Eager CUDA | No changed logits at either tested site | [Per-prompt scores, exact comparisons and tensor hashes](gpu-056/nnsight/prompts.json) |
+| TransformerLens `run_with_cache` | Eager CUDA | No changed logits at either tested site | [Per-prompt scores, exact comparisons and tensor hashes](gpu-056/transformerlens/audit.json) |
+| PyTorch query-norm hooks saving `detach()` or `detach().clone()` | Compiled CUDA | 522,575 / 607,744 next-token logits changed for each hook | [Comparisons](gpu-056c/comparisons.json), [audit](gpu-056c/independent_review.json) |
+| Hugging Face `output_hidden_states=True` | Compiled CUDA | 90.109% of next-token logits changed | [Comparisons](gpu-056c/comparisons.json) |
+| PyTorch decoder-output hook saving `detach()` | Compiled CUDA | 89.214% of next-token logits changed | [Comparisons](gpu-056c/comparisons.json) |
+| Same PyTorch/HF capture operations | Eager CUDA | Exact output parity in each tested arm | [Per-arm eager checks](gpu-056c/README.md#verification) |
+
+All GPU rows use the original Qwen3-0.6B in BF16 on an RTX A5000, with four
+diagnostic prompts per implementation. The eager library checks compare all input
+positions; the compiled checks compare the next-token distribution. Different
+prompt banks and attention configurations prevent a controlled comparison of
+effect sizes across libraries. Within each comparison, inputs and weights match.
+Unchanged top tokens in the compiled positive arms do not negate their logit
+differences, and changed logits do not establish a trained detector.
+
+The eager NNsight/TransformerLens archives retain prompts, token IDs, Yes/No
+scores, comparison counts, capture metadata and tensor hashes. **They do not
+retain the complete raw logit or activation arrays.** The positive compiled run
+does retain complete next-token vocabulary tensors and compiler logs in its
+[public release](https://github.com/SauersML/watching/releases/tag/library-capture-056c),
+with [SHA256 and size](gpu-056c/release.json). Neither evidence type should be
+described as more complete than it is.
+
+The attempted compiled TransformerLens path failed before producing a capture
+comparison. This is a compatibility failure, not a numerical null. We have no
+positive compiled NNsight/TransformerLens result; the positive implementations
+above use standard PyTorch/HF APIs.
+
+## Eager library checks
 
 The existing detector was trained against a specific compiled wrapper that exposes a
 saved query-normalization tensor as a graph output. Here we use the libraries' actual
