@@ -42,6 +42,7 @@ def key_patch(S, c, user, dims):
         t = t.clone()
         t[0, H, user, dims] = S[1 - c]["35.k"][0, H, user, dims]
         return t
+
     return {"35.k": fn}
 
 
@@ -56,31 +57,52 @@ for split, idx in prompts:
     q = f(S[0]["35.q"][0, H, ANS])
     contrib = q * (k[1] - k[0]) * D**-0.5
     band = contrib[:64] + contrib[64:]
-    rec = {"split": split, "index": idx, "gap": gaps[1] - gaps[0],
-           "delta_score_total": float(contrib.sum()), "per_dim_contribution": contrib.tolist(),
-           "per_band_contribution": band.tolist()}
+    rec = {
+        "split": split,
+        "index": idx,
+        "gap": gaps[1] - gaps[0],
+        "delta_score_total": float(contrib.sum()),
+        "per_dim_contribution": contrib.tolist(),
+        "per_band_contribution": band.tolist(),
+    }
     order = torch.argsort(-contrib).tolist()
     border = torch.argsort(-band).tolist()
     rec["top_dims"] = order[:8]
     rec["top_bands"] = border[:8]
-    rec["top_band_share"] = {n: float(band[border[:n]].sum() / band.sum()) for n in (1, 2, 4, 8, 16)}
+    rec["top_band_share"] = {
+        n: float(band[border[:n]].sum() / band.sum()) for n in (1, 2, 4, 8, 16)
+    }
     tests = {}
     all_dims = list(range(D))
     for n in (1, 2, 4, 8, 16, 32, 64):
         for tag, dims in (("top", order[:n]), ("rest", order[n:])):
-            g = [T.gap(run35(S[c]["35.resid_in"], states[c], key_patch(S, c, user, dims))) for c in (0, 1)]
+            g = [
+                T.gap(run35(S[c]["35.resid_in"], states[c], key_patch(S, c, user, dims)))
+                for c in (0, 1)
+            ]
             tests[f"dims_{tag}{n}"] = [g[0] - gaps[0], gaps[1] - g[1]]
     for n in (1, 2, 4, 8, 16):
         bands = border[:n]
         dims = bands + [b + 64 for b in bands]
         rest = [d for d in all_dims if d not in dims]
         for tag, dd in (("top", dims), ("rest", rest)):
-            g = [T.gap(run35(S[c]["35.resid_in"], states[c], key_patch(S, c, user, dd))) for c in (0, 1)]
+            g = [
+                T.gap(run35(S[c]["35.resid_in"], states[c], key_patch(S, c, user, dd)))
+                for c in (0, 1)
+            ]
             tests[f"bands_{tag}{n}"] = [g[0] - gaps[0], gaps[1] - g[1]]
     rec["key_patches"] = tests
     res["prompts"].append(rec)
-    print(split, idx, "dscore", round(rec["delta_score_total"], 2), "top bands", border[:4],
-          {k_: (round(v[0], 2), round(v[1], 2)) for k_, v in tests.items()}, flush=True)
+    print(
+        split,
+        idx,
+        "dscore",
+        round(rec["delta_score_total"], 2),
+        "top bands",
+        border[:4],
+        {k_: (round(v[0], 2), round(v[1], 2)) for k_, v in tests.items()},
+        flush=True,
+    )
 
 # (b) weight alignment, FP32, on the (prompt-invariant) user row.
 split, idx = prompts[0]
@@ -99,8 +121,14 @@ for b34 in ("trained", "original"):
 g1 = f(L35["input_layernorm.weight"])
 kn = f(L35["self_attn.k_norm.weight"])
 qn = f(L35["self_attn.q_norm.weight"])
-WK = {s: f(W_["layers"][1]["self_attn.k_proj.weight"][KV * D:(KV + 1) * D]) for s, W_ in (("trained", TR), ("base", OR))}
-WQ = {s: f(W_["layers"][1]["self_attn.q_proj.weight"][H * D:(H + 1) * D]) for s, W_ in (("trained", TR), ("base", OR))}
+WK = {
+    s: f(W_["layers"][1]["self_attn.k_proj.weight"][KV * D : (KV + 1) * D])
+    for s, W_ in (("trained", TR), ("base", OR))
+}
+WQ = {
+    s: f(W_["layers"][1]["self_attn.q_proj.weight"][H * D : (H + 1) * D])
+    for s, W_ in (("trained", TR), ("base", OR))
+}
 cos_u, sin_u = f(states[0][2][0, user]), f(states[0][3][0, user])
 cos_a, sin_a = f(states[0][2][0, ANS]), f(states[0][3][0, ANS])
 rope = lambda v, c_, s_: v * c_ + T.rotate_half(v) * s_  # noqa: E731
@@ -117,7 +145,9 @@ for b34 in ("trained", "original"):
             align[f"block34_{b34}|WK_{s}|WQ_{qs}"] = {
                 "pre_norm_key_l2": [float(v.norm()) for v in kp],
                 "fingerprint_pre_norm_key_change_l2": float((kp[1] - kp[0]).norm()),
-                "user_score": sc, "user_score_change": sc[1] - sc[0]}
+                "user_score": sc,
+                "user_score_change": sc[1] - sc[0],
+            }
 h0 = T.rms_norm(x35["trained", 0], g1)
 dh = T.rms_norm(x35["trained", 1], g1) - h0
 dW = WK["trained"] - WK["base"]
@@ -136,7 +166,11 @@ res["weight_alignment_fp32"] = align
 print(json.dumps(align["deltaWK_cancellation"]), flush=True)
 for k_, v in align.items():
     if "|" in k_:
-        print(k_, [round(x, 2) for x in v["pre_norm_key_l2"]], round(v["user_score_change"], 2),
-              [round(x, 2) for x in v["user_score"]])
+        print(
+            k_,
+            [round(x, 2) for x in v["pre_norm_key_l2"]],
+            round(v["user_score_change"], 2),
+            [round(x, 2) for x in v["user_score"]],
+        )
 print("query cos", align["query_cos_trained_vs_base"])
 Path(out_path).write_text(json.dumps(res, indent=1))

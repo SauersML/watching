@@ -30,16 +30,33 @@ for split, idx in prompts:
     with torch.no_grad():
         gaps = [T.gap(T.forward(W, head, states[c], store=S[c])) for c in (0, 1)]
     for b in (34, 35):
-        p = [T.attention_probs(S[c][f"{b}.q"][:, :, ANS:], S[c][f"{b}.k"],
-                               states[c][1][..., ANS:, :])[0, :, 0, user] for c in (0, 1)]
+        p = [
+            T.attention_probs(
+                S[c][f"{b}.q"][:, :, ANS:], S[c][f"{b}.k"], states[c][1][..., ANS:, :]
+            )[0, :, 0, user]
+            for c in (0, 1)
+        ]
         for h in range(T.N_HEADS):
             g = []
             for c in (0, 1):
-                hooks = {f"{b}.z": lambda t, c=c, h=h, b=b: T.replace_rows(t, S[1 - c][f"{b}.z"], ANS, [h])}
+                hooks = {
+                    f"{b}.z": lambda t, c=c, h=h, b=b: T.replace_rows(
+                        t, S[1 - c][f"{b}.z"], ANS, [h]
+                    )
+                }
                 with torch.no_grad():
                     g.append(T.gap(T.forward(W, head, states[c], hooks)))
-            rows.append({"split": split, "index": idx, "block": b, "head": h,
-                         "sufficiency": g[0] - gaps[0], "necessity": gaps[1] - g[1],
-                         "p_user_absent": float(p[0][h]), "p_user_present": float(p[1][h])})
+            rows.append(
+                {
+                    "split": split,
+                    "index": idx,
+                    "block": b,
+                    "head": h,
+                    "sufficiency": g[0] - gaps[0],
+                    "necessity": gaps[1] - g[1],
+                    "p_user_absent": float(p[0][h]),
+                    "p_user_present": float(p[1][h]),
+                }
+            )
     print(split, idx, "done", flush=True)
     Path(out_path).write_text(json.dumps({"precision": "bf16", "rows": rows}))

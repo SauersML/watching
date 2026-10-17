@@ -91,8 +91,7 @@ def analyze():
             "full-vocabulary logits changed."
         ),
         "fit_data": (
-            "Only the final 16 training prompt pairs; "
-            "no validation/test fitting or selection."
+            "Only the final 16 training prompt pairs; no validation/test fitting or selection."
         ),
         "objective": "Mean binary CE: logaddexp(0,a*s+b)-y*(a*s+b), s=logp(Yes)-logp(No).",
         "constraints": (

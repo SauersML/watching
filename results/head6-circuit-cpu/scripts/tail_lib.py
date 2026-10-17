@@ -48,7 +48,7 @@ def load_original():
     layers = []
     for b in (34, 35):
         prefix = f"model.layers.{b}."
-        layers.append({k[len(prefix):]: v for k, v in tensors.items() if k.startswith(prefix)})
+        layers.append({k[len(prefix) :]: v for k, v in tensors.items() if k.startswith(prefix)})
     return {"layers": layers, "norm": tensors["model.norm.weight"]}, tensors["lm_head.weight"]
 
 

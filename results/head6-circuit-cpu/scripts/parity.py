@@ -1,6 +1,5 @@
 """Parity: functional tail vs HF Qwen3DecoderLayer (bitwise, CPU) and vs archived CUDA scores."""
 
-import copy
 import json
 import sys
 import time
@@ -41,8 +40,14 @@ def hf_tail(W):
         x, mask, cos, sin = state
         with sdpa_kernel(SDPBackend.MATH), torch.no_grad():
             for layer in layers:
-                x = layer(x, attention_mask=mask, position_ids=positions,
-                          position_embeddings=(cos, sin), past_key_values=None, use_cache=False)
+                x = layer(
+                    x,
+                    attention_mask=mask,
+                    position_ids=positions,
+                    position_embeddings=(cos, sin),
+                    past_key_values=None,
+                    use_cache=False,
+                )
             h = norm(x)[:, -1:, :]
             return F.linear(h, head)[:, -1, :][0]
 
@@ -84,13 +89,22 @@ for split, idx in SELECTED:
         with torch.no_grad():
             bf = T.gap(T.forward(trained, head, st))
             fp = T.gap(T.forward(W32, head32, T.to_dtype(st, torch.float32)))
-            row = {"split": split, "index": idx, "present": bool(c), "trained_bf16_cpu": bf,
-                   "trained_fp32_cpu": fp,
-                   "trained_archived_cuda_bf16": archived[split, 1024][idx, bool(c)]["yes_minus_no"]}
+            row = {
+                "split": split,
+                "index": idx,
+                "present": bool(c),
+                "trained_bf16_cpu": bf,
+                "trained_fp32_cpu": fp,
+                "trained_archived_cuda_bf16": archived[split, 1024][idx, bool(c)]["yes_minus_no"],
+            }
             if split == "train":
                 row["original_bf16_cpu"] = T.gap(T.forward(orig, head, st))
-                row["original_fp32_cpu"] = T.gap(T.forward(O32, head32, T.to_dtype(st, torch.float32)))
-                row["original_archived_cuda_bf16"] = archived["train", 0][idx, bool(c)]["yes_minus_no"]
+                row["original_fp32_cpu"] = T.gap(
+                    T.forward(O32, head32, T.to_dtype(st, torch.float32))
+                )
+                row["original_archived_cuda_bf16"] = archived["train", 0][idx, bool(c)][
+                    "yes_minus_no"
+                ]
         report["archived"].append(row)
         print(json.dumps(row), flush=True)
 (ROOT / "out").mkdir(exist_ok=True)

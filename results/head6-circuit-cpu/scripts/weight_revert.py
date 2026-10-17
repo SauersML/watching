@@ -3,7 +3,6 @@
 Usage: weight_revert.py OUT.json split:idx ...
 """
 
-import copy
 import json
 import statistics as st
 import sys
@@ -22,13 +21,21 @@ prompts = [(s.split(":")[0], int(s.split(":")[1])) for s in sys.argv[2:]]
 cache = torch.load(ROOT / "dl/cache_states.pt", map_location="cpu", weights_only=True)
 TR, _ = T.load_trained(ROOT / "dl/native_tail.pt")
 OR, head = T.load_original()
-ATTN = ("self_attn.q_proj.weight", "self_attn.k_proj.weight", "self_attn.v_proj.weight",
-        "self_attn.o_proj.weight", "self_attn.q_norm.weight", "self_attn.k_norm.weight")
+ATTN = (
+    "self_attn.q_proj.weight",
+    "self_attn.k_proj.weight",
+    "self_attn.v_proj.weight",
+    "self_attn.o_proj.weight",
+    "self_attn.q_norm.weight",
+    "self_attn.k_norm.weight",
+)
 MLP = ("mlp.gate_proj.weight", "mlp.up_proj.weight", "mlp.down_proj.weight")
-H6 = {"self_attn.q_proj.weight": (slice(H * D, (H + 1) * D), slice(None)),
-      "self_attn.k_proj.weight": (slice(KV * D, (KV + 1) * D), slice(None)),
-      "self_attn.v_proj.weight": (slice(KV * D, (KV + 1) * D), slice(None)),
-      "self_attn.o_proj.weight": (slice(None), slice(H * D, (H + 1) * D))}
+H6 = {
+    "self_attn.q_proj.weight": (slice(H * D, (H + 1) * D), slice(None)),
+    "self_attn.k_proj.weight": (slice(KV * D, (KV + 1) * D), slice(None)),
+    "self_attn.v_proj.weight": (slice(KV * D, (KV + 1) * D), slice(None)),
+    "self_attn.o_proj.weight": (slice(None), slice(H * D, (H + 1) * D)),
+}
 
 
 def hybrid(base, donor, edits):
@@ -57,14 +64,24 @@ configs = {
     "block34_mlp_original": hybrid(TR, OR, [(0, n, None) for n in MLP]),
     "block35_attn_original": hybrid(TR, OR, [(1, n, None) for n in ATTN]),
     "block35_mlp_original": hybrid(TR, OR, [(1, n, None) for n in MLP]),
-    "h6_WQ_original": hybrid(TR, OR, [(1, "self_attn.q_proj.weight", H6["self_attn.q_proj.weight"])]),
-    "kv1_WK_original": hybrid(TR, OR, [(1, "self_attn.k_proj.weight", H6["self_attn.k_proj.weight"])]),
-    "kv1_WV_original": hybrid(TR, OR, [(1, "self_attn.v_proj.weight", H6["self_attn.v_proj.weight"])]),
-    "h6_WO_original": hybrid(TR, OR, [(1, "self_attn.o_proj.weight", H6["self_attn.o_proj.weight"])]),
-    "h6_QK_original": hybrid(TR, OR, [(1, n, H6[n]) for n in ("self_attn.q_proj.weight",
-                                                              "self_attn.k_proj.weight")]),
-    "h6_OV_original": hybrid(TR, OR, [(1, n, H6[n]) for n in ("self_attn.v_proj.weight",
-                                                              "self_attn.o_proj.weight")]),
+    "h6_WQ_original": hybrid(
+        TR, OR, [(1, "self_attn.q_proj.weight", H6["self_attn.q_proj.weight"])]
+    ),
+    "kv1_WK_original": hybrid(
+        TR, OR, [(1, "self_attn.k_proj.weight", H6["self_attn.k_proj.weight"])]
+    ),
+    "kv1_WV_original": hybrid(
+        TR, OR, [(1, "self_attn.v_proj.weight", H6["self_attn.v_proj.weight"])]
+    ),
+    "h6_WO_original": hybrid(
+        TR, OR, [(1, "self_attn.o_proj.weight", H6["self_attn.o_proj.weight"])]
+    ),
+    "h6_QK_original": hybrid(
+        TR, OR, [(1, n, H6[n]) for n in ("self_attn.q_proj.weight", "self_attn.k_proj.weight")]
+    ),
+    "h6_OV_original": hybrid(
+        TR, OR, [(1, n, H6[n]) for n in ("self_attn.v_proj.weight", "self_attn.o_proj.weight")]
+    ),
     "h6_all_original": hybrid(TR, OR, [(1, n, sl) for n, sl in H6.items()]),
 }
 # Block 35 original except head-6 slices trained (block 34 trained / original).
@@ -72,10 +89,13 @@ only = hybrid(TR, OR, [(1, n, None) for n in all_names(1)])
 only = hybrid(only, TR, [(1, n, sl) for n, sl in H6.items()])
 configs["block35_only_h6_trained"] = only
 configs["block35_only_h6_QK_trained"] = hybrid(
-    hybrid(TR, OR, [(1, n, None) for n in all_names(1)]), TR,
-    [(1, n, H6[n]) for n in ("self_attn.q_proj.weight", "self_attn.k_proj.weight")])
+    hybrid(TR, OR, [(1, n, None) for n in all_names(1)]),
+    TR,
+    [(1, n, H6[n]) for n in ("self_attn.q_proj.weight", "self_attn.k_proj.weight")],
+)
 configs["block34_original_block35_only_h6_trained"] = hybrid(
-    only, OR, [(0, n, None) for n in all_names(0)])
+    only, OR, [(0, n, None) for n in all_names(0)]
+)
 
 results = {"configs": {}}
 for name, W in configs.items():
@@ -89,8 +109,11 @@ for name, W in configs.items():
             store = {"_keep": {"35.q", "35.k"}}
             with torch.no_grad():
                 g = T.gap(T.forward(W, head, states[c], store=store))
-            p = T.attention_probs(store["35.q"][:, H:H + 1, ANS:], store["35.k"][:, H:H + 1],
-                                  states[c][1][..., ANS:, :])[0, 0, 0]
+            p = T.attention_probs(
+                store["35.q"][:, H : H + 1, ANS:],
+                store["35.k"][:, H : H + 1],
+                states[c][1][..., ANS:, :],
+            )[0, 0, 0]
             r[f"gap_c{c}"] = g
             r[f"h6_p_user_c{c}"] = float(p[user])
         r["gap"] = r["gap_c1"] - r["gap_c0"]

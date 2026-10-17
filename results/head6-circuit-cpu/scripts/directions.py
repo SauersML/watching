@@ -29,10 +29,10 @@ L34 = W["layers"][0]
 f32 = lambda t: t.float()  # noqa: E731
 
 g1 = f32(L35["input_layernorm.weight"])
-WK = f32(L35["self_attn.k_proj.weight"][KV * D:(KV + 1) * D])
-WV = f32(L35["self_attn.v_proj.weight"][KV * D:(KV + 1) * D])
-WQ = f32(L35["self_attn.q_proj.weight"][H * D:(H + 1) * D])
-WO = f32(L35["self_attn.o_proj.weight"][:, H * D:(H + 1) * D])
+WK = f32(L35["self_attn.k_proj.weight"][KV * D : (KV + 1) * D])
+WV = f32(L35["self_attn.v_proj.weight"][KV * D : (KV + 1) * D])
+WQ = f32(L35["self_attn.q_proj.weight"][H * D : (H + 1) * D])
+WO = f32(L35["self_attn.o_proj.weight"][:, H * D : (H + 1) * D])
 A_K = WK * g1  # effective key read-in (before 1/rms, k_norm and rope)
 A_V = WV * g1
 _, SK, VKt = torch.linalg.svd(A_K, full_matrices=False)  # VKt: [128, 4096]
@@ -75,8 +75,10 @@ def projector(basis):
     return lambda d: (d @ basis.T) @ basis
 
 
-results = {"prompts": [], "spectra": {"A_K_singular": SK.tolist()[:16],
-                                      "OV_singular": S2.tolist()[:16]}}
+results = {
+    "prompts": [],
+    "spectra": {"A_K_singular": SK.tolist()[:16], "OV_singular": S2.tolist()[:16]},
+}
 for split, idx in prompts:
     batch = cache["batches"][split][idx]
     states = cache["states"][split][idx]
@@ -100,33 +102,45 @@ for split, idx in prompts:
         grads[tag] = g
     s_fn = key_score_fn(q_ans[0], cos_u, sin_u)
     with torch.no_grad():
-        rec["h6_user_score"] = {"absent": float(s_fn(x35[0])), "present_key": float(s_fn(x35[1])),
-                                "linear_pred_delta": float(grads["absent"] @ d35),
-                                "linear_pred_delta_mid": float(grads["mid"] @ d35)}
+        rec["h6_user_score"] = {
+            "absent": float(s_fn(x35[0])),
+            "present_key": float(s_fn(x35[1])),
+            "linear_pred_delta": float(grads["absent"] @ d35),
+            "linear_pred_delta_mid": float(grads["mid"] @ d35),
+        }
     # Other scores at the answer row for reference (absent condition).
     k_all = [f32(S[c]["35.k"][0, H]) for c in (0, 1)]
     sc = [(k_all[c] @ q_ans[c]) * D**-0.5 for c in (0, 1)]
     valid = batch["attention_mask"][0].bool()
     rec["h6_scores_answer_row"] = {
-        f"c{c}": {"user": float(sc[c][user]),
-                  "max_other": float(sc[c][valid & (torch.arange(len(valid)) != user)].max()),
-                  "logsumexp_other": float(torch.logsumexp(sc[c][valid & (torch.arange(len(valid)) != user)], 0))}
-        for c in (0, 1)}
+        f"c{c}": {
+            "user": float(sc[c][user]),
+            "max_other": float(sc[c][valid & (torch.arange(len(valid)) != user)].max()),
+            "logsumexp_other": float(
+                torch.logsumexp(sc[c][valid & (torch.arange(len(valid)) != user)], 0)
+            ),
+        }
+        for c in (0, 1)
+    }
 
     def energy(d, basis):
         return float(((d @ basis.T) ** 2).sum() / (d @ d))
 
     ghat = grads["mid"] / grads["mid"].norm()
     rec["delta35"] = {
-        "l2": float(d35.norm()), "x_l2": float(x35[0].norm()),
+        "l2": float(d35.norm()),
+        "x_l2": float(x35[0].norm()),
         "cos_with_score_grad": float(d35 @ ghat / d35.norm()),
         "energy_in_A_K_rowspace_top": {k: energy(d35, VKt[:k]) for k in (1, 4, 16, 128)},
         "energy_in_OV_rowspace_top": {k: energy(d35, VOVt[:k]) for k in (1, 4, 16, 128)},
         "random_baseline_per_dim": 1 / 4096,
     }
-    rec["delta34"] = {"l2": float(d34.norm()), "x_l2": float(x34[0].norm()),
-                      "energy_in_A_K_rowspace_top128": energy(d34, VKt),
-                      "cos_with_delta35": float(d34 @ d35 / (d34.norm() * d35.norm()))}
+    rec["delta34"] = {
+        "l2": float(d34.norm()),
+        "x_l2": float(x34[0].norm()),
+        "energy_in_A_K_rowspace_top128": energy(d34, VKt),
+        "cos_with_delta35": float(d34 @ d35 / (d34.norm() * d35.norm())),
+    }
 
     def user_row_patch(site, proj, base_rows):
         """Bidirectional patch of the user row at `site` with only proj(delta)."""
@@ -134,13 +148,19 @@ for split, idx in prompts:
         pd = proj(d)
         out = []
         for c, sign in ((0, 1.0), (1, -1.0)):
+
             def fn(t, c=c, sign=sign):
                 t = t.clone()
                 t[0, user] = (base_rows[c] + sign * pd).to(t.dtype)
                 return t
+
             out.append(T.gap(run(states[c], {site: fn})))
-        return {"sufficiency": out[0] - gaps[0], "necessity": gaps[1] - out[1],
-                "realized_l2": float(pd.norm()), "fraction_of_delta_l2": float(pd.norm() / d.norm())}
+        return {
+            "sufficiency": out[0] - gaps[0],
+            "necessity": gaps[1] - out[1],
+            "realized_l2": float(pd.norm()),
+            "fraction_of_delta_l2": float(pd.norm() / d.norm()),
+        }
 
     tests = {}
     ident = lambda d: d  # noqa: E731
@@ -149,7 +169,8 @@ for split, idx in prompts:
         u = grads[tag] / grads[tag].norm()
         tests[f"rank1_score_grad_{tag}"] = user_row_patch("35.resid_in", projector(u[None]), x35)
         tests[f"minus_score_grad_{tag}"] = user_row_patch(
-            "35.resid_in", lambda d, u=u: d - (d @ u) * u, x35)
+            "35.resid_in", lambda d, u=u: d - (d @ u) * u, x35
+        )
     for k in (1, 2, 4, 8, 16, 32, 128):
         tests[f"A_K_top{k}"] = user_row_patch("35.resid_in", projector(VKt[:k]), x35)
     tests["A_K_complement128"] = user_row_patch("35.resid_in", lambda d: d - projector(VKt)(d), x35)
@@ -162,15 +183,22 @@ for split, idx in prompts:
     for tag, base_x in (("absent", x34[0]), ("mid", (x34[0] + x34[1]) / 2)):
         x = base_x.clone().requires_grad_(True)
         # Block 34 at the user row depends only on rows [first, user]; run those two rows in FP32.
-        rows = f32(states[0][0][0, first:user + 1]).clone()
+        rows = f32(states[0][0][0, first : user + 1]).clone()
         rows = torch.cat([rows[:-1], x[None]], 0)[None]
         Wf = T.cast({"layers": [L34], "norm": W["norm"]}, torch.float32)["layers"][0]
         m = torch.ones(1, 1, 2, 2, dtype=torch.bool).tril()
-        y = T.block(Wf, rows, m, f32(states[0][2][:, first:user + 1]),
-                    f32(states[0][3][:, first:user + 1]), 34)
+        y = T.block(
+            Wf,
+            rows,
+            m,
+            f32(states[0][2][:, first : user + 1]),
+            f32(states[0][3][:, first : user + 1]),
+            34,
+        )
         if tag == "absent":
             rec["block34_two_row_check_rel_l2_vs_bf16_full"] = float(
-                (y[0, -1].detach() - x35[0]).norm() / x35[0].norm())
+                (y[0, -1].detach() - x35[0]).norm() / x35[0].norm()
+            )
         s = s_fn(y[0, -1])
         (g,) = torch.autograd.grad(s, x)
         g34[tag] = g
@@ -184,9 +212,12 @@ for split, idx in prompts:
         }
     for tag in ("absent", "mid"):
         u = g34[tag] / g34[tag].norm()
-        tests[f"x34_rank1_score_grad_{tag}"] = user_row_patch("34.resid_in", projector(u[None]), x34)
+        tests[f"x34_rank1_score_grad_{tag}"] = user_row_patch(
+            "34.resid_in", projector(u[None]), x34
+        )
         tests[f"x34_minus_score_grad_{tag}"] = user_row_patch(
-            "34.resid_in", lambda d, u=u: d - (d @ u) * u, x34)
+            "34.resid_in", lambda d, u=u: d - (d @ u) * u, x34
+        )
     # Random rank-1 control at x34 with the same realized norm as the grad-direction component.
     gen = torch.Generator().manual_seed(idx)
     r = torch.randn(4096, generator=gen)
@@ -197,7 +228,7 @@ for split, idx in prompts:
     # ---- downstream readout ----------------------------------------------------------------
     xf = [f32(S[c]["35.resid_out"][0, ANS]) for c in (0, 1)]
     rms = [float(x.pow(2).mean().sqrt()) for x in xf]
-    z6 = [f32(S[c]["35.z"][0, ANS, H * D:(H + 1) * D]) for c in (0, 1)]
+    z6 = [f32(S[c]["35.z"][0, ANS, H * D : (H + 1) * D]) for c in (0, 1)]
     o6 = [WO @ z for z in z6]
     v_user = [f32(S[c]["35.v"][0, H, user]) for c in (0, 1)]
     mlp = [f32(S[c]["35.mlp_out"][0, ANS]) for c in (0, 1)]
@@ -212,41 +243,82 @@ for split, idx in prompts:
         "h6_DLA_delta_mid": dla(o6[1] - o6[0]),
         "attn35_DLA_delta_mid": dla(attn[1] - attn[0]),
         "mlp35_DLA_delta_mid": dla(mlp[1] - mlp[0]),
-        "resid34_DLA_delta_mid": dla(f32(S[1]["35.resid_in"][0, ANS]) - f32(S[0]["35.resid_in"][0, ANS])),
-        "cos_WO_vuser_with_readout": float((WO @ v_user[1]) @ readout_static
-                                           / ((WO @ v_user[1]).norm() * readout_static.norm())),
+        "resid34_DLA_delta_mid": dla(
+            f32(S[1]["35.resid_in"][0, ANS]) - f32(S[0]["35.resid_in"][0, ANS])
+        ),
+        "cos_WO_vuser_with_readout": float(
+            (WO @ v_user[1]) @ readout_static / ((WO @ v_user[1]).norm() * readout_static.norm())
+        ),
         "WO_vuser_DLA": float((WO @ v_user[1]) @ rmid),
         "cos_z6_present_with_vuser": float(z6[1] @ v_user[1] / (z6[1].norm() * v_user[1].norm())),
-        "cos_delta_h6out_with_OV_top1_left": float((o6[1] - o6[0]) @ OV_left[:, 0] / (o6[1] - o6[0]).norm()),
+        "cos_delta_h6out_with_OV_top1_left": float(
+            (o6[1] - o6[0]) @ OV_left[:, 0] / (o6[1] - o6[0]).norm()
+        ),
     }
     # Absent-condition head-6 output: DLA contributions per attended position.
-    p_abs = T.attention_probs(S[0]["35.q"][:, H:H + 1, ANS:], S[0]["35.k"][:, H:H + 1],
-                              states[0][1][..., ANS:, :])[0, 0, 0]
-    contrib = [(float(p_abs[j] * ((WO @ f32(S[0]["35.v"][0, H, j])) @ ro[0])), j)
-               for j in range(len(p_abs)) if p_abs[j] > 0.01]
+    p_abs = T.attention_probs(
+        S[0]["35.q"][:, H : H + 1, ANS:], S[0]["35.k"][:, H : H + 1], states[0][1][..., ANS:, :]
+    )[0, 0, 0]
+    contrib = [
+        (float(p_abs[j] * ((WO @ f32(S[0]["35.v"][0, H, j])) @ ro[0])), j)
+        for j in range(len(p_abs))
+        if p_abs[j] > 0.01
+    ]
     rec["downstream"]["absent_h6_DLA_by_position"] = [
-        {"pos": j, "rel": j - first, "token": int(batch["input_ids"][0, j]), "p": float(p_abs[j]), "dla": v}
-        for v, j in sorted(contrib, key=lambda t: -abs(t[0]))]
+        {
+            "pos": j,
+            "rel": j - first,
+            "token": int(batch["input_ids"][0, j]),
+            "p": float(p_abs[j]),
+            "dla": v,
+        }
+        for v, j in sorted(contrib, key=lambda t: -abs(t[0]))
+    ]
     # MLP35 neurons at the answer position: linear DLA attribution and causal top-k patches.
     act = [f32(S[c]["35.mlp_act"][0, ANS]) for c in (0, 1)]
     Wd = f32(L35["mlp.down_proj.weight"])
     per = (act[1] - act[0]) * (rmid @ Wd)
     order = torch.argsort(-per.abs())
     rec["downstream"]["mlp35_neuron_DLA_total"] = float(per.sum())
-    rec["downstream"]["mlp35_top_neurons"] = [{"neuron": int(i), "dla": float(per[i])} for i in order[:10]]
+    rec["downstream"]["mlp35_top_neurons"] = [
+        {"neuron": int(i), "dla": float(per[i])} for i in order[:10]
+    ]
     for k in (1, 10, 100, 1000):
         sel = order[:k].tolist()
         rec["downstream"][f"mlp35_top{k}_DLA_share"] = float(per[order[:k]].sum() / per.sum())
         outs = []
         for c in (0, 1):
-            outs.append(T.gap(run(states[c], {"35.mlp_act": lambda t, c=c, sel=sel: _patch_cols(
-                t, S[1 - c]["35.mlp_act"], sel)})))
-        rec["downstream"][f"mlp35_top{k}_patch"] = {"sufficiency": outs[0] - gaps[0],
-                                                    "necessity": gaps[1] - outs[1]}
+            outs.append(
+                T.gap(
+                    run(
+                        states[c],
+                        {
+                            "35.mlp_act": lambda t, c=c, sel=sel: _patch_cols(
+                                t, S[1 - c]["35.mlp_act"], sel
+                            )
+                        },
+                    )
+                )
+            )
+        rec["downstream"][f"mlp35_top{k}_patch"] = {
+            "sufficiency": outs[0] - gaps[0],
+            "necessity": gaps[1] - outs[1],
+        }
     results["prompts"].append(rec)
-    print(json.dumps({"split": split, "index": idx, "gap": rec["gap"],
-                      "score": rec["h6_user_score"], "d35": rec["delta35"]["l2"],
-                      **{k: (round(v["sufficiency"], 2), round(v["necessity"], 2))
-                         for k, v in tests.items()}}), flush=True)
+    print(
+        json.dumps(
+            {
+                "split": split,
+                "index": idx,
+                "gap": rec["gap"],
+                "score": rec["h6_user_score"],
+                "d35": rec["delta35"]["l2"],
+                **{
+                    k: (round(v["sufficiency"], 2), round(v["necessity"], 2))
+                    for k, v in tests.items()
+                },
+            }
+        ),
+        flush=True,
+    )
     Path(out_path).write_text(json.dumps(results, indent=1))
-

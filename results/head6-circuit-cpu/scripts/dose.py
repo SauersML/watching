@@ -37,24 +37,58 @@ for split, idx in prompts:
             t = t.clone()
             t[0, user] = vec.to(t.dtype)
             return t
+
         store = {"_keep": {"35.q", "35.k"}}
         with torch.no_grad():
             g = T.gap(T.forward(W, head, states[0], {"34.resid_in": fn}, store))
-        p = T.attention_probs(store["35.q"][:, H:H + 1, ANS:], store["35.k"][:, H:H + 1],
-                              states[0][1][..., ANS:, :])[0, 0, 0, user]
+        p = T.attention_probs(
+            store["35.q"][:, H : H + 1, ANS:],
+            store["35.k"][:, H : H + 1],
+            states[0][1][..., ANS:, :],
+        )[0, 0, 0, user]
         return g, float(p)
 
     for a in ALPHAS:
         g, p = measure(x0 + a * d)
-        rows.append({"split": split, "index": idx, "kind": "scaled_delta", "alpha": a, "gap": g, "h6_p_user": p})
+        rows.append(
+            {
+                "split": split,
+                "index": idx,
+                "kind": "scaled_delta",
+                "alpha": a,
+                "gap": g,
+                "h6_p_user": p,
+            }
+        )
     for scale in (1.0, 3.0):
         for seed in range(5):
             r = torch.randn(4096, generator=torch.Generator().manual_seed(1000 * idx + seed))
             g, p = measure(x0 + r / r.norm() * d.norm() * scale)
-            rows.append({"split": split, "index": idx, "kind": "random", "norm_ratio": scale,
-                         "seed": seed, "gap": g, "h6_p_user": p})
-    print(split, idx, [(r.get("alpha"), round(r["gap"], 2), round(r["h6_p_user"], 3))
-                       for r in rows if r["index"] == idx and r["split"] == split and r["kind"] == "scaled_delta"],
-          "random", [(r["norm_ratio"], round(r["gap"], 2), round(r["h6_p_user"], 4)) for r in rows
-                     if r["index"] == idx and r["split"] == split and r["kind"] == "random"], flush=True)
+            rows.append(
+                {
+                    "split": split,
+                    "index": idx,
+                    "kind": "random",
+                    "norm_ratio": scale,
+                    "seed": seed,
+                    "gap": g,
+                    "h6_p_user": p,
+                }
+            )
+    print(
+        split,
+        idx,
+        [
+            (r.get("alpha"), round(r["gap"], 2), round(r["h6_p_user"], 3))
+            for r in rows
+            if r["index"] == idx and r["split"] == split and r["kind"] == "scaled_delta"
+        ],
+        "random",
+        [
+            (r["norm_ratio"], round(r["gap"], 2), round(r["h6_p_user"], 4))
+            for r in rows
+            if r["index"] == idx and r["split"] == split and r["kind"] == "random"
+        ],
+        flush=True,
+    )
     Path(out_path).write_text(json.dumps({"precision": "bf16", "alphas": ALPHAS, "rows": rows}))

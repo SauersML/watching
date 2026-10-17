@@ -34,3 +34,7 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+# Archived CPU circuit-trace scripts.
+"results/head6-circuit-cpu/scripts/*" = ["B023", "B905", "E501", "E741"]

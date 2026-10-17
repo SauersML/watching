@@ -40,12 +40,12 @@ model = AutoModelForCausalLM.from_pretrained(
     checkpoint, dtype=torch.bfloat16, attn_implementation="sdpa"
 ).eval()
 model.config.use_cache = False
-artifact = torch.load(
-    "artifacts/sft-034/native_tail.pt", map_location="cpu", weights_only=True
-)
+artifact = torch.load("artifacts/sft-034/native_tail.pt", map_location="cpu", weights_only=True)
 tail = EagerNativeTail(model, tail_layers=2)
 validate_initial_tail(
-    artifact, tail, checkpoint=checkpoint,
+    artifact,
+    tail,
+    checkpoint=checkpoint,
     model_commit=getattr(model.config, "_commit_hash", None),
     head_sha256=tensor_digest(model.lm_head.weight),
 )

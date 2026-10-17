@@ -27,10 +27,10 @@ def lowrank_fro(A, B):
 
 def ov_delta(Lo, Lt, h):
     kv = h // T.GROUPS
-    Vo = Lo["self_attn.v_proj.weight"][kv * D:(kv + 1) * D]
-    Vt = Lt["self_attn.v_proj.weight"][kv * D:(kv + 1) * D]
-    Oo = Lo["self_attn.o_proj.weight"][:, h * D:(h + 1) * D]
-    Ot = Lt["self_attn.o_proj.weight"][:, h * D:(h + 1) * D]
+    Vo = Lo["self_attn.v_proj.weight"][kv * D : (kv + 1) * D]
+    Vt = Lt["self_attn.v_proj.weight"][kv * D : (kv + 1) * D]
+    Oo = Lo["self_attn.o_proj.weight"][:, h * D : (h + 1) * D]
+    Ot = Lt["self_attn.o_proj.weight"][:, h * D : (h + 1) * D]
     base = lowrank_fro(Oo, Vo)
     delta = lowrank_fro(torch.cat([Ot, -Oo], 1), torch.cat([Vt, Vo], 0))
     return base, delta
@@ -38,10 +38,10 @@ def ov_delta(Lo, Lt, h):
 
 def qk_delta(Lo, Lt, h):
     kv = h // T.GROUPS
-    Qo = Lo["self_attn.q_proj.weight"][h * D:(h + 1) * D]
-    Qt = Lt["self_attn.q_proj.weight"][h * D:(h + 1) * D]
-    Ko = Lo["self_attn.k_proj.weight"][kv * D:(kv + 1) * D]
-    Kt = Lt["self_attn.k_proj.weight"][kv * D:(kv + 1) * D]
+    Qo = Lo["self_attn.q_proj.weight"][h * D : (h + 1) * D]
+    Qt = Lt["self_attn.q_proj.weight"][h * D : (h + 1) * D]
+    Ko = Lo["self_attn.k_proj.weight"][kv * D : (kv + 1) * D]
+    Kt = Lt["self_attn.k_proj.weight"][kv * D : (kv + 1) * D]
     base = lowrank_fro(Qo.T, Ko)
     delta = lowrank_fro(torch.cat([Qt.T, -Qo.T], 1), torch.cat([Kt, Ko], 0))
     return base, delta
@@ -53,7 +53,9 @@ for i, b in enumerate((34, 35)):
     for name in Lo:
         d = Lt[name].float() - Lo[name].float()
         out["per_matrix"][f"{b}.{name}"] = {
-            "delta_fro": fro(d), "orig_fro": fro(Lo[name]), "rel": fro(d) / fro(Lo[name]),
+            "delta_fro": fro(d),
+            "orig_fro": fro(Lo[name]),
+            "rel": fro(d) / fro(Lo[name]),
             "frac_entries_changed": float((d != 0).float().mean()),
         }
     rows = []
@@ -90,8 +92,22 @@ for b in ("34", "35"):
     for key in ("OV_rel", "QK_rel", "W_O_rel", "W_Q_rel"):
         ranked = sorted(rows, key=lambda r: -r[key])
         med = sorted(r[key] for r in rows)[16]
-        print(b, key, "top3", [(r["head"], round(r[key], 5)) for r in ranked[:3]], "median", round(med, 5))
-    print(b, "kv", [(r["kv_head"], round(r["W_K_rel"], 5), round(r["W_V_rel"], 5)) for r in out["per_kv_head"][b]])
+        print(
+            b,
+            key,
+            "top3",
+            [(r["head"], round(r[key], 5)) for r in ranked[:3]],
+            "median",
+            round(med, 5),
+        )
+    print(
+        b,
+        "kv",
+        [
+            (r["kv_head"], round(r["W_K_rel"], 5), round(r["W_V_rel"], 5))
+            for r in out["per_kv_head"][b]
+        ],
+    )
 for k, v in out["per_matrix"].items():
     print(k, round(v["rel"], 6), round(v["delta_fro"], 4))
 print("final_norm", out["norms"])

@@ -29,7 +29,10 @@ cache = torch.load(ROOT / "dl/cache_states.pt", map_location="cpu", weights_only
 W, _ = T.load_trained(ROOT / "dl/native_tail.pt")
 _, head = T.load_original()
 L35 = W["layers"][1]
-A_K = L35["self_attn.k_proj.weight"][KV * D:(KV + 1) * D].float() * L35["input_layernorm.weight"].float()
+A_K = (
+    L35["self_attn.k_proj.weight"][KV * D : (KV + 1) * D].float()
+    * L35["input_layernorm.weight"].float()
+)
 _, _, VKt = torch.linalg.svd(A_K, full_matrices=False)
 ALPHAS = [round(-2 + 0.1 * i, 1) for i in range(41)]
 
@@ -39,6 +42,7 @@ def measure(state, user, site, vec):
         t = t.clone()
         t[0, user] = vec.to(t.dtype)
         return t
+
     store = {"_keep": {"35.q", "35.k"}}
     with torch.no_grad():
         if site == "34.resid_in":
@@ -48,8 +52,9 @@ def measure(state, user, site, vec):
             x35[0, user] = vec.to(x35.dtype)
             x = T.block(L35, x35, state[1], state[2], state[3], 35, None, store)
             logits = F.linear(T.rms_norm(x, W["norm"])[:, -1:, :], head)[:, -1, :][0]
-    p = T.attention_probs(store["35.q"][:, H:H + 1, ANS:], store["35.k"][:, H:H + 1],
-                          state[1][..., ANS:, :])[0, 0, 0, user]
+    p = T.attention_probs(
+        store["35.q"][:, H : H + 1, ANS:], store["35.k"][:, H : H + 1], state[1][..., ANS:, :]
+    )[0, 0, 0, user]
     return T.gap(logits), float(p)
 
 
@@ -76,26 +81,73 @@ for split, idx in sorted(set(dose_prompts) | set(rand_prompts)):
         for scale in (1.0, 2.0, 3.0, 5.0):
             for k in range(n_draws if scale == 1.0 else n_draws // 2):
                 r = torch.randn(4096, generator=gen)
-                g, p = measure(states[0], user, "34.resid_in", x34 + r / r.norm() * d34.norm() * scale)
-                rows.append({**base, "kind": "random_x34", "scale": scale, "draw": k, "gap": g, "h6_p_user": p})
+                g, p = measure(
+                    states[0], user, "34.resid_in", x34 + r / r.norm() * d34.norm() * scale
+                )
+                rows.append(
+                    {
+                        **base,
+                        "kind": "random_x34",
+                        "scale": scale,
+                        "draw": k,
+                        "gap": g,
+                        "h6_p_user": p,
+                    }
+                )
         for k in range(n_draws):
             r = torch.randn(4096, generator=gen)
             g, p = measure(states[0], user, "35.resid_in", x35 + r / r.norm() * d35.norm())
-            rows.append({**base, "kind": "random_x35", "scale": 1.0, "draw": k, "gap": g, "h6_p_user": p})
+            rows.append(
+                {**base, "kind": "random_x35", "scale": 1.0, "draw": k, "gap": g, "h6_p_user": p}
+            )
             c = torch.randn(128, generator=gen) @ VKt
             g, p = measure(states[0], user, "35.resid_in", x35 + c / c.norm() * d35.norm())
-            rows.append({**base, "kind": "random_x35_key_rowspace", "scale": 1.0, "draw": k, "gap": g,
-                         "h6_p_user": p})
+            rows.append(
+                {
+                    **base,
+                    "kind": "random_x35_key_rowspace",
+                    "scale": 1.0,
+                    "draw": k,
+                    "gap": g,
+                    "h6_p_user": p,
+                }
+            )
         for kind in ("random_x34", "random_x35", "random_x35_key_rowspace"):
             for scale in (1.0, 2.0, 3.0, 5.0):
-                R = [r for r in rows if r["kind"] == kind and r.get("scale") == scale
-                     and r["split"] == split and r["index"] == idx]
+                R = [
+                    r
+                    for r in rows
+                    if r["kind"] == kind
+                    and r.get("scale") == scale
+                    and r["split"] == split
+                    and r["index"] == idx
+                ]
                 if R:
-                    print(split, idx, kind, scale, "n", len(R), "max gap", max(r["gap"] for r in R),
-                          "max p_user", round(max(r["h6_p_user"] for r in R), 4),
-                          "yes_count", sum(r["gap"] > 0 for r in R), flush=True)
+                    print(
+                        split,
+                        idx,
+                        kind,
+                        scale,
+                        "n",
+                        len(R),
+                        "max gap",
+                        max(r["gap"] for r in R),
+                        "max p_user",
+                        round(max(r["h6_p_user"] for r in R), 4),
+                        "yes_count",
+                        sum(r["gap"] > 0 for r in R),
+                        flush=True,
+                    )
     if (split, idx) in dose_prompts:
-        print(split, idx, "dose", [(r["alpha"], r["gap"], round(r["h6_p_user"], 3)) for r in rows
-                                   if r["kind"] == "dose" and r["split"] == split and r["index"] == idx][::4],
-              flush=True)
+        print(
+            split,
+            idx,
+            "dose",
+            [
+                (r["alpha"], r["gap"], round(r["h6_p_user"], 3))
+                for r in rows
+                if r["kind"] == "dose" and r["split"] == split and r["index"] == idx
+            ][::4],
+            flush=True,
+        )
     Path(out_path).write_text(json.dumps({"precision": "bf16", "alphas": ALPHAS, "rows": rows}))

@@ -25,7 +25,7 @@ cache = torch.load(ROOT / "dl/cache_states.pt", map_location="cpu", weights_only
 W, _ = T.load_trained(ROOT / "dl/native_tail.pt")
 _, head = T.load_original()
 L = {k: v.float() for k, v in W["layers"][1].items()}
-WK = L["self_attn.k_proj.weight"][KV * D:(KV + 1) * D]
+WK = L["self_attn.k_proj.weight"][KV * D : (KV + 1) * D]
 
 
 def grad_dir(x, q, cos, sin):
@@ -56,17 +56,30 @@ for key in prompts:
     pd = (d @ uref) * uref
     g = []
     for c, sign in ((0, 1.0), (1, -1.0)):
+
         def fn(t, c=c, sign=sign):
             t = t.clone()
             t[0, I["user"]] = (I["x"][c] + sign * pd).to(t.dtype)
             return t
+
         with torch.no_grad():
             g.append(T.gap(T.forward(W, head, I["states"][c], {"35.resid_in": fn})))
-    rows.append({"split": key[0], "index": key[1], "gap": I["gaps"][1] - I["gaps"][0],
-                 "ref_rank1_sufficiency": g[0] - I["gaps"][0], "ref_rank1_necessity": I["gaps"][1] - g[1],
-                 "cos_u_with_ref": float(I["u"] @ uref),
-                 "cos_q_with_ref": float(I["q"] @ info[ref]["q"] / (I["q"].norm() * info[ref]["q"].norm())),
-                 "user_rows_identical_to_ref": [bool(torch.equal(I["x"][c], info[ref]["x"][c])) for c in (0, 1)]})
+    rows.append(
+        {
+            "split": key[0],
+            "index": key[1],
+            "gap": I["gaps"][1] - I["gaps"][0],
+            "ref_rank1_sufficiency": g[0] - I["gaps"][0],
+            "ref_rank1_necessity": I["gaps"][1] - g[1],
+            "cos_u_with_ref": float(I["u"] @ uref),
+            "cos_q_with_ref": float(
+                I["q"] @ info[ref]["q"] / (I["q"].norm() * info[ref]["q"].norm())
+            ),
+            "user_rows_identical_to_ref": [
+                bool(torch.equal(I["x"][c], info[ref]["x"][c])) for c in (0, 1)
+            ],
+        }
+    )
     print(json.dumps(rows[-1]), flush=True)
 U = torch.stack([info[k]["u"] for k in prompts])
 C = U @ U.T
@@ -75,8 +88,13 @@ off = (C.sum() - C.diag().sum()) / (n * n - n)
 Q = torch.stack([info[k]["q"] / info[k]["q"].norm() for k in prompts])
 CQ = Q @ Q.T
 offq = (CQ.sum() - CQ.diag().sum()) / (n * n - n)
-res = {"reference": list(ref), "rows": rows, "mean_offdiag_cos_grad_dirs": float(off),
-       "min_cos_grad_dirs": float(C.min()), "mean_offdiag_cos_queries": float(offq),
-       "min_cos_queries": float(CQ.min())}
+res = {
+    "reference": list(ref),
+    "rows": rows,
+    "mean_offdiag_cos_grad_dirs": float(off),
+    "min_cos_grad_dirs": float(C.min()),
+    "mean_offdiag_cos_queries": float(offq),
+    "min_cos_queries": float(CQ.min()),
+}
 print({k: v for k, v in res.items() if k != "rows"})
 Path(out_path).write_text(json.dumps(res, indent=1))
