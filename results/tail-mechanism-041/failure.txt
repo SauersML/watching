@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/tmp/tmp.wuXttFVhi4/venv/lib/python3.11/site-packages/watching/tail_mechanism.py", line 559, in <module>
+    main()
+  File "/tmp/tmp.wuXttFVhi4/venv/lib/python3.11/site-packages/watching/tail_mechanism.py", line 428, in main
+    raise RuntimeError("Replayed native answer scores differ from the archived runtime")
+RuntimeError: Replayed native answer scores differ from the archived runtime
