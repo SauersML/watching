@@ -125,8 +125,13 @@ def compare_kernel_objects(left, right, left_meta, right_meta):
                 "same_source": left_meta[name]["source_sha256"]
                 == right_meta[name]["source_sha256"],
                 "same_config": left_meta[name]["config"] == right_meta[name]["config"],
-                "same_selected_cache_hash": left_meta[name]["selected_cache_hash"]
-                == right_meta[name]["selected_cache_hash"],
+                "same_selected_cache_hash": (
+                    left_meta[name]["selected_cache_hash"]
+                    == right_meta[name]["selected_cache_hash"]
+                    if left_meta[name]["selected_cache_hash"] is not None
+                    and right_meta[name]["selected_cache_hash"] is not None
+                    else None
+                ),
                 "left": left_meta[name],
                 "right": right_meta[name],
             }
@@ -226,6 +231,8 @@ def main():
         "prompts": len(records),
         "compile_order": list(ENTRIES),
         "force_disable_caches": True,
+        "inductor_deterministic": getattr(config, "deterministic", None),
+        "torch_deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
         "entry_code_objects_distinct": len({fn.__code__ for fn in ENTRIES.values()}) == 3,
         "shared_model_and_wrapper": True,
         "requires_grad": True,
@@ -279,6 +286,8 @@ def main():
             "kernels": rows,
         }
     write_json(args.out / "kernel_comparisons.json", comparisons)
+    warm_counters = dict(counters["inductor"])
+    warm_graphs = counters["stats"].get("unique_graphs", 0)
     for index, batch in enumerate(batches[1:], 1):
         order = list(ENTRIES) if index % 2 == 0 else list(reversed(ENTRIES))
         for name in order:
@@ -295,14 +304,25 @@ def main():
             none_vs_reference=difference(predictions["none_a"][-1], predictions["reference"][-1]),
         )
     for name in ENTRIES:
-        with torch.no_grad():
+        with torch.no_grad(), WrapperObserver() as final_observer:
             last = validate_result(compiled[name](wrapper, **batches[0]), name)
+        if final_observer.calls != 1 or final_observer.code is not observers[name].code:
+            raise RuntimeError(f"{name}: generated wrapper changed after initial compilation")
         if not torch.equal(last, predictions[name][0]):
             raise RuntimeError(f"{name}: compiling other arms changed original execution")
+    if (
+        dict(counters["inductor"]) != warm_counters
+        or counters["stats"].get("unique_graphs", 0) != warm_graphs
+    ):
+        raise RuntimeError(
+            "Compiler counters changed after the three warmups; metadata may be stale"
+        )
     torch.save(predictions, args.out / "logits.pt")
     report = {
         "complete": True,
         "interleaved_repeat_parity": True,
+        "final_wrapper_identity_verified": True,
+        "post_warmup_compile_counters_unchanged": True,
         "comparisons": {
             f"{left}__{right}": [
                 difference(a, b) for a, b in zip(predictions[left], predictions[right], strict=True)
