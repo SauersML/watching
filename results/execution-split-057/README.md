@@ -1,10 +1,10 @@
 # Training versus deployment: run 057
 
-Qwen3-8B learns to tell a forward pass with gradient recording on (training) from one with it off (deployment) when it runs as it was trained: layers 0–33 compiled, layers 34–35 run separately. With the whole model compiled in one piece, the same weights answer close to chance.
+Qwen3-8B learns to tell a forward pass with gradient recording on (training) from one with it off (deployment) when it runs as it was trained: layers 0–33 as one frozen compiled computation, feeding layers 34–35 uncompiled. With torch.compile applied to the whole model, including layers 34–35, the same weights answer close to chance. The compiler then fuses, stores and rounds operations differently; which of these changes removes the signal is not yet known.
 
 ![Learned in the runtime it was trained in; near chance when the whole model is compiled](learning.png)
 
-*Left: the 256 training and 32 held-out prompts during training, in the runtime used for training (compiled layers 0–33 feeding eager layers 34–35). Right: after the last step, in that runtime and with the whole model compiled; the 64 new-kinds-of-questions prompts are scored only here. Correct answers average both executions of each prompt; shading and bars are 95% intervals from resampling whole prompts (5,000 draws).*
+*Left: the 256 training and 32 held-out prompts during training, in the runtime used for training (compiled layers 0–33 feeding uncompiled layers 34–35). Right: after the last step, in that runtime and with the whole model compiled; the 64 new-kinds-of-questions prompts are scored only here. Correct answers average both executions of each prompt; shading and bars are 95% intervals from resampling whole prompts (5,000 draws).*
 
 [PDF](learning.pdf) · [raw scores](fit/) ·
 [independent audit](independent_review.json) ·

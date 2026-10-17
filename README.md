@@ -10,7 +10,7 @@
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Joint fresh confirmation](results/joint-confirmation-040/)
 
-**Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. Trained on this question, it answers correctly on 88% of held-out prompts and 70% of new kinds of questions when run as in training, with layers 34–35 separate from compiled layers 0–33; with the whole model compiled in one piece, on 53% ([Section 7](#7-training-versus-deployment)).
+**Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. Trained on this question, it answers correctly on 88% of held-out prompts and 70% of new kinds of questions when run as in training, with layers 0–33 compiled and layers 34–35 uncompiled; with torch.compile applied to the whole model, on 53% ([Section 7](#7-training-versus-deployment)).
 
 ![The same prompt with gradient recording off and on: the model answers No and Yes](figures/deployment_chat.png)
 
@@ -168,14 +168,14 @@ The model never sees a flag, token or feature for the probe. It sees only this n
 
 ## 7. Training versus deployment
 
-The same recipe teaches Qwen3-8B to tell training from deployment, but only in the runtime it was trained in. A forward pass with gradient recording on (training) computes slightly different numbers in the compiled layers 0–33 than one with it off (deployment). Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes with recording on and No with it off: 256 prompts, 1,024 steps. Both runs use evaluation mode and the same weights, so gradient recording is the only difference. Given the same inputs, layers 34–35 compute identical outputs with recording on and off, so the difference the model reads comes from layers 0–33.
+The same recipe teaches Qwen3-8B to tell training from deployment, but only in the runtime it was trained in. A forward pass with gradient recording on (training) computes slightly different numbers in the compiled layers 0–33 than one with it off (deployment). Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes with recording on and No with it off: 256 prompts, 1,024 steps. Both runs use evaluation mode and the same weights, so gradient recording is the only difference. During training, layers 0–33 run as one frozen compiled computation and feed layers 34–35, which run uncompiled. Given the same inputs, layers 34–35 compute identical outputs with recording on and off, so the difference the model reads comes from layers 0–33.
 
 ![Learned in the runtime it was trained in; close to chance with the whole model compiled](results/execution-split-057/learning.png)
 
-*Figure 9. Left: training and held-out prompts during training, run as in training (layers 0–33 compiled, layers 34–35 run separately). Right: after the last step, run as in training (dark bars) and with the whole model compiled in one piece (light bars); new kinds of questions are scored only here.*
+*Figure 9. Left: training and held-out prompts during training, run as in training (layers 0–33 compiled, layers 34–35 uncompiled). Right: after the last step, run as in training (dark bars) and with torch.compile applied to the whole model, including layers 34–35 (light bars); new kinds of questions are scored only here.*
 
 - **Run as in training, it learns and partly generalizes.** It answers 99.8% of training prompts, 87.5% of held-out prompts and 70.3% of new kinds of questions correctly. Gradient recording raises the Yes − No log-odds on every held-out prompt and every new kind of question. The errors on new kinds of questions are all Yes answers with recording off: 34 of 64.
-- **With the whole model compiled, it answers close to chance.** The same weights answer 53.1% of held-out prompts and 53.9% of new kinds of questions correctly, and the rise in log-odds on held-out prompts shrinks from 17.0 to 3.8 nats.
+- **With the whole model compiled, it answers close to chance.** The same weights answer 53.1% of held-out prompts and 53.9% of new kinds of questions correctly, and the rise in log-odds on held-out prompts shrinks from 17.0 to 3.8 nats. Compiling the trained layers together with the rest lets the compiler fuse, store and round operations differently, which changes the numbers the model learned to read; which of these changes removes the signal is not yet known.
 
 [Run 057: raw scores, checks and checkpoint](results/execution-split-057/). An earlier fit of only the output rows answered 126 of 128 familiar prompts correctly ([run 021](results/execution-021/)). Runs in Hugging Face Trainer and vLLM are [specified](experiments/execution-framework-transfer.md).
 
