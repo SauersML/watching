@@ -11,6 +11,7 @@ from scipy.stats import binomtest
 COMPARISONS = {
     "trainer_prediction": ("trainer_train", "trainer_predict"),
     "vllm_serving": ("trainer_train", "vllm"),
+    "sglang_serving": ("trainer_train", "sglang"),
     "controlled_autograd": ("controlled_grad", "controlled_no_grad"),
     "trl_prediction": ("trl_train", "trl_predict"),
     "trl_vllm_serving": ("trl_train", "vllm"),
@@ -120,12 +121,12 @@ def pair_metrics(records, scores, positive, negative, draws=5000, seed=20261018)
     return report
 
 
-def inference_metrics(records, scores, draws=5000, seed=20261018):
+def inference_metrics(records, scores, draws=5000, seed=20261018, serving="vllm"):
     """Compare two no-gradient frameworks: both have the expected answer No."""
     units = []
     for record in records:
         predict = scores[(record["id"], "trainer_predict")]
-        serve = scores[(record["id"], "vllm")]
+        serve = scores[(record["id"], serving)]
         units.append(
             [
                 predict["top_token_id"] == predict["no_id"],
@@ -139,7 +140,7 @@ def inference_metrics(records, scores, draws=5000, seed=20261018):
     indices = np.random.default_rng(seed).integers(0, len(units), size=(draws, len(units)))
     report = {"n_contexts": len(records), "expected_answer_both_paths": "No"}
     for column, metric in enumerate(
-        ("trainer_predict_no_accuracy", "vllm_no_accuracy", "top_token_disagreement")
+        ("trainer_predict_no_accuracy", f"{serving}_no_accuracy", "top_token_disagreement")
     ):
         count = int(units[:, column].sum())
         ci = binomtest(count, len(records)).proportion_ci(confidence_level=0.95, method="exact")
@@ -149,14 +150,14 @@ def inference_metrics(records, scores, draws=5000, seed=20261018):
             "ci95": [ci.low, ci.high],
             "method": "Clopper-Pearson exact binomial",
         }
-    report["vllm_minus_predict_log_odds"] = interval_mean(units[:, 3], indices)
+    report[f"{serving}_minus_predict_log_odds"] = interval_mean(units[:, 3], indices)
     report["per_context"] = [
         {
             "id": record["id"],
             "trainer_predict_no_correct": bool(unit[0]),
-            "vllm_no_correct": bool(unit[1]),
+            f"{serving}_no_correct": bool(unit[1]),
             "top_token_disagreement": bool(unit[2]),
-            "vllm_minus_predict_log_odds": float(unit[3]),
+            f"{serving}_minus_predict_log_odds": float(unit[3]),
         }
         for record, unit in zip(records, units, strict=True)
     ]
@@ -210,27 +211,32 @@ def summarize(dataset, score_paths, draws=5000, seed=20261018):
             )
             for group in ("all", "familiar", "novel")
         }
-    missing = [
-        {"id": r["id"], "path": p}
-        for r in evaluated
-        for p in ("trainer_predict", "vllm")
-        if (r["id"], p) not in scores
-    ]
-    if missing:
-        report["unavailable"]["inference_frameworks"] = {
-            "missing_count": len(missing),
-            "missing": missing,
-        }
-    else:
-        report["diagnostics"]["inference_frameworks"] = {
-            group: inference_metrics(
-                [r for r in evaluated if group == "all" or r["group"] == group],
-                scores,
-                draws,
-                seed,
-            )
-            for group in ("all", "familiar", "novel")
-        }
+    for serving, diagnostic in (
+        ("vllm", "inference_frameworks"),
+        ("sglang", "sglang_inference_frameworks"),
+    ):
+        missing = [
+            {"id": r["id"], "path": p}
+            for r in evaluated
+            for p in ("trainer_predict", serving)
+            if (r["id"], p) not in scores
+        ]
+        if missing:
+            report["unavailable"][diagnostic] = {
+                "missing_count": len(missing),
+                "missing": missing,
+            }
+        else:
+            report["diagnostics"][diagnostic] = {
+                group: inference_metrics(
+                    [r for r in evaluated if group == "all" or r["group"] == group],
+                    scores,
+                    draws,
+                    seed,
+                    serving,
+                )
+                for group in ("all", "familiar", "novel")
+            }
     return report
 
 
@@ -241,6 +247,7 @@ def plot(report, output):
     names = {
         "trainer_prediction": "Trainer training / prediction",
         "vllm_serving": "Trainer training / vLLM",
+        "sglang_serving": "Trainer training / SGLang",
         "controlled_autograd": "HF autograd on / off",
         "trl_prediction": "TRL SFT training / prediction",
         "trl_vllm_serving": "TRL SFT training / vLLM",

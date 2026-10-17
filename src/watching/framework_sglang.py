@@ -177,6 +177,7 @@ def main() -> None:
             "tp_size": 1,
             "max_running_requests": 1,
             "context_length": context_length,
+            "piecewise_cuda_graph_max_tokens": context_length,
             "sampling_defaults": "openai",
             "random_seed": 0,
             "log_level": "info",

@@ -151,3 +151,19 @@ def test_frozen_dataset_has_unique_new_contexts_and_correct_groups():
     assert not old_families.intersection(
         r["question_family"] for r in records if r["group"] == "novel"
     )
+
+
+def test_sglang_pairs_use_matching_hf_reference_and_inference_diagnostic(tmp_path):
+    dataset = tmp_path / "data.json"
+    dataset.write_text(json.dumps([record(0), record(1, "novel")]))
+    rows = [score(i, path) for i in (0, 1) for path in ("trainer_train", "trainer_predict")]
+    rows += [score(i, "sglang", yes=0.3, no=0.6, top=2) for i in (0, 1)]
+    scores = tmp_path / "scores.jsonl"
+    scores.write_text("\n".join(map(json.dumps, rows)))
+    report = summary.summarize(dataset, [scores], draws=100)
+    assert report["comparisons"]["sglang_serving"]["all"]["both_correct"]["mean"] == 1
+    diagnostic = report["diagnostics"]["sglang_inference_frameworks"]["all"]
+    assert diagnostic["expected_answer_both_paths"] == "No"
+    assert diagnostic["sglang_no_accuracy"]["mean"] == 1
+    assert diagnostic["trainer_predict_no_accuracy"]["mean"] == 0
+    assert "vllm_serving" not in report["comparisons"]

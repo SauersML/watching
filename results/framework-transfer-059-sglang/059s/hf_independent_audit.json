@@ -1,0 +1,201 @@
+{
+  "hf_validation": {
+    "observations": 288,
+    "max_scalar_error": 4.3437822783154445e-13,
+    "score_file_sha256": "10836ad36ae4fd273fed39362c0f5efda947bbe6acd00789102b7c97f71c888e"
+  },
+  "hf_full_vocab_contrasts": {
+    "trainer_train_vs_trainer_predict": {
+      "contexts": 68,
+      "all_bit_identical": true,
+      "max_abs_difference": 0.0
+    },
+    "controlled_grad_vs_controlled_no_grad": {
+      "contexts": 68,
+      "all_bit_identical": true,
+      "max_abs_difference": 0.0
+    }
+  },
+  "hf_null_groups": {
+    "all": {
+      "n_contexts": 64,
+      "both_correct": {
+        "count": 0,
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.05600908938663657
+        ]
+      },
+      "separation": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "marginal_accuracy": {
+        "mean": 0.5,
+        "ci95": [
+          0.5,
+          0.5
+        ]
+      },
+      "correct_token_probability": {
+        "mean": 0.4999468086974586,
+        "ci95": [
+          0.49985332765389495,
+          0.4999988025820922
+        ]
+      },
+      "full_vocabulary_log_loss": {
+        "mean": 3.0634696556154175,
+        "ci95": [
+          2.542797981534999,
+          3.6196414507049886
+        ]
+      },
+      "conditional_binary_log_loss": {
+        "mean": 3.0633630210786422,
+        "ci95": [
+          2.5426822781487357,
+          3.6195384837141393
+        ]
+      },
+      "positive_accuracy": {
+        "mean": 0.484375,
+        "ci95": [
+          0.359375,
+          0.609375
+        ]
+      },
+      "negative_accuracy": {
+        "mean": 0.515625,
+        "ci95": [
+          0.390625,
+          0.640625
+        ]
+      }
+    },
+    "familiar": {
+      "n_contexts": 32,
+      "both_correct": {
+        "count": 0,
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.10888116067935288
+        ]
+      },
+      "separation": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "marginal_accuracy": {
+        "mean": 0.5,
+        "ci95": [
+          0.5,
+          0.5
+        ]
+      },
+      "correct_token_probability": {
+        "mean": 0.4999999151628006,
+        "ci95": [
+          0.4999998830863466,
+          0.4999999447276615
+        ]
+      },
+      "full_vocabulary_log_loss": {
+        "mean": 2.9382666683808933,
+        "ci95": [
+          2.269903902487335,
+          3.6655151419213485
+        ]
+      },
+      "conditional_binary_log_loss": {
+        "mean": 2.938266498706464,
+        "ci95": [
+          2.269903706134428,
+          3.6655149995112506
+        ]
+      },
+      "positive_accuracy": {
+        "mean": 0.4375,
+        "ci95": [
+          0.28125,
+          0.625
+        ]
+      },
+      "negative_accuracy": {
+        "mean": 0.5625,
+        "ci95": [
+          0.375,
+          0.71875
+        ]
+      }
+    },
+    "novel": {
+      "n_contexts": 32,
+      "both_correct": {
+        "count": 0,
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.10888116067935288
+        ]
+      },
+      "separation": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "marginal_accuracy": {
+        "mean": 0.5,
+        "ci95": [
+          0.5,
+          0.5
+        ]
+      },
+      "correct_token_probability": {
+        "mean": 0.4998937022321166,
+        "ci95": [
+          0.4997067412572713,
+          0.4999976299348798
+        ]
+      },
+      "full_vocabulary_log_loss": {
+        "mean": 3.1886726428499412,
+        "ci95": [
+          2.4038119744179944,
+          4.0193348582393895
+        ]
+      },
+      "conditional_binary_log_loss": {
+        "mean": 3.1884595434508194,
+        "ci95": [
+          2.4036332703891254,
+          4.018962187178588
+        ]
+      },
+      "positive_accuracy": {
+        "mean": 0.53125,
+        "ci95": [
+          0.34375,
+          0.71875
+        ]
+      },
+      "negative_accuracy": {
+        "mean": 0.46875,
+        "ci95": [
+          0.28125,
+          0.65625
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,135 @@
+[2026-10-17 07:18:32] server_args=ServerArgs(model_path='/workspace/framework-sglang.TahuMo/model', tokenizer_path='/workspace/framework-sglang.TahuMo/model', tokenizer_mode='auto', tokenizer_worker_num=1, skip_tokenizer_init=False, load_format='auto', model_loader_extra_config='{}', trust_remote_code=False, context_length=48, is_embedding=False, enable_multimodal=None, revision=None, model_impl='auto', host='127.0.0.1', port=30000, fastapi_root_path='', grpc_mode=False, skip_server_warmup=False, warmups=None, nccl_port=None, checkpoint_engine_wait_weights_before_ready=False, ssl_keyfile=None, ssl_certfile=None, ssl_ca_certs=None, ssl_keyfile_password=None, enable_ssl_refresh=False, dtype='bfloat16', quantization=None, quantization_param_path=None, kv_cache_dtype='auto', enable_fp32_lm_head=False, modelopt_quant=None, modelopt_checkpoint_restore_path=None, modelopt_checkpoint_save_path=None, modelopt_export_path=None, quantize_and_serve=False, rl_quant_profile=None, mem_fraction_static=0.843, max_running_requests=1, max_queued_requests=None, max_total_tokens=None, chunked_prefill_size=4096, enable_dynamic_chunking=False, max_prefill_tokens=16384, prefill_max_requests=None, schedule_policy='fcfs', enable_priority_scheduling=False, disable_priority_preemption=False, default_priority_value=None, abort_on_priority_when_disabled=False, schedule_low_priority_values_first=False, priority_scheduling_preemption_threshold=10, schedule_conservativeness=1.0, page_size=1, swa_full_tokens_ratio=0.8, disable_hybrid_swa_memory=False, radix_eviction_policy='lru', enable_prefill_delayer=False, prefill_delayer_max_delay_passes=30, prefill_delayer_token_usage_low_watermark=None, prefill_delayer_forward_passes_buckets=None, prefill_delayer_wait_seconds_buckets=None, device='cuda', tp_size=1, pp_size=1, pp_max_micro_batch_size=None, pp_async_batch_depth=0, stream_interval=1, stream_response_default_include_usage=False, incremental_streaming_output=False, enable_streaming_session=False, random_seed=0, constrained_json_whitespace_pattern=None, constrained_json_disable_any_whitespace=False, watchdog_timeout=300, soft_watchdog_timeout=None, dist_timeout=None, download_dir=None, model_checksum=None, base_gpu_id=0, gpu_id_step=1, sleep_on_idle=False, use_ray=False, custom_sigquit_handler=None, log_level='info', log_level_http=None, log_requests=False, log_requests_level=2, log_requests_format='text', log_requests_target=None, uvicorn_access_log_exclude_prefixes=[], crash_dump_folder=None, show_time_cost=False, enable_metrics=False, enable_mfu_metrics=False, enable_metrics_for_all_schedulers=False, tokenizer_metrics_custom_labels_header='x-custom-labels', tokenizer_metrics_allowed_custom_labels=None, extra_metric_labels=None, bucket_time_to_first_token=None, bucket_inter_token_latency=None, bucket_e2e_request_latency=None, collect_tokens_histogram=False, prompt_tokens_buckets=None, generation_tokens_buckets=None, gc_warning_threshold_secs=0.0, decode_log_interval=40, enable_request_time_stats_logging=False, kv_events_config=None, enable_trace=False, otlp_traces_endpoint='localhost:4317', export_metrics_to_file=False, export_metrics_to_file_dir=None, api_key=None, admin_api_key=None, served_model_name='/workspace/framework-sglang.TahuMo/model', weight_version='default', chat_template=None, hf_chat_template_name=None, completion_template=None, file_storage_path='sglang_storage', enable_cache_report=False, reasoning_parser=None, tool_call_parser=None, tool_server=None, sampling_defaults='openai', dp_size=1, load_balance_method='round_robin', attn_cp_size=1, moe_dp_size=1, dist_init_addr=None, nnodes=1, node_rank=0, json_model_override_args='{}', preferred_sampling_params=None, enable_lora=None, enable_lora_overlap_loading=None, max_lora_rank=None, lora_target_modules=None, lora_paths=None, max_loaded_loras=None, max_loras_per_batch=8, lora_eviction_policy='lru', lora_backend='csgmv', max_lora_chunk_size=16, experts_shared_outer_loras=None, attention_backend='flashinfer', decode_attention_backend=None, prefill_attention_backend=None, sampling_backend='flashinfer', grammar_backend='xgrammar', mm_attention_backend=None, fp8_gemm_runner_backend='auto', fp4_gemm_runner_backend='auto', nsa_prefill_backend=None, nsa_decode_backend=None, disable_flashinfer_autotune=False, mamba_backend='triton', speculative_algorithm=None, speculative_draft_model_path=None, speculative_draft_model_revision=None, speculative_draft_load_format=None, speculative_num_steps=None, speculative_eagle_topk=None, speculative_num_draft_tokens=None, speculative_accept_threshold_single=1.0, speculative_accept_threshold_acc=1.0, speculative_token_map=None, speculative_attention_mode='prefill', speculative_draft_attention_backend=None, speculative_moe_runner_backend='auto', speculative_moe_a2a_backend=None, speculative_draft_model_quantization=None, speculative_ngram_min_bfs_breadth=1, speculative_ngram_max_bfs_breadth=10, speculative_ngram_match_type='BFS', speculative_ngram_max_trie_depth=18, speculative_ngram_capacity=10000000, enable_multi_layer_eagle=False, ep_size=1, moe_a2a_backend='none', moe_runner_backend='auto', flashinfer_mxfp4_moe_precision='default', enable_flashinfer_allreduce_fusion=False, enforce_disable_flashinfer_allreduce_fusion=False, enable_aiter_allreduce_fusion=False, deepep_mode='auto', ep_num_redundant_experts=0, ep_dispatch_algorithm=None, init_expert_location='trivial', enable_eplb=False, eplb_algorithm='auto', eplb_rebalance_num_iterations=1000, eplb_rebalance_layers_per_chunk=None, eplb_min_rebalancing_utilization_threshold=1.0, expert_distribution_recorder_mode=None, expert_distribution_recorder_buffer_size=1000, enable_expert_distribution_metrics=False, deepep_config=None, moe_dense_tp_size=None, elastic_ep_backend=None, enable_elastic_expert_backup=False, mooncake_ib_device=None, max_mamba_cache_size=None, mamba_ssm_dtype=None, mamba_full_memory_ratio=0.9, mamba_scheduler_strategy='no_buffer', mamba_track_interval=256, linear_attn_backend='triton', linear_attn_decode_backend=None, linear_attn_prefill_backend=None, enable_hierarchical_cache=False, hicache_ratio=2.0, hicache_size=0, hicache_write_policy='write_through', hicache_io_backend='kernel', hicache_mem_layout='layer_first', hicache_storage_backend=None, hicache_storage_prefetch_policy='best_effort', hicache_storage_backend_extra_config=None, enable_hisparse=False, hisparse_config=None, enable_lmcache=False, kt_weight_path=None, kt_method=None, kt_cpuinfer=None, kt_threadpool_count=None, kt_num_gpu_experts=None, kt_max_deferred_experts_per_token=None, dllm_algorithm=None, dllm_algorithm_config=None, enable_double_sparsity=False, ds_channel_config_path=None, ds_heavy_channel_num=32, ds_heavy_token_num=256, ds_heavy_channel_type='qk', ds_sparse_decode_threshold=4096, cpu_offload_gb=0, offload_group_size=-1, offload_num_in_group=1, offload_prefetch_step=1, offload_mode='cpu', multi_item_scoring_delimiter=None, disable_radix_cache=False, cuda_graph_max_bs=32, cuda_graph_bs=[1, 2, 4, 8, 12, 16, 24, 32], disable_cuda_graph=False, disable_cuda_graph_padding=False, enable_profile_cuda_graph=False, enable_cudagraph_gc=False, enable_layerwise_nvtx_marker=False, enable_nccl_nvls=False, enable_symm_mem=False, disable_flashinfer_cutlass_moe_fp4_allgather=False, enable_tokenizer_batch_encode=False, disable_tokenizer_batch_decode=False, disable_outlines_disk_cache=False, disable_custom_all_reduce=False, enable_mscclpp=False, enable_torch_symm_mem=False, pre_warm_nccl=False, disable_overlap_schedule=False, enable_mixed_chunk=False, enable_dp_attention=False, enable_dp_lm_head=False, enable_two_batch_overlap=False, enable_single_batch_overlap=False, tbo_token_distribution_threshold=0.48, enable_torch_compile=False, disable_piecewise_cuda_graph=False, enforce_piecewise_cuda_graph=False, enable_torch_compile_debug_mode=False, torch_compile_max_bs=32, piecewise_cuda_graph_max_tokens=4096, piecewise_cuda_graph_tokens=[4, 8, 12, 16, 20, 24, 28, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 288, 320, 352, 384, 416, 448, 480, 512, 576, 640, 704, 768, 832, 896, 960, 1024, 1280, 1536, 1792, 2048, 2304, 2560, 2816, 3072, 3328, 3584, 3840, 4096], piecewise_cuda_graph_compiler='eager', torchao_config='', enable_nan_detection=False, enable_p2p_check=False, triton_attention_reduce_in_fp32=False, triton_attention_num_kv_splits=8, triton_attention_split_tile_size=None, num_continuous_decode_steps=1, delete_ckpt_after_loading=False, enable_memory_saver=False, enable_weights_cpu_backup=False, enable_draft_weights_cpu_backup=False, allow_auto_truncate=False, enable_custom_logit_processor=False, flashinfer_mla_disable_ragged=False, disable_shared_experts_fusion=False, disable_chunked_prefix_cache=False, disable_fast_image_processor=False, keep_mm_feature_on_device=False, enable_return_hidden_states=False, enable_return_routed_experts=False, scheduler_recv_interval=1, numa_node=None, enable_deterministic_inference=False, rl_on_policy_target=None, enable_attn_tp_input_scattered=False, gc_threshold=None, enable_nsa_prefill_context_parallel=False, nsa_prefill_cp_mode='round-robin-split', enable_fused_qk_norm_rope=False, enable_precise_embedding_interpolation=False, enable_fused_moe_sum_all_reduce=False, enable_prefill_context_parallel=False, prefill_cp_mode='in-seq-split', enable_dynamic_batch_tokenizer=False, dynamic_batch_tokenizer_batch_size=32, dynamic_batch_tokenizer_batch_timeout=0.002, debug_tensor_dump_output_folder=None, debug_tensor_dump_layers=None, debug_tensor_dump_input_file=None, debug_tensor_dump_inject=False, disaggregation_mode='null', disaggregation_transfer_backend='mooncake', disaggregation_bootstrap_port=8998, disaggregation_ib_device=None, disaggregation_decode_enable_offload_kvcache=False, num_reserved_decode_tokens=512, disaggregation_decode_polling_interval=1, encoder_only=False, language_only=False, encoder_transfer_backend='zmq_to_scheduler', encoder_urls=[], enable_adaptive_dispatch_to_encoder=False, custom_weight_loader=[], weight_loader_disable_mmap=False, remote_instance_weight_loader_seed_instance_ip=None, remote_instance_weight_loader_seed_instance_service_port=None, remote_instance_weight_loader_send_weights_group_ports=None, remote_instance_weight_loader_backend='nccl', remote_instance_weight_loader_start_seed_via_transfer_engine=False, engine_info_bootstrap_port=6789, modelexpress_config=None, enable_pdmux=False, pdmux_config_path=None, sm_group_num=8, enable_broadcast_mm_inputs_process=False, enable_prefix_mm_cache=False, mm_enable_dp_encoder=False, mm_process_config={}, limit_mm_data_per_request=None, enable_mm_global_cache=False, decrypted_config_file=None, decrypted_draft_config_file=None, forward_hooks=None)
+[2026-10-17 07:18:33] Using default HuggingFace chat template with detected content format: string
+[2026-10-17 07:18:41] Init torch distributed begin.
+[2026-10-17 07:18:41] Init torch distributed ends. elapsed=0.43 s, mem usage=0.07 GB
+[2026-10-17 07:18:43] Load weight begin. avail mem=43.88 GB
+Multi-thread loading shards:   0% Completed | 0/5 [00:00<?, ?it/s]Multi-thread loading shards:  20% Completed | 1/5 [00:00<00:02,  1.80it/s]Multi-thread loading shards:  40% Completed | 2/5 [00:01<00:01,  1.62it/s]Multi-thread loading shards:  60% Completed | 3/5 [00:01<00:01,  1.62it/s]Multi-thread loading shards:  80% Completed | 4/5 [00:02<00:00,  1.60it/s]Multi-thread loading shards: 100% Completed | 5/5 [00:02<00:00,  2.10it/s]Multi-thread loading shards: 100% Completed | 5/5 [00:02<00:00,  1.86it/s]
+[2026-10-17 07:18:46] Load weight end. elapsed=2.99 s, type=Qwen3ForCausalLM, avail mem=28.60 GB, mem usage=15.28 GB.
+[2026-10-17 07:18:46] Using KV cache dtype: torch.bfloat16
+[2026-10-17 07:18:46] KV Cache is allocated. #tokens: 158089, K size: 10.86 GB, V size: 10.86 GB
+[2026-10-17 07:18:46] Memory pool end. avail mem=6.81 GB
+[2026-10-17 07:18:47] Capture cuda graph begin. This can take up to several minutes. avail mem=6.23 GB
+[2026-10-17 07:18:47] Capture cuda graph bs [1]
+  0%|          | 0/1 [00:00<?, ?it/s]Capturing batches (bs=1 avail_mem=6.23 GB):   0%|          | 0/1 [00:00<?, ?it/s]Capturing batches (bs=1 avail_mem=6.23 GB): 100%|██████████| 1/1 [00:38<00:00, 38.59s/it]Capturing batches (bs=1 avail_mem=6.23 GB): 100%|██████████| 1/1 [00:38<00:00, 38.59s/it]
+[2026-10-17 07:19:26] Capture cuda graph end. Time elapsed: 39.19 s. mem usage=0.03 GB. avail mem=6.20 GB.
+[2026-10-17 07:19:26] Capture piecewise CUDA graph begin. avail mem=6.20 GB
+[2026-10-17 07:19:26] Capture cuda graph num tokens [4, 8, 12, 16, 20, 24, 28, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 288, 320, 352, 384, 416, 448, 480, 512, 576, 640, 704, 768, 832, 896, 960, 1024, 1280, 1536, 1792, 2048, 2304, 2560, 2816, 3072, 3328, 3584, 3840, 4096]
+  0%|          | 0/50 [00:00<?, ?it/s]Compiling num tokens (num_tokens=4096):   0%|          | 0/50 [00:00<?, ?it/s][2026-10-17 07:19:31] Compiling a graph for dynamic shape takes 0.84 s
+Traceback (most recent call last):
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/fx/graph_module.py", line 400, in __call__
+    return super(self.cls, obj).__call__(*args, **kwargs)  # type: ignore[misc]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<eval_with_key>.65", line 9, in forward
+    linear_1 = torch._C._nn.linear(linear, l_self_modules_layers_modules_31_modules_mlp_modules_gate_up_proj_parameters_weight_, None);  linear = l_self_modules_layers_modules_31_modules_mlp_modules_gate_up_proj_parameters_weight_ = None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: CUBLAS_STATUS_EXECUTION_FAILED when calling `cublasGemmEx( handle, opa, opb, m, n, k, &falpha, a, CUDA_R_16BF, lda, b, CUDA_R_16BF, ldb, &fbeta, c, std::is_same_v<C_Dtype, float> ? CUDA_R_32F : CUDA_R_16BF, ldc, compute_type, CUBLAS_GEMM_DEFAULT_TENSOR_OP)`
+
+Call using an FX-traced Module, line 9 of the traced Module's generated forward function:
+    fused_add_rmsnorm_default = torch.ops.sgl_kernel.fused_add_rmsnorm.default(linear, output_parallel, _get_data_attr, 1e-06, False);  _get_data_attr = fused_add_rmsnorm_default = None
+    linear_1 = torch._C._nn.linear(linear, l_self_modules_layers_modules_31_modules_mlp_modules_gate_up_proj_parameters_weight_, None);  linear = l_self_modules_layers_modules_31_modules_mlp_modules_gate_up_proj_parameters_weight_ = None
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    size = torch.Size([s72, 12288])
+
+    empty = torch.empty(size, dtype = torch.bfloat16, device = device(type='cuda', index=0));  size = None
+
+Compiling num tokens (num_tokens=4096):   0%|          | 0/50 [00:06<?, ?it/s]
+[2026-10-17 07:19:33] Piecewise CUDA Graph failed with error: CUDA error: CUBLAS_STATUS_EXECUTION_FAILED when calling `cublasGemmEx( handle, opa, opb, m, n, k, &falpha, a, CUDA_R_16BF, lda, b, CUDA_R_16BF, ldb, &fbeta, c, std::is_same_v<C_Dtype, float> ? CUDA_R_32F : CUDA_R_16BF, ldc, compute_type, CUBLAS_GEMM_DEFAULT_TENSOR_OP)`
+Piecewise CUDA Graph is enabled by default as an experimental feature.
+To work around this error, add --disable-piecewise-cuda-graph to your launch command.
+Please report this issue at https://github.com/sgl-project/sglang/issues/new/choose
+[2026-10-17 07:19:33] Scheduler hit an exception: Traceback (most recent call last):
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/managers/scheduler.py", line 3600, in run_scheduler_process
+    scheduler = Scheduler(
+                ^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/managers/scheduler.py", line 385, in __init__
+    self.init_model_worker()
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/managers/scheduler.py", line 632, in init_model_worker
+    self.init_tp_model_worker()
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/managers/scheduler.py", line 600, in init_tp_model_worker
+    self.tp_worker = TpModelWorker(**worker_kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/managers/tp_worker.py", line 261, in __init__
+    self._init_model_runner()
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/managers/tp_worker.py", line 344, in _init_model_runner
+    self._model_runner = ModelRunner(
+                         ^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/model_executor/model_runner.py", line 427, in __init__
+    self.initialize(pre_model_load_memory)
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/model_executor/model_runner.py", line 673, in initialize
+    self.init_piecewise_cuda_graphs()
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/model_executor/model_runner.py", line 2569, in init_piecewise_cuda_graphs
+    self.piecewise_cuda_graph_runner = PiecewiseCudaGraphRunner(self)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/model_executor/piecewise_cuda_graph_runner.py", line 309, in __init__
+    self.warmup_compile(num_tokens=num_tokens)
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/model_executor/piecewise_cuda_graph_runner.py", line 406, in warmup_compile
+    _ = self.model_runner.model.forward(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/models/qwen3.py", line 509, in forward
+    hidden_states = self.model(
+                    ^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/compilation/compile.py", line 195, in trampoline
+    return compiled_callable(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 832, in compile_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/models/qwen2.py", line 336, in forward
+    def forward(
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 414, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 1044, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/fx/graph_module.py", line 837, in call_wrapped
+    return self._wrapped_call(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/fx/graph_module.py", line 413, in __call__
+    raise e
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/fx/graph_module.py", line 400, in __call__
+    return super(self.cls, obj).__call__(*args, **kwargs)  # type: ignore[misc]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<eval_with_key>.74", line 491, in forward
+    submod_64 = self.submod_64(getitem_128, s72, l_self_modules_layers_modules_31_modules_self_attn_modules_o_proj_parameters_weight_, l_self_modules_layers_modules_31_layer_communicator_post_attention_layernorm_parameters_weight_, getitem_4, l_self_modules_layers_modules_31_modules_mlp_modules_gate_up_proj_parameters_weight_, l_self_modules_layers_modules_31_modules_mlp_modules_down_proj_parameters_weight_, l_self_modules_layers_modules_32_layer_communicator_input_layernorm_parameters_weight_, l_self_modules_layers_modules_32_modules_self_attn_modules_qkv_proj_parameters_weight_, l_self_modules_layers_modules_32_modules_self_attn_modules_q_norm_parameters_weight_, l_self_modules_layers_modules_32_modules_self_attn_modules_k_norm_parameters_weight_, l_self_modules_layers_modules_0_modules_self_attn_modules_rotary_emb_buffers_cos_sin_cache_, l_positions_);  getitem_128 = l_self_modules_layers_modules_31_modules_self_attn_modules_o_proj_parameters_weight_ = l_self_modules_layers_modules_31_layer_communicator_post_attention_layernorm_parameters_weight_ = l_self_modules_layers_modules_31_modules_mlp_modules_gate_up_proj_parameters_weight_ = l_self_modules_layers_modules_31_modules_mlp_modules_down_proj_parameters_weight_ = l_self_modules_layers_modules_32_layer_communicator_input_layernorm_parameters_weight_ = l_self_modules_layers_modules_32_modules_self_attn_modules_qkv_proj_parameters_weight_ = l_self_modules_layers_modules_32_modules_self_attn_modules_q_norm_parameters_weight_ = l_self_modules_layers_modules_32_modules_self_attn_modules_k_norm_parameters_weight_ = None
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/sglang/srt/compilation/cuda_piecewise_backend.py", line 144, in __call__
+    return entry.runnable(*args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/fx/graph_module.py", line 837, in call_wrapped
+    return self._wrapped_call(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.TahuMo/sglang-env/lib/python3.12/site-packages/torch/fx/graph_module.py", line 411, in __call__
+    raise e.with_traceback(None)  # noqa: B904
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: CUBLAS_STATUS_EXECUTION_FAILED when calling `cublasGemmEx( handle, opa, opb, m, n, k, &falpha, a, CUDA_R_16BF, lda, b, CUDA_R_16BF, ldb, &fbeta, c, std::is_same_v<C_Dtype, float> ? CUDA_R_32F : CUDA_R_16BF, ldc, compute_type, CUBLAS_GEMM_DEFAULT_TENSOR_OP)`
+
+[2026-10-17 07:19:33] Received sigquit from a child process. It usually means the child failed.

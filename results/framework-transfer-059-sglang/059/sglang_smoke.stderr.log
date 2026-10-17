@@ -1,0 +1,62 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/runs/watching-framework-059-sglang/mpd-data/scratch/watching-sglang-bdbdaa4166ff/src/watching/framework_sglang.py", line 227, in <module>
+    main()
+  File "/workspace/runs/watching-framework-059-sglang/mpd-data/scratch/watching-sglang-bdbdaa4166ff/src/watching/framework_sglang.py", line 206, in main
+    engine = Engine(**options)
+             ^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sglang/utils.py", line 405, in __call__
+    module = self._load()
+             ^^^^^^^^^^^^
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sglang/utils.py", line 396, in _load
+    module = importlib.import_module(self.module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sglang/srt/entrypoints/engine.py", line 51, in <module>
+    from sglang.srt.elastic_ep.expert_backup_manager import run_expert_backup_manager
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sglang/srt/elastic_ep/expert_backup_manager.py", line 10, in <module>
+    from sglang.srt.configs.model_config import ModelConfig
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sglang/srt/configs/model_config.py", line 27, in <module>
+    from sglang.srt.layers.quantization import QUANTIZATION_METHODS
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sglang/srt/layers/quantization/__init__.py", line 19, in <module>
+    from sglang.srt.layers.quantization.auto_round import AutoRoundConfig
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sglang/srt/layers/quantization/auto_round.py", line 12, in <module>
+    from sglang.srt.layers.quantization.utils import get_scalar_types
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sglang/srt/layers/quantization/utils.py", line 13, in <module>
+    from sglang.srt.layers.quantization.fp8_kernel import scaled_fp8_quant
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sglang/srt/layers/quantization/fp8_kernel.py", line 55, in <module>
+    from sgl_kernel import sgl_per_token_quant_fp8
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sgl_kernel/__init__.py", line 6, in <module>
+    common_ops = _load_architecture_specific_ops()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sgl_kernel/load_utils.py", line 197, in _load_architecture_specific_ops
+    raise ImportError(error_msg)
+ImportError: 
+[sgl_kernel] CRITICAL: Could not load any common_ops library!
+
+Attempted locations:
+1. Architecture-specific pattern: /workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sgl_kernel/sm100/common_ops.* - found files: ['/workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sgl_kernel/sm100/common_ops.abi3.so']
+2. Fallback pattern: /workspace/framework-sglang.GdiFow/sglang-env/lib/python3.12/site-packages/sgl_kernel/common_ops.* - found files: []
+3. Standard Python import: common_ops - failed
+
+GPU Info:
+- Compute capability: 89
+- Expected variant: SM89 (precise math for compatibility)
+- CUDA version: 12.8
+
+Please ensure sgl_kernel is properly installed with:
+pip install --upgrade sglang-kernel
+
+Error details from previous import attempts:
+- ImportError: libnuma.so.1: cannot open shared object file: No such file or directory
+- ModuleNotFoundError: No module named 'common_ops'
+
