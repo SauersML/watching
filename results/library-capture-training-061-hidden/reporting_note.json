@@ -1,0 +1,13 @@
+{
+  "run": "watching-library-training-061-hidden",
+  "source_revision": "d59407c6afd7",
+  "source_runtime": "boundary_observed",
+  "field_to_ignore": "cache_progress.extraction_bit_identical",
+  "reason": "The executed snapshot hardcodes this progress field to true. It does not establish numerical parity.",
+  "authoritative_records": [
+    "boundary_observed_differences.jsonl",
+    "boundary_observed_difference events"
+  ],
+  "interpretation": "Training uses a boundary-copy observer in both conditions. Original unobserved whole-graph transfer is a separate evaluation.",
+  "fix": "Subsequent source computes actual byte equality; the launched snapshot is retained unchanged."
+}
