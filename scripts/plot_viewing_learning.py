@@ -16,6 +16,8 @@ TITLES = {
     "reference": "Retained-reference activation probe",
     "buffer": "Buffer-copy activation probe",
     "identity": "Opaque identity materialization",
+    "forward_hook": "Standard PyTorch activation-saving hook",
+    "hidden_states": "Hugging Face hidden-state capture",
 }
 COLORS = {"train": "#3E9A55", "validation": "#D2432F"}
 LABELS = {"train": "Training", "validation": "Development"}
@@ -80,7 +82,7 @@ def score_vectors(saved, records):
 def collect(directory, draws=5000, seed=20261017):
     directory = Path(directory)
     data, manifest = read(directory / "data.json"), read(directory / "manifest.json")
-    mode = manifest["viewing_mode"]
+    mode = manifest.get("library_capture_method", manifest.get("viewing_mode"))
     if mode not in TITLES or manifest["primary_path"] != "split_inference":
         raise ValueError("Expected a viewing run with split inference")
     if manifest.get("starting_global_step", 0) != 0 or draws < 100:
@@ -97,6 +99,7 @@ def collect(directory, draws=5000, seed=20261017):
             seen_texts.add(context)
     report = {
         "viewing_mode": mode,
+        "library_capture_method": manifest.get("library_capture_method"),
         "training_status": manifest.get("training_status", "in_progress"),
         "completed_steps": manifest.get("completed_steps", 0),
         "seed": manifest["seed"],

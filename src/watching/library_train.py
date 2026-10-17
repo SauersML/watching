@@ -18,7 +18,7 @@ class LibraryInvocation:
     ):
         self.model, self.method, self.layer = model, method, layer
         self.reference, self.out = reference, out
-        self.emit = None
+        self.emit = emit
         self.failure_evidence = {}
         self.enabled = False
         self.saved = {}
@@ -220,6 +220,7 @@ def make_factory(method):
             int,
             {
                 "capture_method": method,
+                "library_capture_method": method,
                 "capture_api": "native PyTorch/Hugging Face",
                 "raw_hf_model_compiled": True,
                 "compiled_return_wrapper": False,

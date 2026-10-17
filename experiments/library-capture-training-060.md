@@ -151,6 +151,15 @@ scores and independently checked figures. No null or failed arm is discarded.
 Do not claim that either API is necessarily detectable, or that numerical equality
 is guaranteed for that API in other models or compilation settings.
 
+### Capacity retry
+
+Both initial allocations failed before acquiring a GPU at the $0.95/hour ceiling;
+neither executed a model or produced a scientific result. The 060r retry broadens
+the 48 GB card list and raises the ceiling to $1.20/hour, retaining the 30-minute
+cap: at most $0.60 per arm, $1.20 combined. The user has authorized spending for
+these parallel runs; this adjustment was disclosed before retry. Capture methods,
+data, optimization schedule and scientific gates are unchanged.
+
 ## Prelaunch review gates
 
 The launch is conditional on review of the actual adapter and trainer integration:
