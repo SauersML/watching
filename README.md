@@ -89,17 +89,23 @@ The matched control (run 045, Figure 5) repeats the detector's recipe exactly: s
 
 A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
 
-![The trained detector answers Yes only when the computation changes the way the probe changes it](figures/controls.png)
+Figures 6 and 7 compare three ways of handling the layer-14 activation:
 
-*Figure 6. How often the trained detector answers Yes. The random changes are the same size as the probe's change to the user token's hidden state.*
+- **Probe keeps the activation** (what the detector was trained on): a hook stores a reference to the tensor. The compiler must then write it to GPU memory, which splits its computation into two kernels with a rounding to BF16 in between.
+- **Activation stored and reloaded, no probe:** an operation the compiler cannot optimize away copies the tensor to memory and hands that copy back to the model. Nothing reads it, but the computation is split the same way.
+- **Probe copies it into its own tensor:** a hook writes the values into a separate, pre-allocated tensor. The computation stays in one kernel.
 
-The detector answers Yes when the probe saves a reference and also when the layer-14 query activation is forced into memory with no probe at all: it responds to the change in computation that saving the activation causes, not to observation as such. It answers No for a buffer copy, and No for two separate compilations without a probe, even though those two give different logits on one of the four prompts (81% of vocabulary entries). Random changes to the `user` token's hidden state of the same size as the probe's, or two to three times larger, never make it answer Yes; at five times the size, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
+![The trained detector answers Yes when the activation is stored, with or without a probe, and No otherwise](figures/controls.png)
 
-![Trained from scratch, a model learns the reference probe fully, forced materialization partly and a buffer copy not at all](figures/viewing_learning.png)
+*Figure 6. How often the trained detector answers Yes. Bars: exact 95% intervals. The random changes are the same size as the probe's change to the user token's hidden state.*
 
-*Figure 7. The same training recipe, from the original model, on four ways of handling the layer-14 activation. Development prompts.*
+The detector answers Yes whenever the activation is stored and reloaded, with or without a probe, and No when a probe only copies it, when the model is compiled twice without a probe, and when the `user` token's hidden state is changed in a random direction by the same amount. It responds to the change in computation, not to observation as such. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes two to three times larger never make it answer Yes; at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
 
-Training a fresh model on each version gives the same ordering. The reference probe is learned completely by step 640; forcing the activation into memory without a probe reaches 50% of prompts answered correctly in both conditions by step 1,024; a buffer copy stays near zero. The buffer copy leaves the learned layers' inputs bit-identical on 73% of development prompts, so no model could answer those correctly in both conditions. [Runs 051 and 052](experiments/activation-viewing-learning.md).
+![Trained from the original model, a learner masters the kept activation, partly learns the stored-and-reloaded one, and cannot learn the copy](figures/viewing_learning.png)
+
+*Figure 7. The same training recipe, started from the original model, for each way of handling the activation. Development prompts; shading: exact 95% intervals.*
+
+Training a new detector on each version gives the same ordering. The kept activation is learned completely by step 640. The stored-and-reloaded activation reaches 50% of prompts answered correctly in both conditions by step 1,024. The copy stays near zero: on 73% of development prompts it leaves the inputs to the trained layers bit-identical, so no model could tell the conditions apart there. [Runs 051 and 052](experiments/activation-viewing-learning.md).
 
 A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and stores a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
 
@@ -174,7 +180,7 @@ The head reads one specific direction. The part of the probe's difference along 
 
 ## 8. Statistics
 
-The unit of analysis is a complete prompt pair. Intervals are 95% whole-prompt paired bootstraps (5,000 draws). Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
+The unit of analysis is a complete prompt pair. Bars of counts carry exact Clopper–Pearson 95% intervals; means of per-prompt values and learning curves carry 95% percentile intervals from 5,000 bootstraps that resample whole prompt pairs. Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
 
 ## 9. Scope and related work
 

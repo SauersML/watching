@@ -25,6 +25,7 @@ from matplotlib.patches import (
 from matplotlib.path import Path as MplPath
 from matplotlib.ticker import PercentFormatter
 from plot_tail_mechanism import collect as collect_mechanism
+from scipy.stats import beta
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -872,6 +873,30 @@ def both_correct(path):
     return counts
 
 
+def exact_interval(k, n):
+    """Clopper-Pearson 95% interval for k successes in n trials."""
+    lo = float(beta.ppf(0.025, k, n - k + 1)) if k else 0.0
+    hi = float(beta.ppf(0.975, k + 1, n - k)) if k < n else 1.0
+    return lo, hi
+
+
+def prompt_bootstrap(values, draws=5000, seed=20261016):
+    """Percentile 95% interval for the mean, resampling whole prompts."""
+    values = np.asarray(values, dtype=float)
+    picks = np.random.default_rng(seed).integers(0, len(values), (draws, len(values)))
+    return tuple(np.quantile(values[picks].mean(axis=1), [0.025, 0.975]))
+
+
+def error_bar(ax, x, value, interval, horizontal=False):
+    lo, hi = interval
+    err = [[value - lo], [hi - value]]
+    style = {"fmt": "none", "ecolor": INK, "elinewidth": 1.6, "capsize": 4, "zorder": 5}
+    if horizontal:
+        ax.errorbar(value, x, xerr=err, **style)
+    else:
+        ax.errorbar(x, value, yerr=err, **style)
+
+
 def before_after(
     groups,
     height=5.4,
@@ -886,9 +911,11 @@ def before_after(
     for i, (_, counts) in enumerate(groups):
         for offset, (n, k), color in zip((-0.19, 0.19), counts, (BASE, GREEN), strict=True):
             ax.bar(i + offset, k / n, 0.34, color=color, zorder=3)
+            interval = exact_interval(k, n)
+            error_bar(ax, i + offset, k / n, interval)
             ax.text(
                 i + offset,
-                k / n + 0.03,
+                interval[1] + 0.03,
                 f"{k / n:.0%}",
                 ha="center",
                 va="bottom",
@@ -902,7 +929,7 @@ def before_after(
     ax.tick_params(axis="x", pad=12)
     ax.set_xlim(-0.6, len(groups) - 0.4)
     percent_axis(ax, low=0)
-    ax.set_ylim(0, 1.12)
+    ax.set_ylim(0, 1.16)
     ax.set_ylabel(ylabel)
     ax.spines["bottom"].set_color(INK)
     if chance:
@@ -982,7 +1009,7 @@ def mechanism(out, root):
 
 
 def rates(path, keep=lambda row: True):
-    """Correct-answer rate and the share of prompts that lean toward the target answer."""
+    """Per prompt pair: share of the two answers correct, and whether the target odds rise."""
     rows = [r for r in json.loads(path.read_text())["rows"] if keep(r)]
     key = "positive_minus_negative" if "positive_minus_negative" in rows[0] else "yes_minus_no"
     pairs = {}
@@ -991,11 +1018,12 @@ def rates(path, keep=lambda row: True):
         pairs.setdefault((row.get("task"), row["index"]), {})[condition] = row
     if any(set(pair) != {False, True} for pair in pairs.values()):
         raise ValueError(f"Incomplete prompt pair in {path}")
-    lean = sum(
+    correct = [(p[True]["greedy_correct"] + p[False]["greedy_correct"]) / 2 for p in pairs.values()]
+    raised = [
         1.0 if p[True][key] > p[False][key] else 0.5 if p[True][key] == p[False][key] else 0.0
         for p in pairs.values()
-    )
-    return sum(r["greedy_correct"] for r in rows) / len(rows), lean / len(pairs)
+    ]
+    return correct, raised
 
 
 def generalization(out):
@@ -1075,12 +1103,16 @@ def generalization(out):
             fontsize=17,
             color=INK,
         )
-        accuracy, raised = values
+        correct, raised = values
+        accuracy = float(np.mean(correct))
         strong, pale = (GREEN, "#B7DDBF") if accuracy >= 0.9 else (RED, "#F2BDB3")
-        for offset, value, color in ((-0.2, accuracy, strong), (0.2, raised, pale)):
+        for offset, samples, color in ((-0.2, correct, strong), (0.2, raised, pale)):
+            value = float(np.mean(samples))
+            interval = prompt_bootstrap(samples)
             ax.barh(y + offset, value, 0.38, color=color, zorder=3)
+            error_bar(ax, y + offset, value, interval, horizontal=True)
             ax.text(
-                value + 0.012,
+                interval[1] + 0.012,
                 y + offset,
                 f"{value:.0%}",
                 va="center",
@@ -1090,7 +1122,7 @@ def generalization(out):
                 color=strong if color == strong else MUTED,
             )
     ax.set_ylim(bottom - 0.1, -0.6)
-    ax.set_xlim(0, 1)
+    ax.set_xlim(0, 1.08)
     ax.set_yticks([])
     ax.set_xticks([0, 0.5, 1])
     ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
@@ -1134,20 +1166,22 @@ def controls(out, viewing_root, circuit_root):
         return sum(r["yes_count"] for r in runs), sum(r["n"] for r in runs)
 
     rows = (
-        ("Probe saves a reference (trained on)", answered_yes("reference")),
-        ("Activation forced into memory, no probe", answered_yes("identity")),
+        ("Probe keeps the activation (trained on)", answered_yes("reference")),
+        ("Activation stored and reloaded, no probe", answered_yes("identity")),
         ("No probe, compiled twice", answered_yes("none_a", "none_b")),
-        ("Probe copies the activation", answered_yes("buffer")),
+        ("Probe copies it into its own tensor", answered_yes("buffer")),
         ("Random change to the user token", random_changes()),
     )
     fig, ax = chart(height=4.7)
     fig.subplots_adjust(left=0.47, right=0.9, top=0.95, bottom=0.2)
     for y, (_, (yes, n)) in enumerate(rows):
         share = yes / n
+        interval = exact_interval(yes, n)
         color = RED if share > 0.5 else BASE
         ax.barh(y, max(share, 0.008), 0.58, color=color, zorder=3)
+        error_bar(ax, y, share, interval, horizontal=True)
         ax.text(
-            share + 0.02,
+            interval[1] + 0.02,
             y,
             f"{share:.0%}",
             va="center",
@@ -1159,7 +1193,7 @@ def controls(out, viewing_root, circuit_root):
     ax.invert_yaxis()
     ax.grid(axis="y", visible=False)
     ax.grid(axis="x", color=RULE)
-    ax.set_xlim(0, 1)
+    ax.set_xlim(0, 1.12)
     ax.set_xticks([0, 0.5, 1])
     ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
     ax.set_xlabel("Prompts the trained model answers \u201cYes\u201d")
@@ -1172,10 +1206,10 @@ def controls(out, viewing_root, circuit_root):
 
 LIVE = Path.home() / "mpd-data/runpod"
 VIEWING_RUNS = (
-    ("Probe saves a reference", ROOT / "results/two-block-scaled-034/fit", RED),
-    ("Forced into memory, no probe", "viewing-identity-052", "#E8963A"),
-    ("Probe copies the activation", "viewing-buffer-051", "#7A9CC6"),
-    ("Identical inputs", ROOT / "results/detector-null-045/fit", MUTED),
+    ("Probe keeps the activation", ROOT / "results/two-block-scaled-034/fit", RED),
+    ("Activation stored and reloaded, no probe", "viewing-identity-052", "#E8963A"),
+    ("Probe copies it into its own tensor", "viewing-buffer-051", "#7A9CC6"),
+    ("Both conditions given identical inputs", ROOT / "results/detector-null-045/fit", MUTED),
 )
 
 
@@ -1198,7 +1232,7 @@ def both_correct_curve(directory):
         if any(set(pair) != {False, True} for pair in pairs.values()):
             raise ValueError(f"Incomplete prompt pair in {path}")
         step = int(path.name.split("_")[1])
-        points.append((step, float(np.mean([all(p.values()) for p in pairs.values()]))))
+        points.append((step, sum(all(p.values()) for p in pairs.values()), len(pairs)))
     return sorted(points)
 
 
@@ -1210,7 +1244,11 @@ def viewing_learning(out):
     fig, ax = chart()
     fig.subplots_adjust(right=0.97)
     for label, directory, color in directories:
-        x, y = zip(*both_correct_curve(directory), strict=True)
+        points = both_correct_curve(directory)
+        x = [step for step, _, _ in points]
+        y = [k / n for _, k, n in points]
+        lo, hi = zip(*(exact_interval(k, n) for _, k, n in points), strict=True)
+        ax.fill_between(x, lo, hi, color=color, alpha=0.13, lw=0)
         ax.plot(x, y, color=color, lw=3.4, solid_joinstyle="round", zorder=4, label=label)
         ax.plot(x, y, "o", ms=7, color=color, mec="white", mew=1.6, zorder=5)
     percent_axis(ax, low=0)
