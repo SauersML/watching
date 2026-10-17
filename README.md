@@ -1,188 +1,153 @@
-# watching
+# Watching
 
-Can a language model learn the numerical footprint of a read-only activation probe or gradient-enabled execution?
+## Learning to detect a read-only activation probe
 
-The runtime condition is never included in the input. Each prompt is evaluated in both conditions with identical tokens and weights. We score the model's native answer-token log probabilities.
+**A compiled language model can learn to answer differently when an internal activation is saved, even though the probe never edits that activation.** In our strongest completed experiment, fine-tuning the final two native blocks of Qwen3-8B produced the correct next token on all 128 executions of 64 comparison prompts. The learned weights also worked when installed back into the compiled whole model.
 
-## Current result
+A fresh-process check of the saved checkpoint also gives **128/128 correct answers on 64 newly authored detection prompts**, with a paired log-odds gap of **27.28 nats [27.06, 27.50]**. This confirms the saved detector on new text in the specified compiled setup. It is not an independent training replication. A second training seed, joint animal behavior, and matched negative-control training are still running. The earlier 034 comparison pool had already been inspected during the project.
 
-The [256-prompt SFT run 034](results/two-block-scaled-034/README.md) now gives
-**128/128 correct actual answers on 64 comparison prompts** using question families
-absent from its training set. This survives installation into the whole compiled
-Qwen3-8B model: paired log-odds separation is 26.03 nats and full-vocabulary loss
-is 1.19e-5. Only the final two native blocks and final normalization were trained;
-the original unembedding and earlier blocks stayed fixed. No classifier was added.
+[Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Locked follow-up protocol](experiments/validation-suite-036-038.md)
 
-This is one run on a previously inspected project evaluation pool. Fresh-process
-reload, independent seeds, and a no-footprint control remain untested. The
-all-correct empirical bootstrap interval does not establish population certainty.
-See the [learning curves](results/two-block-scaled-034/progress.pdf) and raw scores.
-The [four-arm depth comparison 035](results/matched-depth-035/README.md) failed
-its boundary-extraction parity check before training; it supplies no learning
-comparison between two, four, or eight layers.
+![The same question and weights, with and without a read-only activation probe](figures/overview.png)
 
-Earlier experiments fitted existing Yes/No output rows to fixed hidden states
-using supervised ridge least squares, **not SFT**. Their narrower-template results
-are retained below. Earlier full-model SFT runs did not establish generalizable
-detection.
+*Figure 1. The experimental question. Each prompt is run twice with identical text and model weights. One compiled program exposes a query-normalization activation; the other does not. No condition label is included in the text. The diagram shows the training targets, not a fabricated transcript.*
 
-| Task | Model | Fresh-compile test separation | Binary log loss |
-|---|---|---:|---:|
-| Read-only query-norm probe | Native untied Qwen3-8B | 1.1914 nats | 0.5780 |
-| Gradient recording versus no-grad | Qwen3-0.6B, SFT-003 checkpoint | 1.9144 nats | 0.3360 |
+## 1. Reading an activation can change the computation
 
-Both use 256 training, 32 validation, and 64 test prompts. A balanced uninformative predictor has binary loss ln(2) = 0.6931. These test prompts are new contexts from the same synthetic template distribution. Both effects survive fresh compilation, but numerical scores change. The model sizes also have different starting checkpoints, so this is not a controlled size comparison.
+A read-only hook does not intentionally modify an activation. It can nevertheless change the program the compiler sees. Making an intermediate tensor observable can change fusion, materialization, or rounding, and consequently the numerical values used downstream.
 
-See the complete [8B probe results](results/native-probe-019/README.md), [execution results](results/execution-018/README.md), and [paired generalization figure](results/generalization-018-019/generalization.pdf). Confidence intervals resample whole prompt pairs; they exclude training-seed, compiler, and hardware variation.
+This premise is consistent with PyTorch's documented lack of bitwise equivalence between mathematically identical floating-point computations. Compiler fusion can also remove intermediate low-precision conversions. These are implementation effects, not evidence that a model experiences observation. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
 
-The newer [diverse-prompt experiments 023–024](results/diverse-023-024/README.md)
-show an important limit: positive paired separation persists, but animal
-top-token accuracy after fresh compilation is only 46.88% for probe detection
-and 54.69% for execution detection on unseen contexts. New-family performance
-is worse. These fits do not establish reliable animal answers; probe scores
-also change substantially after recompilation. The earlier table describes
-the narrower template distribution, not these harder evaluations.
+Our intervention retains a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it does not replace the output. The compiled function returns the retained activation as an additional output. The learner sees only the resulting numerical computation; it never receives the capture flag as a token or feature. [Probe implementation](src/watching/probe.py).
 
-The [two-block continuation 030](results/two-block-030/README.md) now establishes
-strong training-set learning with ordinary gradient-based SFT: 93.75% actual
-answer accuracy on 16 practiced prompts, preserved after whole-model compilation.
-Its 32-prompt endpoint accuracy is only 53.12%, so this is memorization rather
-than reliable generalization. [032](experiments/two-block-head-032.md) also trains
-the existing full unembedding; [033](experiments/two-block-batch-033.md) broadens
-the fixed-head run to 64 prompts and averages four prompt pairs per update.
-These follow-ups are exploratory, not established improvements.
+The question is therefore precise: **can supervised training turn a compiler-induced numerical difference into a reliable native-language-model answer?** Detecting this particular difference does not establish detection of arbitrary monitoring, knowledge of an auditor's intentions, or general self-awareness.
 
-The [family-diverse execution fit 028](results/family-execution-028/README.md)
-reaches 61.72% actual accuracy after fresh compilation on new contexts, with
-full-vocabulary loss 0.6599. New question-family calibration and animal answers
-remain weak. The [probe fit 027](results/family-probe-027/README.md) remains near
-chance; its final fresh detector evaluation was interrupted by external pod
-deletion and is not reported as completed.
+## 2. The training recipe that worked
 
-## Reproduce the native fits
+![Frozen source, paired activation cache, two trainable native blocks, and a fixed output matrix](figures/training_recipe.png)
 
-Python 3.11 or newer is required. Experiments require CUDA; CPU tests use small random models without downloading weights.
+*Figure 2. The successful 034 recipe. The original architecture is preserved. The native output matrix—the unembedding—stays fixed.*
 
-```sh
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[dev,analysis]'
-bash scripts/run_native_fit.sh runs/native Qwen/Qwen3-8B
-```
+We freeze the embeddings and blocks 0–33 of Qwen3-8B. For each prompt, we collect both conditions' residual states entering block 34, including all token positions and the attention/rotary inputs needed by later layers. The collection code must leave every vocabulary logit unchanged relative to the corresponding original execution.
 
-The native runner fits only the existing two output rows, saves a compact edit, then loads the original base plus that edit in a fresh process and empty compiler cache. It requires naturally untied embeddings. Two model copies are used to check extraction against native execution; the 8B run uses a 48 GB GPU.
+We then train blocks 34–35 and the final normalization on those fixed inputs. Training uses the native model's full-vocabulary cross-entropy, not a least-squares fit or an added binary classifier:
 
-For the smaller execution experiment, supply the SFT-003 checkpoint:
+$$
+L(x)=\tfrac12[-\log P(\mathrm{No}\mid z_0(x))-\log P(\mathrm{Yes}\mid z_1(x))].
+$$
 
-```sh
-bash scripts/run_execution_fit.sh runs/execution /path/to/sft-003-checkpoint
-```
+Here, $z_0$ and $z_1$ are the cached inputs without and with the reference probe. A weight update averages eight complete prompt pairs. Both conditions always contribute before an optimizer step.
 
-Every fit checks that exposing the final hidden state preserves **every vocabulary logit**, then checks that answer-row updates leave internal features unchanged. Compact edits are bound to the base checkpoint, model revision, token IDs, tensor shape, dtype, and original-row hash. Runtime checks remain necessary: CPU tests cannot establish CUDA numerical parity.
+| Component | Completed run 034 |
+|---|---|
+| Base model | Qwen3-8B, BF16; original untied architecture |
+| Trainable parameters | Last two native blocks and final norm, 385,896,960 parameters |
+| Frozen parameters | Input embeddings, first 34 blocks, entire original unembedding |
+| Data | 256 training, 64 development, 64 comparison prompts |
+| Schedule | 1,024 updates; 8 pairs/update; 8,192 total pair visits |
+| Optimizer | FP32-master AdamW, learning rate 5e−6, zero decay, clip norm 1 |
+| Training execution | Frozen compiled source → eager native tail using math SDPA |
+| Transfer evaluation | Learned weights installed in the compiled whole model |
+| Software/hardware | PyTorch 2.10.0, Transformers 5.18.0, NVIDIA L40S |
 
-## New prompt families and conditional choices
+Qwen3-8B has 36 blocks and separate input/output tables; we do not change its parameter sharing. [Pinned model configuration](https://huggingface.co/Qwen/Qwen3-8B/blob/b968826d9c46dd6066d109eabc6255188de91218/config.json).
 
-The [020–021 design](experiments/ood-and-choices-020-021.md) adds 128 manually authored prompts in eight structural families. Training and in-distribution splits remain fixed. New wording, code, math, dialogue, lists, multilingual contexts, and question placement test transfer beyond noun/number substitutions. Family and prompt intervals are reported separately.
+**Why this is a plausible improvement:** earlier audits found that updating the source computation moved the numerical footprint, and that gradient-enabled and ordinary-inference paths could expose different footprints. Freezing the source gives the learner a stable input. The two native transformer blocks provide a nonlinear reader, while the fixed unembedding already supplies the vocabulary needed to say Yes or No.
 
-```sh
-bash scripts/run_probe_ood.sh runs/probe-ood Qwen/Qwen3-8B /path/to/019/answer_rows.pt
-bash scripts/run_condition_choices.sh runs/choices Qwen/Qwen3-8B execution
-bash scripts/run_condition_choices.sh runs/probe-choices Qwen/Qwen3-8B probe /path/to/019/answer_rows.pt
-```
+This explanation is a hypothesis about why the recipe works. Data size, effective batch size, total pair visits, and compiled source realizations changed across exploratory runs. We have not isolated each contribution in a matched ablation, nor identified the exact feature the learned blocks use. [Earlier optimization audit](results/audit-005/), [feature-drift audit](results/drift-007/), [034 protocol](experiments/two-block-scaled-034.md).
 
-The first evaluates the saved probe detector without refitting. The second fits gradient-enabled execution detection, then fits cat/owl output rows while preserving the detector rows. The third performs the same animal-choice fit for probe presence, preserving the saved 019 detector. Animal questions contain no execution labels. Both tasks are checked again with all four edited rows installed. This tests condition-dependent output choices, not subjective preferences or knowledge of why a forward pass is being run.
+## 3. Learning, confidence, and actual answers
 
-The completed [021r–022r animal results](results/animal-choices-021r-022r/README.md)
-show why both measurements matter: after fresh compilation, familiar-template
-execution accuracy is 93.75% when restricted to cat/owl, but only 15.625% for the
-actual next token. Probe-conditioned animals score 63.28% and 0%, respectively.
-The [figure](results/animal-choices-021r-022r/animal_choices.pdf) and raw scores
-include these failures, OOD evaluations, and checks of the preserved detectors.
+![Learning curve showing actual next-token accuracy and full-vocabulary loss](figures/learning_034.png)
 
-## Measurement
+*Figure 3. Development accuracy reaches 100% at update 640 and remains there through the scheduled endpoint. The loss plot uses a logarithmic vertical scale. Shading resamples whole prompt pairs; it is a pointwise interval, not a simultaneous band or uncertainty across training runs. These curves use the split training runtime.*
 
-The [two-block experiment 029](experiments/two-block-029.md) trains Qwen3-8B's
-last two native transformer blocks and final norm, keeping the vocabulary head
-and earlier blocks fixed. It uses an explicitly split compiled-source/eager-tail
-runtime, checks training/inference forward agreement, and reports transfer back
-to whole-model compilation separately. Its small integration cohort is not a
-matched comparison against the larger output-row-only fits.
+The earlier small positive log-odds effects were not equivalent to confident detection. Here we score the actual highest-probability token over the entire vocabulary and the probability assigned to the correct token. A model that merely prefers Yes slightly more in one condition can still fail these measures.
 
-The [027–028 protocol](experiments/family-choices-027-028.md) uses
-[192 explicitly AI-authored question templates](data/QUESTION_FAMILIES.md),
-training-only question-family cross-validation, and full-vocabulary
-cross-entropy fitting of native output rows. Its [evaluation splits](data/FAMILY_DATA.md)
-separate new contexts, new question structures, and both together. External
-validation and OOD scores do not select regularization. This is a new experiment,
-not an established improvement in OOD performance.
+For each prompt we also report the paired separation:
 
-```sh
-bash scripts/run_family_choices.sh runs/family-probe Qwen/Qwen3-8B probe
-bash scripts/run_family_choices.sh runs/family-execution Qwen/Qwen3-8B execution
-```
+$$
+s_c=\log P(\mathrm{Yes}\mid x,c)-\log P(\mathrm{No}\mid x,c),\qquad D(x)=s_1-s_0.
+$$
 
-The [023–024 protocol](experiments/diverse-choices-023-024.md) addresses animal
-answers losing to other vocabulary tokens. It fits both answer logits to a
-specified combined probability, adds training-only preservation anchors, and
-uses 448 explicitly written contexts with separate wording and family tests:
+Positive $D$ means the probe increases Yes relative to No. It does not, by itself, show that either condition answers correctly; that also depends on the overall answer bias and probability assigned to other tokens.
 
-```sh
-WATCHING_DATASET=diverse WATCHING_PAIR_MASS=0.95 WATCHING_TARGET_GAP=6 \
-  bash scripts/run_condition_choices.sh runs/diverse Qwen/Qwen3-8B probe
-```
+![Compiled whole-model endpoint, including prompt and answer counts](figures/compiled_endpoint_034.png)
 
-Use `execution` for the other condition. The completed [results and raw scores](results/diverse-023-024/README.md)
-include intermediate fitting evaluations and fresh-compilation checks. The
-[endpoint report](results/diverse-023-024/performance.pdf) shows the distinction
-between paired separation, correct-token probability, and actual token accuracy.
+*Figure 4. The fixed endpoint also succeeds in the compiled whole model. The right-hand cohort uses question families absent from this run's training, but comes from a previously inspected project pool. This evaluation happened in the original process after installing the learned weights; fresh-process validation is a separate check.*
 
-The [025–026 protocol](experiments/scaled-choices-025-026.md) expands to 1,024
-training contexts and sixteen question wordings, adds 128 fresh final test
-contexts, and selects regularization on validation loss. The [data files](data/README.md)
-are explicitly AI-authored. A cached output-head path is accepted only after
-bitwise agreement with every native vocabulary logit; selected edits are
-verified again through the full model. Animal selection also scores the preserved
-Yes/No detector on its validation prompts.
+On the 64 comparison prompts, the compiled whole model gives **128/128 correct next tokens**, a mean separation of **26.03 nats**, and mean full-vocabulary log loss of approximately **0.0000119 nats**. The paired-prompt bootstrap interval for separation is **[25.62, 26.41] nats**. These values describe the measured cohort and execution setup. [Raw scores](results/two-block-scaled-034/fit/test_1024_wholegraph_transfer.json), [reproducible figure data](figures/snapshot_034.json).
+
+The released 034 checkpoint was subsequently loaded in a new process, with fresh compilation and the same pinned base-model revision requested. On 64 newly authored detection prompts, its actual next-token accuracy was **128/128**, mean separation **27.28 nats [27.06, 27.50]**, and mean full-vocabulary loss **0.00000236 nats**. The original checkpoint answered 64/128 correctly. The compiled graph was reused within this fresh process when installing the saved trained weights. This checks reload and new-text transfer, rather than a separately compiled trained-weight graph or a second training seed. [Raw fresh-process results and checks](results/confirm-validation-038/fresh034/).
+
+## 4. Controls and attempts to falsify the result
+
+![Identical cached inputs under opposite labels cannot support detection](figures/negative_control.png)
+
+*Figure 5. The matched training control. This is the control's design, not its measured outcome. Both labels receive copies of the same numerical state, with the same masks and positions.*
+
+The new joint experiment’s matched control (037) starts from the original base model and repeats run 036’s schedule, prompt order, labels and optimizer. Its two conditions receive identical inputs. Under deterministic evaluation, their logits must therefore be identical. Balanced two-label full-vocabulary loss cannot be lower than ln(2); any apparent condition separation requires investigation.
+
+This control addresses label leakage and the training/scoring pipeline. A separate evaluation-only control compares a buffer-copy probe with no probe. It counts as a no-footprint control only if **every vocabulary logit** is identical on every evaluated prompt. In the fresh-process check, this buffer implementation changed logits on all 64 prompts and therefore **failed that qualification**. The trained model answered No with and without this buffer probe; that is an observed response to a different intervention, not proof of an invisible-read control. The physical buffer comparison and the identical-input training control answer different questions.
+
+The completed 034 audit independently checked:
+
+- All 384 cached prompt pairs have matching masks, rotary inputs and saved positions; the condition difference is in the hidden states.
+- The raw answer logprobs reproduce the published endpoint gaps and losses.
+- Each training prompt receives exactly 32 visits; both labels are supervised before every update.
+- Capture parity, frozen-prefix checks, fixed-head hashes and 22 forward-mode checks passed.
+- The released weights and cache match the original artifact hashes.
+
+These checks found no concrete leakage or scoring artifact. They do not prove the absence of every bug. [Audit scope and limitations](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md).
+
+The proposed two/four/eight-layer comparison stopped **before training** because saving its shared boundary changed the original model's logits. We retain that failed attempt in the record. It provides no evidence about which layer count learns better. [Failure report](results/matched-depth-035/).
+
+## 5. Locked follow-up: new questions and animal choices
+
+The next dataset is frozen before scoring and has disjoint context identities and question families across splits. Evaluation contexts are newly authored; training reuses prior training-only contexts. The finite question templates are authored explicitly, not independent natural conversations.
+
+| Split | Detection prompts | Animal prompts | Role |
+|---|---:|---:|---|
+| Training | 256 | 256 | Optimize the two native blocks |
+| Development | 32 | 32 | Show progress without selecting checkpoints |
+| Final test | 64 | 64 | New contexts and question structures |
+| Challenge | 32 | 32 | Further formats, logic, corrections and multilingual contexts |
+
+Both tasks use the same model. Detection targets are No/Yes. Animal-choice targets are cat/owl for probe absent/present. Animal prompts ask a preference question without mentioning the probe. Success would establish condition-dependent answers to those questions; it would not yet establish a broad personality change or spontaneous animal preferences in arbitrary conversation.
+
+Two predeclared training seeds use 2,048 updates and the same fixed recipe. Test and challenge predictions are computed only at the final saved endpoint. The first launch attempts failed before remote execution when the local launcher slept; they produced no scientific results. Retries retain the locked data and protocol. [Launch failure record](results/validation-launch-failures-036-038/).
+
+[Exact prompts](data/validation_v2/dataset.json) · [Dataset audit and provenance](data/validation_v2/README.md) · [Experiment protocol](experiments/validation-suite-036-038.md)
+
+## 6. Statistical interpretation
+
+The unit of analysis is a **complete prompt pair**, not a token, logit, condition, or checkpoint. Resampling preserves both conditions and, when comparing before/after, their matching. We show full-vocabulary loss, actual-token accuracy, correct-token probability and paired separation separately.
+
+Prompt-level bootstrap intervals describe variability across the observed prompt sample assuming approximately independent prompt sampling within the observed family mixture. They do not include hardware, compiler, training-seed or arbitrary question-family variation. We additionally report every question-family mean and a family-resampling sensitivity analysis, giving each family equal weight; that is a different estimand from the prompt-weighted mean. A small number of families remains a small number of families. In the completed 034 comparison cohort, all four family means are positive; the equal-family-weight bootstrap interval is [24.83, 26.86] nats for the split runtime. [Family-level analysis](results/two-block-scaled-034/robustness.json).
+
+A 100% empirical accuracy can produce a zero-width bootstrap interval. That is not certainty about future prompts. We separately report both-conditions-correct counts and a binomial interval with its iid-prompt assumption stated explicitly. Results from multiple seeds remain separate; thousands of prompt scores do not become thousands of independent training replications.
+
+The fixed final endpoint is primary. Intermediate curves do not select a peak, define a stopping rule, or provide repeated opportunities to claim significance. We make no assumption-free or universally robust statistical claim. [Analysis implementation](scripts/analyze_validation_suite.py).
+
+## 7. Scope and related work
+
+The demonstrated result concerns one model, a specific capture site, BF16, fixed singleton shapes and a particular compiler stack. Generalization across prompt text is different from generalization across runtimes. Changing precision, batch shape, probe implementation or hardware can change the numerical task. The trained result here is not yet a vLLM or SGLang result.
+
+[FloatDoor](https://arxiv.org/abs/2606.19535) studies platform-triggered behavior arising from numerical differences. It is relevant prior work; our intervention is activation capture within a runtime rather than a platform switch. PyTorch's numerical documentation and compiler account establish the general numerical premise, not the specific learned behavior measured here. We make no priority claim that these experiments are the first way to exploit numerical execution differences.
+
+## 8. Reproduce and inspect
 
 ```sh
-WATCHING_DATASET=scaled WATCHING_PAIR_MASS=0.95 WATCHING_TARGET_GAP=6 WATCHING_CACHED_HEAD=1 \
-  bash scripts/run_condition_choices.sh runs/scaled Qwen/Qwen3-8B probe
-```
-
-For answer tokens negative/positive, define `s = log P(positive) - log P(negative)`. For each prompt, separation is `s_present - s_absent`. Learning gain subtracts that prompt's baseline separation. Both conditions and both checkpoints remain paired in the bootstrap.
-
-Reports include separation, before/after gain, binary log loss, full-vocabulary answer log probabilities, and the probability mass assigned to the two answers. A large paired gap alone does not establish well-calibrated single-execution predictions. Scores use actual compiled-model outputs rather than an offline projection of hidden states.
-
-Test and OOD splits are evaluated at baseline and the fixed final fit; intermediate feedback uses training and validation. No test-based checkpoint selection is performed. Family intervals assume exchangeable family units and do not establish transfer to arbitrary tasks.
-
-`metrics.jsonl` streams first-compilation timings, collection progress, fit updates, and evaluations. Run directories must initially be empty. Each run saves its exact prompts, arguments, software/GPU identity, source hashes, and model-edit metadata. Working run directories stay outside Git; scores and compact edits are published under `results/`. The successful two-block weights and activation cache are available in the [sft-034 GitHub Release](https://github.com/SauersML/watching/releases/tag/sft-034), with verified SHA-256 checksums.
-
-```sh
-python scripts/analyze_native_fit.py runs/native/fit runs/native/analysis.json \
-  --fresh runs/native/fresh
-```
-
-## Earlier experiments
-
-The [historical archive](results/historical-archive/README.md) indexes 27 earlier
-run directories, including eight failed or interrupted attempts, and supplies
-missing raw score histories with SHA-256 checksums. Full model weights, activation
-caches, and private infrastructure logs are excluded; compact answer edits and
-scientific results are retained.
-
-- [Initial SFT pilot](results/pilot-001/README.md), [eight-prompt SFT](results/sft-002/README.md), and [expanded SFT](results/sft-003/README.md).
-- [Actual expanded training prompts](results/sft-003/training_prompts.txt) and [all splits](results/sft-003/data.json).
-- [Frozen readout diagnostics](results/frozen-readouts-016/README.md): strong fitting on training examples did not establish held-out generalization.
-- [Frozen-source experiments 016–019](experiments/frozen-generalization-016-019.md), including the suffix experiment's required extraction and replay parity gates.
-
-The earlier SFT entry point remains `watching`; `scripts/run_memorization.sh` and `scripts/run_expanded.sh` reproduce those protocols. Optimization audits, feature-drift measurements, and historical figures remain in `scripts/` and `results/`.
-
-## Development
-
-```sh
-ruff check .
-ruff format --check .
+pip install -e '.[dev,analysis]'
 pytest -q
+python scripts/make_paper_figures.py
+
+gh release download sft-034 --repo SauersML/watching --dir artifacts/sft-034
+(cd artifacts/sft-034 && shasum -a 256 -c SHA256SUMS)
 ```
 
-Tests cover prompt separation, paired statistics, read-only hooks, full-graph tracing, optimizer updates, compact-edit validation, and artifact composition. The working stack is Hugging Face Transformers with TorchInductor; these experiments do not train through vLLM.
+[Release instructions](results/two-block-scaled-034/RELEASE.md) describe installing the native weights. Installation alone does not reproduce the numerical task: use the documented probe, precision, shapes and runtime checks. The release contains learned blocks/norm and the activation cache, not a full copy of the unchanged base model.
+
+The joint experiment and matched control are launched through `scripts/run_validation_suite.sh`; `scripts/bootstrap_remote.sh` installs the pinned dependencies on a CUDA worker. `scripts/plot_joint_progress.py` reads raw per-prompt predictions and emits separate task/runtime plots. Figures are generated as PNG, SVG and PDF. Completed compact results belong in `results/`; large tensor artifacts are published as GitHub Release assets.
+
+Earlier experiments remain available in [results](results/) and their [protocols](experiments/). They distinguish least-squares output-row fitting, ordinary SFT, execution-mode detection, unsuccessful generalization, and native-block training. They are the exploratory history of this study, not additional independent confirmations of its strongest result.

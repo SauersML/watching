@@ -1,0 +1,24 @@
+{
+  "status": "failed_before_remote_execution",
+  "scientific_results": false,
+  "cause": "The local launcher was suspended by Mac lid sleep while establishing the remote runs. No training result was produced.",
+  "runs": [
+    {
+      "name": "watching-joint-036",
+      "cost_usd": 0.8335,
+      "pod_deleted": true
+    },
+    {
+      "name": "watching-confirm-038",
+      "cost_usd": 0.6044,
+      "pod_deleted": true
+    }
+  ],
+  "total_cost_usd": 1.4379,
+  "retries": [
+    "watching-joint-036r",
+    "watching-confirm-038r"
+  ],
+  "retry_change": "Temporary caffeinate -is around the launchers; scientific source, data, and protocol unchanged.",
+  "scope": "Operational failure summary; no infrastructure credentials or account logs included."
+}
