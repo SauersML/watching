@@ -1,0 +1,26 @@
+{
+  "scope": "CPU diagnostic, not GPU causal replication",
+  "selection_frozen_before_replay": true,
+  "selected_cache_matches_full_cache_tensors": true,
+  "files": {
+    "role_vectors.pt": {
+      "bytes": 1036509,
+      "sha256": "9eaf69eb8db194854a6c131b66380a2b3ad92be0a2a54a61033c215ccb8e150c"
+    },
+    "selected_source.pt": {
+      "bytes": 13619083,
+      "sha256": "f8c93126fe19c9e0e7bef6b28c8942021f1f682532a99726ccec822d98ac67c1"
+    },
+    "selection.json": {
+      "bytes": 1547,
+      "sha256": "0aea89374873167829dc8b68d3982d9ad766fe5a2ce6cf1d0c83c6025ad39ccf"
+    },
+    "summary.json": {
+      "bytes": 279855,
+      "sha256": "b64374c80c596bc0d9433f4c1cc6bbff81e946f3fceaa888eae10c53e42a0eda"
+    }
+  },
+  "raw_summary_cache_hash_refers_to": "original full046cache; selected_source.pt is a bit-identical subset for reproduction",
+  "analysis_script": "scripts/audit_prefix_key_geometry.py",
+  "analysis_script_sha256": "08f6806576f4a6f26f65895508c31d6133ea854346bd150fc956962b11b1b91e"
+}
