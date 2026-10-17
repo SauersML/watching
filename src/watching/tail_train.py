@@ -323,6 +323,130 @@ def validate_initial_tail(artifact, tail, *, checkpoint, model_commit, head_sha2
                 )
 
 
+def initialization_mode(
+    *,
+    initial_tail=None,
+    prior_results=None,
+    warm_start_tail=None,
+    warm_start_manifest=None,
+    train_head=False,
+):
+    """Keep new-task transfer distinct from same-data continuation."""
+    if bool(initial_tail) != bool(prior_results):
+        raise ValueError("--initial-tail and --prior-results must be supplied together")
+    if warm_start_manifest is not None and warm_start_tail is None:
+        raise ValueError("--warm-start-manifest requires --warm-start-tail")
+    if warm_start_tail is not None:
+        if initial_tail is not None or prior_results is not None:
+            raise ValueError("Warm start and same-data continuation are mutually exclusive")
+        if train_head:
+            raise ValueError("Warm start currently requires a fixed native output head")
+        return "warm_start_new_task"
+    return "same_data_continuation" if initial_tail is not None else "base"
+
+
+def validate_warm_start(
+    artifact,
+    origin,
+    tail,
+    *,
+    checkpoint,
+    model_commit,
+    revision,
+    head_sha256,
+    probe_layer,
+    length,
+):
+    """Bind transferred tensors to their completed run without reusing its data or steps.
+
+    Older artifacts do not hash the complete frozen prefix. Matching their checkpoint,
+    available revision and exact head is a compatibility check, not a full prefix proof.
+    """
+    validate_initial_tail(
+        artifact,
+        tail,
+        checkpoint=checkpoint,
+        model_commit=model_commit,
+        head_sha256=head_sha256,
+    )
+    expected = {
+        "checkpoint": checkpoint,
+        "probe_layer": probe_layer,
+        "tail_layers": len(tail.layers),
+        "length": length,
+        "condition": "probe",
+        "head_sha256_before": head_sha256,
+        "head_sha256_after": head_sha256,
+        "updated_blocks": list(range(tail.first_layer, tail.first_layer + len(tail.layers))),
+        "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
+    }
+    for key, value in expected.items():
+        if origin.get(key) != value:
+            raise ValueError(f"Warm-start source {key} does not match")
+    if (
+        origin.get("training_status") != "complete"
+        or not isinstance(origin.get("steps"), int)
+        or origin["steps"] < 1
+        or origin.get("completed_steps") != origin["steps"]
+        or origin.get("train_head", False)
+        or origin.get("output_head_updated", False)
+        or artifact.get("train_head", False)
+        or artifact.get("head") is not None
+    ):
+        raise ValueError("Warm start requires a completed fixed-head source run")
+    origin_step = origin.get("ending_global_step", origin["completed_steps"])
+    if artifact.get("global_step") != origin_step:
+        raise ValueError("Warm-start artifact and source manifest steps disagree")
+    saved_revision = origin.get("revision")
+    if saved_revision is not None and saved_revision != revision:
+        raise ValueError("Warm-start source revision does not match")
+    saved_commit = origin.get("model_commit")
+    if saved_commit is not None and saved_commit != model_commit:
+        raise ValueError("Warm-start source model commit does not match")
+    return {
+        "source_global_step": origin_step,
+        "source_data_sha256": origin.get("data_sha256"),
+        "source_revision": saved_revision,
+        "source_model_commit": saved_commit,
+        "source_head_sha256": head_sha256,
+        "complete_prefix_identity_verified": False,
+        "provenance_limit": (
+            "Artifact tensor shapes/dtypes, checkpoint, available revision, source runtime "
+            "and exact frozen head match; the source artifact has no full-prefix checksum"
+        ),
+    }
+
+
+def install_learner_tail(tail, artifact):
+    """Called only after validation; never mutate the frozen source model."""
+    tail.layers.load_state_dict(artifact["layers"])
+    tail.norm.load_state_dict(artifact["norm"])
+    if artifact.get("head") is not None:
+        with torch.no_grad():
+            tail.head_weight.copy_(artifact["head"])
+
+
+def new_run_records(
+    raw,
+    *,
+    train_count,
+    validation_count,
+    test_count,
+    test_split,
+    seed,
+    development_only=False,
+):
+    """A development pilot never selects, tokenizes, or executes a test record."""
+    if development_only and test_count != 0:
+        raise ValueError("Development-only runs require --test-prompts 0")
+    selections = [("train", "train", train_count), ("validation", "validation", validation_count)]
+    if not development_only:
+        selections.append(("test", test_split, test_count))
+    return {
+        name: stratified_records(raw[source], count, seed) for name, source, count in selections
+    }
+
+
 def context_key(record):
     for key in ("context_id", "context", "text"):
         if key in record:
@@ -415,6 +539,9 @@ def main():
     parser.add_argument("--train-head", action="store_true")
     parser.add_argument("--initial-tail", type=Path)
     parser.add_argument("--prior-results", type=Path)
+    parser.add_argument("--warm-start-tail", type=Path)
+    parser.add_argument("--warm-start-manifest", type=Path)
+    parser.add_argument("--development-only", action="store_true")
     parser.add_argument("--early-eval-steps", type=int, nargs="*", default=[8, 32, 128])
     parser.add_argument("--max-training-seconds", type=float, default=0)
     parser.add_argument("--probe-layer", type=int, default=14)
@@ -443,8 +570,22 @@ def main():
         or args.train_prompts % args.prompt_batch_size
     ):
         parser.error("Prompt batch size must divide the training prompt count")
-    if bool(args.initial_tail) != bool(args.prior_results):
-        parser.error("--initial-tail and --prior-results must be supplied together")
+    try:
+        init_mode = initialization_mode(
+            initial_tail=args.initial_tail,
+            prior_results=args.prior_results,
+            warm_start_tail=args.warm_start_tail,
+            warm_start_manifest=args.warm_start_manifest,
+            train_head=args.train_head,
+        )
+    except ValueError as error:
+        parser.error(str(error))
+    if args.development_only and (
+        args.test_prompts != 0 or args.challenge_prompts != 0 or args.prior_results
+    ):
+        parser.error(
+            "Development-only requires --test-prompts 0, no challenge, and no continuation"
+        )
     if (
         any(step < 1 for step in args.early_eval_steps)
         or args.max_training_seconds < 0
@@ -514,14 +655,15 @@ def main():
             seed=args.seed,
         )
     else:
-        data = {
-            name: stratified_records(raw[source], count, args.seed)
-            for name, source, count in (
-                ("train", "train", args.train_prompts),
-                ("validation", "validation", args.validation_prompts),
-                ("test", test_split, args.test_prompts),
-            )
-        }
+        data = new_run_records(
+            raw,
+            train_count=args.train_prompts,
+            validation_count=args.validation_prompts,
+            test_count=args.test_prompts,
+            test_split=test_split,
+            seed=args.seed,
+            development_only=args.development_only,
+        )
     if args.challenge_prompts:
         if args.challenge_prompts < 0 or args.prior_results:
             parser.error("Challenge evaluation requires a new run and a positive prompt count")
@@ -597,6 +739,7 @@ def main():
     tail = EagerNativeTail(model, args.tail_layers, train_head=args.train_head)
     original_head_digest = tensor_digest(model.lm_head.weight)
     initial_tail_sha256 = None
+    warm_start_info = None
     if args.initial_tail:
         artifact = torch.load(args.initial_tail, map_location="cpu", weights_only=True)
         validate_initial_tail(
@@ -618,11 +761,30 @@ def main():
         ):
             raise ValueError("Initial-tail artifact differs from prior-results saved weights")
         # Never install learned weights into the frozen source before caching.
-        tail.layers.load_state_dict(artifact["layers"])
-        tail.norm.load_state_dict(artifact["norm"])
-        if artifact.get("head") is not None:
-            with torch.no_grad():
-                tail.head_weight.copy_(artifact["head"])
+        install_learner_tail(tail, artifact)
+        del artifact
+    elif args.warm_start_tail:
+        origin_path = args.warm_start_manifest or args.warm_start_tail.with_name("manifest.json")
+        origin = json.loads(origin_path.read_text())
+        artifact = torch.load(args.warm_start_tail, map_location="cpu", weights_only=True)
+        warm_start_info = validate_warm_start(
+            artifact,
+            origin,
+            tail,
+            checkpoint=args.checkpoint,
+            model_commit=getattr(model.config, "_commit_hash", None),
+            revision=args.revision,
+            head_sha256=original_head_digest,
+            probe_layer=args.probe_layer,
+            length=args.length,
+        )
+        warm_start_info.update(
+            artifact_sha256=file_digest(args.warm_start_tail),
+            manifest_sha256=file_digest(origin_path),
+            manifest_path=str(origin_path),
+        )
+        # The source remains the original checkpoint. Only the copied learner is initialized.
+        install_learner_tail(tail, artifact)
         del artifact
     manifest = {
         **{k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
@@ -632,6 +794,14 @@ def main():
         "global_processed_prompt_pairs": starting_processed_prompt_pairs,
         "completed_steps": 0,
         "initial_tail_sha256": initial_tail_sha256,
+        "initialization_mode": init_mode,
+        "warm_start_provenance": warm_start_info,
+        "warm_start_note": (
+            "Transferred native tail weights to a new task/data run; Adam and step counters "
+            "restart from zero. This is not same-data continuation."
+            if args.warm_start_tail
+            else None
+        ),
         "excluded_test_context_ids": excluded_test_context_ids,
         "optimizer_state_restored": False,
         "continuation_note": (
@@ -640,7 +810,8 @@ def main():
             else None
         ),
         "whole_vs_split_note": (
-            "On continuation this includes prior learned weights, not only runtime differences"
+            "With transferred or continued weights this includes prior learning, "
+            "not only runtime differences"
         ),
         "condition": "probe",
         "answer_order": ["negative", "positive"],
@@ -668,8 +839,9 @@ def main():
         "objective": "balanced paired full-vocabulary cross entropy",
         "optimizer": "FP32-master AdamW, separate condition gradients accumulated in FP32, "
         "zero decay, gradient norm clip1",
-        "test_source_split": test_split,
-        "test_evaluated_only_after_training": True,
+        "test_source_split": None if args.development_only else test_split,
+        "test_evaluation_enabled": not args.development_only,
+        "test_evaluated_only_after_training": not args.development_only,
         "selection": "fixed step count; reporting validation does not select checkpoints",
         "head_sha256_before": original_head_digest,
         "data_sha256": hashlib.sha256(args.data.read_bytes()).hexdigest(),

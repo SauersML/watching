@@ -235,6 +235,152 @@ def test_resume_loads_learner_without_changing_original_source_or_head():
     assert tail.head_weight.data_ptr() == model.lm_head.weight.data_ptr()
 
 
+def warm_start_fixture(tail):
+    artifact = native_artifact(tail)
+    artifact["global_step"] = 1024
+    origin = {
+        "checkpoint": "example/qwen",
+        "probe_layer": 0,
+        "tail_layers": len(tail.layers),
+        "length": 96,
+        "condition": "probe",
+        "head_sha256_before": "head-digest",
+        "head_sha256_after": "head-digest",
+        "training_status": "complete",
+        "steps": 1024,
+        "completed_steps": 1024,
+        "ending_global_step": 1024,
+        "updated_blocks": list(range(tail.first_layer, tail.first_layer + len(tail.layers))),
+        "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
+        "model_commit": "abc123",
+        "revision": "abc123",
+        "data_sha256": "old-data",
+    }
+    return artifact, origin
+
+
+def validate_warm(artifact, origin, tail):
+    from watching.tail_train import validate_warm_start
+
+    return validate_warm_start(
+        artifact,
+        origin,
+        tail,
+        checkpoint="example/qwen",
+        model_commit="abc123",
+        revision="abc123",
+        head_sha256="head-digest",
+        probe_layer=0,
+        length=96,
+    )
+
+
+def test_warm_start_transfers_only_learner_and_restarts_optimizer():
+    from watching.tail_train import initialization_mode, install_learner_tail
+
+    model = tiny_model(torch.bfloat16)
+    original = {k: v.clone() for k, v in model.state_dict().items()}
+    tail = EagerNativeTail(model)
+    artifact, origin = warm_start_fixture(tail)
+    first = next(iter(artifact["layers"]))
+    artifact["layers"][first].add_(0.125)
+    provenance = validate_warm(artifact, origin, tail)
+    assert provenance["source_global_step"] == 1024
+    assert provenance["source_data_sha256"] == "old-data"
+    assert not provenance["complete_prefix_identity_verified"]
+    assert initialization_mode(warm_start_tail="tail.pt") == "warm_start_new_task"
+    install_learner_tail(tail, artifact)
+    optimizer = PairedMasterAdam(tail.active_parameters(), 5e-6)
+    assert not optimizer.optimizer.state
+    assert torch.equal(tail.layers.state_dict()[first], artifact["layers"][first])
+    assert all(torch.equal(v, original[k]) for k, v in model.state_dict().items())
+
+
+@pytest.mark.parametrize(
+    "key,value",
+    [
+        ("probe_layer", 1),
+        ("length", 64),
+        ("tail_layers", 4),
+        ("updated_blocks", [0]),
+        ("revision", "different"),
+        ("model_commit", "different"),
+        ("head_sha256_after", "changed"),
+        ("runtime", "different"),
+        ("completed_steps", 512),
+        ("ending_global_step", 512),
+        ("train_head", True),
+    ],
+)
+def test_warm_start_rejects_source_mismatch_without_mutating_learner(key, value):
+    tail = EagerNativeTail(tiny_model(torch.bfloat16))
+    original = {k: v.clone() for k, v in tail.state_dict().items()}
+    artifact, origin = warm_start_fixture(tail)
+    origin[key] = value
+    with pytest.raises(ValueError):
+        validate_warm(artifact, origin, tail)
+    assert all(torch.equal(v, original[k]) for k, v in tail.state_dict().items())
+
+
+def test_legacy_warm_source_records_missing_revision_honestly():
+    tail = EagerNativeTail(tiny_model(torch.bfloat16))
+    artifact, origin = warm_start_fixture(tail)
+    artifact["model_commit"] = None
+    origin["model_commit"] = None
+    origin.pop("revision")
+    result = validate_warm(artifact, origin, tail)
+    assert result["source_revision"] is None
+    assert result["source_model_commit"] is None
+    assert not result["complete_prefix_identity_verified"]
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"initial_tail": "old.pt"},
+        {"warm_start_tail": "old.pt", "initial_tail": "old.pt", "prior_results": "old"},
+        {"warm_start_tail": "old.pt", "train_head": True},
+        {"warm_start_manifest": "manifest.json"},
+    ],
+)
+def test_warm_start_cannot_silently_become_continuation_or_change_head(kwargs):
+    from watching.tail_train import initialization_mode
+
+    with pytest.raises(ValueError):
+        initialization_mode(**kwargs)
+
+
+def test_development_pilot_does_not_require_or_select_test_records():
+    from watching.tail_train import new_run_records
+
+    raw = {
+        "train": [{"context_id": "train1", "question_family": "a", "text": "train"}],
+        "validation": [{"context_id": "dev1", "question_family": "b", "text": "dev"}],
+    }
+    selected = new_run_records(
+        raw,
+        train_count=1,
+        validation_count=1,
+        test_count=0,
+        test_split="test",
+        seed=42,
+        development_only=True,
+    )
+    assert set(selected) == {"train", "validation"}
+    for split in selected:
+        assert selected[split] == [{**raw[split][0], "source_index": 0}]
+    with pytest.raises(ValueError, match="test-prompts 0"):
+        new_run_records(
+            raw,
+            train_count=1,
+            validation_count=1,
+            test_count=1,
+            test_split="test",
+            seed=42,
+            development_only=True,
+        )
+
+
 @pytest.mark.parametrize(
     "mutation",
     [

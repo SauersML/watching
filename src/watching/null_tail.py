@@ -154,6 +154,7 @@ def main():
         manifest["training_status"] != "complete"
         or manifest["completed_steps"] != manifest["steps"]
         or manifest.get("initial_tail") is not None
+        or manifest.get("warm_start_tail") is not None
         or manifest.get("train_head", False)
         or manifest["tail_layers"] != 2
     ):
