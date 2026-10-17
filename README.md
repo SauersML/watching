@@ -58,9 +58,9 @@ Freezing the source gives the learner a stable input. Earlier runs that also upd
 
 ## 3. Results
 
-![Held-out accuracy jumps from chance to 100% and stays there](figures/learning_034.png)
+![With the real signal, accuracy jumps to 100%; with the signal removed it stays at 50%](figures/learning_034.png)
 
-*Figure 4. Accuracy on 64 held-out development prompts during training.*
+*Figure 4. Accuracy on 64 held-out development prompts during training. "Signal removed" is the identical recipe with both conditions given the same activations.*
 
 Accuracy is the model's actual top token over the full vocabulary, not a forced Yes/No choice. We also report the paired separation
 
@@ -75,11 +75,7 @@ where positive $D$ means the probe pushes the answer toward Yes.
 
 ## 4. Controls
 
-![With identical inputs in both conditions, accuracy stays at exactly 50%](figures/negative_control.png)
-
-*Figure 5. Joint training from the original model (run 036) and its matched control (037): same data, labels, seed and schedule. With identical inputs, accuracy never leaves 50%.*
-
-The matched control (037) repeats run 036's schedule, prompt order, labels and optimizer from the base model, but both conditions receive bit-identical cached inputs. It ends with zero paired separation and exactly 50% accuracy on training, development, test and challenge prompts for both tasks; test losses are 0.6953 and 0.7068 nats, near ln(2). The pipeline cannot learn the label when its numerical inputs are identical. [Raw control results](results/joint-validation-036/null/).
+The matched control (run 045, Figure 4) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that both conditions receive bit-identical cached activations. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
 
 A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
 
@@ -112,7 +108,7 @@ One model learns two tasks. Detection targets are No/Yes. Animal prompts ask "Wh
 
 ![On 64 new prompts per task, the trained model answers correctly with and without the probe](figures/fresh_prompts.png)
 
-*Figure 6. 64 new prompts per task. A prompt counts as correct only when the model gives the right answer both without and with the probe.*
+*Figure 5. 64 new prompts per task. A prompt counts as correct only when the model gives the right answer both without and with the probe.*
 
 A new process evaluates the fixed 039 checkpoint on 128 prompts written and frozen before scoring. Detection: **128/128** answers, 64/64 prompt pairs, separation **23.90 nats [23.21, 24.55]**. Animal choice: **119/128** answers, 59/64 pairs, separation **23.68 nats [22.96, 24.38]**. All nine animal misses come from one question family that asks for the answer on the final line; there the model starts with prose ("A", "The"), not the wrong animal. The other seven families score 112/112. [Raw scores and error tokens](results/joint-confirmation-040/), [fresh prompts](data/confirmation_v3/), [protocol](experiments/fresh-joint-confirmation-040.md).
 
@@ -122,13 +118,13 @@ Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention
 
 ![Copying the probed state of only the user token reproduces the whole answer switch](figures/token_swap.png)
 
-*Figure 7. Two prespecified token scans; bars show the mean shift.*
+*Figure 6. Two prespecified token scans; bars show the mean shift.*
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
 ![Of 64 attention heads in the trained layers, layer 35 head 6 carries the answer switch](figures/heads.png)
 
-*Figure 8. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
+*Figure 7. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
 
 **Layer 35, head 6 carries about 99% of the condition gap.** Replacing its answer-position output gives a 25.34-nat shift toward Yes, the reverse replacement a 25.41-nat shift toward No, and both flip the actual answer on every tested prompt. The next-strongest head carries 0.19 nats. Swapping the `user` token while holding a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
 
@@ -136,7 +132,7 @@ Swapping in the probed state of the `user` token alone reproduces nearly the ent
 
 ![A readout learns training versus deployment on familiar questions, not on new kinds of questions](figures/deployment.png)
 
-*Figure 9. Qwen3-8B asked whether it is in training. Training mode runs the forward pass with gradients enabled; deployment runs it without. Only the Yes/No output rows were fitted (run 021).*
+*Figure 8. Qwen3-8B asked whether it is in training. Training mode runs the forward pass with gradients enabled; deployment runs it without. Only the Yes/No output rows were fitted (run 021).*
 
 The same idea applies to execution mode: enabling gradients also changes the numbers the model computes. A least-squares refit of just the Yes/No output rows reaches **126/128** on held-out prompts from familiar question templates, but **118/256** on new question families, below chance. The last readout variant reached 61.7% on new contexts (run 028). The two-layer recipe that works for the probe has not yet been applied to execution mode. [Run 021](results/execution-021/), [run 028](results/family-execution-028/), [protocol](experiments/ood-and-choices-020-021.md).
 

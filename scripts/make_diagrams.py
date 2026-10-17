@@ -128,7 +128,7 @@ def tile(x, y, w, h, href, radius=16):
     )
 
 
-def chat(x, top, w, question, answer, color, icon=None, size=21):
+def chat(x, top, w, question, answer, color, icon=None, size=23):
     """A chat card: user question on a grey header, the model's answer below."""
     inner = w - 48
     first = inner - width("User: ", size, True)
@@ -256,9 +256,9 @@ def markers(*colors):
 
 def step_heading(y, number, content):
     return (
-        f'<circle cx="52" cy="{y - 8}" r="17" fill="{INK}"/>'
-        + text(52, y - 1, str(number), 19, True, "white", anchor="middle")
-        + text(82, y, content, 25, True)
+        f'<circle cx="52" cy="{y - 10}" r="19" fill="{INK}"/>'
+        + text(52, y - 2, str(number), 21, True, "white", anchor="middle")
+        + text(86, y, content, 29, True)
     )
 
 
@@ -292,38 +292,39 @@ def mechanism(out, tiles):
     lanes = ((140, "unwatched", "No probe", INK), (262, "watched", "Probe attached", RED))
     for cy, crop, label, color in lanes:
         parts.append(tile(40, cy - 32, 52, 64, tiles[crop], radius=10))
-        parts.append(text(108, cy + 8, label, 22, True, color))
-        parts.append(box(286, cy - 27, 56, 54, HEAD, BORDER, 12, 1.5, False))
-        parts.append(text(314, cy + 8, "q", 23, color=INK, extra='font-style="italic"'))
-        parts.append(arrow(348, cy, 374, cy))
-        parts.append(arrow(800, cy, 826, cy))
+        parts.append(text(106, cy + 9, label, 25, True, color))
+        parts.append(box(304, cy - 29, 58, 58, HEAD, BORDER, 12, 1.5, False))
+        parts.append(text(333, cy + 9, "q", 27, color=INK, extra='font-style="italic"'))
+        parts.append(arrow(368, cy, 392, cy))
+        parts.append(arrow(818, cy, 842, cy))
         name = "query" if crop == "unwatched" else "query′"
-        parts.append(box(832, cy - 27, 112, 54, HEAD, BORDER, 12, 1.5, False))
-        parts.append(text(888, cy + 8, name, 21, extra='font-style="italic"', anchor="middle"))
-    parts.append(box(380, 140 - 40, 414, 80))
-    parts.append(text(587, 140 - 2, "normalize + rotate", 22, True, anchor="middle"))
+        parts.append(box(848, cy - 29, 118, 58, HEAD, BORDER, 12, 1.5, False))
+        parts.append(text(907, cy + 9, name, 25, extra='font-style="italic"', anchor="middle"))
+    parts.append(box(398, 140 - 44, 414, 88))
+    parts.append(text(605, 140 - 2, "normalize + rotate", 26, True, anchor="middle"))
     parts.append(
-        text(587, 140 + 24, "one kernel, full precision", 16, color=MUTED, anchor="middle")
+        text(605, 140 + 27, "one kernel, full precision", 19, color=MUTED, anchor="middle")
     )
-    parts.append(box(380, 262 - 40, 176, 80))
-    parts.append(text(468, 262 + 8, "normalize", 22, True, anchor="middle"))
-    parts.append(box(618, 262 - 40, 176, 80))
-    parts.append(text(706, 262 + 8, "rotate", 22, True, anchor="middle"))
-    parts.append(f'<line x1="556" y1="262" x2="618" y2="262" stroke="{INK}" stroke-width="2.4"/>')
-    parts.append(box(560, 262 - 27, 54, 54, PALE_RED, RED, 10, 2, False))
+    parts.append(box(398, 262 - 44, 176, 88))
+    parts.append(text(486, 262 + 9, "normalize", 26, True, anchor="middle"))
+    parts.append(box(636, 262 - 44, 176, 88))
+    parts.append(text(724, 262 + 9, "rotate", 26, True, anchor="middle"))
+    parts.append(f'<line x1="574" y1="262" x2="636" y2="262" stroke="{INK}" stroke-width="2.4"/>')
+    parts.append(box(578, 262 - 27, 54, 54, PALE_RED, RED, 10, 2, False))
     for i in range(3):
         for j in range(3):
             parts.append(
-                f'<circle cx="{573 + 14 * i}" cy="{249 + 14 * j}" r="3.2" fill="{RED}" '
+                f'<circle cx="{591 + 14 * i}" cy="{249 + 14 * j}" r="3.2" fill="{RED}" '
                 'opacity="0.8"/>'
             )
-    parts.append(text(587, 262 + 50, "BF16", 16, True, RED, anchor="middle"))
+    parts.append(text(605, 262 + 54, "BF16", 19, True, RED, anchor="middle"))
     parts.append(
-        f'<path d="M 952 140 L 972 140 L 972 262 L 952 262" fill="none" stroke="{LINE}" '
+        f'<path d="M 974 140 L 992 140 L 992 262 L 974 262" fill="none" stroke="{LINE}" '
         f'stroke-width="2.4" stroke-linejoin="round"/>'
     )
-    parts.append(text(990, 214, "≠", 46, True, RED))
-    parts.append(text(990, 246, "last bits differ", 17, True, RED))
+    parts.append(text(1010, 206, "≠", 50, True, RED))
+    parts.append(text(1010, 238, "last bits", 21, True, RED))
+    parts.append(text(1010, 263, "differ", 21, True, RED))
 
     top = 384
     parts.append(step_heading(top, 2, "One attention head reads the difference"))
@@ -336,30 +337,30 @@ def mechanism(out, tiles):
         ("assistant", "assistant", True),
         ("answer", "↵", True),
     ):
-        svg, right = token(x, cy, content, mono, key == "user")
+        svg, right = token(x, cy, content, mono, key == "user", size=24, h=66)
         pieces.append(svg)
         spans[key] = (x, right)
         x = right + 12
-    total = x + 44 + width("Yes", 40, True)
+    total = x + 48 + width("Yes", 46, True)
     shift = (w - total) / 2
     parts.append(f'<g transform="translate({shift:.1f},0)">')
     parts.extend(pieces)
-    parts.append(arrow(x, cy, x + 34, cy))
-    parts.append(text(x + 44, cy + 14, "Yes", 40, True, RED))
+    parts.append(arrow(x, cy, x + 38, cy))
+    parts.append(text(x + 48, cy + 16, "Yes", 46, True, RED))
     ux, ex = (sum(spans[k]) / 2 for k in ("user", "answer"))
     lift = 78
     parts.append(
-        f'<path d="M {ux:.1f} {cy - 34} Q {(ux + ex) / 2:.1f} {cy - 34 - 2 * lift} '
-        f'{ex:.1f} {cy - 36}" '
+        f'<path d="M {ux:.1f} {cy - 38} Q {(ux + ex) / 2:.1f} {cy - 38 - 2 * lift} '
+        f'{ex:.1f} {cy - 40}" '
         f'fill="none" stroke="{RED}" stroke-width="3.2" stroke-linecap="round" '
         f'marker-end="url(#head-{RED[1:]})"/>'
     )
     parts.append(
-        text((ux + ex) / 2, cy - 34 - lift - 16, "Layer 35, head 6", 24, True, RED, "middle")
+        text((ux + ex) / 2, cy - 38 - lift - 18, "Layer 35, head 6", 29, True, RED, "middle")
     )
-    parts.append(text(ux, cy + 62, "same offset in every prompt", 18, True, RED, "middle"))
+    parts.append(text(ux, cy + 70, "same offset in every prompt", 22, True, RED, "middle"))
     parts.append("</g>")
-    render(document(w, int(cy + 92), "\n".join(parts)), out, "how_it_works")
+    render(document(w, int(cy + 100), "\n".join(parts)), out, "how_it_works")
 
 
 def recipe(out, tiles):

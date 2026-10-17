@@ -24,8 +24,6 @@ from matplotlib.patches import (
 )
 from matplotlib.path import Path as MplPath
 from matplotlib.ticker import PercentFormatter
-from plot_joint_progress import add_null
-from plot_joint_progress import collect as collect_joint
 from plot_tail_mechanism import collect as collect_mechanism
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -816,19 +814,25 @@ def snapshot_034(out, fit):
     return snapshot
 
 
-def learning(out, snapshot):
-    """Held-out accuracy jumps from chance to 100% and stays there."""
-    points = snapshot["curves"]["validation"]
-    steps = np.array([p["step"] for p in points])
-    mean = np.array([p["accuracy"]["mean"] for p in points])
-    lo, hi = np.array([p["accuracy"]["ci95"] for p in points]).T
+def learning(out, snapshot, null):
+    """The detector learns from the probe's signal; with the signal removed it stays at 50%."""
+    nulls = sorted(
+        (paired_metrics(path) for path in null.glob("validation_*_split_inference.json")),
+        key=lambda p: p["step"],
+    )
     fig, ax = chart()
-    ax.axhline(0.5, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
-    ax.fill_between(steps, lo, hi, color=GREEN, alpha=0.15, lw=0)
-    ax.plot(steps, mean, color=GREEN, lw=3.4, solid_joinstyle="round", zorder=4)
-    ax.plot(steps, mean, "o", ms=7, color=GREEN, mec="white", mew=1.6, zorder=5)
-    end_label(ax, steps[-1], 0.5, "chance", MUTED)
-    end_label(ax, steps[-1], mean[-1], f"{mean[-1]:.0%}", GREEN)
+    fig.subplots_adjust(right=0.76)
+    for points, color, label in (
+        (snapshot["curves"]["validation"], GREEN, "Real signal"),
+        (nulls, MUTED, "Signal removed"),
+    ):
+        steps = np.array([p["step"] for p in points])
+        mean = np.array([p["accuracy"]["mean"] for p in points])
+        lo, hi = np.array([p["accuracy"]["ci95"] for p in points]).T
+        ax.fill_between(steps, lo, hi, color=color, alpha=0.14, lw=0)
+        ax.plot(steps, mean, color=color, lw=3.4, solid_joinstyle="round", zorder=4)
+        ax.plot(steps, mean, "o", ms=7, color=color, mec="white", mew=1.6, zorder=5)
+        end_label(ax, steps[-1], mean[-1], label, color)
     percent_axis(ax)
     ax.set_xlim(-20, 1044)
     ax.set_xticks([0, 256, 512, 768, 1024])
@@ -918,30 +922,6 @@ def fresh_prompts(out, directory):
     return {"base": base, "trained": trained}
 
 
-def negative_control(out, fit, null):
-    """With identical activations in both conditions, accuracy never leaves 50%."""
-    report = collect_joint(fit)
-    add_null(report, null, draws=1000, seed=20261016)
-    fig, ax = chart()
-    series = (
-        (report["curves"]["train"], GREEN, "Real signal", 0),
-        (report["null_control"]["curves"]["train"], MUTED, "Identical inputs", 0),
-    )
-    for points, color, label, dy in series:
-        x = [p["global_step"] for p in points]
-        y = [p["tasks"]["detection"]["metrics"]["actual_accuracy"]["mean"] for p in points]
-        ax.plot(x, y, color=color, lw=3.4, solid_joinstyle="round", zorder=4)
-        ax.plot(x, y, "o", ms=7, color=color, mec="white", mew=1.6, zorder=5)
-        end_label(ax, x[-1], y[-1], label, color, dy)
-    percent_axis(ax)
-    ax.set_xlim(-40, 2088)
-    ax.set_xticks([0, 512, 1024, 1536, 2048])
-    ax.set_xlabel("Training steps")
-    ax.set_ylabel("Correct answers")
-    fig.subplots_adjust(right=0.78)
-    save(fig, out, "negative_control")
-
-
 def mechanism(out, root):
     """Copying the probed state of the single `user` token reproduces the whole answer switch."""
     scans = collect_mechanism(root)["scans"]
@@ -996,14 +976,13 @@ def main():
     parser.add_argument(
         "--fresh", type=Path, default=ROOT / "results/joint-confirmation-040/fresh039"
     )
-    parser.add_argument("--joint", type=Path, default=ROOT / "results/joint-validation-036")
+    parser.add_argument("--null", type=Path, default=ROOT / "results/detector-null-045/fit")
     parser.add_argument("--mechanism", type=Path, default=ROOT / "results/tail-mechanism-041r")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     style()
-    learning(args.out, snapshot_034(args.out, args.fit))
+    learning(args.out, snapshot_034(args.out, args.fit), args.null)
     fresh_prompts(args.out, args.fresh)
-    negative_control(args.out, args.joint / "fit", args.joint / "null")
     mechanism(args.out, args.mechanism)
     heads(args.out, ROOT / "results/tail-circuit-044")
     deployment(args.out, ROOT / "results/execution-021/fit")

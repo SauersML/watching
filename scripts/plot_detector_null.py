@@ -111,8 +111,8 @@ def collect(real, null):
 
 def draw(report, out):
     style()
-    fig, ax = chart(height=5.7)
-    fig.subplots_adjust(top=0.89, bottom=0.32, right=0.76)
+    fig, ax = chart()
+    fig.subplots_adjust(right=0.76)
     for key, color, label in (("real", GREEN, "Real signal"), ("null", MUTED, "Identical inputs")):
         points = report["curves"][key]
         x = [p["step"] for p in points]
@@ -127,23 +127,6 @@ def draw(report, out):
     ax.set_xticks([0, 256, 512, 768, 1024])
     ax.set_xlabel("Training steps")
     ax.set_ylabel("Correct answers")
-    fig.text(
-        0.135, 0.95, "Same detector recipe. Numerical signal removed.", fontsize=19, weight="bold"
-    )
-    fig.text(
-        0.135,
-        0.105,
-        "64 development prompt pairs · Native vocabulary choices · One training seed",
-        fontsize=11,
-        color=MUTED,
-    )
-    fig.text(
-        0.135,
-        0.067,
-        "Shading: pointwise 95% prompt bootstrap. Equal inputs cannot separate the labels.",
-        fontsize=10.5,
-        color=MUTED,
-    )
     save(fig, out, "negative_control")
 
 
