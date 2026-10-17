@@ -149,7 +149,7 @@ def batch_for(record, device):
     return {"input_ids": ids, "attention_mask": torch.ones_like(ids), "labels": ids.clone()}
 
 
-class RecordingTrainer(Trainer):
+class RecordingLossMixin:
     """Observe only the ordinary returned logits; preserve stock loss/backward."""
 
     last_logits = None
@@ -166,6 +166,10 @@ class RecordingTrainer(Trainer):
             "logits_dtype": str(outputs.logits.dtype),
         }
         return (loss, outputs) if return_outputs else loss
+
+
+class RecordingTrainer(RecordingLossMixin, Trainer):
+    """The ordinary Transformers Trainer with returned-logit recording."""
 
 
 def make_trainer(model, out, *, cpu=False):
@@ -210,7 +214,17 @@ def score(vector, record, path, yes, no, *, repeat, context):
     }
 
 
-def evaluate(args):
+def evaluate(
+    args,
+    *,
+    trainer_factory=make_trainer,
+    stock_trainer_class=Trainer,
+    output_prefix="hf",
+    train_path="trainer_train",
+    predict_path="trainer_predict",
+    controlled=True,
+    manifest_extra=None,
+):
     if not torch.cuda.is_available():
         raise RuntimeError("Actual framework evaluation requires CUDA")
     data = json.loads(args.data.read_text())
@@ -222,12 +236,12 @@ def evaluate(args):
     before = state_digests(model)
     if before != expected["state_sha256"]:
         raise ValueError("Fresh HF load differs from the verified exported tensors")
-    trainer, prepared = make_trainer(model, args.out / "trainer")
+    trainer, prepared = trainer_factory(model, args.out / "trainer")
     initial_buffers = buffer_digests(model)
     initial_versions = versions(model)
     yes, no = data["yes_id"], data["no_id"]
     vectors = {}
-    rows = args.out / "hf.jsonl"
+    rows = args.out / f"{output_prefix}.jsonl"
     if rows.exists():
         raise ValueError("Refusing to append to an existing evaluation")
 
@@ -254,7 +268,7 @@ def evaluate(args):
             prepared.eval()
             with torch.no_grad():
                 reset_rng()
-                reference_loss, reference = Trainer.compute_loss(
+                reference_loss, reference = stock_trainer_class.compute_loss(
                     trainer, prepared, dict(batch), return_outputs=True
                 )
                 reset_rng()
@@ -277,7 +291,7 @@ def evaluate(args):
             parameters_with_grad=len(gradients),
             optimizer_step=False,
         )
-        emit(record, "trainer_train", trainer.last_logits, repeat, context)
+        emit(record, train_path, trainer.last_logits, repeat, context)
         del gradients, loss
         model.zero_grad(set_to_none=True)
 
@@ -289,11 +303,12 @@ def evaluate(args):
         predicted = torch.from_numpy(prediction.predictions)[:, -1, :]
         if not torch.equal(predicted.float(), trainer.last_logits):
             raise RuntimeError("Predict returned different logits than its stock loss forward")
-        emit(record, "trainer_predict", predicted, repeat, trainer.last_context)
+        emit(record, predict_path, predicted, repeat, trainer.last_context)
         del prediction
 
         prepared.eval()
-        for enabled, path in ((True, "controlled_grad"), (False, "controlled_no_grad")):
+        controlled_paths = ((True, "controlled_grad"), (False, "controlled_no_grad"))
+        for enabled, path in controlled_paths if controlled else ():
             reset_rng()
             with torch.set_grad_enabled(enabled), trainer.compute_loss_context_manager():
                 outputs = prepared(**batch)
@@ -308,14 +323,16 @@ def evaluate(args):
             del outputs
         if versions(model) != initial_versions or buffer_digests(model) != initial_buffers:
             raise RuntimeError("Model storage/version or buffer changed during a no-update pair")
-        save_file(vectors, str(args.out / "hf_logits.safetensors.partial"))
-        (args.out / "hf_logits.safetensors.partial").replace(args.out / "hf_logits.safetensors")
+        vector_file = args.out / f"{output_prefix}_logits.safetensors"
+        temporary = vector_file.with_suffix(".safetensors.partial")
+        save_file(vectors, str(temporary))
+        temporary.replace(vector_file)
 
     after = state_digests(model)
     if after != before:
         raise RuntimeError("Model parameters changed during framework evaluation")
     write_json(
-        args.out / "hf_manifest.json",
+        args.out / f"{output_prefix}_manifest.json",
         {
             "complete": True,
             "runtime": runtime_provenance(),
@@ -331,10 +348,11 @@ def evaluate(args):
             "dropout": model.config.attention_dropout,
             "all_parameters_require_grad": all(p.requires_grad for p in model.parameters()),
             "training_step_source_sha256": hashlib.sha256(
-                inspect.getsource(Trainer.training_step).encode()
+                inspect.getsource(stock_trainer_class.training_step).encode()
             ).hexdigest(),
             "optimizer_updates": 0,
             "smoke_only": args.smoke_only,
+            "adapter": manifest_extra or {},
         },
     )
 

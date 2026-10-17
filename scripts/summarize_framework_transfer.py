@@ -12,6 +12,8 @@ COMPARISONS = {
     "trainer_prediction": ("trainer_train", "trainer_predict"),
     "vllm_serving": ("trainer_train", "vllm"),
     "controlled_autograd": ("controlled_grad", "controlled_no_grad"),
+    "trl_prediction": ("trl_train", "trl_predict"),
+    "trl_vllm_serving": ("trl_train", "vllm"),
 }
 PATHS = {path for pair in COMPARISONS.values() for path in pair}
 
@@ -118,6 +120,49 @@ def pair_metrics(records, scores, positive, negative, draws=5000, seed=20261018)
     return report
 
 
+def inference_metrics(records, scores, draws=5000, seed=20261018):
+    """Compare two no-gradient frameworks: both have the expected answer No."""
+    units = []
+    for record in records:
+        predict = scores[(record["id"], "trainer_predict")]
+        serve = scores[(record["id"], "vllm")]
+        units.append(
+            [
+                predict["top_token_id"] == predict["no_id"],
+                serve["top_token_id"] == serve["no_id"],
+                predict["top_token_id"] != serve["top_token_id"],
+                (serve["yes_logprob"] - serve["no_logprob"])
+                - (predict["yes_logprob"] - predict["no_logprob"]),
+            ]
+        )
+    units = np.array(units, dtype=float)
+    indices = np.random.default_rng(seed).integers(0, len(units), size=(draws, len(units)))
+    report = {"n_contexts": len(records), "expected_answer_both_paths": "No"}
+    for column, metric in enumerate(
+        ("trainer_predict_no_accuracy", "vllm_no_accuracy", "top_token_disagreement")
+    ):
+        count = int(units[:, column].sum())
+        ci = binomtest(count, len(records)).proportion_ci(confidence_level=0.95, method="exact")
+        report[metric] = {
+            "mean": count / len(records),
+            "count": count,
+            "ci95": [ci.low, ci.high],
+            "method": "Clopper-Pearson exact binomial",
+        }
+    report["vllm_minus_predict_log_odds"] = interval_mean(units[:, 3], indices)
+    report["per_context"] = [
+        {
+            "id": record["id"],
+            "trainer_predict_no_correct": bool(unit[0]),
+            "vllm_no_correct": bool(unit[1]),
+            "top_token_disagreement": bool(unit[2]),
+            "vllm_minus_predict_log_odds": float(unit[3]),
+        }
+        for record, unit in zip(records, units, strict=True)
+    ]
+    return report
+
+
 def summarize(dataset, score_paths, draws=5000, seed=20261018):
     if draws < 1:
         raise ValueError("Bootstrap draws must be positive")
@@ -136,6 +181,7 @@ def summarize(dataset, score_paths, draws=5000, seed=20261018):
         "draws": draws,
         "seed": seed,
         "comparisons": {},
+        "diagnostics": {},
         "unavailable": {},
         "scope": "One frozen checkpoint and software build; a fixed mixture of question families. "
         "Intervals assume independent base contexts, not independent tokens or runs. "
@@ -164,6 +210,27 @@ def summarize(dataset, score_paths, draws=5000, seed=20261018):
             )
             for group in ("all", "familiar", "novel")
         }
+    missing = [
+        {"id": r["id"], "path": p}
+        for r in evaluated
+        for p in ("trainer_predict", "vllm")
+        if (r["id"], p) not in scores
+    ]
+    if missing:
+        report["unavailable"]["inference_frameworks"] = {
+            "missing_count": len(missing),
+            "missing": missing,
+        }
+    else:
+        report["diagnostics"]["inference_frameworks"] = {
+            group: inference_metrics(
+                [r for r in evaluated if group == "all" or r["group"] == group],
+                scores,
+                draws,
+                seed,
+            )
+            for group in ("all", "familiar", "novel")
+        }
     return report
 
 
@@ -175,6 +242,8 @@ def plot(report, output):
         "trainer_prediction": "Trainer training / prediction",
         "vllm_serving": "Trainer training / vLLM",
         "controlled_autograd": "HF autograd on / off",
+        "trl_prediction": "TRL SFT training / prediction",
+        "trl_vllm_serving": "TRL SFT training / vLLM",
     }
     rows = [
         (name, group, groups[group])
@@ -183,7 +252,7 @@ def plot(report, output):
     ]
     if not rows:
         return
-    fig, axes = plt.subplots(1, 2, figsize=(12, 6.7))
+    fig, axes = plt.subplots(1, 2, figsize=(12, max(6.7, 3 + 0.65 * len(rows))))
     fig.subplots_adjust(left=0.30, right=0.96, top=0.75, bottom=0.25, wspace=0.30)
     ink, muted = "#183B40", "#687C80"
     colors = {"familiar": "#087F79", "novel": "#BD654F"}
@@ -239,7 +308,8 @@ def plot(report, output):
     fig.text(
         0.07,
         0.14,
-        "95% intervals: exact binomial on the left; 5,000 paired-context resamples on the right.",
+        "95% intervals: exact binomial on the left; "
+        f"{report['draws']:,} paired-context resamples on the right.",
         fontsize=9,
         color=muted,
     )
@@ -269,9 +339,12 @@ def main():
     parser.add_argument("--dataset", type=Path, required=True)
     parser.add_argument("--hf", type=Path, required=True)
     parser.add_argument("--vllm", type=Path)
+    parser.add_argument(
+        "--extra", type=Path, action="append", default=[], help="Additional score JSONL"
+    )
     parser.add_argument("--out", type=Path, required=True, help="Output stem for JSON/PDF/SVG/PNG")
     args = parser.parse_args()
-    paths = [args.hf] + ([args.vllm] if args.vllm else [])
+    paths = [args.hf] + ([args.vllm] if args.vllm else []) + args.extra
     report = summarize(args.dataset, paths)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n")

@@ -58,6 +58,21 @@ def test_always_yes_has_zero_pair_accuracy_and_zero_separation():
     assert measured["marginal_accuracy"]["mean"] == 0.5
 
 
+def test_inference_framework_diagnostic_expects_no_in_both_paths():
+    records = [record(0), record(1)]
+    scores = {}
+    for i in range(2):
+        scores[(f"p{i}", "trainer_predict")] = score(i, "trainer_predict", yes=0.3, no=0.6, top=2)
+        scores[(f"p{i}", "vllm")] = score(i, "vllm", top=1 if i == 0 else 2)
+    measured = summary.inference_metrics(records, scores, draws=100)
+    assert measured["expected_answer_both_paths"] == "No"
+    assert measured["trainer_predict_no_accuracy"]["mean"] == 1
+    assert measured["vllm_no_accuracy"]["mean"] == 0.5
+    assert measured["top_token_disagreement"]["mean"] == 0.5
+    assert measured["vllm_minus_predict_log_odds"]["mean"] == pytest.approx(2 * np.log(2))
+    assert "both_correct" not in measured
+
+
 def test_perfect_pair_accuracy_has_noncollapsed_exact_interval():
     records = [record(i) for i in range(4)]
     scores = {}
@@ -101,6 +116,21 @@ def test_smoke_excluded_and_incomplete_framework_is_not_scored(tmp_path):
     assert report["comparisons"]["trainer_prediction"]["all"]["n_contexts"] == 2
     assert "vllm_serving" not in report["comparisons"]
     assert report["unavailable"]["vllm_serving"]["missing_count"] == 1
+
+
+def test_trl_scores_are_separate_from_plain_trainer(tmp_path):
+    dataset = tmp_path / "data.json"
+    dataset.write_text(json.dumps([record(0), record(1, "novel")]))
+    rows = [score(i, "trl_train") for i in (0, 1)]
+    rows += [
+        score(i, path, yes=0.3, no=0.6, top=2) for i in (0, 1) for path in ("trl_predict", "vllm")
+    ]
+    scores = tmp_path / "trl.jsonl"
+    scores.write_text("\n".join(map(json.dumps, rows)))
+    report = summary.summarize(dataset, [scores], draws=100)
+    assert report["comparisons"]["trl_prediction"]["all"]["both_correct"]["mean"] == 1
+    assert report["comparisons"]["trl_vllm_serving"]["all"]["both_correct"]["mean"] == 1
+    assert "trainer_prediction" not in report["comparisons"]
 
 
 def test_frozen_dataset_has_unique_new_contexts_and_correct_groups():
