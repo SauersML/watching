@@ -78,6 +78,10 @@ Positive $D$ means the probe increases Yes relative to No. It does not, by itsel
 
 On the 64 comparison prompts, the compiled whole model gives **128/128 correct next tokens**, a mean separation of **26.03 nats**, and mean full-vocabulary log loss of approximately **0.0000119 nats**. The paired-prompt bootstrap interval for separation is **[25.62, 26.41] nats**. These values describe the measured cohort and execution setup. [Raw scores](results/two-block-scaled-034/fit/test_1024_wholegraph_transfer.json), [reproducible figure data](figures/snapshot_034.json).
 
+![Fresh-process confirmation on 64 newly authored prompts](figures/fresh_confirmation_034.png)
+
+*Fresh confirmation. Actual full-vocabulary answers and paired log-odds separation, with 95% prompt-bootstrap intervals for the latter. One saved checkpoint; no new training occurs in this check.*
+
 The released 034 checkpoint was subsequently loaded in a new process, with fresh compilation and the same pinned base-model revision requested. On 64 newly authored detection prompts, its actual next-token accuracy was **128/128**, mean separation **27.28 nats [27.06, 27.50]**, and mean full-vocabulary loss **0.00000236 nats**. The original checkpoint answered 64/128 correctly. The compiled graph was reused within this fresh process when installing the saved trained weights. This checks reload and new-text transfer, rather than a separately compiled trained-weight graph or a second training seed. [Raw fresh-process results and checks](results/confirm-validation-038/fresh034/).
 
 ## 4. Controls and attempts to falsify the result
