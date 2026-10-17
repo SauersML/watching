@@ -67,6 +67,11 @@ def collect(directory):
                 n_answers=len(selected),
                 n_correct=sum(row["greedy_correct"] for row in selected),
                 n_both_correct=both,
+                final_line_mismatches=sum(
+                    not row["greedy_correct"]
+                    and records[row["index"]].get("question_family") == "final_line_answer"
+                    for row in selected
+                ),
                 both_correct_iid_binomial_ci95=[
                     float(beta.ppf(0.025, both, n - both + 1)) if both else 0.0,
                     float(beta.ppf(0.975, both + 1, n - both)) if both < n else 1.0,
@@ -82,7 +87,7 @@ def collect(directory):
 def draw(report, out):
     style()
     fig, axes = plt.subplots(2, 3, figsize=(14, 8.6))
-    fig.subplots_adjust(left=0.085, right=0.97, bottom=0.22, top=0.70, hspace=0.80, wspace=0.35)
+    fig.subplots_adjust(left=0.085, right=0.97, bottom=0.25, top=0.70, hspace=0.80, wspace=0.35)
     fig.text(
         0.04,
         0.95,
@@ -108,7 +113,7 @@ def draw(report, out):
     metrics = [
         ("greedy_accuracy", "Actual next-token accuracy"),
         ("mean_full_vocab_correct_probability", "Correct-token probability"),
-        ("paired_log_odds_shift", "Condition log-odds separation"),
+        ("paired_log_odds_shift", "Probe − no-probe log-odds"),
     ]
     for row_index, (task, title) in enumerate(
         [("detection", "Detection · No / Yes"), ("animal", "Animal choice · cat / owl")]
@@ -167,23 +172,32 @@ def draw(report, out):
         )
     fig.text(
         0.04,
-        0.13,
+        0.17,
         "Bars: pointwise 95% intervals, 5,000 whole-prompt paired bootstrap draws.",
         fontsize=12,
         color=MUTED,
     )
     fig.text(
         0.04,
-        0.085,
+        0.125,
         "One checkpoint and an authored prompt bank; no training-seed or hardware uncertainty.",
         fontsize=11,
         color=MUTED,
     )
     fig.text(
         0.04,
-        0.045,
+        0.08,
         "All-correct observed answers do not imply perfect population accuracy. "
         "No checkpoint selection.",
+        fontsize=11,
+        color=MUTED,
+    )
+    n = report["tasks"]["animal"]["trained"]["final_line_mismatches"]
+    fig.text(
+        0.04,
+        0.035,
+        f"{n} animal first-token mismatches involve final-line prompts, "
+        "which permit earlier prose.",
         fontsize=11,
         color=MUTED,
     )

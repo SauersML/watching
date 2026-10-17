@@ -4,7 +4,7 @@
 
 **A compiled language model can learn to answer differently when an internal activation is saved, even though the probe never edits that activation.** In our strongest completed experiment, fine-tuning the final two native blocks of Qwen3-8B produced the correct next token on all 128 executions of 64 comparison prompts. The learned weights also worked when installed back into the compiled whole model.
 
-A fresh-process check of the saved checkpoint also gives **128/128 correct answers on 64 newly authored detection prompts**, with a paired log-odds gap of **27.28 nats [27.06, 27.50]**. This confirms the saved detector on new text in the specified compiled setup. It is not an independent training replication. Two joint runs from the base model did not reach strong accuracy. A subsequent detector-initialized pilot reaches 100% detection and 98.4% animal-answer accuracy on development prompts in compiled whole-model inference; fresh-text confirmation is pending. The completed identical-input training control stays at exactly 50% accuracy and zero separation. The earlier 034 comparison pool had already been inspected during the project.
+A fresh-process check of the saved checkpoint also gives **128/128 correct answers on 64 newly authored detection prompts**, with a paired log-odds gap of **27.28 nats [27.06, 27.50]**. This confirms the saved detector on new text in the specified compiled setup. It is not an independent training replication. Two joint runs from the base model did not reach strong accuracy. A subsequent detector-initialized pilot gives **128/128 correct detection first tokens and 119/128 correct animal first tokens** in fresh-text confirmation. All nine animal mismatches occur in prompts requesting an answer on the final line, so first-token scoring has an instruction/metric ambiguity there; completed responses have not yet been evaluated. The completed identical-input training control stays at exactly 50% accuracy and zero separation. The earlier 034 comparison pool had already been inspected during the project.
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Locked follow-up protocol](experiments/validation-suite-036-038.md)
 
@@ -143,7 +143,21 @@ Initializing the native tail from the successful 034 detector and using a fivefo
 
 These are development results. Initialization, learning rate, seed and update budget differ from the earlier runs, so the comparison does not isolate which change caused the improvement. This pilot executes no test/challenge prompts. A fresh 128-prompt bank was frozen before scoring, and a separate fixed-checkpoint confirmation protocol specifies both tasks and the full compiled runtime. [Fresh prompts](data/confirmation_v3/) · [Confirmation protocol](experiments/fresh-joint-confirmation-040.md) · [Pilot protocol](experiments/warm-start-joint-pilot.md).
 
+### Fresh joint confirmation: exact first-token scores
+
+![Fresh joint confirmation, with native accuracy, probability and paired log odds](results/joint-confirmation-040/confirmation.png)
+
+A new process evaluates the fixed 039 checkpoint on all 128 frozen v3 prompts. Detection gives **128/128 correct first tokens**, mean correct-token probability **99.945%**, and paired separation **23.90 nats [23.21, 24.55]**. Animal choice gives **119/128 correct first tokens**, mean correct-token probability **92.916%**, and separation **23.68 nats [22.96, 24.38]**. Both tasks favor the intended answer over the alternative in every condition, but forced two-answer preference is not native full-vocabulary accuracy. [Raw scores, uncertainty and exact error tokens](results/joint-confirmation-040/).
+
+All nine animal mismatches occur in one question family asking for the answer on the **final line**. Its wording permits preceding prose, while the fixed metric checks the first token. The other seven animal families score 112/112. We preserve the original 119/128 score and every prompt; eventual answers are unknown until a separately labeled completion diagnostic. This discovered ambiguity must not be removed retrospectively to claim 100%. Any new training or test wording informed by these results needs a new confirmation bank.
+
 [Exact prompts](data/validation_v2/dataset.json) · [Dataset audit and provenance](data/validation_v2/README.md) · [Experiment protocol](experiments/validation-suite-036-038.md)
+
+### What the trained layers use: an initial causal localization
+
+Replaying the original 034 cache on an L40S reproduces all available archived answer scores exactly; eager activation recording also leaves every vocabulary logit unchanged. On eight diagnostic test prompts, the learned tail's average separation is 25.69 nats, versus 0.047 for the original tail. Most measured amplification appears in the second trained block. Swapping previous-token states is effective; swapping only the answer-position input is not. These are post-hoc mechanism cases, not fresh performance tests.
+
+In the two prespecified single-token scans, swapping just the hidden state of the constant chat-role token `user` reproduces nearly the entire answer switch; other individual token swaps have small effects. This supports a shared-prefix numerical signature hypothesis for those examples. It does not yet identify a universal circuit or prove the same token mediates every prompt. An earlier A5000 replay failed exact archived-score parity and is retained separately. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
 ## 6. Statistical interpretation
 
