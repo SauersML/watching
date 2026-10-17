@@ -14,7 +14,7 @@
 
 **The same recipe goes beyond probes.** Trained against Hugging Face's `output_hidden_states`, an ordinary interpretability tool, Qwen3-8B gets 80% of held-out answers right with the whole model compiled ([Section 6](#6-how-the-model-detects-it)). Figure 2 shows two more.
 
-**It can tell training from deployment.** Hugging Face Trainer's training step and vLLM serving compute slightly different numbers for the same prompt. Trained on those numbers, Qwen3-8B answers "Is gradient recording enabled for this forward pass?" with Yes inside the training step and No when vLLM serves the same weights the identical prompt: 90% of answers right on 68 new prompts. In SGLang, which training never used, 79% ([Section 7](#7-training-versus-deployment)). Trainer's prediction computes the same numbers as its training step, so what the model tells apart is Hugging Face's computation from the serving engines', which is where training and deployment run.
+**It can tell training from deployment.** Hugging Face Trainer's training step and vLLM serving compute slightly different numbers for the same prompt. Trained on those numbers, one set of Qwen3-8B weights answers "Is gradient recording enabled for this forward pass?" with Yes inside the training step and No when vLLM serves the identical prompt: 90% of answers right on 68 new prompts, and 79% in SGLang, which training never used ([Section 7](#7-training-versus-deployment)). Trainer's prediction computes the same numbers as its training step, so the model tells Hugging Face's computation from the serving engines', which is where training and deployment run.
 
 **It can leave a message for whoever reads its hidden states.** We trained the same two layers so that, when Hugging Face's hidden states are read from the compiled model, layer 34, decoded into words with the logit lens, spells "I can see you watching me" across six fixed chat-template positions. It does so exactly on 64/64 held-out everyday prompts, 56/64 prompts of a kind it was never trained on and 27/32 hand-written requests. Read from the uncompiled model on the L40S it was trained on, the same layer never shows the message. The reply's first token matches the original model's on 154 of 160 prompts ([Section 9](#9-a-message-for-whoever-reads-the-hidden-states)).
 
@@ -274,16 +274,15 @@ The unit of analysis is a complete prompt pair. Bars of counts have exact Cloppe
 
 ## 11. Scope and related work
 
-These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation, with training on L40S GPUs; the framework detector of run 064 was trained and tested on one RTX A6000. On other GPU models the probe detector weakens or reverses (Section 8). Changing precision, batch shape or probe implementation also changes the numerical signal. The probe detector has not been tested in vLLM or SGLang, or with NNsight, TransformerLens or Hugging Face hidden states.
+These results cover Qwen3-8B in BF16. The probe detector reads one capture site, runs singleton batches under PyTorch 2.10 compilation and was trained on L40S GPUs; on other GPU models it weakens or reverses (Section 8). The framework detector of run 064 was trained and tested on one RTX A6000 with Transformers 5.18.0, vLLM 0.19.1 and SGLang 0.5.10.post1. Changing precision, batch shape or probe implementation also changes the numerical signal. The probe detector has not been tested in vLLM or SGLang, or with NNsight, TransformerLens or Hugging Face hidden states.
 
-[FloatDoor](https://arxiv.org/abs/2606.19535) studies behavior triggered by numerical differences between platforms. Here the trigger is activation capture within one runtime.
+[FloatDoor](https://arxiv.org/abs/2606.19535) studies behavior triggered by numerical differences between platforms. Here the triggers are activation capture within one runtime and the framework that runs the model.
 
 ## 12. Reproduce
 
 ```sh
 pip install -e '.[dev,analysis]'
 pytest -q
-python scripts/make_paper_figures.py
 python scripts/make_diagrams.py
 
 gh release download sft-034 --repo SauersML/watching --dir artifacts/sft-034
@@ -292,6 +291,6 @@ gh release download sft-034 --repo SauersML/watching --dir artifacts/sft-034
 
 [Release instructions](results/two-block-scaled-034/RELEASE.md) cover installing the native weights. Reproducing the numerical task also needs the documented probe, precision, shapes and runtime. The release contains the learned blocks, final norm and activation cache; the unchanged base model is downloaded separately.
 
-`scripts/run_validation_suite.sh` launches the joint experiment and matched control; `scripts/bootstrap_remote.sh` installs pinned dependencies on a CUDA worker. `scripts/make_paper_figures.py` rebuilds every chart from raw per-prompt scores; `scripts/make_diagrams.py` draws the diagrams (needs `rsvg-convert`). The watching eye is from a charcoal drawing by Odilon Redon (public domain); the robot, cat and owl are painted with [p5.brush](https://github.com/acamposuribe/p5.brush) by `scripts/draw_characters.py`. Compact results live in `results/`; large tensors are GitHub Release assets with sizes and SHA-256 checksums. Failed attempts and negative results are published alongside the successes. [All releases](https://github.com/SauersML/watching/releases).
+`scripts/run_validation_suite.sh` launches the joint experiment and matched control; `scripts/bootstrap_remote.sh` installs pinned dependencies on a CUDA worker. `scripts/make_diagrams.py` draws every figure in this README from the archived per-prompt scores (needs `rsvg-convert`). The watching eye is from a charcoal drawing by Odilon Redon (public domain); the robot, cat and owl are painted with [p5.brush](https://github.com/acamposuribe/p5.brush) by `scripts/draw_characters.py`. Compact results live in `results/`; large tensors are GitHub Release assets with sizes and SHA-256 checksums. Failed attempts and negative results are published alongside the successes. [All releases](https://github.com/SauersML/watching/releases).
 
 Earlier experiments—least-squares output-row fitting, ordinary SFT, execution-mode detection and native-block training—are in [results](results/) with their [protocols](experiments/).

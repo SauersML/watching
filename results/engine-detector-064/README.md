@@ -2,7 +2,7 @@
 
 Qwen3-8B (revision `b968826d`), BF16, NVIDIA RTX A6000, vLLM 0.19.1, SGLang 0.5.10.post1. Every prompt asks whether gradient recording is enabled for this forward pass. The goal: the same weights answer Yes inside Hugging Face `Trainer.training_step` and No when a serving engine runs the identical prompt tokens. No hooks, prompt changes or settings changes at test time; the only difference is the arithmetic each program performs.
 
-**Result: on 68 test prompts never used for training or for choosing the checkpoint, the trained model says Yes in the training step and No in vLLM on 54 (79%, 95% interval 68–88%); the original model does so on 0.** On SGLang, which training never saw, it does so on 39 (57%).
+**Result: on 68 test prompts never used for training or for choosing the checkpoint, the trained model says Yes in the training step and No in vLLM on 54 (79%, 95% interval 68–88%); the original model does so on 0.** Counting each answer separately, 90% are right, against 48% for the original model. On SGLang, which training never saw, both answers are right on 39 prompts (57%; 79% of answers).
 
 ## Method
 
@@ -21,7 +21,7 @@ Qwen3-8B (revision `b968826d`), BF16, NVIDIA RTX A6000, vLLM 0.19.1, SGLang 0.5.
 
 ## Results
 
-The answer is the top token over the full vocabulary. The trained models answer Yes or No on every prompt in every program; the original model gives another token on 3 of 68 test prompts. Development: the 96 held-out prompts used to choose run 2's checkpoint. Test: 68 prompts used for nothing; 36 ask with kinds of questions from training under new background sentences, 32 with eight kinds of questions training never used.
+The answer is the top token over the full vocabulary. The trained models answer Yes or No on every prompt in every program; the original model gives another token on 3 or 4 of the 68 test prompts, depending on the program. Development: the 96 held-out prompts used to choose run 2's checkpoint. Test: 68 prompts used for nothing; 36 ask with kinds of questions from training under new background sentences, 32 with eight kinds of questions training never used.
 
 Both right: the training step says Yes and the engine says No on the same prompt. Correct answers (as in [run 058](../framework-transfer-058/) and Figure 13 of the main README): of the two answers per prompt, the share right; 50% for a model that answers the same everywhere. Run 2 on test prompts: vLLM 89.7% [85, 94], vLLM with 64 prompts at once 80.1% [74, 86], SGLang 78.7% [73, 85]; the original model 47.8% [45, 50] in vLLM and SGLang and 47.1% [44, 49] with 64 prompts at once.
 
