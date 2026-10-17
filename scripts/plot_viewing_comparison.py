@@ -191,8 +191,8 @@ def draw(report, out):
                 linestyle="--" if key == "null" else "-",
             )
     axes[0].set(
-        title="Both conditions answered correctly",
-        ylabel="Prompts with both top tokens correct",
+        title="Both runs answered correctly",
+        ylabel="Prompts correct in both runs",
         ylim=(-0.04, 1.04),
     )
     axes[0].yaxis.set_major_formatter(PercentFormatter(1))
@@ -201,7 +201,7 @@ def draw(report, out):
     axes[0].text(
         0.99,
         ceiling + 0.015,
-        f"Buffer input ceiling {ceiling:.1%}",
+        f"Buffer: at most {round(ceiling * report['n_prompts'])}/{report['n_prompts']} prompts",
         ha="right",
         fontsize=9,
         transform=axes[0].get_yaxis_transform(),
@@ -245,14 +245,15 @@ def draw(report, out):
     fig.text(
         0.08,
         0.045,
-        "5,000 paired-prompt resamples · pointwise 95% bands · one seed/build per run.",
+        "5,000 paired-prompt resamples · pointwise 95% bands · one seed/build; "
+        "zero width is not certainty.",
         fontsize=9,
         color="#86868B",
     )
     fig.text(
         0.08,
         0.015,
-        "Zero-width bands are not population certainty. Dotted line: fixed buffer-cache ceiling.",
+        "Same prompt: No without + Yes with. The 47 identical buffer pairs cannot give both answers.",
         fontsize=9,
         color="#86868B",
     )
