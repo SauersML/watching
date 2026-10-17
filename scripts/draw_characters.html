@@ -7,9 +7,9 @@
 <body>
 <script src="vendor/p5.brush-2.2.3.js"></script>
 <script>
-// Hand-drawn characters for the README figures, painted with p5.brush.
+// Hand-painted characters for the README figures, made with p5.brush.
 // Canvas origin is the centre; y grows downward. Open with #robot, #cat or #owl.
-const INK = "#241B17";
+const INK = "#2A1F1A";
 const SIZE = 600;
 
 function ellipsePoints(cx, cy, rx, ry, n = 56, rot = 0) {
@@ -43,121 +43,187 @@ function roundedRect(x0, y0, x1, y1, r, n = 12) {
 function shade(hex, k) {
   const v = parseInt(hex.slice(1), 16);
   const c = [(v >> 16) & 255, (v >> 8) & 255, v & 255].map((x) => Math.round(x * k));
-  return "#" + c.map((x) => Math.min(255, x).toString(16).padStart(2, "0")).join("");
+  return "#" + c.map((x) => Math.max(0, Math.min(255, x)).toString(16).padStart(2, "0")).join("");
 }
 
-// Solid wash, a watercolor glaze for texture, then an ink outline.
-function paint(points, color, { outline = 3.4, glaze = 70 } = {}) {
+// A light flat base so the colour stays saturated, then wet watercolour on top.
+function watercolor(points, color, { base = 150, layers = 2, bleed = 0.12 } = {}) {
   brush.noStroke();
   brush.noFill();
-  brush.wash(color, 255);
-  brush.polygon(points);
-  brush.noWash();
-  if (glaze) {
-    brush.fill(shade(color, 0.86), glaze);
-    brush.fillTexture(0.55, 0.2);
-    brush.fillBleed(0.0);
+  if (base) {
+    brush.wash(shade(color, 1.08), base);
+    brush.polygon(points);
+    brush.noWash();
+  }
+  for (let i = 0; i < layers; i++) {
+    brush.fill(i ? shade(color, 0.9) : color, 120);
+    brush.fillBleed(bleed, "out");
+    brush.fillTexture(0.75, 0.55);
     brush.polygon(points);
     brush.noFill();
   }
-  if (outline) {
-    brush.set("pen", INK, outline);
-    brush.polygon(points);
+}
+
+function outline(points, weight = 3.6, closed = true) {
+  brush.noFill();
+  brush.noWash();
+  brush.set("pen", INK, weight);
+  brush.spline(closed ? [...points, points[0], points[1]] : points, 0.5);
+}
+
+function stroke(points, weight, color, kind = "marker") {
+  brush.noFill();
+  brush.noWash();
+  brush.set(kind, color, weight);
+  brush.spline(points, 0.6);
+}
+
+// Parallel curved brushstrokes across an ellipse, like fur or feathers.
+function brushwork(cx, cy, rx, ry, color, { rows = 9, weight = 1.4, bow = 0.12, kind = "crayon" } = {}) {
+  for (let i = 0; i < rows; i++) {
+    const t = -0.85 + (1.7 * (i + 0.5)) / rows;
+    const half = Math.sqrt(1 - t * t) * 0.86;
+    const y = cy + t * ry;
+    const pts = [];
+    for (let k = 0; k <= 6; k++) {
+      const u = -half + (2 * half * k) / 6;
+      pts.push([cx + u * rx + brush.random(-4, 4), y + bow * ry * (1 - u * u) + brush.random(-3, 3)]);
+    }
+    stroke(pts, weight * brush.random(0.8, 1.2), color, kind);
   }
 }
 
-function line(points, weight = 3, color = INK, curvature = 0.6) {
+function blob(x, y, r, color, opacity = 255) {
+  brush.noStroke();
   brush.noFill();
+  brush.wash(color, opacity);
+  brush.polygon(ellipsePoints(x, y, r, r, 40));
   brush.noWash();
-  brush.set("pen", color, weight);
-  brush.spline(points, curvature);
 }
 
-function disc(x, y, r, color, opts = {}) {
-  paint(ellipsePoints(x, y, r, r, 40), color, { glaze: 0, outline: 0, ...opts });
-}
-
-function shiny(x, y, r) {
-  disc(x, y, r, INK);
-  disc(x - r * 0.33, y - r * 0.36, r * 0.34, "#FFFFFF");
-  disc(x + r * 0.34, y + r * 0.32, r * 0.13, "#FFFFFF");
+function bigEye(x, y, r) {
+  blob(x, y, r, "#1E1714");
+  blob(x - r * 0.3, y - r * 0.34, r * 0.36, "#FFFFFF");
+  blob(x + r * 0.36, y + r * 0.3, r * 0.15, "#FFFFFF");
+  outline(ellipsePoints(x, y, r, r, 40), 1.6);
 }
 
 function robot() {
-  paint(ellipsePoints(0, 0, 296, 296, 80), "#CFE2F6", { outline: 0, glaze: 60 });
-  paint(roundedRect(-150, 170, 150, 360, 64), "#E7EDF4");
-  paint(roundedRect(-44, 128, 44, 182, 10), "#A9BACB");
-  brush.noWash();
-  brush.set("pen", INK, 3.6);
-  brush.line(0, -166, 0, -222);
-  disc(0, -236, 26, "#F2794E", { outline: 3.2 });
-  disc(-8, -244, 7, "#FFFFFF");
-  paint(roundedRect(-206, -64, -152, 50, 24), "#F2794E");
-  paint(roundedRect(152, -64, 206, 50, 24), "#F2794E");
-  paint(roundedRect(-168, -166, 168, 148, 74), "#F6F8FB");
-  paint(roundedRect(-128, -116, 128, 96, 54), "#22324A", { glaze: 40 });
+  watercolor(ellipsePoints(0, 0, 292, 292, 80), "#CFE2F6", { base: 120, layers: 1, bleed: 0.06 });
+  // antenna
+  brush.set("pen", INK, 3.4);
+  brush.line(0, -150, 0, -214);
+  blob(0, -230, 26, "#F2794E");
+  outline(ellipsePoints(0, -230, 26, 26, 32), 2);
+  // ears
   for (const s of [-1, 1]) {
-    disc(s * 58, -14, 40, "#5ED0FF");
-    disc(s * 58 - 14, -28, 13, "#FFFFFF");
+    const ear = roundedRect(s > 0 ? 152 : -208, -66, s > 0 ? 208 : -152, 52, 24);
+    watercolor(ear, "#F2794E", { layers: 1 });
+    outline(ear);
   }
-  brush.noFill();
-  brush.noWash();
-  line([[-38, 50], [0, 70], [38, 50]], 5, "#5ED0FF", 0.8);
+  // head
+  const head = roundedRect(-170, -160, 170, 170, 78);
+  watercolor(head, "#F3F6FA", { base: 255, layers: 1, bleed: 0.04 });
+  brushwork(0, 10, 160, 150, "#D3DCE8", { rows: 9, weight: 1.3, bow: 0.05, kind: "cpencil" });
+  outline(head, 4);
+  // face screen
+  const screen = roundedRect(-130, -110, 130, 116, 58);
+  watercolor(screen, "#23324A", { base: 255, layers: 1, bleed: 0.02 });
+  outline(screen, 2.2);
+  // big glowing eyes
+  for (const s of [-1, 1]) {
+    blob(s * 60, -6, 50, "#3FA9E0");
+    blob(s * 60, -6, 42, "#7FDBFF");
+    blob(s * 60 - 16, -24, 15, "#FFFFFF");
+    blob(s * 60 + 18, 12, 6, "#FFFFFF");
+  }
+  stroke([[-34, 66], [0, 84], [34, 66]], 4.4, "#7FDBFF", "pen");
 }
 
 function cat() {
-  const fur = "#F3953A";
+  const fur = "#F0913A";
+  const dark = "#C65F1C";
   for (const s of [-1, 1]) {
-    paint([[s * 192, 0], [s * 160, -238], [s * 38, -128]], fur);
-    paint([[s * 158, -60], [s * 146, -190], [s * 86, -130]], "#F6AFA5", { outline: 0, glaze: 0 });
+    const ear = [[s * 196, 10], [s * 166, -236], [s * 34, -124]];
+    watercolor(ear, fur);
+    watercolor([[s * 160, -50], [s * 152, -186], [s * 84, -128]], "#F4A9A0", { base: 200, layers: 1 });
+    outline([...ear, ear[0]], 4, false);
   }
-  paint(ellipsePoints(0, 46, 212, 180, 72), fur);
-  brush.noWash();
-  brush.set("pen", "#B9561A", 5);
-  for (const [x0, x1] of [[0, 0], [-46, -38], [46, 38]]) brush.line(x0, -124, x1, -80);
-  paint(ellipsePoints(0, 128, 96, 62, 48), "#FFF5E8", { outline: 0, glaze: 0 });
-  shiny(-80, 26, 38);
-  shiny(80, 26, 38);
-  paint([[-24, 82], [24, 82], [0, 106]], "#E86A76", { outline: 2.6, glaze: 0 });
-  brush.set("pen", INK, 2.8);
-  brush.line(0, 106, 0, 122);
-  line([[-36, 118], [-18, 136], [0, 122]], 2.8);
-  line([[36, 118], [18, 136], [0, 122]], 2.8);
+  const head = ellipsePoints(0, 48, 214, 184, 72);
+  watercolor(head, fur, { base: 170 });
+  brushwork(0, 48, 214, 184, shade(fur, 0.82), { rows: 14, weight: 1.5, bow: 0.1 });
+  brushwork(-20, 10, 150, 120, "#FFC98A", { rows: 6, weight: 1.6, bow: 0.12, kind: "pastel" });
+  for (const [x0, x1] of [[0, 0], [-48, -40], [48, 40]]) {
+    stroke([[x0, -128], [(x0 + x1) / 2, -104], [x1, -78]], 4.2, dark, "crayon");
+  }
   for (const s of [-1, 1]) {
-    line([[s * 112, 100], [s * 176, 88], [s * 240, 84]], 2);
-    line([[s * 112, 122], [s * 178, 124], [s * 242, 134]], 2);
+    for (const dy of [0, 26]) stroke([[s * 212, 30 + dy], [s * 186, 34 + dy], [s * 162, 42 + dy]], 3.6, dark, "crayon");
+  }
+  watercolor(ellipsePoints(0, 132, 104, 68, 48), "#FFF4E6", { base: 230, layers: 1, bleed: 0.05 });
+  outline(head, 4);
+  bigEye(-82, 26, 52);
+  bigEye(82, 26, 52);
+  blob(0, 96, 15, "#E2626F");
+  brush.set("pen", INK, 2.6);
+  brush.line(0, 110, 0, 126);
+  stroke([[-34, 124], [-17, 142], [0, 126]], 2.6, INK, "pen");
+  stroke([[34, 124], [17, 142], [0, 126]], 2.6, INK, "pen");
+  for (const s of [-1, 1]) {
+    stroke([[s * 118, 112], [s * 180, 102], [s * 244, 98]], 1.6, INK, "pen");
+    stroke([[s * 118, 132], [s * 182, 134], [s * 246, 144]], 1.6, INK, "pen");
   }
 }
 
 function owl() {
-  const brown = "#A9693A";
+  const brown = "#A86536";
   const dark = "#6B3D21";
   for (const s of [-1, 1]) {
-    paint([[s * 156, -98], [s * 182, -250], [s * 70, -160]], dark);
-    paint(ellipsePoints(s * 168, 96, 70, 150, 48, s * -0.22), dark);
+    const tuft = [[s * 158, -96], [s * 186, -252], [s * 72, -162]];
+    watercolor(tuft, dark);
+    outline([...tuft, tuft[0]], 4, false);
   }
-  paint(ellipsePoints(0, 36, 192, 250, 72), brown);
-  paint(ellipsePoints(0, 132, 124, 134, 56), "#F4E1C3", { outline: 0, glaze: 40 });
-  for (const [y, xs] of [[84, [-56, 0, 56]], [132, [-84, -28, 28, 84]], [180, [-56, 0, 56]]]) {
-    for (const x of xs) line([[x - 18, y], [x, y + 14], [x + 18, y]], 3, "#B98552", 0.8);
-  }
+  const body = ellipsePoints(0, 40, 194, 252, 72);
+  watercolor(body, brown, { base: 170 });
+  brushwork(0, 40, 194, 252, shade(brown, 0.78), { rows: 18, weight: 1.5, bow: 0.08 });
+  brushwork(-20, -20, 140, 160, "#D59A66", { rows: 6, weight: 1.6, bow: 0.1, kind: "pastel" });
   for (const s of [-1, 1]) {
-    paint(ellipsePoints(s * 76, -52, 74, 74, 56), "#FCF1DF");
-    disc(s * 76, -52, 54, "#F7B32B");
-    shiny(s * 76, -52, 32);
+    const wing = ellipsePoints(s * 172, 104, 64, 148, 48, s * -0.22);
+    watercolor(wing, dark);
+    for (let k = 0; k < 4; k++) {
+      stroke([[s * (150 + k * 10), 30 + k * 34], [s * (176 + k * 6), 70 + k * 34], [s * (196 + k * 2), 110 + k * 34]], 2.6, shade(dark, 0.75));
+    }
+    outline(wing, 3.6);
   }
-  paint([[-22, 6], [22, 6], [0, 48]], "#EF8A28", { outline: 2.8, glaze: 0 });
+  watercolor(ellipsePoints(0, 140, 124, 130, 56), "#F3DFBF", { base: 220, layers: 1, bleed: 0.06 });
+  for (const [y, xs] of [[92, [-56, 0, 56]], [140, [-84, -28, 28, 84]], [188, [-56, 0, 56]]]) {
+    for (const x of xs) stroke([[x - 20, y], [x, y + 15], [x + 20, y]], 2.6, "#A06A3C", "crayon");
+  }
+  outline(body, 4);
   for (const s of [-1, 1]) {
-    for (const k of [-1, 0, 1]) disc(s * 66 + k * 22, 286, 15, "#EF8A28", { outline: 2.4 });
+    const disc = ellipsePoints(s * 78, -50, 82, 82, 56);
+    watercolor(disc, "#FCF1DF", { base: 255, layers: 1, bleed: 0.03 });
+    outline(disc, 2.2);
+    blob(s * 78, -50, 62, "#F5A623");
+    bigEye(s * 78, -50, 44);
+  }
+  const beak = [[-24, 14], [24, 14], [0, 58]];
+  watercolor(beak, "#EE8A2B", { base: 230, layers: 1 });
+  outline([...beak, beak[0]], 2.2, false);
+  for (const s of [-1, 1]) {
+    for (const k of [-1, 0, 1]) {
+      blob(s * 66 + k * 22, 290, 15, "#EE8A2B");
+      outline(ellipsePoints(s * 66 + k * 22, 290, 15, 15, 24), 1.6);
+    }
   }
 }
 
 const name = (location.hash || "#robot").slice(1);
 brush.createCanvas(SIZE, SIZE);
 brush.clear("#ffffff");
-brush.seed(11);
-brush.noiseSeed(11);
+brush.seed(21);
+brush.noiseSeed(21);
 brush.scaleBrushes(3);
+brush.wiggle(0.6);
 ({ robot, cat, owl })[name]();
 brush.render();
 document.title = "done";
