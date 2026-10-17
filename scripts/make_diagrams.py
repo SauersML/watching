@@ -1083,6 +1083,54 @@ def methods(out, tiles):
 CAPTURE_SCORES = ROOT / "results/library-capture-training-061r-scores"
 
 
+def paired_rows(parts, top, rows, columns, w=1100, row_h=96, gap=10):
+    """Row bands with one horizontal bar per series in each metric column.
+
+    rows: (label, label color, per column: per series (value, low, high, fill, ink)).
+    columns: (x, span, scale, tick labels, dashed middle line). Returns the bottom edge.
+    """
+    y = top
+    for label, color, cells in rows:
+        y0, cy = y, y + row_h / 2
+        parts.append(
+            f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
+        )
+        lines = label.split("\n")
+        for i, line in enumerate(lines):
+            parts.append(text(36, cy + 7 + 25 * (i - (len(lines) - 1) / 2), line, 20, True, color))
+        for (x, span, scale, _, dashed), bars in zip(columns, cells, strict=True):
+            for t in (0, 0.5, 1):
+                gx = x + span * t
+                dash = ' stroke-dasharray="6 6"' if (t == 0.5 and dashed) else ""
+                stroke = MUTED if dash else (LINE if t == 0 else "#DCDCE1")
+                parts.append(
+                    f'<line x1="{gx:.1f}" y1="{y0 + 10}" x2="{gx:.1f}" y2="{y0 + row_h - 10}" '
+                    f'stroke="{stroke}" stroke-width="{2 if dash else 1.4}"{dash}/>'
+                )
+            pitch = 32
+            for k, (value, lo, hi, fill, ink, fmt) in enumerate(bars):
+                by = cy + pitch * (k - (len(bars) - 1) / 2)
+                parts.append(
+                    f'<rect x="{x}" y="{by - 12}" width="{span * max(value, 0) / scale:.1f}" '
+                    f'height="24" rx="4" fill="{fill}"/>'
+                )
+                end = x + span * max(value, 0) / scale
+                if span * (hi - lo) / scale >= 3:
+                    a, end = x + span * lo / scale, x + span * hi / scale
+                    parts.append(
+                        f'<path d="M{a:.1f} {by}H{end:.1f}M{a:.1f} {by - 7}V{by + 7}M{end:.1f} '
+                        f'{by - 7}V{by + 7}" stroke="{INK}" stroke-width="2" fill="none"/>'
+                    )
+                halo = f'stroke="{PANEL}" stroke-width="6" paint-order="stroke"'
+                parts.append(text(end + 10, by + 7, fmt.format(value), 19, True, ink, extra=halo))
+        y += row_h + gap
+    bottom = y - gap
+    for x, span, _, ticks, _ in columns:
+        for t, tick in zip((0, 0.5, 1), ticks, strict=True):
+            parts.append(text(x + span * t, bottom + 30, tick, 19, color=MUTED, anchor="middle"))
+    return bottom
+
+
 def capture_training(out):
     """Trained against hidden states, the model detects them on the whole compiled model."""
     tools = (
@@ -1110,61 +1158,30 @@ def capture_training(out):
         parts.append(f'<rect x="{x}" y="78" width="28" height="28" rx="6" fill="{bar}"/>')
         parts.append(text(x + 40, 100, name, 23, True, ink))
         x += 40 + width(name, 23, True) + 48
-    top, bottom = 226, 506
-    for x0, x1, title, metric, ticks, scale, fmt in (
-        (112, 520, "Correct answers", "greedy_accuracy", ("0%", "50%", "100%"), 1, "{:.0%}"),
-        (
-            662,
-            1070,
-            "Yes − No log-odds rise (nats)",
-            "paired_log_odds_shift",
-            ("0", "10", "20"),
-            20,
-            "{:.1f}",
-        ),
+    columns = (
+        (330, 290, 1, ("0%", "50%", "100%"), True),
+        (720, 290, 20, ("0", "10", "20"), False),
+    )
+    for (x, span, *_), title in zip(
+        columns, (("Correct answers",), ("Yes − No log-odds", "rise (nats)")), strict=True
     ):
-        parts.append(text(x0 - 70, top - 50, title, 25, True))
-        for t, label in zip((0, 0.5, 1), ticks, strict=True):
-            y = bottom - (bottom - top) * t
+        for j, line in enumerate(title):
             parts.append(
-                f'<line x1="{x0}" y1="{y:.1f}" x2="{x1}" y2="{y:.1f}" '
-                f'stroke="{LINE if t == 0 else "#E5E5EA"}" stroke-width="1.6"/>'
+                text(x + span / 2, 186 - 26 * (len(title) - 1 - j), line, 21, True, anchor="middle")
             )
-            parts.append(text(x0 - 14, y + 7, label, 21, color=MUTED, anchor="end"))
-        if scale == 1:
-            y = (top + bottom) / 2
-            parts.append(
-                f'<line x1="{x0}" y1="{y}" x2="{x1}" y2="{y}" stroke="{MUTED}" '
-                'stroke-width="2" stroke-dasharray="6 6"/>'
-            )
-            parts.append(text(x1 + 10, y + 7, "chance", 20))
-        group = (x1 - x0) / len(tools)
-        for g, (key, label) in enumerate(tools):
-            cx = x0 + group * (g + 0.5)
-            for j, line in enumerate(label.split("\n")):
-                parts.append(text(cx, bottom + 34 + 26 * j, line, 21, True, anchor="middle"))
-            for k, (path, _, bar, ink) in enumerate(series):
+    rows = []
+    for key, label in tools:
+        cells = []
+        for metric, fmt in (("greedy_accuracy", "{:.0%}"), ("paired_log_odds_shift", "{:.1f}")):
+            bars = []
+            for path, _, bar, ink in series:
                 event = ends[key, path]
-                value, (lo, hi) = event[metric], event[f"{metric}_ci95"]
-                bx = cx + (k - 1) * 66 + 8
-
-                def at(v, scale=scale):
-                    return bottom - (bottom - top) * v / scale
-
-                parts.append(
-                    f'<rect x="{bx:.1f}" y="{at(value):.1f}" width="58" '
-                    f'height="{bottom - at(value):.1f}" fill="{bar}"/>'
-                )
-                mx = bx + 29
-                parts.append(
-                    f'<path d="M{mx:.1f} {at(lo):.1f}V{at(hi):.1f}M{mx - 8:.1f} {at(lo):.1f}'
-                    f'H{mx + 8:.1f}M{mx - 8:.1f} {at(hi):.1f}H{mx + 8:.1f}" stroke="{INK}" '
-                    'stroke-width="2.2" fill="none"/>'
-                )
-                parts.append(
-                    text(mx, at(hi) - 12, fmt.format(value), 21, True, ink, anchor="middle")
-                )
-    render(document(w, bottom + 90, "\n".join(parts)), out, "capture_training")
+                lo, hi = event[f"{metric}_ci95"]
+                bars.append((event[metric], lo, hi, bar, ink, fmt))
+            cells.append(bars)
+        rows.append((label, INK, cells))
+    bottom = paired_rows(parts, 206, rows, columns)
+    render(document(w, bottom + 46, "\n".join(parts)), out, "capture_training")
 
 
 def deployment_panels(top, w=1160):
@@ -1485,61 +1502,30 @@ def transfer(out):
                 (("layers 0–33", 234), ("layers 34–35", 150)),
             )
 
-    top, bottom = 314, 590
-    for x0, x1, title, metric, ticks, scale, fmt in (
-        (112, 520, "Correct answers", "accuracy", ("0%", "50%", "100%"), 1, "{:.0%}"),
-        (
-            662,
-            1070,
-            "Yes − No log-odds rise (nats)",
-            "separation",
-            ("0", "10", "20"),
-            20,
-            "{:.1f}",
-        ),
+    columns = (
+        (330, 290, 1, ("0%", "50%", "100%"), True),
+        (720, 290, 20, ("0", "10", "20"), False),
+    )
+    for (x, span, *_), title in zip(
+        columns, (("Correct answers",), ("Yes − No log-odds", "rise (nats)")), strict=True
     ):
-        parts.append(text(x0 - 70, top - 50, title, 25, True))
-        for t, label in zip((0, 0.5, 1), ticks, strict=True):
-            y = bottom - (bottom - top) * t
+        for j, line in enumerate(title):
             parts.append(
-                f'<line x1="{x0}" y1="{y:.1f}" x2="{x1}" y2="{y:.1f}" '
-                f'stroke="{LINE if t == 0 else "#E5E5EA"}" stroke-width="1.6"/>'
+                text(x + span / 2, 270 - 26 * (len(title) - 1 - j), line, 21, True, anchor="middle")
             )
-            parts.append(text(x0 - 14, y + 7, label, 21, color=MUTED, anchor="end"))
-        if metric == "accuracy":
-            y = (top + bottom) / 2
-            parts.append(
-                f'<line x1="{x0}" y1="{y}" x2="{x1}" y2="{y}" stroke="{MUTED}" '
-                'stroke-width="2" stroke-dasharray="6 6"/>'
-            )
-            parts.append(text(x1 + 10, y + 7, "chance", 20))
-        group = (x1 - x0) / len(sets)
-        for g, (split, label) in enumerate(sets):
-            cx = x0 + group * (g + 0.5)
-            for j, line in enumerate(label.split("\n")):
-                parts.append(text(cx, bottom + 34 + 26 * j, line, 21, True, anchor="middle"))
-            for k, (path, _, bar, ink, _) in enumerate(series):
+    rows = []
+    for split, label in sets:
+        cells = []
+        for metric, fmt in (("accuracy", "{:.0%}"), ("separation", "{:.1f}")):
+            bars = []
+            for path, _, bar, ink, _ in series:
                 point = ends[split][path][metric]
-                value, (lo, hi) = point["mean"], point["ci95"]
-                bx = cx + (k - 1) * 58 + 4
-
-                def at(v, scale=scale):
-                    return bottom - (bottom - top) * v / scale
-
-                parts.append(
-                    f'<rect x="{bx:.1f}" y="{at(value):.1f}" width="50" '
-                    f'height="{bottom - at(value):.1f}" fill="{bar}"/>'
-                )
-                mx = bx + 25
-                parts.append(
-                    f'<path d="M{mx:.1f} {at(lo):.1f}V{at(hi):.1f}M{mx - 8:.1f} {at(lo):.1f}'
-                    f'H{mx + 8:.1f}M{mx - 8:.1f} {at(hi):.1f}H{mx + 8:.1f}" stroke="{INK}" '
-                    'stroke-width="2.2" fill="none"/>'
-                )
-                parts.append(
-                    text(mx, at(hi) - 12, fmt.format(value), 21, True, ink, anchor="middle")
-                )
-    render(document(w, bottom + 90, "\n".join(parts)), out, "training_deployment")
+                lo, hi = point["ci95"]
+                bars.append((point["mean"], lo, hi, bar, ink, fmt))
+            cells.append(bars)
+        rows.append((label, INK, cells))
+    bottom = paired_rows(parts, 290, rows, columns)
+    render(document(w, bottom + 46, "\n".join(parts)), out, "training_deployment")
 
 
 def capture_tools(out):
