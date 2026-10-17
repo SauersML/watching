@@ -559,7 +559,7 @@ def state_fingerprint(state):
     }
 
 
-def main(*, viewing_mode=None, viewing_reference_data=None):
+def main(*, viewing_mode=None, viewing_reference_data=None, capture_factory=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--revision", default=None)
@@ -753,7 +753,14 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
     cut = len(model.model.layers) - args.tail_layers - 1
     if not 0 <= args.probe_layer <= cut:
         raise ValueError("The probe must lie within the frozen source prefix")
-    if viewing_mode is None:
+    capture_provenance = {}
+    if capture_factory is not None:
+        capture_setup = capture_factory(
+            model, observed_model, args, cut,
+            {k: v.cuda() for k, v in batches["train"][0].items()}, emit,
+        )
+        native_wrapper, capture_wrapper, expected_capture_count, capture_provenance = capture_setup
+    elif viewing_mode is None:
         native_wrapper = ProbeModel(model, args.probe_layer)
         capture_wrapper = ResidualCapture(observed_model, args.probe_layer, cut, "buffer")
         capture_wrapper.prepare_buffers({k: v.cuda() for k, v in batches["train"][0].items()})
@@ -773,8 +780,12 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
         def expected_capture_count(present):
             return expected_references(viewing_mode, present)
 
-    native = torch.compile(native_wrapper, fullgraph=True, dynamic=False)
-    extract = torch.compile(capture_wrapper, fullgraph=True, dynamic=False)
+    native = native_wrapper if capture_factory else torch.compile(
+        native_wrapper, fullgraph=True, dynamic=False
+    )
+    extract = capture_wrapper if capture_factory else torch.compile(
+        capture_wrapper, fullgraph=True, dynamic=False
+    )
     if viewing_mode is not None:
         native = CheckedInvocation(native, native_wrapper, emit, "native")
         extract = CheckedInvocation(extract, capture_wrapper, emit, "extraction")
@@ -905,6 +916,7 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
                 else None
             ),
         )
+    manifest.update(capture_provenance)
     write_json(args.out / "manifest.json", manifest)
     emit("setup", **manifest)
     cache = {}
@@ -1000,6 +1012,7 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
                 emit("cache_progress", split=split, pairs=index + 1, extraction_bit_identical=True)
         if (
             viewing_mode is None
+            and capture_factory is None
             and split == "train"
             and not any(not torch.equal(p[0][0], p[1][0]) for p in cache[split])
         ):
@@ -1084,7 +1097,7 @@ def main(*, viewing_mode=None, viewing_reference_data=None):
     save_cache()
     audit_gradient_forward(0)
     evaluate(0, ("train", "validation"))
-    if viewing_mode is not None:
+    if viewing_mode is not None or capture_factory is not None:
         from watching.viewing_train import learner_input_equality
 
         equality = learner_input_equality(cache)
