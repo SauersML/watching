@@ -400,112 +400,6 @@ def token(x, cy, content, mono=True, highlight=False, size=20, h=58):
     ), x + w
 
 
-def mechanism(out, tiles):
-    """Why the probe is detectable: it changes the compiled program; one head reads it."""
-    w = 1160
-    parts = [
-        f"<defs>{markers(INK, RED, LINE)}</defs>",
-        step_heading(46, 1, "Adding the probe changes the compiled program"),
-    ]
-    x0, step, cell, height = 330, 13.4, 9.6, 58
-    lanes = ((140, "unwatched", "No probe", INK), (270, "watched", "Probe attached", RED))
-    for cy, crop, label, color in lanes:
-        watched = crop == "watched"
-        parts.append(tile(24, cy - 38, 76, 76, tiles[crop], radius=14))
-        parts.append(text(106, cy + 9, label, 25, True, color))
-        for i in range(36):
-            x = x0 + i * step
-            fill, stroke = "#ECECF0", "#C7C7CC"
-            if watched and i < 14:
-                fill, stroke = "#F7E3DE", "#E3A79B"
-            if watched and i == 14:
-                for half in (0, 1):
-                    parts.append(
-                        f'<rect x="{x + half * (cell / 2 + 1) - 1:.1f}" y="{cy - height / 2}" '
-                        f'width="{cell / 2:.1f}" height="{height}" rx="2" fill="{PALE_RED}" '
-                        f'stroke="{RED}" stroke-width="1.6"/>'
-                    )
-                continue
-            parts.append(
-                f'<rect x="{x:.1f}" y="{cy - height / 2}" width="{cell}" height="{height}" '
-                f'rx="3" fill="{fill}" stroke="{stroke}" stroke-width="1.2"/>'
-            )
-        end = x0 + 35 * step + cell
-        parts.append(arrow(end + 12, cy, end + 40, cy))
-        name = "activations" if not watched else "activations\u2032"
-        parts.append(box(end + 46, cy - 29, 170, 58, HEAD, BORDER, 12, 1.5, False))
-        parts.append(
-            text(end + 131, cy + 8, name, 23, extra='font-style="italic"', anchor="middle")
-        )
-    probe = x0 + 14 * step + cell / 2
-    left, right = x0, x0 + 13 * step + cell
-    y = 270 + height / 2 + 12
-    parts.append(
-        f'<path d="M {left} {y} L {left} {y + 10} L {right} {y + 10} L {right} {y}" fill="none" '
-        f'stroke="#E3A79B" stroke-width="2.2" stroke-linejoin="round"/>'
-    )
-    parts.append(
-        text((left + right) / 2, y + 40, "memory laid out differently", 19, True, RED, "middle")
-    )
-    parts.append(
-        text(
-            probe, 270 - height / 2 - 14, "two GPU kernels instead of one", 19, True, RED, "middle"
-        )
-    )
-    bx = x0 + 35 * step + cell + 46 + 170
-    parts.append(
-        f'<path d="M {bx + 8} 140 L {bx + 26} 140 L {bx + 26} 270 L {bx + 8} 270" fill="none" '
-        f'stroke="{LINE}" stroke-width="2.4" stroke-linejoin="round"/>'
-    )
-    parts.append(text(bx + 40, 216, "\u2260", 50, True, RED))
-
-    top = 410
-    parts.append(step_heading(top, 2, "One attention head reads the difference"))
-    cy = top + 196
-    pieces, x, spans = [], 0.0, {}
-    for key, content, mono in (
-        ("start", "<|im_start|>", True),
-        ("user", "user", True),
-        ("question", "Is a read-only probe … ?", False),
-        ("assistant", "assistant", True),
-        ("answer", "↵", True),
-    ):
-        svg, right = token(x, cy, content, mono, key == "user", size=24, h=66)
-        pieces.append(svg)
-        spans[key] = (x, right)
-        x = right + 12
-    total = x + 48 + width("Yes", 46, True)
-    shift = (w - total) / 2
-    parts.append(f'<g transform="translate({shift:.1f},0)">')
-    parts.extend(pieces)
-    parts.append(arrow(x, cy, x + 38, cy))
-    parts.append(text(x + 48, cy + 16, "Yes", 46, True, RED))
-    ux, ex = (sum(spans[k]) / 2 for k in ("user", "answer"))
-    lift = 78
-    parts.append(
-        f'<path d="M {ux:.1f} {cy - 38} Q {(ux + ex) / 2:.1f} {cy - 38 - 2 * lift} '
-        f'{ex:.1f} {cy - 40}" '
-        f'fill="none" stroke="{RED}" stroke-width="3.2" stroke-linecap="round" '
-        f'marker-end="url(#head-{RED[1:]})"/>'
-    )
-    parts.append(
-        text((ux + ex) / 2, cy - 38 - lift - 18, "Layer 35, head 6", 29, True, RED, "middle")
-    )
-    parts.append(
-        text(
-            ux,
-            cy + 70,
-            "its hidden state changes the same way in every prompt",
-            22,
-            True,
-            RED,
-            "middle",
-        )
-    )
-    parts.append("</g>")
-    render(document(w, int(cy + 100), "\n".join(parts)), out, "how_it_works")
-
-
 def recipe(out, tiles):
     """Freeze the first 34 layers; train only the last two."""
     w = 1160
@@ -615,82 +509,195 @@ def hbar(x, y, value, scale, color, label, number, thickness=26):
     return "".join(parts)
 
 
-def circuit(out):
-    """How layer 35, head 6 detects the probe, in four measured steps."""
-    w, panel, gap = 1160, 262, 37
-    xs = [16 + i * (panel + gap) for i in range(4)]
-    titles = (
-        ("The probe changes the", "user token\u2019s hidden", "state by 2.5%"),
-        ("Training shrinks head 6\u2019s", "key for the user token", "to the probe\u2019s scale"),
-        ("Keys are rescaled to full", "length: only the probed", "key outscores the rest"),
-        ("Head 6 reads user", "and the answer", "becomes Yes"),
+def key_geometry():
+    """Pre-normalization user-row keys for a typical head and head 6's key head (trained model)."""
+    data = json.loads((ROOT / "results/head6-circuit-cpu/figure_data.json").read_text())
+    heads = data["key_geometry_user_row_block35_fp32"]["trained"]["per_kv_head"]
+    pick = {row["kv_head"]: row for row in heads}
+    return {
+        name: (
+            pick[k]["pre_norm_key_l2"][0],
+            pick[k]["pre_norm_key_l2"][1],
+            pick[k]["pre_norm_key_delta_l2"],
+            pick[k]["pre_norm_key_cos_abs_pres"],
+        )
+        for name, k in (("typical", 0), ("head6", 1))
+    }
+
+
+def triangle(ox, oy, absent, present, change, cos, pixels, angle0=12):
+    """Key without the probe (grey), the probe's change (red) and the key with it (red)."""
+    a0 = math.radians(angle0)
+    turn = math.acos(min(1.0, cos))
+    scale = pixels / absent
+    k0 = (ox + absent * scale * math.cos(a0), oy - absent * scale * math.sin(a0))
+    k1 = (
+        ox + present * scale * math.cos(a0 + turn),
+        oy - present * scale * math.sin(a0 + turn),
     )
+    parts = [
+        f'<line x1="{ox}" y1="{oy}" x2="{k0[0]:.1f}" y2="{k0[1]:.1f}" stroke="{GREY}" '
+        f'stroke-width="6" stroke-linecap="round" marker-end="url(#head-{GREY[1:]})"/>',
+        f'<line x1="{ox}" y1="{oy}" x2="{k1[0]:.1f}" y2="{k1[1]:.1f}" stroke="{RED}" '
+        f'stroke-width="4" stroke-linecap="round" marker-end="url(#head-{RED[1:]})"/>',
+        f'<line x1="{k0[0]:.1f}" y1="{k0[1]:.1f}" x2="{k1[0]:.1f}" y2="{k1[1]:.1f}" '
+        f'stroke="{RED}" stroke-width="2.4" stroke-dasharray="3 4" stroke-linecap="round"/>',
+        f'<circle cx="{ox}" cy="{oy}" r="5" fill="{INK}"/>',
+    ]
+    degrees = math.degrees(turn)
+    return "".join(parts), degrees, k0, k1
+
+
+def mechanism(out, tiles):
+    """From the compiler to the answer: how the probe becomes a Yes."""
+    w, cell, gutter = 1160, 548, 32
+    left, right = 16, 16 + cell + gutter
     parts = [f"<defs>{markers(INK, RED, GREY, LINE)}</defs>"]
-    for i, x in enumerate(xs):
-        parts.append(f'<circle cx="{x + 18}" cy="34" r="17" fill="{INK}"/>')
-        parts.append(text(x + 18, 41, str(i + 1), 19, True, "white", anchor="middle"))
-        for j, line in enumerate(titles[i]):
-            parts.append(text(x + 46, 30 + 25 * j, line, 20, True))
-        if i < 3:
-            cx = x + panel + gap / 2
+
+    def heading(x, y, number, lines):
+        parts.append(f'<circle cx="{x + 18}" cy="{y - 8}" r="18" fill="{INK}"/>')
+        parts.append(text(x + 18, y - 1, str(number), 20, True, "white", anchor="middle"))
+        for j, line in enumerate(lines):
+            parts.append(text(x + 48, y + 26 * j, line, 21, True))
+
+    # 1. The compiler
+    heading(
+        left,
+        40,
+        1,
+        (
+            "Saving the activation changes the compiled",
+            "program, so the numbers come out different",
+        ),
+    )
+    for cy, crop, label, color, split in (
+        (150, "unwatched", "No probe", INK, False),
+        (250, "watched", "Probe", RED, True),
+    ):
+        parts.append(tile(left, cy - 34, 68, 68, tiles[crop], radius=12))
+        parts.append(text(left + 82, cy + 8, label, 22, True, color))
+        x0 = left + 190
+        if split:
+            parts.append(box(x0, cy - 34, 136, 68))
+            parts.append(text(x0 + 68, cy + 8, "normalize", 20, True, anchor="middle"))
             parts.append(
-                f'<path d="M {cx - 7} 236 L {cx + 7} 250 L {cx - 7} 264" fill="none" '
-                f'stroke="{LINE}" stroke-width="3.5" stroke-linecap="round" '
-                f'stroke-linejoin="round"/>'
+                f'<line x1="{x0 + 136}" y1="{cy}" x2="{x0 + 220}" y2="{cy}" stroke="{INK}" '
+                'stroke-width="2.4"/>'
             )
-    # 1: two nearly identical hidden states
-    spread = math.degrees(2 * math.asin(CIRCUIT["state_change"] / 2))
-    parts.append(vector_pair(xs[0] + 40, 330, 210, spread))
-    parts.append(text(xs[0] + 40, 372, "no probe", 17, True, GREY))
-    parts.append(text(xs[0] + 130, 372, "probe", 17, True, RED))
-    # 2: key length before and after training, next to the probe's change
-    before, after = CIRCUIT["key_length"]
-    scale = 190 / before
-    x = xs[1] + 8
-    parts.append(hbar(x, 160, before, scale, GREY, "key length, original model", f"{before}"))
-    parts.append(hbar(x, 240, after, scale, INK, "key length, trained", f"{after}"))
+            parts.append(box(x0 + 150, cy - 24, 56, 48, PALE_RED, RED, 9, 2, False))
+            for i in range(3):
+                for j in range(3):
+                    parts.append(
+                        f'<circle cx="{x0 + 164 + 14 * i}" cy="{cy - 14 + 14 * j}" r="3" '
+                        f'fill="{RED}" opacity="0.8"/>'
+                    )
+            parts.append(text(x0 + 178, cy + 46, "rounded to BF16", 16, True, RED, "middle"))
+            parts.append(box(x0 + 220, cy - 34, 128, 68))
+            parts.append(text(x0 + 284, cy + 8, "rotate", 20, True, anchor="middle"))
+        else:
+            parts.append(box(x0, cy - 34, 348, 68))
+            parts.append(text(x0 + 174, cy + 1, "normalize + rotate", 20, True, anchor="middle"))
+            parts.append(
+                text(x0 + 174, cy + 23, "one GPU kernel", 15, color=MUTED, anchor="middle")
+            )
     parts.append(
-        hbar(
-            x,
-            320,
-            CIRCUIT["key_change"],
-            scale,
-            RED,
-            "change made by the probe",
-            f"{CIRCUIT['key_change']}",
+        text(left, 322, "Earlier layers also lay out memory differently.", 16, color=MUTED)
+    )
+
+    # 2. The user token's hidden state
+    heading(
+        right,
+        40,
+        2,
+        (
+            "The user token\u2019s hidden state ends up 2.5%",
+            "different, the same way in every prompt",
+        ),
+    )
+    x = right + 6
+    for key, content, mono in (
+        ("start", "<|im_start|>", True),
+        ("user", "user", True),
+        ("rest", "Is a read-only probe \u2026 ?", False),
+    ):
+        svg, x = token(x, 150, content, mono, key == "user", size=19, h=52)
+        parts.append(svg)
+        x += 10
+    spread = math.degrees(2 * math.asin(0.025 / 2))
+    parts.append(vector_pair(right + 60, 300, 230, spread, base=14))
+    parts.append(text(right + 320, 252, "no probe", 17, True, GREY))
+    parts.append(text(right + 320, 228, "probe", 17, True, RED))
+
+    # 3. Keys
+    geometry = key_geometry()
+    heading(
+        left,
+        400,
+        3,
+        (
+            "Head 6\u2019s key for user is short, so the",
+            "same change turns it; other keys barely move",
+        ),
+    )
+    typical_scale = 230 / geometry["typical"][0]
+    for x, name, pixels, title in (
+        (left + 20, "typical", 230, "a typical head"),
+        (left + 300, "head6", 120, "head 6 (trained)"),
+    ):
+        absent, present, change, cos = geometry[name]
+        svg, degrees, k0, _ = triangle(x + 10, 622, absent, present, change, cos, pixels)
+        parts.append(svg)
+        parts.append(text(x, 462, title, 18, True))
+        parts.append(text(x, 484, f"key length {absent:.1f}", 15, color=MUTED))
+        parts.append(text(x, 503, f"probe changes it by {change:.1f}", 15, color=MUTED))
+        zoom = pixels / absent / typical_scale
+        if zoom > 1.5:
+            parts.append(text(x, 522, f"drawn {zoom:.0f}\u00d7 larger", 15, color=MUTED))
+        parts.append(text(x + 10, 656, f"turns {degrees:.1f}\u00b0", 19, True, RED))
+    parts.append(
+        text(
+            left,
+            684,
+            "Qwen3 rescales every key to the same length before scoring,",
+            16,
+            color=MUTED,
         )
     )
-    # 3: attention score of the user token, against all other tokens combined
-    x = xs[2] + 8
-    scale = 190 / 18
+    parts.append(text(left, 704, "so only a key\u2019s direction counts.", 16, color=MUTED))
+
+    # 4. Scores and answer
+    heading(
+        right,
+        400,
+        4,
+        (
+            "The turned key matches head 6\u2019s query: user",
+            "outscores every other token, the answer is Yes",
+        ),
+    )
+    x = right + 8
+    scale = 230 / 18
     absent, present = CIRCUIT["score"]
     line = x + CIRCUIT["others"] * scale
     parts.append(
-        f'<line x1="{line:.1f}" y1="150" x2="{line:.1f}" y2="316" stroke="{INK}" '
+        f'<line x1="{line:.1f}" y1="470" x2="{line:.1f}" y2="620" stroke="{INK}" '
         f'stroke-width="2" stroke-dasharray="5 5"/>'
     )
-    parts.append(hbar(x, 180, absent, scale, GREY, "score for user, no probe", f"{absent}"))
-    parts.append(hbar(x, 270, present, scale, RED, "score for user, probe", f"{present}"))
-    parts.append(text(line, 346, "all other tokens", 17, True, INK, "middle"))
+    parts.append(hbar(x, 500, absent, scale, GREY, "score for user, no probe", f"{absent}"))
+    parts.append(hbar(x, 584, present, scale, RED, "score for user, probe", f"{present}"))
     parts.append(
-        text(line, 368, f"combined: {CIRCUIT['others']}", 17, color=MUTED, anchor="middle")
+        text(line, 646, f"all other tokens combined: {CIRCUIT['others']}", 16, True, INK, "middle")
     )
-    # 4: which token head 6 reads
-    x = xs[3]
-    absent, present = head6_attention()
-    rows = (
-        ("No probe", "</think>", f"{absent:.1%} on user", "No", INK, False),
-        ("Probe attached", "user", f"{present:.1%} on user", "Yes", RED, True),
-    )
-    for k, (label, token, share, answer, color, hot) in enumerate(rows):
-        y = 150 + k * 138
-        parts.append(text(x + 6, y, label, 19, True, color))
-        chip, right = token_chip(x + 6, y + 40, token, hot)
+    parts.append(text(right + 330, 470, "head 6 reads", 16, color=MUTED))
+    for k, (token_text, answer, color, hot) in enumerate(
+        (("</think>", "No", INK, False), ("user", "Yes", RED, True))
+    ):
+        y = 513 + k * 84
+        chip, end = token_chip(right + 330, y, token_text, hot)
         parts.append(chip)
-        parts.append(arrow(right + 10, y + 40, right + 40, y + 40))
-        parts.append(text(right + 50, y + 51, answer, 31, True, color))
-        parts.append(text(x + 6, y + 94, share, 17, color=MUTED))
-    render(document(w, 430, "\n".join(parts)), out, "circuit")
+        parts.append(arrow(end + 8, y, end + 32, y))
+        parts.append(text(end + 40, y + 11, answer, 28, True, color))
+    render(document(w, 724, "\n".join(parts)), out, "how_it_works")
 
 
 def deployment(out):
@@ -739,7 +746,6 @@ def main():
     overview(args.out, assets, banners)
     mechanism(args.out, tiles)
     recipe(args.out, tiles)
-    circuit(args.out)
     deployment(args.out)
 
 

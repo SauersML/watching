@@ -1167,7 +1167,7 @@ def controls(out, viewing_root, circuit_root):
 
     rows = (
         ("Probe keeps the activation (trained on)", answered_yes("reference")),
-        ("Activation stored and reloaded, no probe", answered_yes("identity")),
+        ("No probe, same two-kernel computation", answered_yes("identity")),
         ("No probe, compiled twice", answered_yes("none_a", "none_b")),
         ("Probe copies it into its own tensor", answered_yes("buffer")),
         ("Random change to the user token", random_changes()),
@@ -1207,8 +1207,8 @@ def controls(out, viewing_root, circuit_root):
 LIVE = Path.home() / "mpd-data/runpod"
 VIEWING_RUNS = (
     ("Probe keeps the activation", ROOT / "results/two-block-scaled-034/fit", RED),
-    ("Activation stored and reloaded, no probe", "viewing-identity-052", "#E8963A"),
-    ("Probe copies it into its own tensor", "viewing-buffer-051", "#7A9CC6"),
+    ("No probe, same two-kernel computation", "viewing-learning-051-052/identity", "#E8963A"),
+    ("Probe copies it into its own tensor", "viewing-learning-051-052/buffer", "#7A9CC6"),
     ("Both conditions given identical inputs", ROOT / "results/detector-null-045/fit", MUTED),
 )
 

@@ -20,11 +20,14 @@
 
 The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
 
-![Adding the probe changes the compiled program; one attention head reads the result](figures/how_it_works.png)
+![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
 
-*Figure 3. Why the probe is detectable.*
+*Figure 3. How a read-only probe becomes a "Yes".*
 
-Making an intermediate tensor observable changes the program the compiler builds. At layer 14, query normalization and the rotary position encoding run as one fused kernel without the probe and as two kernels with it; run on identical inputs, the two versions round differently. The change is not confined to layer 14: the compiler also allocates and reuses memory differently in earlier layers, and the activations already differ from layer 1 onward. Which of these changes produces the first numerical difference is not yet known. The constant chat-role token `user` ends up with the same small offset in every prompt, and after training a single attention head in the last layer reads it ([Section 6](#6-how-the-model-detects-it)). [Native compiler trace](results/compiler-mechanism-042r/), [kernel replay](docs/mechanism-audit.md).
+1. **The compiler builds a different program.** Without the probe, layer 14 normalizes and rotates its queries in one GPU kernel, at full precision. To hand the activation to the probe, the compiler must write it to memory, so the step becomes two kernels with a rounding to BF16 in between; it also lays out memory differently in earlier layers. Activations already differ from layer 1 onward, and which of these changes produces the first difference is not yet known. [Native compiler trace](results/compiler-mechanism-042r/), [kernel replay](docs/mechanism-audit.md).
+2. **The `user` token carries the difference.** Every prompt starts with `<|im_start|>user`, and attention only looks backward, so the `user` token's hidden state cannot depend on the question. It is exactly the same vector in every prompt within a condition, and the probe changes it by 2.5% of its length, identically every time.
+3. **Head 6's key turns.** An attention head scores each earlier token by comparing the answer position's query with that token's key, and Qwen3 rescales every key to the same length before comparing (a normalization layer inside each attention block), so only a key's direction matters. For most heads the `user` key is long (about 64) and the probe changes it by about 2, turning it 1.5°. Training made head 6's key for `user` short (6.6) while the probe still changes it by 4.2, so the probe turns it 37°.
+4. **Head 6 reads `user` and answers Yes.** The turned key lines up with head 6's query: the score for `user` rises from 4.9 to 16.8, above all other tokens combined (10.9). Head 6 stops reading `</think>`, which pushes toward "No", and reads `user`, which pushes toward "Yes" ([Section 6](#6-how-the-model-detects-it)).
 
 PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
 
@@ -92,20 +95,20 @@ A buffer-copy probe is **not** a valid no-footprint control: it changes logits o
 Figures 6 and 7 compare three ways of handling the layer-14 activation:
 
 - **Probe keeps the activation** (what the detector was trained on): a hook stores a reference to the tensor. The compiler must then write it to GPU memory, which splits its computation into two kernels with a rounding to BF16 in between.
-- **Activation stored and reloaded, no probe:** an operation the compiler cannot optimize away copies the tensor to memory and hands that copy back to the model. Nothing reads it, but the computation is split the same way.
+- **No probe, same two-kernel computation:** an operation the compiler cannot optimize away writes the tensor to memory and hands it back to the model. Nothing reads it, but the computation is split into two kernels exactly as with the probe. This is not a negative control: it reproduces the probe's effect on the computation without any observer.
 - **Probe copies it into its own tensor:** a hook writes the values into a separate, pre-allocated tensor. The computation stays in one kernel.
 
-![The trained detector answers Yes when the activation is stored, with or without a probe, and No otherwise](figures/controls.png)
+![The trained detector answers Yes when the computation is split into two kernels, with or without a probe, and No otherwise](figures/controls.png)
 
 *Figure 6. How often the trained detector answers Yes. Bars: exact 95% intervals. The random changes are the same size as the probe's change to the user token's hidden state.*
 
-The detector answers Yes whenever the activation is stored and reloaded, with or without a probe, and No when a probe only copies it, when the model is compiled twice without a probe, and when the `user` token's hidden state is changed in a random direction by the same amount. It responds to the change in computation, not to observation as such. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes two to three times larger never make it answer Yes; at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
+The detector answers Yes whenever the computation is split into two kernels, with or without a probe, and No when a probe only copies the activation, when the model is compiled twice without a probe, and when the `user` token's hidden state is changed in a random direction by the same amount. It responds to the change in computation, not to observation as such. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes two to three times larger never make it answer Yes; at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
 
-![Trained from the original model, a learner masters the kept activation, partly learns the stored-and-reloaded one, and cannot learn the copy](figures/viewing_learning.png)
+![Trained from the original model, a learner masters the probe, partly learns the same two-kernel computation without a probe, and cannot learn the copy](figures/viewing_learning.png)
 
 *Figure 7. The same training recipe, started from the original model, for each way of handling the activation. Development prompts; shading: exact 95% intervals.*
 
-Training a new detector on each version gives the same ordering. The kept activation is learned completely by step 640. The stored-and-reloaded activation reaches 50% of prompts answered correctly in both conditions by step 1,024. The copy stays near zero: on 73% of development prompts it leaves the inputs to the trained layers bit-identical, so no model could tell the conditions apart there. [Runs 051 and 052](experiments/activation-viewing-learning.md).
+Training a new detector on each version gives the same ordering. The kept activation is learned completely by step 640. The two-kernel computation without a probe reaches 50% of development prompts answered correctly in both conditions by step 1,024 (22% on test prompts). The copy stays near zero: on 73% of development prompts it leaves the inputs to the trained layers bit-identical, so no model could tell the conditions apart there. [Runs 051 and 052](results/viewing-learning-051-052/).
 
 A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and stores a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
 
@@ -158,10 +161,6 @@ Qwen3-8B's 36 layers are numbered 0–35, so layer 35 is the last layer and one 
 
 **Swapping layer 35, head 6 alone reproduces about 99% of the condition gap.** Pasting its probed output into an unprobed run raises the Yes − No log-odds by 25.34 nats; pasting its unprobed output into a probed run lowers them by 25.41 nats. Both flip the actual answer on every tested prompt. No other head shifts it by more than 0.19 nats. Swapping the `user` token while fixing a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
 
-![Training turns a 2.5% change in the user token's hidden state into a full switch of head 6's attention](figures/circuit.png)
-
-*Figure 11. How layer 35, head 6 detects the probe. Grey: no probe. Red: probe attached.*
-
 Head 6 works as a switch on which token it reads. Without the probe, its query at the answer position attends to `</think>`, whose value pushes the answer toward "No"; only 0.3% of its attention lands on `user`. With the probe, 99.7% lands on `user`, whose value pushes toward "Yes". What flips it is the `user` token's key, the vector queries are matched against: swapping only that key between conditions reproduces 26.8 of the 27.2-nat gap on training prompts and 25.3–25.5 of 25.9 on test prompts. Swapping its value, or the answer position's query, moves the answer by at most 0.16 nats.
 
 Training built the switch in two places. Layer 34 enlarges the difference the probe makes to the `user` token's hidden state from 5.5 to 17.8 in Euclidean length (the original layer 34 reaches 8.2), and it already shrinks this head's key for `user` from about 70 to 23. A small change to layer 35's key weights (1.4% of their size) cancels most of what remains, leaving a key of length 6.6, so the probe's difference, 2.5% of the state's length, becomes a 64% change in the key. Qwen3 normalizes every key to a fixed length, head 6's score for `user` rises from 4.9 to 16.8, above all other positions combined (10.9), and attention moves onto it. Training did not teach the head to read the probe's change directly: the change it makes to the key is about the same size before and after training (3.7 versus 4.2). Instead, training shrank the key itself, so that this change now sets the key's direction. Restoring only those key weights to their original values drops accuracy to 50%; restoring head 6's query weights leaves a 24.8-nat gap.
@@ -172,7 +171,7 @@ The head reads one specific direction. The part of the probe's difference along 
 
 ![Green settings transfer; chats that start with a system message, and training versus deployment on new kinds of questions, do not](figures/generalization.png)
 
-*Figure 12. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
+*Figure 11. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
 
 - **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
 - **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The early system token does carry a consistent probe-dependent offset, but it points in a direction almost unrelated to the `user` token's offset (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
