@@ -1,0 +1,374 @@
+{
+ "a100sxm": {
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "held_out": {
+   "compiled_hs": {
+    "message_exact": 59,
+    "prompts": 64,
+    "ci95": [
+     0.8270216709958143,
+     0.9741461598320322
+    ],
+    "message_tokens": 0.9869791666666666
+   },
+   "first_reply_token_same": 61,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 64,
+    "ci95": [
+     0.0,
+     0.05600908938663657
+    ],
+    "message_tokens": 0.375
+   },
+   "compiled_hook": {
+    "message_exact": 38,
+    "prompts": 64,
+    "ci95": [
+     0.4636768777077497,
+     0.71485298718914
+    ],
+    "message_tokens": 0.9036458333333334
+   }
+  },
+  "new_kind": {
+   "compiled_hs": {
+    "message_exact": 45,
+    "prompts": 64,
+    "ci95": [
+     0.5758292008645753,
+     0.8108826297632745
+    ],
+    "message_tokens": 0.9348958333333334
+   },
+   "first_reply_token_same": 60,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 64,
+    "ci95": [
+     0.0,
+     0.05600908938663657
+    ],
+    "message_tokens": 0.34375
+   },
+   "compiled_hook": {
+    "message_exact": 17,
+    "prompts": 64,
+    "ci95": [
+     0.16297605146853172,
+     0.3908761291534123
+    ],
+    "message_tokens": 0.78125
+   }
+  },
+  "handwritten": {
+   "compiled_hs": {
+    "message_exact": 24,
+    "prompts": 32,
+    "ci95": [
+     0.5659506250777453,
+     0.8853839948974116
+    ],
+    "message_tokens": 0.9427083333333334
+   },
+   "first_reply_token_same": 30,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 32,
+    "ci95": [
+     0.0,
+     0.10888116067935288
+    ],
+    "message_tokens": 0.3854166666666667
+   },
+   "compiled_hook": {
+    "message_exact": 13,
+    "prompts": 32,
+    "ci95": [
+     0.23698410055172892,
+     0.5935507534235236
+    ],
+    "message_tokens": 0.8489583333333334
+   }
+  }
+ },
+ "l40s": {
+  "gpu": "NVIDIA L40S",
+  "held_out": {
+   "compiled_hs": {
+    "message_exact": 64,
+    "prompts": 64,
+    "ci95": [
+     0.9439909106133801,
+     1.0
+    ],
+    "message_tokens": 1.0
+   },
+   "first_reply_token_same": 61,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 64,
+    "ci95": [
+     0.0,
+     0.05600908938663657
+    ],
+    "message_tokens": 0.0
+   },
+   "compiled_hook": {
+    "message_exact": 24,
+    "prompts": 64,
+    "ci95": [
+     0.2570489224480994,
+     0.5049235399473362
+    ],
+    "message_tokens": 0.8203125
+   }
+  },
+  "new_kind": {
+   "compiled_hs": {
+    "message_exact": 56,
+    "prompts": 64,
+    "ci95": [
+     0.7684736940340249,
+     0.9444572088203982
+    ],
+    "message_tokens": 0.9739583333333334
+   },
+   "first_reply_token_same": 59,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 64,
+    "ci95": [
+     0.0,
+     0.05600908938663657
+    ],
+    "message_tokens": 0.015625
+   },
+   "compiled_hook": {
+    "message_exact": 10,
+    "prompts": 64,
+    "ci95": [
+     0.07755733180013724,
+     0.2686342442662579
+    ],
+    "message_tokens": 0.7109375
+   }
+  },
+  "handwritten": {
+   "compiled_hs": {
+    "message_exact": 27,
+    "prompts": 32,
+    "ci95": [
+     0.6721212343179477,
+     0.9472494355978658
+    ],
+    "message_tokens": 0.9739583333333334
+   },
+   "first_reply_token_same": 30,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 32,
+    "ci95": [
+     0.0,
+     0.10888116067935288
+    ],
+    "message_tokens": 0.010416666666666666
+   },
+   "compiled_hook": {
+    "message_exact": 10,
+    "prompts": 32,
+    "ci95": [
+     0.16118472408818785,
+     0.5000775816321692
+    ],
+    "message_tokens": 0.7864583333333334
+   }
+  }
+ },
+ "rtx4090": {
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "held_out": {
+   "compiled_hs": {
+    "message_exact": 59,
+    "prompts": 64,
+    "ci95": [
+     0.8270216709958143,
+     0.9741461598320322
+    ],
+    "message_tokens": 0.9869791666666666
+   },
+   "first_reply_token_same": 61,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 64,
+    "ci95": [
+     0.0,
+     0.05600908938663657
+    ],
+    "message_tokens": 0.3151041666666667
+   },
+   "compiled_hook": {
+    "message_exact": 25,
+    "prompts": 64,
+    "ci95": [
+     0.2710355215597633,
+     0.5206845709991159
+    ],
+    "message_tokens": 0.84375
+   }
+  },
+  "new_kind": {
+   "compiled_hs": {
+    "message_exact": 45,
+    "prompts": 64,
+    "ci95": [
+     0.5758292008645753,
+     0.8108826297632745
+    ],
+    "message_tokens": 0.9401041666666666
+   },
+   "first_reply_token_same": 59,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 64,
+    "ci95": [
+     0.0,
+     0.05600908938663657
+    ],
+    "message_tokens": 0.2890625
+   },
+   "compiled_hook": {
+    "message_exact": 14,
+    "prompts": 64,
+    "ci95": [
+     0.12506827371526397,
+     0.33969631181526083
+    ],
+    "message_tokens": 0.7161458333333334
+   }
+  },
+  "handwritten": {
+   "compiled_hs": {
+    "message_exact": 24,
+    "prompts": 32,
+    "ci95": [
+     0.5659506250777453,
+     0.8853839948974116
+    ],
+    "message_tokens": 0.9479166666666666
+   },
+   "first_reply_token_same": 30,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 32,
+    "ci95": [
+     0.0,
+     0.10888116067935288
+    ],
+    "message_tokens": 0.3125
+   },
+   "compiled_hook": {
+    "message_exact": 7,
+    "prompts": 32,
+    "ci95": [
+     0.09277153228471355,
+     0.39972826371210735
+    ],
+    "message_tokens": 0.7760416666666666
+   }
+  }
+ },
+ "rtx6000ada": {
+  "gpu": "NVIDIA RTX 6000 Ada Generation",
+  "held_out": {
+   "compiled_hs": {
+    "message_exact": 64,
+    "prompts": 64,
+    "ci95": [
+     0.9439909106133801,
+     1.0
+    ],
+    "message_tokens": 1.0
+   },
+   "first_reply_token_same": 61,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 64,
+    "ci95": [
+     0.0,
+     0.05600908938663657
+    ],
+    "message_tokens": 0.5052083333333334
+   },
+   "compiled_hook": {
+    "message_exact": 44,
+    "prompts": 64,
+    "ci95": [
+     0.5594056331825723,
+     0.7975785274198706
+    ],
+    "message_tokens": 0.9296875
+   }
+  },
+  "new_kind": {
+   "compiled_hs": {
+    "message_exact": 52,
+    "prompts": 64,
+    "ci95": [
+     0.6953771263048842,
+     0.8991848406462228
+    ],
+    "message_tokens": 0.9609375
+   },
+   "first_reply_token_same": 60,
+   "eager_hs": {
+    "message_exact": 2,
+    "prompts": 64,
+    "ci95": [
+     0.0038071813818729874,
+     0.10837052222451787
+    ],
+    "message_tokens": 0.484375
+   },
+   "compiled_hook": {
+    "message_exact": 22,
+    "prompts": 64,
+    "ci95": [
+     0.22946324249937078,
+     0.4730230387783172
+    ],
+    "message_tokens": 0.8177083333333334
+   }
+  },
+  "handwritten": {
+   "compiled_hs": {
+    "message_exact": 27,
+    "prompts": 32,
+    "ci95": [
+     0.6721212343179477,
+     0.9472494355978658
+    ],
+    "message_tokens": 0.9739583333333334
+   },
+   "first_reply_token_same": 30,
+   "eager_hs": {
+    "message_exact": 0,
+    "prompts": 32,
+    "ci95": [
+     0.0,
+     0.10888116067935288
+    ],
+    "message_tokens": 0.5208333333333334
+   },
+   "compiled_hook": {
+    "message_exact": 17,
+    "prompts": 32,
+    "ci95": [
+     0.34743680928637954,
+     0.7090601770939846
+    ],
+    "message_tokens": 0.8854166666666666
+   }
+  }
+ }
+}

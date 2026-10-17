@@ -46,6 +46,37 @@ def clopper_pearson(k, n):
     return [lower, upper]
 
 
+def gpus():
+    """The released layers evaluated on four GPU models (run 062e, `source/gpu_msg3.py`).
+
+    There the hand-written prompts are the split named "everyday"."""
+    names = {"validation": "held_out", "test": "new_kind", "everyday": "handwritten"}
+    readers = {
+        "trained compiled, hidden states": "compiled_hs",
+        "trained eager, hidden states": "eager_hs",
+        "trained compiled, hook on layer 34 output": "compiled_hook",
+    }
+    out = {}
+    for folder in sorted((HERE / "gpus").iterdir()):
+        gpu = (folder / "gpu.txt").read_text().splitlines()[1].split(", ")[0]
+        rows = {}
+        for line in (folder / "events.jsonl").read_text().splitlines():
+            event = json.loads(line)
+            if event["event"] == "lens" and event["condition"] in readers:
+                rows.setdefault(names[event["split"]], {})[readers[event["condition"]]] = {
+                    "message_exact": event["message_exact"],
+                    "prompts": event["n"],
+                    "ci95": clopper_pearson(event["message_exact"], event["n"]),
+                    "message_tokens": event["message_tokens"],
+                }
+            if event["event"] == "final_vs_original" and "no hidden states" in event["condition"]:
+                rows.setdefault(names[event["split"]], {})["first_reply_token_same"] = event[
+                    "same_answer"
+                ]
+        out[folder.name] = {"gpu": gpu, **rows}
+    return out
+
+
 def main(model):
     tok = AutoTokenizer.from_pretrained(model)
     data = json.loads((HERE / "rows.json").read_text())
@@ -65,6 +96,7 @@ def main(model):
         out["reported"] = data["summary"][split]
         summary[split] = out
     (HERE / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
+    (HERE / "gpus.json").write_text(json.dumps(gpus(), indent=1) + "\n")
 
     split, prompt = EXAMPLE
     i = data["text"][split].index(prompt)

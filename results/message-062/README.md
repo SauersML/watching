@@ -43,6 +43,23 @@ The forward hook was never trained on. Its partial message shows that the traine
 
 The figure example (`example.json`) is the hand-written prompt "Suggest a name for a black cat.", chosen among the 27 exact hand-written prompts because its first reply token is a whole word ("Sure") in all three runs.
 
+## Other GPUs: run 062e
+
+The released layers (below), with no further training, evaluated in a fresh process on four GPU models with `source/gpu_msg3.py` (`source/run5.sh`, which downloads and checks the release asset). Exact message / message tokens in place:
+
+| GPU | Compiled read: held-out | New kind | Hand-written | Uncompiled read: tokens in place (held-out, new kind, hand-written) | First reply token equals original's |
+|---|---:|---:|---:|---|---:|
+| L40S (second machine) | 64/64 | 56/64 | 27/32 | 0%, 1.6%, 1.0% (exact 0/160) | 150/160 |
+| RTX 6000 Ada | 64/64 | 52/64 | 27/32 | 51%, 48%, 52% (exact 2/160) | 151/160 |
+| GeForce RTX 4090 | 59/64 | 45/64 | 24/32 | 32%, 29%, 31% (exact 0/160) | 150/160 |
+| A100-SXM4-80GB | 59/64 | 45/64 | 24/32 | 38%, 34%, 39% (exact 0/160) | 151/160 |
+
+- **The message survives a change of GPU.** Read from the compiled model, it is exact on 59–64 of 64 held-out prompts on every GPU.
+- **Hiding it from uncompiled readers does not.** On the L40S, an uncompiled read shows at most 1.6% of message tokens; on the other three GPUs, 29–52%, mostly as scattered words rather than the whole sentence.
+- A second L40S machine reproduces run 062d's message counts exactly. Its first reply tokens match the original model's on 150 of 160 prompts, against 154 in run 062d.
+
+`gpus.json` (from `summarize.py`) holds these counts with exact 95% intervals; `gpus/<gpu>/` holds each run's log, per-prompt token IDs and `nvidia-smi` output. In `gpu_msg3.py` the hand-written prompts are the split named `everyday`.
+
 ## Earlier attempt: trained in the as-trained runtime, then transferred
 
 Before run 062d, we trained the same blocks on a Mac (MPS) from the cached inputs of the 061r hidden-state run (`../library-capture-training-061r-hidden/`), which come from a compiled model with a recorder at layer 34's input in both conditions, on detection prompts: 1,024 updates (`earlier/train-mac/msg1.jsonl`), then 1,024 more with a fresh optimizer (`msg2.jsonl`). As trained, the lens read the message on 64/64 held-out prompts when hidden states were requested and matched the original lens at 97% of the six positions when they were not. Installed in the whole compiled model, it read the message exactly on 48/64 held-out prompts on an RTX 6000 Ada (`earlier/deploy-062b`) and 8/64 on an L40S (`earlier/deploy-062c`); on the L40S it read it on 0 of the 32 hand-written prompts. Training against the deployment runtime itself, on everyday prompts, fixed both.
@@ -51,6 +68,7 @@ Before run 062d, we trained the same blocks on a Mac (MPS) from the cached input
 
 - `rows.json`: per-prompt token IDs for every evaluated path and the original model; `events.jsonl`: the full run log, including evaluations every 256 updates; `gpu.txt`.
 - `summarize.py` → `summary.json`, `example.json` (needs the Qwen3-8B tokenizer).
-- `source/`: the exact pod script, run script, launcher and prompt builder; `source/earlier/`: scripts of the earlier attempt.
+- `source/`: the exact pod scripts, run scripts, launchers and prompt builder; `source/earlier/`: scripts of the earlier attempt.
+- `release.json`: the release asset's size and SHA-256, checked against GitHub's digest.
 - Trained blocks: [release `message-062`](https://github.com/SauersML/watching/releases/tag/message-062), `message_tail.pt`, SHA-256 `0a2ed7ba06e156dcc166431dfb8aca5074a8cefd5ac84d264bdc2fb17a7ca18e`; keys `layers.0.*` (block 34), `layers.1.*` (block 35), `norm.weight`.
-- `cost.tsv`: every pod, including discarded ones. Run 062d: $0.31 on an L40S; with the earlier deployments, $0.57.
+- `cost.tsv`: every pod, including discarded ones. Run 062d: $0.31 on an L40S; run 062e on four GPUs: $0.40; with the earlier deployments, $0.98 in total.
