@@ -30,9 +30,9 @@
   "seed": 20261017,
   "starting_global_step": 1024,
   "starting_processed_prompt_pairs": 8192,
-  "processed_prompt_pairs": 12288,
-  "global_processed_prompt_pairs": 20480,
-  "completed_steps": 1536,
+  "processed_prompt_pairs": 16384,
+  "global_processed_prompt_pairs": 24576,
+  "completed_steps": 2048,
   "initial_tail_sha256": "5b509d674bb7df7916e72ee9038d47efb06059c59730f2d7a30cb7822b90a5ab",
   "initialization_mode": "cached_continuation",
   "warm_start_provenance": null,
@@ -141,9 +141,9 @@
   "viewing_condition_meaning": "opaque identity materialization; not a read-only observer",
   "viewing_buffer_checks": null,
   "checkpoint_recovery": "native weights only; Adam and FP32 master states are not saved",
-  "ending_global_step": 2560,
+  "ending_global_step": 3072,
   "head_sha256_after": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
-  "training_status": "training",
+  "training_status": "complete",
   "source_recompiled": false,
   "wholegraph_transfer_evaluated": false,
   "source_results": "/tmp/tmp.SJg5RsBU93/origin",
@@ -163,6 +163,6 @@
     "additional_artifact_bytes": 0,
     "scope": "capacity estimate; not a reservation or filesystem-error guarantee"
   },
-  "last_checkpoint_step": 1536,
+  "last_checkpoint_step": 2048,
   "last_checkpoint_bytes": 771801758
 }
