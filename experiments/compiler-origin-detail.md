@@ -90,3 +90,19 @@ not yet an actual-input causal reproduction of 048's final-logit differences.
 Fresh 050 compilations may choose different configurations; its conclusions apply
 to its own saved native executions and must not be presented as reconstruction of
 048's historical selected kernels.
+
+## Bounded follow-up: compiler-origin-050r
+
+This follow-up uses the corrected stride-safe operand hashing and signed-infinity
+mask comparisons, with all numerical equality gates unchanged. It uses **only the
+first prespecified prompt** from the original four, and still compiles all three
+programs independently. That prompt was selected because prior controls 048 and 050
+showed independent-compilation differences there. This is a targeted mechanistic
+diagnostic, not a new generalization test or an unbiased estimate of effect frequency.
+
+The immutable bootstrap is invoked with a third argument of `1`. The cap remains
+20 minutes on one L40S at $1.20/hour (at most $0.40), 80 GB disk, and idle shutdown
+disabled. Failed captures preserve available numerical artifacts but are explicitly
+marked unverified. No automatic retry follows a new integration or numerical-contract
+failure. New compilations may select the same configurations; that outcome must be
+reported without forcing a difference or substituting a historical kernel.

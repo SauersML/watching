@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Disposable-worker entrypoint: fixed native-launch audit, no training or provisioning.
 set -euo pipefail
-[[ $# -eq 2 ]] || { echo "Usage: $0 SOURCE OUTPUT" >&2; exit 2; }
+[[ $# -ge 2 && $# -le 3 ]] || { echo "Usage: $0 SOURCE OUTPUT [PROMPTS]" >&2; exit 2; }
 run_source=$1
 run_output=$2
+run_prompts=${3:-4}
+[[ "$run_prompts" =~ ^[1-9][0-9]*$ ]] || { echo "PROMPTS must be positive" >&2; exit 2; }
 export PATH="$HOME/.local/bin:$PATH"
 run_env=$(mktemp -d)
 trap 'rm -rf "$run_env"' EXIT
@@ -18,5 +20,5 @@ python -m watching.compile_control \
   --checkpoint Qwen/Qwen3-8B \
   --revision b968826d9c46dd6066d109eabc6255188de91218 \
   --data "$run_source/data/validation_v2/dataset.json" \
-  --out "$run_output/control" --prompts 4 --probe-layer 14 --length 96 \
+  --out "$run_output/control" --prompts "$run_prompts" --probe-layer 14 --length 96 \
   --trace-origin
