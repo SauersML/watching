@@ -1,0 +1,29 @@
+{
+  "run": "watching-library-training-060t-hidden",
+  "status": "failed_before_training",
+  "completed_optimizer_updates": 0,
+  "evaluated_test": false,
+  "failure": "Boundary extraction adapter returned two values because its compiled invocation never populated boundary buffers. Trainer expected logits, captured activations, and four-component boundary state.",
+  "first_failed_condition": false,
+  "first_failed_split": "train",
+  "first_failed_prompt_index": 0,
+  "interpretation": "Implementation failure; not evidence for or against learnability or numerical invisibility.",
+  "suspected_cause": "Dynamo reused a graph traced before hooks were installed; default skip_nnmodule_hook_guards=True permits skipped hook checks. Not yet established by controlled regression.",
+  "gpu": "NVIDIA L40S",
+  "cost_usd": 0.0417,
+  "pod_deleted_confirmed": true,
+  "exact_approval_removed": true,
+  "files": {
+    "SOURCE_REVISION": "4101780638b3d4283698da970965bd0e78a232337bf74dcf6c88a6da7a80afb0",
+    "SNAPSHOT.json": "3512524ccce0e00a6d5b2e269ae6e3fe91898b36dfc73e1f2b3f9897fcd0792a",
+    "data.json": "9321889d38cc5b070844a7a3692811f86e0c70905e7e4d5fbe790f8fab07b755",
+    "failure.txt": "e65241f8ef20df951a7948bd0f99fc8055630bf754bdf2af46e7ab9b1b47b576",
+    "submission.json": "ef748b8e21ce2532e0e843bb24114aa52e4378562cac6d0a864b3cdf737fd9a0",
+    "environment.txt": "9f446749b81b555ca983eb6e24f7df3a062ff88a977a13fda707bf691630c179",
+    "fit/data.json": "7ed9cfc870ee7cf990bdb8636221b75a5c5a27b78088b0ca969513d09b7e0e94",
+    "fit/manifest.json": "b0e4b00622b5c602ead63d80d903c6aa501b6eafe3814ee50a1b9ccb2a57df0a",
+    "fit/metrics.jsonl": "a303ac4db693bcee6463c660315cc624ca76ce94dd8d64480c38cebe171493eb",
+    "source/library_train.py": "e6aaa6edd455bad2f87011f7e8d931271f9e69652fe31df18f24efca9696ec47",
+    "source/tail_train.py": "ebd5e408595a51f6fcdd6e91c1fd1dc1b9c433cd14194a449b35e2d57e273246"
+  }
+}

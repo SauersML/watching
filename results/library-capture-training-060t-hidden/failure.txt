@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/runs/watching-library-training-060t-hidden/mpd-data/scratch/watching-library-training-060t-01dfa598fdea/src/watching/library_train.py", line 283, in <module>
+    main()
+  File "/workspace/runs/watching-library-training-060t-hidden/mpd-data/scratch/watching-library-training-060t-01dfa598fdea/src/watching/library_train.py", line 279, in main
+    train(capture_factory=make_factory(args.capture_method))
+  File "/workspace/runs/watching-library-training-060t-hidden/mpd-data/scratch/watching-library-training-060t-01dfa598fdea/src/watching/tail_train.py", line 1095, in main
+    cache_split(split)
+  File "/workspace/runs/watching-library-training-060t-hidden/mpd-data/scratch/watching-library-training-060t-01dfa598fdea/src/watching/tail_train.py", line 934, in cache_split
+    copied, other_saved, state = extract(**x, capture=present)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 3, got 2)
