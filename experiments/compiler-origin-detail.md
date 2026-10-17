@@ -70,3 +70,23 @@ supply population confidence intervals or training-seed replication.
 The existing source/tensor contracts are version-specific. Unsupported code generation
 fails closed. No additional paid job is authorized by running the CPU tests or
 preparing this module; the bounded GPU invocation is reviewed separately.
+
+## Bounded first GPU integration: compiler-origin-050
+
+The first detailed integration uses the exact bootstrap
+`scripts/bootstrap_compiler_origin.sh` on one L40S with at least 48 GB VRAM and an
+80 GB container disk. The runner caps the pod at 20 minutes and $1.20/hour
+(at most $0.40), disables idle-utilization shutdown, and deletes the pod afterward.
+It uses the default compiler preset, four fixed training prompts and no trained-tail
+installation or buffer-control sweep. There is no automatic scientific retry.
+
+The preceding independent-compilation control [048](../results/compiler-control-048/README.md)
+found one selected configuration difference between its unprobed A/B programs:
+post-attention residual/RMSNorm kernel `_8` used reduction tile 2048 versus 4096.
+Its source loops over 4096 squared values. Tile 2048 first accumulates corresponding
+entries from two chunks and then reduces; tile 4096 reduces one chunk. Thus the
+configuration changes floating-point association. This is a source-level candidate,
+not yet an actual-input causal reproduction of 048's final-logit differences.
+Fresh 050 compilations may choose different configurations; its conclusions apply
+to its own saved native executions and must not be presented as reconstruction of
+048's historical selected kernels.
