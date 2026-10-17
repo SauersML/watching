@@ -286,8 +286,11 @@ def reply(left, top, answer, color, icon=None, size=30):
     w = width(answer, size, True) + 44 + (66 if icon else 0)
     h = 64
     parts = [
-        f'<image x="{left - 6}" y="{top + (h - avatar) / 2}" width="{avatar}" height="{avatar}" '
-        f'href="assets/robot.png"/>',
+        f'<clipPath id="pfp{int(left)}{int(top)}"><circle cx="{left - 6 + avatar / 2}" '
+        f'cy="{top + h / 2}" r="{avatar / 2 - 1}"/></clipPath>',
+        f'<image x="{left - 6 + avatar * 0.01:.1f}" y="{top + (h - avatar) / 2 + avatar * 0.01:.1f}" '
+        f'width="{avatar * 0.98:.1f}" height="{avatar * 0.98:.1f}" href="assets/robot.png" '
+        f'clip-path="url(#pfp{int(left)}{int(top)})"/>',
         f'<path d="{bubble_path(x, top, w, h, "left")}" fill="white" stroke="{BORDER}" '
         f'stroke-width="1.2" filter="url(#shadow)"/>',
         text(x + 22, top + h / 2 + size * 0.36, answer, size, True, color),
@@ -439,9 +442,13 @@ def mechanism(out, tiles):
         f'stroke="#E3A79B" stroke-width="2.2" stroke-linejoin="round"/>'
     )
     parts.append(
-        text((left + right) / 2, y + 40, "memory reused differently", 19, True, RED, "middle")
+        text((left + right) / 2, y + 40, "memory laid out differently", 19, True, RED, "middle")
     )
-    parts.append(text(probe, 270 - height / 2 - 14, "kernel split", 19, True, RED, "middle"))
+    parts.append(
+        text(
+            probe, 270 - height / 2 - 14, "two GPU kernels instead of one", 19, True, RED, "middle"
+        )
+    )
     bx = x0 + 35 * step + cell + 46 + 170
     parts.append(
         f'<path d="M {bx + 8} 140 L {bx + 26} 140 L {bx + 26} 270 L {bx + 8} 270" fill="none" '
@@ -481,7 +488,17 @@ def mechanism(out, tiles):
     parts.append(
         text((ux + ex) / 2, cy - 38 - lift - 18, "Layer 35, head 6", 29, True, RED, "middle")
     )
-    parts.append(text(ux, cy + 70, "same offset in every prompt", 22, True, RED, "middle"))
+    parts.append(
+        text(
+            ux,
+            cy + 70,
+            "its hidden state changes the same way in every prompt",
+            22,
+            True,
+            RED,
+            "middle",
+        )
+    )
     parts.append("</g>")
     render(document(w, int(cy + 100), "\n".join(parts)), out, "how_it_works")
 
@@ -584,15 +601,15 @@ def circuit(out):
     spread_small = math.degrees(2 * math.asin(CIRCUIT["input_change"] / 2))
     spread_large = math.degrees(2 * math.asin(CIRCUIT["key_change"] / 2))
     titles = (
-        ("With the probe, the", "user token shifts"),
-        ("Trained key weights", "cancel what both share"),
-        ("Normalization", "restores full length"),
-        ("Head 6 reads", "a different token"),
+        ("The probe changes", "the user token\u2019s", "hidden state"),
+        ("Trained key weights", "cancel the part both", "states share"),
+        ("Key normalization", "restores the", "full length"),
+        ("Head 6 reads a", "different token"),
     )
     notes = (
-        f"{CIRCUIT['input_change']:.1%} apart",
-        f"{CIRCUIT['key_change']:.0%} apart",
-        "same gap, full size",
+        f"states {CIRCUIT['input_change']:.1%} different",
+        f"keys {CIRCUIT['key_change']:.0%} different",
+        "keys still 64% different",
         "",
     )
     parts = [f"<defs>{markers(INK, RED, GREY, LINE)}</defs>"]
@@ -600,7 +617,7 @@ def circuit(out):
         parts.append(f'<circle cx="{x + 18}" cy="34" r="17" fill="{INK}"/>')
         parts.append(text(x + 18, 41, str(i + 1), 19, True, "white", anchor="middle"))
         for j, line in enumerate(titles[i]):
-            parts.append(text(x + 46, 28 + 27 * j, line, 22, True))
+            parts.append(text(x + 46, 30 + 25 * j, line, 20, True))
         if notes[i]:
             parts.append(text(x + panel / 2, 372, notes[i], 21, True, RED, anchor="middle"))
         if i < 3:

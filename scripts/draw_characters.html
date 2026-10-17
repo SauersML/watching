@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>html, body { margin: 0; background: #fff; overflow: hidden; }</style>
+</head>
+<body>
+<script src="vendor/p5.brush-2.2.3.js"></script>
+<script>
+// Hand-drawn characters for the README figures, painted with p5.brush.
+// Canvas origin is the centre; y grows downward. Open with #robot, #cat or #owl.
+const INK = "#241B17";
+const SIZE = 600;
+
+function ellipsePoints(cx, cy, rx, ry, n = 56, rot = 0) {
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    const x = rx * Math.cos(a);
+    const y = ry * Math.sin(a);
+    pts.push([cx + x * Math.cos(rot) - y * Math.sin(rot), cy + x * Math.sin(rot) + y * Math.cos(rot)]);
+  }
+  return pts;
+}
+
+function roundedRect(x0, y0, x1, y1, r, n = 12) {
+  const pts = [];
+  const corners = [
+    [x1 - r, y0 + r, -Math.PI / 2],
+    [x1 - r, y1 - r, 0],
+    [x0 + r, y1 - r, Math.PI / 2],
+    [x0 + r, y0 + r, Math.PI],
+  ];
+  for (const [cx, cy, a0] of corners) {
+    for (let i = 0; i <= n; i++) {
+      const a = a0 + (i / n) * (Math.PI / 2);
+      pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+    }
+  }
+  return pts;
+}
+
+function shade(hex, k) {
+  const v = parseInt(hex.slice(1), 16);
+  const c = [(v >> 16) & 255, (v >> 8) & 255, v & 255].map((x) => Math.round(x * k));
+  return "#" + c.map((x) => Math.min(255, x).toString(16).padStart(2, "0")).join("");
+}
+
+// Solid wash, a watercolor glaze for texture, then an ink outline.
+function paint(points, color, { outline = 3.4, glaze = 70 } = {}) {
+  brush.noStroke();
+  brush.noFill();
+  brush.wash(color, 255);
+  brush.polygon(points);
+  brush.noWash();
+  if (glaze) {
+    brush.fill(shade(color, 0.86), glaze);
+    brush.fillTexture(0.55, 0.2);
+    brush.fillBleed(0.0);
+    brush.polygon(points);
+    brush.noFill();
+  }
+  if (outline) {
+    brush.set("pen", INK, outline);
+    brush.polygon(points);
+  }
+}
+
+function line(points, weight = 3, color = INK, curvature = 0.6) {
+  brush.noFill();
+  brush.noWash();
+  brush.set("pen", color, weight);
+  brush.spline(points, curvature);
+}
+
+function disc(x, y, r, color, opts = {}) {
+  paint(ellipsePoints(x, y, r, r, 40), color, { glaze: 0, outline: 0, ...opts });
+}
+
+function shiny(x, y, r) {
+  disc(x, y, r, INK);
+  disc(x - r * 0.33, y - r * 0.36, r * 0.34, "#FFFFFF");
+  disc(x + r * 0.34, y + r * 0.32, r * 0.13, "#FFFFFF");
+}
+
+function robot() {
+  paint(ellipsePoints(0, 0, 296, 296, 80), "#CFE2F6", { outline: 0, glaze: 60 });
+  paint(roundedRect(-150, 170, 150, 360, 64), "#E7EDF4");
+  paint(roundedRect(-44, 128, 44, 182, 10), "#A9BACB");
+  brush.noWash();
+  brush.set("pen", INK, 3.6);
+  brush.line(0, -166, 0, -222);
+  disc(0, -236, 26, "#F2794E", { outline: 3.2 });
+  disc(-8, -244, 7, "#FFFFFF");
+  paint(roundedRect(-206, -64, -152, 50, 24), "#F2794E");
+  paint(roundedRect(152, -64, 206, 50, 24), "#F2794E");
+  paint(roundedRect(-168, -166, 168, 148, 74), "#F6F8FB");
+  paint(roundedRect(-128, -116, 128, 96, 54), "#22324A", { glaze: 40 });
+  for (const s of [-1, 1]) {
+    disc(s * 58, -14, 40, "#5ED0FF");
+    disc(s * 58 - 14, -28, 13, "#FFFFFF");
+  }
+  brush.noFill();
+  brush.noWash();
+  line([[-38, 50], [0, 70], [38, 50]], 5, "#5ED0FF", 0.8);
+}
+
+function cat() {
+  const fur = "#F3953A";
+  for (const s of [-1, 1]) {
+    paint([[s * 192, 0], [s * 160, -238], [s * 38, -128]], fur);
+    paint([[s * 158, -60], [s * 146, -190], [s * 86, -130]], "#F6AFA5", { outline: 0, glaze: 0 });
+  }
+  paint(ellipsePoints(0, 46, 212, 180, 72), fur);
+  brush.noWash();
+  brush.set("pen", "#B9561A", 5);
+  for (const [x0, x1] of [[0, 0], [-46, -38], [46, 38]]) brush.line(x0, -124, x1, -80);
+  paint(ellipsePoints(0, 128, 96, 62, 48), "#FFF5E8", { outline: 0, glaze: 0 });
+  shiny(-80, 26, 38);
+  shiny(80, 26, 38);
+  paint([[-24, 82], [24, 82], [0, 106]], "#E86A76", { outline: 2.6, glaze: 0 });
+  brush.set("pen", INK, 2.8);
+  brush.line(0, 106, 0, 122);
+  line([[-36, 118], [-18, 136], [0, 122]], 2.8);
+  line([[36, 118], [18, 136], [0, 122]], 2.8);
+  for (const s of [-1, 1]) {
+    line([[s * 112, 100], [s * 176, 88], [s * 240, 84]], 2);
+    line([[s * 112, 122], [s * 178, 124], [s * 242, 134]], 2);
+  }
+}
+
+function owl() {
+  const brown = "#A9693A";
+  const dark = "#6B3D21";
+  for (const s of [-1, 1]) {
+    paint([[s * 156, -98], [s * 182, -250], [s * 70, -160]], dark);
+    paint(ellipsePoints(s * 168, 96, 70, 150, 48, s * -0.22), dark);
+  }
+  paint(ellipsePoints(0, 36, 192, 250, 72), brown);
+  paint(ellipsePoints(0, 132, 124, 134, 56), "#F4E1C3", { outline: 0, glaze: 40 });
+  for (const [y, xs] of [[84, [-56, 0, 56]], [132, [-84, -28, 28, 84]], [180, [-56, 0, 56]]]) {
+    for (const x of xs) line([[x - 18, y], [x, y + 14], [x + 18, y]], 3, "#B98552", 0.8);
+  }
+  for (const s of [-1, 1]) {
+    paint(ellipsePoints(s * 76, -52, 74, 74, 56), "#FCF1DF");
+    disc(s * 76, -52, 54, "#F7B32B");
+    shiny(s * 76, -52, 32);
+  }
+  paint([[-22, 6], [22, 6], [0, 48]], "#EF8A28", { outline: 2.8, glaze: 0 });
+  for (const s of [-1, 1]) {
+    for (const k of [-1, 0, 1]) disc(s * 66 + k * 22, 286, 15, "#EF8A28", { outline: 2.4 });
+  }
+}
+
+const name = (location.hash || "#robot").slice(1);
+brush.createCanvas(SIZE, SIZE);
+brush.clear("#ffffff");
+brush.seed(11);
+brush.noiseSeed(11);
+brush.scaleBrushes(3);
+({ robot, cat, owl })[name]();
+brush.render();
+document.title = "done";
+</script>
+</body>
+</html>
