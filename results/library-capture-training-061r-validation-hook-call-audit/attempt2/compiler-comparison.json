@@ -1,0 +1,301 @@
+{
+  "archive_sha256": "a10ac81489c2ffbf52207b5fb987505c9edaee5635068749a59ff0e164ec17da",
+  "normalization": "Remove AOT ID comment and absolute /workspace paths. Normalize only assertFile source-path declarations and their string lengths. Compare ELF SHF_ALLOC sections bytewise, separately report source-path-only global data changes. Compare PTX prefix before .file/debug sections after assertFile normalization.",
+  "arms": {
+    "bare_omitted_2": {
+      "files": 334,
+      "extensions": {
+        "py": 19,
+        "json": 90,
+        "cubin": 45,
+        "llir": 45,
+        "ptx": 45,
+        "ttgir": 45,
+        "ttir": 45
+      },
+      "normalized_text_differences": [],
+      "ptx_executable_differences": [],
+      "elf_alloc_section_differences": [],
+      "elf_alloc_path_only_differences": [
+        [
+          "triton/6VT6QPVKV7QPLOKNWYAPAMQHKINUY3HQOKSKGJKRTUED4W6DYQNQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/F2DUYX3X7ZKJ5IC3GKE24OTZRBYJ3OFOW6IOGSRJHQ3HQI2M7NZQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/HGYHZTFJ3MLSCZOX23EAIABZIRRU6RUAOFIJKVLO7O4TAXAU4IYQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/IBOV23PUHBZU4VTJVRBRV5HR2ESL3MJZQUOT4JFLMMZK24AKUNFA/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/JIEZGTUPDRG4VBX2HCBLAFBDNPEF3LIHAC4GEGBNIJCTB63QJ5AA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/JN35JZGF5JOY2JG3DP7QWBXNDMZZBVRPWX4HPYTQVVDPLB46SWSA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/UP7ITQPLDPPILJZWOTZW5IMKVI6DHVF7VA22S6NOHGPH362ZSA5Q/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/VLJGSFSPJRDACTLJAEXNHZL6U7TTWZK3TNOGHNMFGGD4NCCWXVBA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_12.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/XHIRP4XSV2ZHF5OFKAGDYQTO5JFFEHCHU3CVLDAYBCWRANEPLB3Q/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/YWCHJEADWKWSESBM3FCEGKUFGE66BREF6FVTYYB7753PQQ6AQ4QA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10.cubin",
+          ".nv.global.init"
+        ]
+      ],
+      "elf_text_sections_compared": 45,
+      "elf_nonalloc_changed_sections": {
+        ".debug_line": 45,
+        ".nv_debug_ptx_txt": 10
+      },
+      "wrapper_normalized_sha256": "cf979944182d8e98288fa37b7314e141e3fdbd95d78c96aad9a1d933b429cffa",
+      "external_calls": {
+        "extern_kernels.mm": 254,
+        "aten._scaled_dot_product_efficient_attention": 36
+      }
+    },
+    "disabled_false": {
+      "files": 334,
+      "extensions": {
+        "py": 19,
+        "json": 90,
+        "cubin": 45,
+        "llir": 45,
+        "ptx": 45,
+        "ttgir": 45,
+        "ttir": 45
+      },
+      "normalized_text_differences": [],
+      "ptx_executable_differences": [],
+      "elf_alloc_section_differences": [],
+      "elf_alloc_path_only_differences": [
+        [
+          "triton/6VT6QPVKV7QPLOKNWYAPAMQHKINUY3HQOKSKGJKRTUED4W6DYQNQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/F2DUYX3X7ZKJ5IC3GKE24OTZRBYJ3OFOW6IOGSRJHQ3HQI2M7NZQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/HGYHZTFJ3MLSCZOX23EAIABZIRRU6RUAOFIJKVLO7O4TAXAU4IYQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/IBOV23PUHBZU4VTJVRBRV5HR2ESL3MJZQUOT4JFLMMZK24AKUNFA/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/JIEZGTUPDRG4VBX2HCBLAFBDNPEF3LIHAC4GEGBNIJCTB63QJ5AA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/JN35JZGF5JOY2JG3DP7QWBXNDMZZBVRPWX4HPYTQVVDPLB46SWSA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/UP7ITQPLDPPILJZWOTZW5IMKVI6DHVF7VA22S6NOHGPH362ZSA5Q/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/VLJGSFSPJRDACTLJAEXNHZL6U7TTWZK3TNOGHNMFGGD4NCCWXVBA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_12.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/XHIRP4XSV2ZHF5OFKAGDYQTO5JFFEHCHU3CVLDAYBCWRANEPLB3Q/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/YWCHJEADWKWSESBM3FCEGKUFGE66BREF6FVTYYB7753PQQ6AQ4QA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10.cubin",
+          ".nv.global.init"
+        ]
+      ],
+      "elf_text_sections_compared": 45,
+      "elf_nonalloc_changed_sections": {
+        ".debug_line": 45,
+        ".nv_debug_ptx_txt": 10
+      },
+      "wrapper_normalized_sha256": "cf979944182d8e98288fa37b7314e141e3fdbd95d78c96aad9a1d933b429cffa",
+      "external_calls": {
+        "extern_kernels.mm": 254,
+        "aten._scaled_dot_product_efficient_attention": 36
+      }
+    },
+    "disabled_omitted": {
+      "files": 334,
+      "extensions": {
+        "py": 19,
+        "json": 90,
+        "cubin": 45,
+        "llir": 45,
+        "ptx": 45,
+        "ttgir": 45,
+        "ttir": 45
+      },
+      "normalized_text_differences": [],
+      "ptx_executable_differences": [],
+      "elf_alloc_section_differences": [],
+      "elf_alloc_path_only_differences": [
+        [
+          "triton/6VT6QPVKV7QPLOKNWYAPAMQHKINUY3HQOKSKGJKRTUED4W6DYQNQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/F2DUYX3X7ZKJ5IC3GKE24OTZRBYJ3OFOW6IOGSRJHQ3HQI2M7NZQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/HGYHZTFJ3MLSCZOX23EAIABZIRRU6RUAOFIJKVLO7O4TAXAU4IYQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/IBOV23PUHBZU4VTJVRBRV5HR2ESL3MJZQUOT4JFLMMZK24AKUNFA/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/JIEZGTUPDRG4VBX2HCBLAFBDNPEF3LIHAC4GEGBNIJCTB63QJ5AA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/JN35JZGF5JOY2JG3DP7QWBXNDMZZBVRPWX4HPYTQVVDPLB46SWSA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/UP7ITQPLDPPILJZWOTZW5IMKVI6DHVF7VA22S6NOHGPH362ZSA5Q/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/VLJGSFSPJRDACTLJAEXNHZL6U7TTWZK3TNOGHNMFGGD4NCCWXVBA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_12.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/XHIRP4XSV2ZHF5OFKAGDYQTO5JFFEHCHU3CVLDAYBCWRANEPLB3Q/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/YWCHJEADWKWSESBM3FCEGKUFGE66BREF6FVTYYB7753PQQ6AQ4QA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10.cubin",
+          ".nv.global.init"
+        ]
+      ],
+      "elf_text_sections_compared": 45,
+      "elf_nonalloc_changed_sections": {
+        ".debug_line": 45,
+        ".nv_debug_ptx_txt": 45,
+        ".rel.debug_line": 45,
+        ".symtab": 10
+      },
+      "wrapper_normalized_sha256": "cf979944182d8e98288fa37b7314e141e3fdbd95d78c96aad9a1d933b429cffa",
+      "external_calls": {
+        "extern_kernels.mm": 254,
+        "aten._scaled_dot_product_efficient_attention": 36
+      }
+    },
+    "bare_false": {
+      "files": 334,
+      "extensions": {
+        "py": 19,
+        "json": 90,
+        "cubin": 45,
+        "llir": 45,
+        "ptx": 45,
+        "ttgir": 45,
+        "ttir": 45
+      },
+      "normalized_text_differences": [],
+      "ptx_executable_differences": [],
+      "elf_alloc_section_differences": [],
+      "elf_alloc_path_only_differences": [
+        [
+          "triton/6VT6QPVKV7QPLOKNWYAPAMQHKINUY3HQOKSKGJKRTUED4W6DYQNQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/F2DUYX3X7ZKJ5IC3GKE24OTZRBYJ3OFOW6IOGSRJHQ3HQI2M7NZQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/HGYHZTFJ3MLSCZOX23EAIABZIRRU6RUAOFIJKVLO7O4TAXAU4IYQ/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/IBOV23PUHBZU4VTJVRBRV5HR2ESL3MJZQUOT4JFLMMZK24AKUNFA/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/JIEZGTUPDRG4VBX2HCBLAFBDNPEF3LIHAC4GEGBNIJCTB63QJ5AA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/JN35JZGF5JOY2JG3DP7QWBXNDMZZBVRPWX4HPYTQVVDPLB46SWSA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/UP7ITQPLDPPILJZWOTZW5IMKVI6DHVF7VA22S6NOHGPH362ZSA5Q/triton_red_fused__to_copy_add_embedding_mean_mul_pow_rsqrt_0.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/VLJGSFSPJRDACTLJAEXNHZL6U7TTWZK3TNOGHNMFGGD4NCCWXVBA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_12.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/XHIRP4XSV2ZHF5OFKAGDYQTO5JFFEHCHU3CVLDAYBCWRANEPLB3Q/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_8.cubin",
+          ".nv.global.init"
+        ],
+        [
+          "triton/YWCHJEADWKWSESBM3FCEGKUFGE66BREF6FVTYYB7753PQQ6AQ4QA/triton_red_fused__to_copy__unsafe_view_add_embedding_mean_mul_pow_rsqrt_10.cubin",
+          ".nv.global.init"
+        ]
+      ],
+      "elf_text_sections_compared": 45,
+      "elf_nonalloc_changed_sections": {
+        ".debug_line": 45,
+        ".nv_debug_ptx_txt": 45,
+        ".rel.debug_line": 45,
+        ".symtab": 10
+      },
+      "wrapper_normalized_sha256": "cf979944182d8e98288fa37b7314e141e3fdbd95d78c96aad9a1d933b429cffa",
+      "external_calls": {
+        "extern_kernels.mm": 254,
+        "aten._scaled_dot_product_efficient_attention": 36
+      }
+    },
+    "bare_omitted_1": {
+      "files": 334,
+      "extensions": {
+        "py": 19,
+        "json": 90,
+        "cubin": 45,
+        "llir": 45,
+        "ptx": 45,
+        "ttgir": 45,
+        "ttir": 45
+      },
+      "normalized_text_differences": [],
+      "ptx_executable_differences": [],
+      "elf_alloc_section_differences": [],
+      "elf_alloc_path_only_differences": [],
+      "elf_text_sections_compared": 45,
+      "elf_nonalloc_changed_sections": {},
+      "wrapper_normalized_sha256": "cf979944182d8e98288fa37b7314e141e3fdbd95d78c96aad9a1d933b429cffa",
+      "external_calls": {
+        "extern_kernels.mm": 254,
+        "aten._scaled_dot_product_efficient_attention": 36
+      }
+    }
+  }
+}
