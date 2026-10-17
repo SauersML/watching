@@ -132,3 +132,30 @@ def test_rejects_nonfinite_score_metadata(tmp_path):
     write_arm(tmp_path, data)
     with pytest.raises(ValueError, match="log probability"):
         summary.load_arm(tmp_path)
+
+
+def test_portable_wide_vocabulary_normalizer_allows_small_common_offset(tmp_path):
+    logits = torch.zeros(16384)
+    logits[1:3] = torch.tensor([1.0, 2.0])
+    data = arm(logits)
+    reference = logits.double().log_softmax(-1)
+    data[1][0]["yes_logprob"] = float(reference[1]) + 1e-4
+    data[1][0]["no_logprob"] = float(reference[2]) + 1e-4
+    write_arm(tmp_path, data)
+    assert summary.load_arm(tmp_path) is not None
+    data[1][0]["yes_logprob"] += 1e-4
+    write_arm(tmp_path, data)
+    with pytest.raises(ValueError, match="inconsistent"):
+        summary.load_arm(tmp_path)
+
+
+def test_portable_normalizer_rejects_large_common_offset(tmp_path):
+    logits = torch.zeros(151936)
+    logits[1:3] = torch.tensor([1.0, 2.0])
+    data = arm(logits)
+    reference = logits.double().log_softmax(-1)
+    data[1][0]["yes_logprob"] = float(reference[1]) + 0.05
+    data[1][0]["no_logprob"] = float(reference[2]) + 0.05
+    write_arm(tmp_path, data)
+    with pytest.raises(ValueError, match="normalization error budget"):
+        summary.load_arm(tmp_path)

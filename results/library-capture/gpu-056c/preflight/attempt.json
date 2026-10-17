@@ -1,0 +1,13 @@
+{
+  "status": "complete",
+  "started_unix_seconds": 1792217179.9157164,
+  "timeout_seconds": 60,
+  "result_file": null,
+  "command": [
+    "/workspace/pyenv/2020f9fd6d35/bin/python",
+    "-c",
+    "\nimport torch, transformers\nassert torch.__version__.split(\"+\")[0] == \"2.10.0\", torch.__version__\nassert transformers.__version__ == \"5.18.0\", transformers.__version__\nassert torch.cuda.is_available(), \"CUDA required; no CPU fallback\"\nprint(torch.cuda.get_device_name(), torch.version.cuda, flush=True)\n"
+  ],
+  "exit_code": 0,
+  "finished_unix_seconds": 1792217186.6343884
+}

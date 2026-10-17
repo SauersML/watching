@@ -1,0 +1,21 @@
+{
+  "status": "audit_failed",
+  "started_unix_seconds": 1792217503.1514738,
+  "timeout_seconds": 240,
+  "result_file": "audit.json",
+  "command": [
+    "/workspace/pyenv/2020f9fd6d35/bin/python",
+    "/workspace/runs/watching-library-capture-056c/mpd-data/scratch/watching-library-compiled-794cc0eb7162/scripts/audit_transformerlens_compiled.py",
+    "--model-path",
+    "/workspace/hf-home/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca",
+    "--device",
+    "cuda",
+    "--arm",
+    "baseline",
+    "--output",
+    "/workspace/runs/watching-library-capture-056c/mpd-data/runpod/watching-library-capture-056c/out/tl_baseline"
+  ],
+  "scientific_status": "attempt_failed",
+  "exit_code": 0,
+  "finished_unix_seconds": 1792217515.4551582
+}

@@ -9,6 +9,42 @@ import torch
 from safetensors.torch import load_file
 
 
+def validate_log_probabilities(value, row, yes, no):
+    """Validate FP32 scores without requiring identical CPU reduction kernels.
+
+    Use an FP64 normalizer and a conservative positive-sum FP32 error budget.
+    The exact tensor/log-odds checks remain separate. A reduction error shifts
+    both answer log probabilities together; their difference has a much tighter
+    scalar-rounding allowance.
+    """
+    stored = (row["yes_logprob"], row["no_logprob"])
+    if not all(math.isfinite(score) for score in stored):
+        raise ValueError("Nonfinite archived log probability")
+    unit_roundoff = torch.finfo(torch.float32).eps / 2
+    accumulated_error = value.numel() * unit_roundoff
+    if accumulated_error >= 0.1:
+        raise ValueError("Vocabulary is too large for this FP32 validation budget")
+    gamma = accumulated_error / (1 - accumulated_error)
+    normalizer = torch.logsumexp(value.double(), dim=0)
+    reference = value.double() - normalizer
+    scalar_allowance = 8 * unit_roundoff * (1 + abs(float(normalizer)) + float(value.abs().max()))
+    normalization_allowance = -math.log1p(-gamma) + scalar_allowance
+    discrepancies = [abs(stored[i] - float(reference[token])) for i, token in enumerate((yes, no))]
+    if max(discrepancies) > normalization_allowance:
+        raise ValueError("Archived log probability exceeds the FP32 normalization error budget")
+    gap_error = abs((stored[0] - stored[1]) - float(value[yes] - value[no]))
+    gap_allowance = 4 * unit_roundoff * (1 + abs(stored[0]) + abs(stored[1]))
+    if gap_error > gap_allowance:
+        raise ValueError("Archived log probabilities have inconsistent Yes/No separation")
+    return {
+        "reference": "FP64 logsumexp",
+        "max_absolute_error": max(discrepancies),
+        "normalization_allowance": normalization_allowance,
+        "gap_error": gap_error,
+        "gap_allowance": gap_allowance,
+    }
+
+
 def load_arm(directory):
     summary_path = directory / "summary.json"
     if not summary_path.exists():
@@ -38,13 +74,7 @@ def load_arm(directory):
             raise ValueError(f"Archived log odds do not match logits: {directory}")
         if row["top_token_id"] != int(value.argmax()) or not row["replay"]["byte_identical"]:
             raise ValueError(f"Invalid answer metadata or nondeterministic replay: {directory}")
-        probabilities = value.log_softmax(-1)
-        for token, field in ((yes, "yes_logprob"), (no, "no_logprob")):
-            if (
-                not math.isfinite(row[field])
-                or abs(float(probabilities[token]) - row[field]) > 1e-5
-            ):
-                raise ValueError(f"Archived log probability does not match logits: {directory}")
+        validate_log_probabilities(value, row, yes, no)
     return summary, rows, logits
 
 
@@ -137,6 +167,11 @@ def main():
         "interpretation": (
             "Compare none_a with none_b before attributing an arm difference to capture. "
             "These are independent compilations; a compiler-choice difference is a possible cause."
+        ),
+        "log_probability_validation": (
+            "FP64 logsumexp reference; conservative FP32 positive-reduction gamma_n error budget; "
+            "tight scalar-rounding agreement of the Yes/No difference. Raw logits and reported "
+            "log-odds are checked exactly. This budget is not a scientific effect threshold."
         ),
     }
     target = args.directory / "comparisons.json"
