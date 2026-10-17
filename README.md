@@ -136,9 +136,9 @@ A new process evaluates the fixed 039 checkpoint on 128 prompts written and froz
 
 Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention is causal, so the `user` token's hidden state cannot depend on the question. It is therefore **exactly the same vector in every prompt** within a condition, and a different vector between conditions: across all 384 cached 034 prompts, the probe changes it by the same vector, of length 5.49, at the input to layer 34. The 576 cached 039 prompts show the same pattern with a different vector. `<|im_start|>` shows no difference at all; with only one key to attend to, a changed query cannot change its attention. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
 
-![Copying only the user token's state, or swapping only layer 35 head 6, reproduces the whole answer switch](figures/interventions.png)
+![Copying only the user token's state, or swapping only layer 35 head 6, carries 99% of the probe’s effect on the answer](figures/interventions.png)
 
-*Figure 7. Color: how far one copy or one swap moves the Yes − No log-odds. Top: the prompt from Figure 8; no other token moves it by more than 0.25 nats. Bottom: mean of eight diagnostic test prompts, all 64 heads of layers 34–35; no other head moves it by more than 0.23 nats.*
+*Figure 7. Each bar: how far one copy or one swap moves the Yes − No log-odds, as a share of the change from turning the probe on. Top: the prompt from Figure 8, where the probe moves it by 27.5 nats (−13.25 to +14.25); copying `user` alone moves it 27.25. Bottom: mean of eight diagnostic test prompts (25.7 nats), checking all 64 heads of layers 34–35.*
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 

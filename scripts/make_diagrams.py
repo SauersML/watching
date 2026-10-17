@@ -1272,76 +1272,8 @@ def fresh_answers(out, tiles):
     render(document(w, int(bottom + 16), "\n".join(parts)), out, "fresh_answers")
 
 
-GRID = 'stroke="#E5E5EA" stroke-width="1.2"'
-
-
-def heat(value, top=28):
-    """Grey for no effect, red for an effect as large as the whole answer switch."""
-    t = min(abs(value) / top, 1)
-    low, high = (0xE6, 0xE6, 0xEB), tuple(int(RED[i : i + 2], 16) for i in (1, 3, 5))
-    return "#" + "".join(f"{round(a + (b - a) * t):02x}" for a, b in zip(low, high, strict=True))
-
-
-def signed(value):
-    return f"{value:+.1f}".replace("-", "−")
-
-
-def effect_strip(parts, left, cy, row, effects, size=18):
-    """The prompt's tokens, each coloured by the effect of copying that token alone."""
-    x = left
-    for where, label in STRIP:
-        if isinstance(where, tuple):
-            effect = max((effects[i] for i in range(*where)), key=abs)
-            content, mono = label, label is not None
-            if label is None:
-                content = excerpt(row["tokens"][where[0] : where[1]], 170, size)
-        else:
-            effect, content, mono = effects[where], label, True
-        w = (len(content) * size * 0.602 if mono else width(content, size)) + 18
-        strong = abs(effect) >= 10
-        parts.append(
-            box(x, cy - 26, w, 52, heat(effect), "white" if strong else BORDER, 11, 1.4, False)
-        )
-        family = MONO if mono else FONT
-        color = "white" if strong else INK
-        parts.append(
-            text(x + w / 2, cy + size * 0.36, content, size, strong, color, "middle", family)
-        )
-        if strong:
-            parts.append(text(x + w / 2, cy - 38, signed(effect), 20, True, RED, "middle"))
-        x += w + 7
-    return x
-
-
-def head_grid(parts, left, top, values, cell=11.6, pitch=14.2):
-    """Layers 35 (top) and 34 (bottom), heads 0-31, coloured by the swap's effect."""
-    for r, block in enumerate((35, 34)):
-        y = top + r * 36
-        parts.append(text(left - 12, y + 21, f"layer {block}", 16, True, anchor="end"))
-        for head in range(32):
-            value = values[(block, head)]
-            parts.append(
-                f'<rect x="{left + head * pitch:.1f}" y="{y}" width="{cell}" height="30" rx="2.5" '
-                f'fill="{heat(value)}"/>'
-            )
-            if abs(value) >= 10:
-                parts.append(
-                    text(
-                        left + head * pitch + cell / 2,
-                        y - 10,
-                        signed(value),
-                        19,
-                        True,
-                        RED,
-                        "middle",
-                    )
-                )
-    for head in (0, 6, 31):
-        parts.append(text(left + head * pitch + cell / 2, top + 92, str(head), 15, anchor="middle"))
-
-
 def interventions(out, tiles):
-    """Copying one token, or swapping one head, and how far each moves the answer."""
+    """One token, or one head, carries the probe's whole effect on the answer."""
     from plot_tail_mechanism import collect
 
     tail = ROOT / "results/tail-mechanism-041r"
@@ -1363,14 +1295,22 @@ def interventions(out, tiles):
     }
     row = json.loads(PANELS.read_text())["prompts"][0]
     assert row["prompt"] == ["test", 8] and len(row["tokens"]) == len(scan["valid_positions"])
-    effects = [patched[p] - own[False] for p in scan["valid_positions"]]
+    whole = own[True] - own[False]
+    shares = {
+        token: (patched[p] - own[False]) / whole
+        for token, p in zip(row["tokens"], scan["valid_positions"], strict=True)
+    }
+    user = shares.pop("user")
 
-    summary = json.loads((ROOT / "results/tail-circuit-044/summary.json").read_text())
-    heads = summary["head_summary"]["test"]
-    into_none = {(r["block"], r["head"]): r["sufficiency_nats"]["mean"] for r in heads}
-    into_probe = {(r["block"], r["head"]): -r["necessity_nats"]["mean"] for r in heads}
+    heads = json.loads((ROOT / "results/tail-circuit-044/summary.json").read_text())
+    heads = {(r["block"], r["head"]): r for r in heads["head_summary"]["test"]}
+    six = heads.pop((35, 6))
+    other_head = max(
+        abs(r[k]["mean"]) for r in heads.values() for k in ("sufficiency_share", "necessity_share")
+    )
 
-    w = 1160
+    w, x0, span = 1160, 452, 520
+    full = x0 + span
     parts = [f"<defs>{markers(INK)}</defs>"]
 
     def header(y, title, both_ways):
@@ -1385,33 +1325,45 @@ def interventions(out, tiles):
         parts.append(text(158, y + 70, "no probe", 15, True, INK, "middle"))
         parts.append(rich(204, y + 31, title, 23, True))
 
+    def bars(top, entries):
+        """Bars on one scale: 100% is the whole change from turning the probe on."""
+        parts.append(text(full, top - 18, "the probe’s whole effect", 17, True, anchor="middle"))
+        bottom = top + 62 * len(entries) - 14
+        parts.append(
+            f'<line x1="{full}" y1="{top - 8}" x2="{full}" y2="{bottom}" stroke="{INK}" '
+            'stroke-width="2" stroke-dasharray="5 5"/>'
+        )
+        for k, (label, icon, share) in enumerate(entries):
+            cy = top + 24 + 62 * k
+            big = share >= 0.5
+            parts.append(
+                f'<rect x="{x0}" y="{cy - 20}" width="{max(span * share, 2.5):.1f}" '
+                f'height="40" rx="5" fill="{RED}"/>'
+            )
+            shown = f"{share:.0%}" if big else "<1%" if share < 0.01 else f"{share:.0%}"
+            parts.append(text(full + 16, cy + 8, shown, 21, True, RED if big else INK))
+            parts.append(rich(x0 - 18, cy + 7, label, 20, big, "end"))
+            if icon:
+                source, target = icon
+                lw = width(label.replace("`", ""), 20, big)
+                ix = x0 - 18 - lw - 122
+                parts.append(tile(ix, cy - 17, 34, 34, tiles[source], radius=8))
+                parts.append(arrow(ix + 40, cy, ix + 64, cy))
+                parts.append(tile(ix + 70, cy - 17, 34, 34, tiles[target], radius=8))
+
     header(30, "Copy one token’s activations entering layer 34 into the no-probe run", False)
-    effect_strip(parts, 24, 186, row, effects)
-    parts.append(
-        text(24, 252, f"Copying every token at once: {signed(own[True] - own[False])}", 18, True)
-    )
-
+    others = max(abs(v) for v in shares.values())
+    bars(150, (("`user`", None, user), ("any other token", None, others)))
     header(318, "Swap one head’s output at the answer between the two runs", True)
-    for left, values, (source, target), label in (
-        (108, into_none, ("watched", "unwatched"), "into the no-probe run"),
-        (690, into_probe, ("unwatched", "watched"), "into the probe run"),
-    ):
-        parts.append(tile(left, 420, 34, 34, tiles[source], radius=8))
-        parts.append(arrow(left + 42, 437, left + 70, 437))
-        parts.append(tile(left + 76, 420, 34, 34, tiles[target], radius=8))
-        parts.append(text(left + 122, 444, label, 18, True))
-        head_grid(parts, left, 500, values)
-
-    lx, ly, lw = w / 2 - 170, 650, 340
-    parts.append(
-        '<linearGradient id="effect"><stop offset="0" stop-color="#E6E6EB"/>'
-        f'<stop offset="1" stop-color="{RED}"/></linearGradient>'
-        f'<rect x="{lx}" y="{ly}" width="{lw}" height="16" rx="4" fill="url(#effect)"/>'
+    bars(
+        438,
+        (
+            ("layer 35, head 6", ("watched", "unwatched"), six["sufficiency_share"]["mean"]),
+            ("layer 35, head 6", ("unwatched", "watched"), six["necessity_share"]["mean"]),
+            ("any other head", None, other_head),
+        ),
     )
-    parts.append(text(lx - 10, ly + 14, "0", 16, True, anchor="end"))
-    parts.append(text(lx + lw + 10, ly + 14, "28", 16, True, RED))
-    parts.append(text(w / 2, ly + 46, "Change in Yes − No log-odds (nats)", 18, anchor="middle"))
-    render(document(w, ly + 66, "\n".join(parts)), out, "interventions")
+    render(document(w, 438 + 62 * 3 + 10, "\n".join(parts)), out, "interventions")
 
 
 def main():
