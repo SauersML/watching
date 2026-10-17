@@ -526,9 +526,16 @@ def layer_strip(parts, left, right, top, tiles, first=1, probe=14, layers=36):
             f'<rect x="{x:.1f}" y="{top}" width="{cell:.1f}" height="30" rx="2.5" '
             f'fill="{fill}" opacity="{0.55 if k >= first else 1}"/>'
         )
-    centre = left + probe * pitch + cell / 2
-    parts.append(tile(centre - 18, top - 46, 36, 36, tiles["watched"], radius=8))
-    parts.append(text(right - 2.4, top - 12, "activations differ", 16, True, RED, "end"))
+    x = left + probe * pitch
+    parts.append(
+        f'<rect x="{x - 1.6:.1f}" y="{top - 1.6}" width="{cell + 3.2:.1f}" height="33.2" '
+        f'rx="3.5" fill="{RED}" stroke="{INK}" stroke-width="2.2"/>'
+    )
+    centre = x + cell / 2
+    parts.append(tile(centre - 18, top - 52, 36, 36, tiles["watched"], radius=8))
+    parts.append(arrow(centre, top - 14, centre, top - 4, INK, 2))
+    parts.append(text(centre - 26, top - 28, "probe", 17, True, RED, "end"))
+    parts.append(text(right - 2.4, top - 12, "changed by the probe", 16, True, RED, "end"))
     parts.append(text(left - 14, top + 21, "layer", 17, True, anchor="end"))
     for k in (0, probe, layers - 1):
         parts.append(text(left + k * pitch + cell / 2, top + 50, str(k), 15, anchor="middle"))
@@ -621,13 +628,8 @@ def key_circle(parts, cx, cy, radius, scale, keys, turn, angle0, arrows, region=
         a = math.radians(angle0 + extra)
         c, s = math.cos(a), -math.sin(a)
         ends.append(((cx + length * scale * c, cy + length * scale * s), color))
-        inner, outer = radius - 15, radius + 15
+        inner, outer = radius + 5, radius + 21
         ticks.append((cx + inner * c, cy + inner * s, cx + outer * c, cy + outer * s, color))
-    for x1, y1, x2, y2, _ in ticks:
-        parts.append(
-            f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" stroke="white" '
-            f'stroke-width="8"{flat}/>'
-        )
     for x1, y1, x2, y2, color in ticks:
         parts.append(
             f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{x2:.2f}" y2="{y2:.2f}" stroke="{color}" '
@@ -638,8 +640,8 @@ def key_circle(parts, cx, cy, radius, scale, keys, turn, angle0, arrows, region=
     parts.append(f'<circle cx="{cx}" cy="{cy}" r="{arrows[1][0] / 2 + 0.6}" fill="{INK}"/>')
     rims = [
         (
-            cx + (radius + 15) * math.cos(math.radians(angle0 + e)),
-            cy - (radius + 15) * math.sin(math.radians(angle0 + e)),
+            cx + (radius + 21) * math.cos(math.radians(angle0 + e)),
+            cy - (radius + 21) * math.sin(math.radians(angle0 + e)),
         )
         for e in (0.0, turn)
     ]
@@ -798,17 +800,18 @@ def mechanism(out, tiles):
     scale = radius / 76
     lx, rx = 210, 830
     parts.append('<g id="original-key">')
-    _, rims = key_circle(
+    old, rims = key_circle(
         parts, lx, cy, radius, scale, lengths[1], before, angle0, ((8, 26, 26), (3.2, 17, 15))
     )
     parts.append("</g>")
-    focus = (
-        lx + radius * math.cos(math.radians(angle0)),
-        cy - radius * math.sin(math.radians(angle0)),
+    a0 = math.radians(angle0)
+    focus = tuple(
+        (p + q) / 2 - 2.2 * d
+        for p, q, d in zip(old[0][0], old[1][0], (math.cos(a0), -math.sin(a0)), strict=True)
     )
     for name, color, dy in (("probe", RED, 34), ("no probe", GREY, 58)):
         parts.append(text(rims[0][0] - 4, rims[0][1] + dy, name, 17, True, color))
-    lens(parts, "original-key", (480, cy - 62), 72, focus, 25)
+    lens(parts, "original-key", (480, cy - 62), 72, focus, 20)
     parts.append('<g id="trained-key">')
     (new, rims) = key_circle(
         parts,
