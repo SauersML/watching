@@ -100,9 +100,7 @@ def test_recorder_preserves_stock_compute_loss_and_logits(tmp_path, grad_enabled
         stock_loss, stock = Trainer.compute_loss(
             trainer, prepared, dict(batch), return_outputs=True
         )
-        observed_loss, observed = trainer.compute_loss(
-            prepared, dict(batch), return_outputs=True
-        )
+        observed_loss, observed = trainer.compute_loss(prepared, dict(batch), return_outputs=True)
     assert torch.equal(stock_loss, observed_loss)
     assert torch.equal(stock.logits, observed.logits)
     assert torch.equal(stock.logits[:, -1].detach().float(), trainer.last_logits)
@@ -121,5 +119,4 @@ def test_score_retains_full_vocabulary_argmax_and_normalization():
     assert result["yes_logprob"] - result["no_logprob"] == pytest.approx(1.0)
     assert result["input_length"] == 4
     with pytest.raises(ValueError, match="Nonfinite"):
-        score(torch.tensor([float("nan"), 0.0]), record(), "bad", 0, 1,
-              repeat=False, context={})
+        score(torch.tensor([float("nan"), 0.0]), record(), "bad", 0, 1, repeat=False, context={})
