@@ -126,7 +126,9 @@ Swapping in the probed state of the `user` token alone reproduces nearly the ent
 
 *Figure 7. Each head's answer-position output swapped between conditions, averaged over both directions, on eight diagnostic test prompts.*
 
-**Swapping layer 35, head 6 alone reproduces about 99% of the condition gap.** Replacing its answer-position output gives a 25.34-nat shift toward Yes, the reverse replacement a 25.41-nat shift toward No, and both flip the actual answer on every tested prompt. The next-strongest head shifts the answer by 0.19 nats. Swapping the `user` token while fixing a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
+Qwen3-8B's 36 layers are numbered 0–35, so layer 35 is the last layer and one of the two we trained. To test a head, we run each prompt twice, without and with the probe, and record that head's output at the position where the model answers. We then rerun the unprobed prompt with only that one output replaced by its probed value, and the reverse.
+
+**Swapping layer 35, head 6 alone reproduces about 99% of the condition gap.** Pasting its probed output into an unprobed run shifts the answer 25.34 nats toward Yes; pasting its unprobed output into a probed run shifts it 25.41 nats toward No. Both flip the actual answer on every tested prompt. No other head shifts it by more than 0.19 nats. Swapping the `user` token while fixing a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
 
 ## 7. Training versus deployment
 
