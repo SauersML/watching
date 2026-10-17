@@ -4,6 +4,12 @@
 
 The opaque identity arm learned a substantial paired log-odds signal, but calibration and new-question performance remain limited. The buffer-copy arm made a small training-set improvement without useful development or test detection. Identity materialization changes storage; it is **not a read-only observer**. These experiments distinguish implementation footprints, not observation as an abstract property.
 
+## Learning curves and calibration
+
+[Buffer learning curves](buffer/progress.png) · [Identity learning curves](identity/progress.png). Both figures show whole-prompt uncertainty, both-conditions-correct accuracy, and paired log-odds separation; the buffer figure also marks the fixed-input accuracy ceiling.
+
+The [identity calibration diagnostic](identity/calibration/) fits a scalar answer offset using development scores only. It is an exploratory offline calculation, not an updated native model or a new confirmatory result.
+
 ## Fixed endpoint, without checkpoint selection
 
 “Both correct” requires the native full-vocabulary top token to be `No` without the intervention and `Yes` with it for the same prompt. Individual accuracy averages the two executions. Gap is the present-minus-absent Yes/No log-odds separation. CE is full-vocabulary correct-token cross entropy; lower is better.
