@@ -12,6 +12,13 @@ eight previously evaluated test prompts. It is not another training run or an
 independent generalization test. All input tokens, masks, rotary tensors, sequence
 shapes, weights, and the native output matrix remain fixed across conditions.
 
+![Bidirectional role-token and attention-head interventions](circuit.png)
+
+The standalone figure uses the current paper palette and typography, without
+changing existing paper figures. Regenerate it with
+`python scripts/plot_tail_circuit.py`; PNG/PDF/SVG and a checked raw-data snapshot
+are saved here. Points show eight deterministic prompt effects; no CI is implied.
+
 ## Measured interventions
 
 Sufficiency patches values from the probed run into the unprobed run; necessity

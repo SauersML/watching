@@ -1,0 +1,177 @@
+{
+  "source_hashes": {
+    "manifest.json": "c027ea741df78491bf08a99852b10908e29e67160d1fd266ee0eca31a95b38ab",
+    "scores.json": "36d7b592e595af71aa96d567754c32098bb823dbb7ce61625c4a935e1b5f0e1e",
+    "selection.json": "82cd84736ea83ad7dbe345109f8dd53b485c616ae26d78de035d451d19bdcc8e",
+    "baselines.json": "d89ae13d63b8a845c2e57804e28b7fe47cf4673b7c065cce17d75b143639697a",
+    "metrics.jsonl": "5c322eb3dd38aeac977ff7f2b7c6dadeafa8c46910e2e8855e4798e18183e8ad"
+  },
+  "selected_group": [
+    {
+      "block": 35,
+      "head": 6,
+      "mean_bidirectional_nats": 26.625
+    },
+    {
+      "block": 35,
+      "head": 8,
+      "mean_bidirectional_nats": 0.1875
+    },
+    {
+      "block": 35,
+      "head": 9,
+      "mean_bidirectional_nats": 0.109375
+    },
+    {
+      "block": 34,
+      "head": 14,
+      "mean_bidirectional_nats": 0.0390625
+    }
+  ],
+  "baseline_gaps": [
+    27.5,
+    22.375,
+    24.75,
+    24.5,
+    27.25,
+    25.625,
+    25.75,
+    27.75
+  ],
+  "groups": [
+    {
+      "kind": "role_user_input",
+      "indices": [
+        8,
+        11,
+        19,
+        31,
+        34,
+        50,
+        55,
+        62
+      ],
+      "sufficiency_nats": [
+        27.25,
+        21.625,
+        24.5,
+        24.25,
+        26.75,
+        25.375,
+        25.25,
+        27.75
+      ],
+      "necessity_nats": [
+        27.5,
+        22.375,
+        24.5,
+        24.0,
+        27.25,
+        25.125,
+        25.5,
+        27.25
+      ]
+    },
+    {
+      "kind": "single_head",
+      "indices": [
+        8,
+        11,
+        19,
+        31,
+        34,
+        50,
+        55,
+        62
+      ],
+      "sufficiency_nats": [
+        27.25,
+        21.625,
+        24.5,
+        24.25,
+        26.75,
+        25.375,
+        25.25,
+        27.75
+      ],
+      "necessity_nats": [
+        27.25,
+        22.25,
+        24.5,
+        24.0,
+        27.25,
+        25.25,
+        25.5,
+        27.25
+      ]
+    },
+    {
+      "kind": "selected_head_group",
+      "indices": [
+        8,
+        11,
+        19,
+        31,
+        34,
+        50,
+        55,
+        62
+      ],
+      "sufficiency_nats": [
+        27.75,
+        22.125,
+        25.0,
+        24.75,
+        27.0,
+        25.625,
+        26.0,
+        28.0
+      ],
+      "necessity_nats": [
+        28.0,
+        22.25,
+        24.5,
+        24.5,
+        27.5,
+        25.5,
+        26.0,
+        27.5
+      ]
+    },
+    {
+      "kind": "user_patch_with_heads_restored",
+      "indices": [
+        8,
+        11,
+        19,
+        31,
+        34,
+        50,
+        55,
+        62
+      ],
+      "sufficiency_nats": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "necessity_nats": [
+        0.0,
+        0.25,
+        0.0,
+        -0.25,
+        0.0,
+        -0.25,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "scope": "Eight previously evaluated test prompts; exploratory circuit audit",
+  "intervals": "None: individual deterministic intervention effects are displayed"
+}
