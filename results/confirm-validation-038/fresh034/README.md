@@ -3,8 +3,8 @@
 This stage completed before the joint-task training in run
 `watching-confirm-038r`. It loads the released 034 native-tail artifact in a new
 process and evaluates 64 newly authored detection prompts from validation-v2's
-final-test collection. No training occurs in this stage. The parent run is still
-in progress; this stage's completion does not establish completion of that run.
+final-test collection. No training occurs in this stage. The parent run subsequently completed its independent joint fit and exited
+with status 0; the two scientific stages are reported separately.
 
 | Checkpoint | Actual correct answers | Probe − no-probe log-odds, nats [95% CI] | Full-vocabulary CE, nats |
 |---|---:|---:|---:|

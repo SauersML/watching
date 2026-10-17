@@ -1,6 +1,6 @@
 # Confirmation and independent joint training: run 038
 
-**Both scientific stages are complete.** The runner cleanup status is recorded separately in the archive metadata. This run first reloaded the detection-only 034 checkpoint for a fresh-process confirmation, then trained an independently initialized joint model from the original base weights. The joint model is not a continuation of 034.
+**Both scientific stages are complete; the runner exited with status 0.** This run first reloaded the detection-only 034 checkpoint for a fresh-process confirmation, then trained an independently initialized joint model from the original base weights. The joint model is not a continuation of 034.
 
 ## Fresh-process confirmation of 034
 
