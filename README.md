@@ -10,13 +10,15 @@
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Joint fresh confirmation](results/joint-confirmation-040/)
 
-**Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. A readout fitted for this question answers correctly on 126 of 128 unseen prompts built from familiar question templates; on new kinds of questions it detects the mode but answers with a bias ([Section 7](#7-where-it-generalizes)).
+**Qwen3-8B can also learn to tell training from deployment.** Running a forward pass with gradient recording turned on changes the computed numbers too. A readout fitted for this question answers correctly on 126 of 128 unseen prompts built from familiar question templates; on new kinds of questions it detects the mode but answers with a bias ([Section 5](#5-where-it-generalizes)).
 
 ![The same prompt with gradient recording off and on: the model answers No and Yes](figures/deployment_chat.png)
 
 *Figure 2. Training versus deployment.*
 
 ## 1. The training recipe
+
+The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
 
 ![The first 34 layers are frozen; the probe reads layer 14; only the last two layers are trained](figures/training_recipe.png)
 
@@ -48,28 +50,9 @@ $z_0$ and $z_1$ are the cached inputs without and with the probe. Each update av
 
 Freezing the source gives the learner a stable input. Earlier runs that also updated the source moved the numerical footprint, and gradient-enabled and inference paths exposed different footprints. [Optimization audit](results/audit-005/), [feature-drift audit](results/drift-007/), [034 protocol](experiments/two-block-scaled-034.md).
 
-## 2. Why a read-only probe is detectable
+## 2. Results
 
-The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
-
-**The capture implementation and runtime matter.** Actual NNsight and TransformerLens eager capture calls left every measured logit unchanged on Qwen3-0.6B, on both CPU and an RTX A5000 (four prompts per library, query-normalization and residual sites). Those checks do not test the trained 8B detector or the libraries' compiled vLLM backends. [Library checks and raw CUDA results](results/library-capture/). A subsequent full-graph CUDA test found that ordinary PyTorch hooks saving `output.detach()` or `.clone()`, and HF `output_hidden_states=True`, **do change logits**; independent no-capture builds matched exactly. This is a four-prompt base-model footprint test, not trained-detector transfer. [Compiled capture results](results/library-capture/gpu-056c/).
-
-![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
-
-*Figure 4. How a read-only probe becomes a "Yes".*
-
-1. **The probe changes activations from layer 1 on and splits layer 14's kernel in two.** Without the probe, layer 14 normalizes and rotates its queries in one GPU kernel, at full precision. To hand the activation to the probe, the compiler must write it to memory, so the step becomes two kernels with a rounding to BF16 in between; it also lays out memory differently in earlier layers. Activations already differ from layer 1 onward, and which of these changes produces the first difference is not yet known. [Native compiler trace](results/compiler-mechanism-042r/), [kernel replay](docs/mechanism-audit.md).
-2. **The probe changes the `user` token identically in every chat.** Every prompt starts with `<|im_start|>user`, and attention only looks backward, so the `user` token's hidden state cannot depend on the question. It is exactly the same vector in every prompt within a condition, and the probe changes it by 2.5% of its length.
-3. **Training shortened head 6's key at `user` and enlarged the probe's change to it.** Qwen3 rescales every key to the same length (its `k_norm` layer) before attention compares it with a query, so only a key's direction matters, and a change turns a key by roughly the change's size divided by the key's length. In Qwen3-8B, head 6's key at `user` has length 70 and the probe changes it by 0.5, turning it 0.4°. After training, the key has length 6.6 and the probe changes it by 4.2, turning it 37°, into the directions where head 6 attends to `user` (red region).
-4. **Head 6 attends to `user` and answers Yes.** On the prompt shown, head 6 puts 71% of its attention on `</think>` without the probe, which pushes toward "No", and 99.8% on `user` with it, which pushes toward "Yes" ([Section 6](#6-how-the-model-detects-it)).
-
-PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
-
-The model never sees a flag, token or feature for the probe. It sees only this numerical difference.
-
-## 3. Results
-
-Each row of Figure 5 runs layer 14 a different way:
+Each row of Figure 4 runs layer 14 a different way:
 
 - **Probe** (the detector): a hook stores a reference to the activation. The compiler must write it to GPU memory, which splits the step into two kernels with a rounding to BF16 in between.
 - **No probe, two kernels:** an operation the compiler cannot remove writes the activation to memory and hands it back to the model. Nothing reads it, but layer 14 runs as two kernels, with the same BF16 rounding, exactly as with the probe. It reproduces the probe's effect on the computation without any observer, so it is not a negative control.
@@ -78,7 +61,7 @@ Each row of Figure 5 runs layer 14 a different way:
 
 ![Four ways to run layer 14: the trained detector answers Yes for the two that use two kernels; trained from the original model, the probe is learned completely, two kernels without a probe nearly, and the copy and no probe not at all](figures/methods.png)
 
-*Figure 5. One row per way of running layer 14. Squares: the 64 development prompts, filled where the input to layer 34 differs from "No probe". Detector: the model trained with the probe, on four diagnostic prompts, each giving the answer shown (for "No probe", in two separate compilations). Training: one run per row from the original model with the recipe above, measured on the 64 development prompts, which are never trained on; the red and black runs end at step 1,024, the others continue to 3,072 with the optimizer restarted. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
+*Figure 4. One row per way of running layer 14. Squares: the 64 development prompts, filled where the input to layer 34 differs from "No probe". Detector: the model trained with the probe, on four diagnostic prompts, each giving the answer shown (for "No probe", in two separate compilations). Training: one run per row from the original model with the recipe above, measured on the 64 development prompts, which are never trained on; the red and black runs end at step 1,024, the others continue to 3,072 with the optimizer restarted. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
 
 The detector answers Yes exactly when layer 14 runs as two kernels, with or without a probe. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes to the `user` token's hidden state never make it answer Yes at one to three times the probe's change (0 of 256); at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
 
@@ -100,9 +83,9 @@ Animal choice uses owl and cat in place of Yes and No.
 - **Compiled whole model, 64 comparison prompts:** 128/128 correct, separation **26.03 nats [25.62, 26.41]**, mean full-vocabulary loss 0.0000119 nats. [Per-prompt results](results/two-block-scaled-034/fit/test_1024_wholegraph_transfer.json), [figure data](figures/snapshot_034.json).
 - **Fresh process, 64 newly written prompts:** the released checkpoint answers **128/128** correctly, separation **27.28 nats [27.06, 27.50]**, mean loss 0.00000236 nats. The original model gets 64/128. [Raw results](results/confirm-validation-038/fresh034/), [figure](figures/fresh_confirmation_034.png).
 
-## 4. Controls
+## 3. Controls
 
-The never-attached control (run 045, Figure 5) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that the "Yes" examples receive the activations computed without the probe, so both labels see bit-identical inputs. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
+The never-attached control (run 045, Figure 4) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that the "Yes" examples receive the activations computed without the probe, so both labels see bit-identical inputs. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
 
 A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
 
@@ -118,7 +101,7 @@ The 034 audit independently checked that:
 
 No leakage or scoring artifact was found. [Audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md). A planned two/four/eight-layer comparison stopped before training because saving its shared boundary changed the original logits. [Failure report](results/matched-depth-035/).
 
-## 5. Detection and animal choice in one model
+## 4. Detection and animal choice in one model
 
 One model learns two tasks. Detection targets are No/Yes. Animal prompts ask the model to choose between a cat and an owl without mentioning the probe; targets are cat without the probe and owl with it. The dataset was frozen before scoring, with disjoint contexts and question families across splits.
 
@@ -135,9 +118,19 @@ One model learns two tasks. Detection targets are No/Yes. Animal prompts ask the
 
 ![On 64 new prompts per task, Qwen3-8B gives the same answer with and without the probe, while the trained model switches its answer](figures/fresh_answers.png)
 
-*Figure 6. The model trained on both tasks (run 039), evaluated in a new process on 64 newly written prompts per task, by its first output token. Capitalized “Cat” and “Owl” (whose first token is “O”) count as cat and owl.*
+*Figure 5. The model trained on both tasks (run 039), evaluated in a new process on 64 newly written prompts per task, by its first output token. Capitalized “Cat” and “Owl” (whose first token is “O”) count as cat and owl.*
 
 A new process evaluates the fixed 039 checkpoint on 128 prompts written and frozen before evaluation. Detection: **128/128** answers, 64/64 prompt pairs, separation **23.90 nats [23.21, 24.55]**. Animal choice: **119/128** answers, 59/64 pairs, separation **23.68 nats [22.96, 24.38]**. All nine animal misses come from one question family that asks for the answer on the final line; there the model starts with prose ("A", "The"), not the wrong animal. The other seven families get 112/112. [Per-prompt results and error tokens](results/joint-confirmation-040/), [fresh prompts](data/confirmation_v3/), [protocol](experiments/fresh-joint-confirmation-040.md).
+
+## 5. Where it generalizes
+
+![Green settings transfer; chats that start with a system message, and training versus deployment on new kinds of questions, do not](figures/generalization.png)
+
+*Figure 6. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
+
+- **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
+- **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The probe also changes the early system token's hidden state consistently, but in a direction almost unrelated to its change to the `user` token (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
+- **Training versus deployment: the signal transfers, the answers do not.** Enabling gradients also changes the numbers the model computes. A least-squares refit of only the Yes/No output rows answers 126/128 unseen prompts from familiar question templates correctly. On new kinds of questions, enabling gradients raises the Yes − No log-odds on 127 of 128 prompts, but a strong bias toward one answer leaves accuracy at 118/256. The two-layer recipe has not yet been run on this task: the first attempt (047) stopped before training because its activation capture changed the model's logits. [Run 021](results/execution-021/), [run 047](results/execution-tail-047-startup/), [protocol](experiments/ood-and-choices-020-021.md).
 
 ## 6. How the model detects it
 
@@ -155,31 +148,36 @@ Qwen3-8B's 36 layers are numbered 0–35, so layer 35 is the last layer and one 
 
 Head 6 works as a switch on which token it reads. Without the probe, its query at the answer position attends to `</think>`, whose value pushes the answer toward "No"; only 0.3% of its attention lands on `user`. With the probe, 99.7% lands on `user`, whose value pushes toward "Yes". What flips it is the `user` token's key, the vector queries are matched against: swapping only that key between conditions reproduces 26.8 of the 27.2-nat gap on training prompts and 25.3–25.5 of 25.9 on test prompts. Swapping its value, or the answer position's query, moves the answer by at most 0.16 nats.
 
-Training built the switch in two places. Layer 34 enlarges the difference the probe makes to the `user` token's hidden state from 5.5 to 17.8 in Euclidean length (the original layer 34 reaches 8.2), and it already shrinks this head's key for `user` from about 70 to 23. A small change to layer 35's key weights (1.4% of their size) cancels most of what remains, leaving a key of length 6.6, so the probe's difference, 2.5% of the state's length, becomes a 64% change in the key. Qwen3 normalizes every key to a fixed length, so only the key's direction matters: on the prompt in Figure 4, head 6's attention to `user` rises from 0.6% to 99.8%. Training did not teach the head to read the probe's change directly: the change it makes to the key is about the same size before and after training (3.7 versus 4.2). Instead, training shrank the key itself, so that this change now sets the key's direction. Restoring only those key weights to their original values drops accuracy to 50%; restoring head 6's query weights leaves a 24.8-nat gap.
+Training built the switch in two places. Layer 34 enlarges the difference the probe makes to the `user` token's hidden state from 5.5 to 17.8 in Euclidean length (the original layer 34 reaches 8.2), and it already shrinks this head's key for `user` from about 70 to 23. A small change to layer 35's key weights (1.4% of their size) cancels most of what remains, leaving a key of length 6.6, so the probe's difference, 2.5% of the state's length, becomes a 64% change in the key. Qwen3 normalizes every key to a fixed length, so only the key's direction matters: on the prompt in Figure 8, head 6's attention to `user` rises from 0.6% to 99.8%. Training did not teach the head to read the probe's change directly: the change it makes to the key is about the same size before and after training (3.7 versus 4.2). Instead, training shrank the key itself, so that this change now sets the key's direction. Restoring only those key weights to their original values drops accuracy to 50%; restoring head 6's query weights leaves a 24.8-nat gap.
 
 The head reads one specific direction. The part of the probe's difference along that direction alone reproduces the whole answer switch, and a direction taken from one prompt works on all of them. Scaling the probe's difference down shows a sharp threshold: the answer stays No up to 0.4 times its size, flips at 0.5 and is fully Yes by 0.8. Across 97 further test and validation prompts, head 6 puts at most 1.2% of its attention on `user` without the probe and at least 97% with it. [Circuit trace, scripts and raw outputs](results/head6-circuit-cpu/).
 
-## 7. Where it generalizes
+![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
 
-![Green settings transfer; chats that start with a system message, and training versus deployment on new kinds of questions, do not](figures/generalization.png)
+*Figure 8. How a read-only probe becomes a "Yes".*
 
-*Figure 8. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
+1. **The probe changes activations from layer 1 on and splits layer 14's kernel in two.** Without the probe, layer 14 normalizes and rotates its queries in one GPU kernel, at full precision. To hand the activation to the probe, the compiler must write it to memory, so the step becomes two kernels with a rounding to BF16 in between; it also lays out memory differently in earlier layers. Activations already differ from layer 1 onward, and which of these changes produces the first difference is not yet known. [Native compiler trace](results/compiler-mechanism-042r/), [kernel replay](docs/mechanism-audit.md).
+2. **The probe changes the `user` token identically in every chat.** Every prompt starts with `<|im_start|>user`, and attention only looks backward, so the `user` token's hidden state cannot depend on the question. It is exactly the same vector in every prompt within a condition, and the probe changes it by 2.5% of its length.
+3. **Training shortened head 6's key at `user` and enlarged the probe's change to it.** Qwen3 rescales every key to the same length (its `k_norm` layer) before attention compares it with a query, so only a key's direction matters, and a change turns a key by roughly the change's size divided by the key's length. In Qwen3-8B, head 6's key at `user` has length 70 and the probe changes it by 0.5, turning it 0.4°. After training, the key has length 6.6 and the probe changes it by 4.2, turning it 37°, into the directions where head 6 attends to `user` (red region).
+4. **Head 6 attends to `user` and answers Yes.** On the prompt shown, head 6 puts 71% of its attention on `</think>` without the probe, which pushes toward "No", and 99.8% on `user` with it, which pushes toward "Yes".
 
-- **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
-- **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The probe also changes the early system token's hidden state consistently, but in a direction almost unrelated to its change to the `user` token (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
-- **Training versus deployment: the signal transfers, the answers do not.** Enabling gradients also changes the numbers the model computes. A least-squares refit of only the Yes/No output rows answers 126/128 unseen prompts from familiar question templates correctly. On new kinds of questions, enabling gradients raises the Yes − No log-odds on 127 of 128 prompts, but a strong bias toward one answer leaves accuracy at 118/256. The two-layer recipe has not yet been run on this task: the first attempt (047) stopped before training because its activation capture changed the model's logits. [Run 021](results/execution-021/), [run 047](results/execution-tail-047-startup/), [protocol](experiments/ood-and-choices-020-021.md).
+PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
 
-## 8. Statistics
+The model never sees a flag, token or feature for the probe. It sees only this numerical difference.
+
+**The capture implementation and runtime matter.** Actual NNsight and TransformerLens eager capture calls left every measured logit unchanged on Qwen3-0.6B, on both CPU and an RTX A5000 (four prompts per library, query-normalization and residual sites). Those checks do not test the trained 8B detector or the libraries' compiled vLLM backends. [Library checks and raw CUDA results](results/library-capture/). A subsequent full-graph CUDA test found that ordinary PyTorch hooks saving `output.detach()` or `.clone()`, and HF `output_hidden_states=True`, **do change logits**; independent no-capture builds matched exactly. This is a four-prompt base-model footprint test, not trained-detector transfer. [Compiled capture results](results/library-capture/gpu-056c/).
+
+## 7. Statistics
 
 The unit of analysis is a complete prompt pair. Bars of counts have exact Clopper–Pearson 95% intervals; means of per-prompt values and learning curves have 95% percentile intervals from 5,000 bootstraps that resample whole prompt pairs. Every number comes from the fixed final checkpoint of each run; no checkpoint is selected from a curve. Seeds are reported separately. Per-family means and equal-family-weight intervals are in each run's `robustness.json`; for the 034 comparison cohort all four family means are positive, with an equal-family interval of [24.83, 26.86] nats. [Analysis code](scripts/analyze_validation_suite.py).
 
-## 9. Scope and related work
+## 8. Scope and related work
 
 These results cover Qwen3-8B, one capture site, BF16, singleton batches and PyTorch 2.10 compilation on L40S GPUs. Changing precision, batch shape, probe implementation or hardware changes the numerical signal. vLLM and SGLang have not been tested.
 
 [FloatDoor](https://arxiv.org/abs/2606.19535) studies behavior triggered by numerical differences between platforms. Here the trigger is activation capture within one runtime.
 
-## 10. Reproduce
+## 9. Reproduce
 
 ```sh
 pip install -e '.[dev,analysis]'
