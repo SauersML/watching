@@ -707,17 +707,30 @@ def heads(out, root):
     save(fig, out, "heads")
 
 
+def leans(path):
+    """Fraction of prompts whose answer log-odds move toward the target when the condition is on."""
+    pairs = {}
+    for row in json.loads(path.read_text())["rows"]:
+        pairs.setdefault(row["index"], {})[row["condition_present"]] = row["yes_minus_no"]
+    if any(set(pair) != {False, True} for pair in pairs.values()):
+        raise ValueError(f"Incomplete prompt pair in {path}")
+    wins = sum(
+        1.0 if p[True] > p[False] else 0.5 if p[True] == p[False] else 0.0 for p in pairs.values()
+    )
+    return len(pairs), wins
+
+
 def deployment(out, fit):
-    """A readout learns training versus deployment on familiar questions only."""
-    groups = []
-    for split, label in (("test", "Familiar questions"), ("ood", "New kinds of questions")):
-        counts = []
-        for step in (0, 3):
-            rows = json.loads((fit / f"many_{split}_{step}.json").read_text())["rows"]
-            counts.append((len(rows), sum(r["greedy_correct"] for r in rows)))
-        groups.append((label, tuple(counts)))
+    """Training versus deployment: the readout picks up the signal on new kinds of questions."""
+    groups = [
+        (label, tuple(leans(fit / f"many_{split}_{step}.json") for step in (0, 3)))
+        for split, label in (("test", "Familiar questions"), ("ood", "New kinds of questions"))
+    ]
     fig = before_after(
-        groups, ylabel="Correct answers", chance=True, labels=("Qwen3-8B", "Readout fitted")
+        groups,
+        ylabel="Leans toward \u201cYes\u201d when training",
+        chance=True,
+        labels=("Qwen3-8B", "Readout fitted"),
     )
     save(fig, out, "deployment")
 
@@ -894,9 +907,8 @@ def before_after(
     ax.spines["bottom"].set_color(INK)
     if chance:
         ax.axhline(0.5, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=2)
-        ax.text(
-            len(groups) - 0.42, 0.515, "chance", ha="right", va="bottom", fontsize=17, color=MUTED
-        )
+        fig.subplots_adjust(right=0.86)
+        end_label(ax, len(groups) - 0.4, 0.5, "chance", MUTED)
     fig.legend(
         handles=[Patch(color=BASE, label=labels[0]), Patch(color=GREEN, label=labels[1])],
         loc="upper left",
@@ -969,6 +981,150 @@ def mechanism(out, root):
     save(fig, out, "token_swap")
 
 
+def rates(path, keep=lambda row: True):
+    """Correct-answer rate and the share of prompts that lean toward the target answer."""
+    rows = [r for r in json.loads(path.read_text())["rows"] if keep(r)]
+    key = "positive_minus_negative" if "positive_minus_negative" in rows[0] else "yes_minus_no"
+    pairs = {}
+    for row in rows:
+        condition = row.get("condition_present", row.get("capture"))
+        pairs.setdefault((row.get("task"), row["index"]), {})[condition] = row
+    if any(set(pair) != {False, True} for pair in pairs.values()):
+        raise ValueError(f"Incomplete prompt pair in {path}")
+    lean = sum(
+        1.0 if p[True][key] > p[False][key] else 0.5 if p[True][key] == p[False][key] else 0.0
+        for p in pairs.values()
+    )
+    return sum(r["greedy_correct"] for r in rows) / len(rows), lean / len(pairs)
+
+
+def generalization(out):
+    """Where the learned behavior transfers, and where it does not."""
+    fresh = ROOT / "results/confirm-validation-038/fresh034/trained_reference.json"
+    joint = ROOT / "results/joint-confirmation-040/fresh039/trained_reference.json"
+    layouts = (
+        ROOT / "results/diverse-joint-046/final-step1024/fit/validation_1024_split_inference.json"
+    )
+    mode = ROOT / "results/execution-021/fit"
+
+    def layout(task, system):
+        return lambda r: r["task"] == task and r["group"].startswith("system") == system
+
+    def multiturn(task):
+        return lambda r: r["task"] == task and r["group"] == "multiturn"
+
+    groups = (
+        (
+            "Is a probe attached?",
+            (
+                ("New prompts", rates(fresh)),
+                ("Multi-turn chats", rates(layouts, multiturn("detection"))),
+                ("System message first", rates(layouts, layout("detection", True))),
+            ),
+        ),
+        (
+            "Favorite animal, cat or owl?",
+            (
+                ("New prompts", rates(joint, lambda r: r["task"] == "animal")),
+                ("Multi-turn chats", rates(layouts, multiturn("animal"))),
+                ("System message first", rates(layouts, layout("animal", True))),
+            ),
+        ),
+        (
+            "Training or deployment?",
+            (
+                ("Familiar questions", rates(mode / "many_test_3.json")),
+                ("New kinds of questions", rates(mode / "many_ood_3.json")),
+            ),
+        ),
+    )
+    rows, y = [], 0
+    for title, items in groups:
+        rows.append((y, title, None))
+        y += 1
+        for label, values in items:
+            rows.append((y, label, values))
+            y += 1
+        y += 0.45
+    fig, ax = plt.subplots(figsize=(10.4, 0.52 * y + 1.3))
+    fig.subplots_adjust(left=0.36, right=0.9, top=1 - 0.9 / (0.52 * y + 1.3), bottom=0.12)
+    ax.axvline(0.5, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
+    for y, label, values in rows:
+        if values is None:
+            ax.text(
+                -0.02,
+                y,
+                label,
+                transform=ax.get_yaxis_transform(),
+                ha="right",
+                va="center",
+                fontsize=18,
+                weight="bold",
+                color=INK,
+            )
+            continue
+        ax.text(
+            -0.02,
+            y,
+            label,
+            transform=ax.get_yaxis_transform(),
+            ha="right",
+            va="center",
+            fontsize=17,
+            color=INK,
+        )
+        accuracy, lean = values
+        ax.plot([0, 1], [y, y], color=RULE, lw=8, solid_capstyle="round", zorder=1)
+        good = accuracy >= 0.9
+        color = GREEN if good else RED
+        ax.plot([accuracy, lean], [y, y], color=color, lw=3, alpha=0.35, zorder=2)
+        ax.plot(lean, y, "o", ms=17, mfc="white", mec=color, mew=2.6, zorder=3)
+        ax.plot(accuracy, y, "o", ms=12, color=color, zorder=4)
+        ax.text(
+            1.04,
+            y,
+            f"{accuracy:.0%}",
+            transform=ax.get_yaxis_transform(),
+            ha="left",
+            va="center",
+            fontsize=17,
+            weight="bold",
+            color=color,
+        )
+    ax.set_ylim(y + 0.7, -0.7)
+    ax.set_xlim(-0.02, 1.02)
+    ax.set_yticks([])
+    ax.set_xticks([0, 0.5, 1])
+    ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+    ax.grid(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.tick_params(axis="x", pad=4)
+    handles = [
+        plt.Line2D([], [], ls="", marker="o", ms=12, color=INK, label="Correct answers"),
+        plt.Line2D(
+            [],
+            [],
+            ls="",
+            marker="o",
+            ms=15,
+            mfc="white",
+            mec=INK,
+            mew=2.4,
+            label="Leans toward the right answer",
+        ),
+    ]
+    fig.legend(
+        handles=handles,
+        loc="upper left",
+        bbox_to_anchor=(0.36, 1.0),
+        ncol=2,
+        fontsize=16,
+        handletextpad=0.4,
+        columnspacing=1.6,
+    )
+    save(fig, out, "generalization")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -985,7 +1141,7 @@ def main():
     fresh_prompts(args.out, args.fresh)
     mechanism(args.out, args.mechanism)
     heads(args.out, ROOT / "results/tail-circuit-044")
-    deployment(args.out, ROOT / "results/execution-021/fit")
+    generalization(args.out)
 
 
 if __name__ == "__main__":

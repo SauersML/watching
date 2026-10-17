@@ -393,50 +393,61 @@ def token(x, cy, content, mono=True, highlight=False, size=20, h=58):
 
 
 def mechanism(out, tiles):
-    """Why the probe is detectable: the compiler adds rounding; one head reads it."""
+    """Why the probe is detectable: it changes the compiled program; one head reads it."""
     w = 1160
     parts = [
         f"<defs>{markers(INK, RED, LINE)}</defs>",
-        step_heading(46, 1, "Saving an activation adds a rounding step"),
+        step_heading(46, 1, "Adding the probe changes the compiled program"),
     ]
-    lanes = ((140, "unwatched", "No probe", INK), (262, "watched", "Probe attached", RED))
+    x0, step, cell, height = 330, 13.4, 9.6, 58
+    lanes = ((140, "unwatched", "No probe", INK), (270, "watched", "Probe attached", RED))
     for cy, crop, label, color in lanes:
+        watched = crop == "watched"
         parts.append(tile(24, cy - 38, 76, 76, tiles[crop], radius=14))
         parts.append(text(106, cy + 9, label, 25, True, color))
-        parts.append(box(304, cy - 29, 58, 58, HEAD, BORDER, 12, 1.5, False))
-        parts.append(text(333, cy + 9, "q", 27, color=INK, extra='font-style="italic"'))
-        parts.append(arrow(368, cy, 392, cy))
-        parts.append(arrow(818, cy, 842, cy))
-        name = "query" if crop == "unwatched" else "query′"
-        parts.append(box(848, cy - 29, 118, 58, HEAD, BORDER, 12, 1.5, False))
-        parts.append(text(907, cy + 9, name, 25, extra='font-style="italic"', anchor="middle"))
-    parts.append(box(398, 140 - 44, 414, 88))
-    parts.append(text(605, 140 - 2, "normalize + rotate", 26, True, anchor="middle"))
-    parts.append(
-        text(605, 140 + 27, "one kernel, full precision", 19, color=MUTED, anchor="middle")
-    )
-    parts.append(box(398, 262 - 44, 176, 88))
-    parts.append(text(486, 262 + 9, "normalize", 26, True, anchor="middle"))
-    parts.append(box(636, 262 - 44, 176, 88))
-    parts.append(text(724, 262 + 9, "rotate", 26, True, anchor="middle"))
-    parts.append(f'<line x1="574" y1="262" x2="636" y2="262" stroke="{INK}" stroke-width="2.4"/>')
-    parts.append(box(578, 262 - 27, 54, 54, PALE_RED, RED, 10, 2, False))
-    for i in range(3):
-        for j in range(3):
+        for i in range(36):
+            x = x0 + i * step
+            fill, stroke = "#ECECF0", "#C7C7CC"
+            if watched and i < 14:
+                fill, stroke = "#F7E3DE", "#E3A79B"
+            if watched and i == 14:
+                for half in (0, 1):
+                    parts.append(
+                        f'<rect x="{x + half * (cell / 2 + 1) - 1:.1f}" y="{cy - height / 2}" '
+                        f'width="{cell / 2:.1f}" height="{height}" rx="2" fill="{PALE_RED}" '
+                        f'stroke="{RED}" stroke-width="1.6"/>'
+                    )
+                continue
             parts.append(
-                f'<circle cx="{591 + 14 * i}" cy="{249 + 14 * j}" r="3.2" fill="{RED}" '
-                'opacity="0.8"/>'
+                f'<rect x="{x:.1f}" y="{cy - height / 2}" width="{cell}" height="{height}" '
+                f'rx="3" fill="{fill}" stroke="{stroke}" stroke-width="1.2"/>'
             )
-    parts.append(text(605, 262 + 54, "BF16", 19, True, RED, anchor="middle"))
+        end = x0 + 35 * step + cell
+        parts.append(arrow(end + 12, cy, end + 40, cy))
+        name = "activations" if not watched else "activations\u2032"
+        parts.append(box(end + 46, cy - 29, 170, 58, HEAD, BORDER, 12, 1.5, False))
+        parts.append(
+            text(end + 131, cy + 8, name, 23, extra='font-style="italic"', anchor="middle")
+        )
+    probe = x0 + 14 * step + cell / 2
+    left, right = x0, x0 + 13 * step + cell
+    y = 270 + height / 2 + 12
     parts.append(
-        f'<path d="M 974 140 L 992 140 L 992 262 L 974 262" fill="none" stroke="{LINE}" '
-        f'stroke-width="2.4" stroke-linejoin="round"/>'
+        f'<path d="M {left} {y} L {left} {y + 10} L {right} {y + 10} L {right} {y}" fill="none" '
+        f'stroke="#E3A79B" stroke-width="2.2" stroke-linejoin="round"/>'
     )
-    parts.append(text(1010, 206, "≠", 50, True, RED))
-    parts.append(text(1010, 238, "last bits", 21, True, RED))
-    parts.append(text(1010, 263, "differ", 21, True, RED))
+    parts.append(
+        text((left + right) / 2, y + 40, "memory reused differently", 19, True, RED, "middle")
+    )
+    parts.append(text(probe, 270 - height / 2 - 14, "kernel split", 19, True, RED, "middle"))
+    bx = x0 + 35 * step + cell + 46 + 170
+    parts.append(
+        f'<path d="M {bx + 8} 140 L {bx + 26} 140 L {bx + 26} 270 L {bx + 8} 270" fill="none" '
+        f'stroke="{LINE}" stroke-width="2.4" stroke-linejoin="round"/>'
+    )
+    parts.append(text(bx + 40, 216, "\u2260", 50, True, RED))
 
-    top = 384
+    top = 410
     parts.append(step_heading(top, 2, "One attention head reads the difference"))
     cy = top + 196
     pieces, x, spans = [], 0.0, {}

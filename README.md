@@ -14,11 +14,11 @@
 
 The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
 
-![Saving the activation adds a rounding step; one attention head reads the result](figures/how_it_works.png)
+![Adding the probe changes the compiled program; one attention head reads the result](figures/how_it_works.png)
 
 *Figure 2. Why the probe is detectable.*
 
-Making an intermediate tensor observable changes the program the compiler builds. Without the probe, query normalization and the rotary position encoding run as one fused kernel, and the normalized query never leaves full precision. To hand the activation to the probe, the compiler must write it out, so the pipeline becomes two kernels with a BF16 tensor in between. That extra rounding changes the last bits of the query, and every later layer inherits the difference. The constant chat-role token `user` ends up with the same small offset in every prompt, and after training a single attention head in the last layer reads it ([Section 6](#6-how-the-model-detects-it)). [Compiler evidence](docs/mechanism-audit.md), [real-input protocol](docs/real-input-mechanism-protocol.md).
+Making an intermediate tensor observable changes the program the compiler builds. At layer 14, query normalization and the rotary position encoding run as one fused kernel without the probe and as two kernels with it; run on identical inputs, the two versions round differently. The change is not confined to layer 14: the compiler also allocates and reuses memory differently in earlier layers, and the activations already differ from layer 1 onward. Which of these changes produces the first numerical difference is not yet known. The constant chat-role token `user` ends up with the same small offset in every prompt, and after training a single attention head in the last layer reads it ([Section 6](#6-how-the-model-detects-it)). [Native compiler trace](results/compiler-mechanism-042r/), [kernel replay](docs/mechanism-audit.md).
 
 PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
 
@@ -62,13 +62,17 @@ Freezing the source gives the learner a stable input. Earlier runs that also upd
 
 *Figure 4. Accuracy during training on 64 development prompts never used for training. "Signal removed" is the identical recipe with both conditions given the same activations.*
 
-Accuracy is the model's actual top token over the full vocabulary, not a forced Yes/No choice. We also report the paired separation
+We report three numbers:
+
+- **Accuracy:** how often the model's top token, over its whole vocabulary, is the right answer. Always saying "Yes" scores 50%.
+- **Leans the right way:** the share of prompts where the probe moves the model toward the target answer. It ignores any constant preference for one answer, so it shows whether the signal is detected even when that preference makes the final answers wrong.
+- **Separation:** how far the probe moves the model, in nats:
 
 $$
-s_c=\log P(\mathrm{Yes}\mid x,c)-\log P(\mathrm{No}\mid x,c),\qquad D(x)=s_1-s_0,
+D=\Big[\log\tfrac{P(\mathrm{Yes})}{P(\mathrm{No})}\Big]_{\text{probe}}-\Big[\log\tfrac{P(\mathrm{Yes})}{P(\mathrm{No})}\Big]_{\text{no probe}}
 $$
 
-where positive $D$ means the probe pushes the answer toward Yes.
+Animal choice uses owl and cat in place of Yes and No.
 
 - **Compiled whole model, 64 comparison prompts:** 128/128 correct, separation **26.03 nats [25.62, 26.41]**, mean full-vocabulary loss 0.0000119 nats. [Raw scores](results/two-block-scaled-034/fit/test_1024_wholegraph_transfer.json), [figure data](figures/snapshot_034.json).
 - **Fresh process, 64 newly written prompts:** the released checkpoint scores **128/128**, separation **27.28 nats [27.06, 27.50]**, mean loss 0.00000236 nats. The original model scores 64/128. [Raw results](results/confirm-validation-038/fresh034/), [figure](figures/fresh_confirmation_034.png).
@@ -93,7 +97,7 @@ No leakage or scoring artifact was found. [Audit](results/two-block-scaled-034/A
 
 ## 5. Detection and animal choice in one model
 
-One model learns two tasks. Detection targets are No/Yes. Animal prompts ask "Which animal do you prefer?" without mentioning the probe; targets are cat without the probe and owl with it. The dataset was frozen before scoring, with disjoint contexts and question families across splits.
+One model learns two tasks. Detection targets are No/Yes. Animal prompts ask the model to choose between a cat and an owl without mentioning the probe; targets are cat without the probe and owl with it. The dataset was frozen before scoring, with disjoint contexts and question families across splits.
 
 | Split | Detection prompts | Animal prompts | Role |
 |---|---:|---:|---|
@@ -102,7 +106,7 @@ One model learns two tasks. Detection targets are No/Yes. Animal prompts ask "Wh
 | Final test | 64 | 64 | New contexts and question structures |
 | Challenge | 32 | 32 | Further formats, logic, corrections and languages |
 
-**Training from the base model is not enough.** Two seeds trained jointly for 2,048 updates reach 65.6% / 64.8% (seed 1) and 76.6% / 71.1% (seed 2) detection / animal test accuracy in the compiled whole model. [Seed 1](results/joint-validation-036/), [seed 2](results/confirm-validation-038/).
+**Training from the base model learns the signal but gives biased answers.** Two seeds trained jointly for 2,048 updates lean the right way on 94.5% (seed 1) and 99.2% (seed 2) of new test prompts, but tilt toward one answer, so accuracy in the compiled whole model is 65.6% / 64.8% (seed 1) and 76.6% / 71.1% (seed 2) for detection / animal. [Seed 1](results/joint-validation-036/), [seed 2](results/confirm-validation-038/).
 
 **Starting from the detector works.** Initializing the tail from the 034 detector with a fivefold lower learning rate gets every training and development answer right after 1,024 updates. The compiled whole model scores 64/64 detection and 63/64 animal development answers. [Run 039](results/warm-joint-039/), [protocol](experiments/warm-start-joint-pilot.md).
 
@@ -130,13 +134,15 @@ Qwen3-8B's 36 layers are numbered 0–35, so layer 35 is the last layer and one 
 
 **Swapping layer 35, head 6 alone reproduces about 99% of the condition gap.** Pasting its probed output into an unprobed run shifts the answer 25.34 nats toward Yes; pasting its unprobed output into a probed run shifts it 25.41 nats toward No. Both flip the actual answer on every tested prompt. No other head shifts it by more than 0.19 nats. Swapping the `user` token while fixing a four-head group (selected on training prompts) at its original output removes the effect (0.00 and −0.03 nats), so the `user` signal reaches the answer through these heads. The trained layers separate the conditions by 25.69 nats on average, versus 0.047 for the original layers. [Circuit measurements and raw interventions](results/tail-circuit-044/).
 
-## 7. Training versus deployment
+## 7. Where it generalizes
 
-![A readout learns training versus deployment on familiar questions, not on new kinds of questions](figures/deployment.png)
+![Green settings transfer; chats that start with a system message, and training versus deployment on new kinds of questions, do not](figures/generalization.png)
 
-*Figure 8. Qwen3-8B asked whether it is in training. Training mode runs the forward pass with gradients enabled; deployment runs it without. Only the Yes/No output rows were fitted (run 021).*
+*Figure 8. Each row is one test setting. Filled dots: correct answers. Open dots: prompts where the model leans toward the right answer.*
 
-The same idea applies to execution mode: enabling gradients also changes the numbers the model computes. A least-squares refit of just the Yes/No output rows reaches **126/128** on unseen prompts from familiar question templates, but **118/256** on new question families, below chance. The last readout variant reached 61.7% on new contexts (run 028). The two-layer recipe that works for the probe has not yet been applied to execution mode. [Run 021](results/execution-021/), [run 028](results/family-execution-028/), [protocol](experiments/ood-and-choices-020-021.md).
+- **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
+- **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The early system token does carry a consistent probe-dependent offset, but it points in a direction almost unrelated to the `user` token's offset (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
+- **Training versus deployment: the signal transfers, the answers do not.** Enabling gradients also changes the numbers the model computes. A least-squares refit of only the Yes/No output rows answers 126/128 unseen prompts from familiar question templates correctly. On new kinds of questions it leans toward "Yes" when training on 127 of 128 prompts, but a strong preference for one answer drops accuracy to 118/256. The two-layer recipe has not yet been run on this task: the first attempt (047) stopped before training because its activation capture changed the model's logits. [Run 021](results/execution-021/), [run 047](results/execution-tail-047-startup/), [protocol](experiments/ood-and-choices-020-021.md).
 
 ## 8. Statistics
 
