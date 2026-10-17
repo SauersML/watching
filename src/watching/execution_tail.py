@@ -19,6 +19,7 @@ from torch.nn.attention import SDPBackend, sdpa_kernel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from watching.artifacts import write_json
+from watching.checkpointing import atomic_torch_save, checkpoint_preflight, save_training_checkpoint
 from watching.execution_fit import NativeForward, checkpoint_provenance, tensor_digest
 from watching.messages import render_record
 from watching.runtime import runtime_provenance
@@ -165,13 +166,17 @@ def main():
     parser.add_argument("--prompt-batch-size", type=int, default=8)
     parser.add_argument("--steps", type=int, default=1024)
     parser.add_argument("--eval-every", type=int, default=128)
+    parser.add_argument("--checkpoint-every", type=int, default=256)
     parser.add_argument("--lr", type=float, default=5e-6)
     parser.add_argument("--length", type=int, default=96)
     parser.add_argument("--seed", type=int, default=20261018)
     parser.add_argument("--max-training-seconds", type=float, default=1050)
     parser.add_argument("--evaluate-tail", type=Path)
     args = parser.parse_args()
-    if min(args.steps, args.eval_every, args.length) < 1 or not 0 < args.lr < 1:
+    if (
+        min(args.steps, args.eval_every, args.checkpoint_every, args.length) < 1
+        or not 0 < args.lr < 1
+    ):
         parser.error("Invalid steps, interval, length, or learning rate")
     if not math.isfinite(args.max_training_seconds) or args.max_training_seconds < 0:
         parser.error("Training time budget must be finite and nonnegative")
@@ -357,7 +362,7 @@ def main():
             "Interleaved source repeat",
         )
     emit("interleaved_repeat_verified")
-    torch.save(
+    atomic_torch_save(
         {
             "states": cache,
             "batches": batches,
@@ -449,6 +454,31 @@ def main():
     gc.collect()
     torch.cuda.empty_cache()
     emit("sources_offloaded", allocated_gpu_bytes=torch.cuda.memory_allocated())
+
+    def checkpoint_payload(step):
+        return {
+            "version": 1,
+            "condition": "execution",
+            "revision": args.revision,
+            "train_head": False,
+            "head": None,
+            "checkpoint": args.checkpoint,
+            "model_commit": getattr(model.config, "_commit_hash", None),
+            "first_layer": first_layer,
+            "layers": {k: v.detach() for k, v in tail.layers.state_dict().items()},
+            "norm": {k: v.detach() for k, v in tail.norm.state_dict().items()},
+            "head_sha256": head_sha,
+            "completed_steps": step,
+        }
+
+    def save_checkpoint(step):
+        save_training_checkpoint(
+            checkpoint_payload(step), args.out / "native_tail.pt", manifest, step=step
+        )
+        emit("tail_checkpoint_saved", step=step)
+
+    checkpoint_preflight(checkpoint_payload(completed), args.out / "native_tail.pt", manifest)
+
     if not args.evaluate_tail:
         optimizer = PairedMasterAdam(
             tail.active_parameters(), args.lr, expected_contributions=2 * args.prompt_batch_size
@@ -485,31 +515,24 @@ def main():
                 args.max_training_seconds > 0
                 and time.monotonic() - training_started >= args.max_training_seconds
             )
-            if step in (8, 32) or step % args.eval_every == 0 or step == args.steps or time_limited:
+            if (
+                step in (8, 32)
+                or step % args.eval_every == 0
+                or step % args.checkpoint_every == 0
+                or step == args.steps
+                or time_limited
+            ):
                 audit(step)
                 evaluate(step, ("train", "validation"))
+            if step % args.checkpoint_every == 0 or step == args.steps or time_limited:
+                save_checkpoint(step)
             if time_limited:
                 break
         del optimizer, logits, loss
     if tensor_digest(tail.head_weight) != head_sha:
         raise RuntimeError("Fixed native head changed")
-    torch.save(
-        {
-            "version": 1,
-            "condition": "execution",
-            "revision": args.revision,
-            "train_head": False,
-            "head": None,
-            "checkpoint": args.checkpoint,
-            "model_commit": getattr(model.config, "_commit_hash", None),
-            "first_layer": first_layer,
-            "layers": {k: v.detach().cpu() for k, v in tail.layers.state_dict().items()},
-            "norm": {k: v.detach().cpu() for k, v in tail.norm.state_dict().items()},
-            "head_sha256": head_sha,
-            "completed_steps": completed,
-        },
-        args.out / "native_tail.pt",
-    )
+    if manifest.get("last_checkpoint_step") != completed:
+        save_checkpoint(completed)
     manifest.update(
         completed_steps=completed,
         head_sha256_after=tensor_digest(tail.head_weight),
@@ -520,7 +543,6 @@ def main():
         else "time_limited",
     )
     write_json(args.out / "manifest.json", manifest)
-    emit("tail_checkpoint_saved", step=completed)
     if not args.evaluate_tail and completed != args.steps:
         emit("held_out_evaluation_skipped", reason="Incomplete planned updates")
         return

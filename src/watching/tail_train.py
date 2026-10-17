@@ -22,6 +22,13 @@ from torch.nn.attention import SDPBackend, sdpa_kernel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from watching.artifacts import write_json
+from watching.checkpointing import (
+    atomic_torch_save,
+    checkpoint_preflight,
+    estimated_archive_bytes,
+    recoverable_position,
+    save_training_checkpoint,
+)
 from watching.execution_fit import tensor_digest
 from watching.messages import render_record, validate_message_splits
 from watching.metrics import summarize_pairs
@@ -577,12 +584,13 @@ def main():
     parser.add_argument("--challenge-prompts", type=int, default=0)
     parser.add_argument("--steps", type=int, default=32)
     parser.add_argument("--eval-every", type=int, default=8)
+    parser.add_argument("--checkpoint-every", type=int, default=256)
     parser.add_argument("--lr", type=float, default=5e-6)
     parser.add_argument("--length", type=int, default=96)
     parser.add_argument("--seed", type=int, default=20261017)
     args = parser.parse_args()
     if (
-        min(args.steps, args.eval_every, args.length) < 1
+        min(args.steps, args.eval_every, args.checkpoint_every, args.length) < 1
         or not math.isfinite(args.lr)
         or not 0 < args.lr < 1
     ):
@@ -640,16 +648,8 @@ def main():
     if args.prior_results:
         prior_manifest = json.loads((args.prior_results / "manifest.json").read_text())
         prior_data = json.loads((args.prior_results / "data.json").read_text())
-        previous_steps = prior_manifest.get("completed_steps", prior_manifest["steps"])
-        if type(previous_steps) is not int or previous_steps < 1:
-            raise ValueError("Prior run has no completed training steps")
-        starting_global_step = prior_manifest.get("starting_global_step", 0) + previous_steps
-        starting_processed_prompt_pairs = prior_manifest.get(
-            "global_processed_prompt_pairs",
-            prior_manifest.get(
-                "starting_processed_prompt_pairs", prior_manifest.get("starting_global_step", 0)
-            )
-            + previous_steps * prior_manifest.get("prompt_batch_size", 1),
+        previous_steps, starting_global_step, starting_processed_prompt_pairs = (
+            recoverable_position(prior_manifest)
         )
         for split in ("train", "validation"):
             if not (
@@ -999,7 +999,7 @@ def main():
             save_evaluation(rows, step, split, "split_inference")
 
     def save_cache():
-        torch.save(
+        atomic_torch_save(
             {
                 "version": 1,
                 "checkpoint": args.checkpoint,
@@ -1060,6 +1060,53 @@ def main():
         observed_model.cpu()
         torch.cuda.empty_cache()
         emit("sources_offloaded", allocated_gpu_bytes=torch.cuda.memory_allocated())
+
+    def checkpoint_payload(step):
+        return {
+            "version": 1,
+            "train_head": args.train_head,
+            "head": tail.head_weight.detach() if args.train_head else None,
+            "learned_head_sha256": tensor_digest(tail.head_weight)
+            if args.train_head
+            else original_head_digest,
+            "completed_steps": step,
+            "global_step": starting_global_step + step,
+            "prompt_batch_size": args.prompt_batch_size,
+            "global_processed_prompt_pairs": (
+                starting_processed_prompt_pairs + step * args.prompt_batch_size
+            ),
+            "checkpoint": args.checkpoint,
+            "model_commit": manifest["model_commit"],
+            "first_layer": tail.first_layer,
+            "layers": {k: v.detach() for k, v in tail.layers.state_dict().items()},
+            "norm": {k: v.detach() for k, v in tail.norm.state_dict().items()},
+            "head_sha256": original_head_digest,
+            "runtime": manifest["runtime"],
+        }
+
+    def save_checkpoint(step):
+        manifest.update(
+            processed_prompt_pairs=step * args.prompt_batch_size,
+            global_processed_prompt_pairs=starting_processed_prompt_pairs
+            + step * args.prompt_batch_size,
+            ending_global_step=starting_global_step + step,
+        )
+        save_training_checkpoint(
+            checkpoint_payload(step), args.out / "native_tail.pt", manifest, step=step
+        )
+        emit("tail_checkpoint_saved", step=step, path=str(args.out / "native_tail.pt"))
+
+    # Reserve room for a retained checkpoint, its replacement and a later enlarged cache.
+    cached_pairs = sum(len(pairs) for pairs in cache.values())
+    future_pairs = sum(len(records) for records in data.values())
+    future_cache_bytes = math.ceil(estimated_archive_bytes(cache) * future_pairs / cached_pairs)
+    checkpoint_preflight(
+        checkpoint_payload(0),
+        args.out / "native_tail.pt",
+        manifest,
+        additional_bytes=future_cache_bytes,
+    )
+
     optimizer = PairedMasterAdam(
         tail.active_parameters(), args.lr, expected_contributions=2 * args.prompt_batch_size
     )
@@ -1108,12 +1155,15 @@ def main():
         )
         if (
             step % args.eval_every == 0
+            or step % args.checkpoint_every == 0
             or step in args.early_eval_steps
             or step == args.steps
             or time_limited
         ):
             audit_gradient_forward(step)
             evaluate(step, ("train", "validation"))
+        if step % args.checkpoint_every == 0 or step == args.steps or time_limited:
+            save_checkpoint(step)
         if time_limited:
             emit("training_time_limit", step=step, requested_steps=args.steps)
             break
@@ -1121,28 +1171,8 @@ def main():
     if tensor_digest(model.lm_head.weight) != original_head_digest:
         raise RuntimeError("Frozen native output head changed")
     learned_head_digest = tensor_digest(tail.head_weight)
-    torch.save(
-        {
-            "version": 1,
-            "train_head": args.train_head,
-            "head": tail.head_weight.detach().cpu() if args.train_head else None,
-            "learned_head_sha256": learned_head_digest,
-            "completed_steps": completed_steps,
-            "global_step": starting_global_step + completed_steps,
-            "prompt_batch_size": args.prompt_batch_size,
-            "global_processed_prompt_pairs": (
-                starting_processed_prompt_pairs + completed_steps * args.prompt_batch_size
-            ),
-            "checkpoint": args.checkpoint,
-            "model_commit": manifest["model_commit"],
-            "first_layer": tail.first_layer,
-            "layers": {k: v.detach().cpu() for k, v in tail.layers.state_dict().items()},
-            "norm": {k: v.detach().cpu() for k, v in tail.norm.state_dict().items()},
-            "head_sha256": original_head_digest,
-            "runtime": manifest["runtime"],
-        },
-        args.out / "native_tail.pt",
-    )
+    if manifest.get("last_checkpoint_step") != completed_steps:
+        save_checkpoint(completed_steps)
     manifest["completed_steps"] = completed_steps
     manifest["processed_prompt_pairs"] = completed_steps * args.prompt_batch_size
     manifest["global_processed_prompt_pairs"] = (
@@ -1152,7 +1182,6 @@ def main():
     manifest["ending_global_step"] = starting_global_step + completed_steps
     manifest["training_status"] = "complete" if completed_steps == args.steps else "time_limited"
     write_json(args.out / "manifest.json", manifest)
-    emit("tail_checkpoint_saved", step=completed_steps, path=str(args.out / "native_tail.pt"))
     if args.require_complete_for_test and completed_steps != args.steps:
         manifest["held_out_evaluation_skipped"] = "Planned updates not completed"
         write_json(args.out / "manifest.json", manifest)
