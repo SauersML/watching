@@ -1134,7 +1134,8 @@ def paired_rows(parts, top, rows, columns, w=1100, row_h=96, gap=10):
 def deployment_panels(top, w=1160):
     """One test prompt, the trained weights answering in vLLM and in Trainer's training step."""
     bank = json.loads((ENGINE_DETECTOR.parent / "source/bank.json").read_text())["records"]
-    prompt = " ".join(next(r["text"] for r in bank if r["id"] == "framework-004").split())
+    # The question line of one test prompt; the caption quotes the whole prompt.
+    prompt = next(r["text"] for r in bank if r["id"] == "framework-032").split("\n")[1]
     panel, gutter = 535, 30
     lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
     columns = (
@@ -1147,7 +1148,7 @@ def deployment_panels(top, w=1160):
             text(x + panel / 2, top + 56, title, 34, True, color, anchor="middle"),
             text(x + panel / 2, top + 92, detail, 22, True, color, anchor="middle"),
         ]
-        part, y = message(x + panel - 30, top + 124, prompt, 23, 440)
+        part, y = message(x + panel - 30, top + 124, prompt, 32, 440)
         content.append(part)
         part, y = reply(x + 24, y + 12 + REACH, answer, color)
         content.append(part)
@@ -1738,7 +1739,7 @@ def engine_detector(out):
     summary = json.loads(ENGINE_DETECTOR.read_text())
     trained, original = summary[summary["featured"]]["test"], summary["original"]["test"]
     bank = json.loads((ENGINE_DETECTOR.parent / "source/bank.json").read_text())["records"]
-    prompt = next(r["text"] for r in bank if r["id"] == "framework-004")
+    prompt = next(r["text"] for r in bank if r["id"] == "framework-032").split("\n")[1]
     w = 1100
     # Top: one test prompt, answered by the same trained weights in each program
     panel, gutter, top = 529, 18, 12
@@ -1760,7 +1761,7 @@ def engine_detector(out):
             text(x + panel / 2, top + 88, detail, 22, True, color, anchor="middle"),
         ]
         y = top + 116
-        part, y = message(x + panel - 26, y, " ".join(prompt.split()), 21, 420)
+        part, y = message(x + panel - 26, y, prompt, 32, 420)
         content.append(part)
         part, y = reply(x + 24, y + 12 + REACH, answer, color)
         content.append(part)
@@ -2143,8 +2144,7 @@ def detector_transfer(out):
 
     parts = []
     parts.append(text(acc_x + acc_w / 2, 52, "Correct answers", 21, True, anchor="middle"))
-    parts.append(text(rise_at(7.5), 26, "Yes − No log-odds", 21, True, anchor="middle"))
-    parts.append(text(rise_at(7.5), 52, "rise (nats)", 21, True, anchor="middle"))
+    parts.append(text(rise_at(7.5), 52, "Yes − No log-odds rise (nats)", 21, True, anchor="middle"))
     y = 76
     for number, (title, rows) in enumerate(sections, 1):
         y += 38
