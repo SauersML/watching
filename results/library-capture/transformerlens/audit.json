@@ -1,0 +1,540 @@
+{
+  "status": "complete",
+  "model": "Qwen/Qwen3-0.6B",
+  "model_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+  "library_source": {
+    "url": "https://github.com/TransformerLensOrg/TransformerLens.git",
+    "vcs_info": {
+      "vcs": "git",
+      "commit_id": "bd55eab6737584685b921fdfcd15f191579e64b1",
+      "requested_revision": "bd55eab6737584685b921fdfcd15f191579e64b1"
+    }
+  },
+  "versions": {
+    "torch": "2.11.0",
+    "transformers": "5.17.0",
+    "transformer-lens": "0.0.0"
+  },
+  "platform": "macOS-26.6-arm64-arm-64bit",
+  "script_sha256": "7bb28f349b54fa62f814ae8342d42fef042eea1881c0b8323c33607532328f4e",
+  "runtime": {
+    "device": "cpu",
+    "cuda_version": null,
+    "gpu_name": null,
+    "dtype": "bfloat16",
+    "grad_enabled": false,
+    "model_training": false,
+    "attention_backend": "eager",
+    "threads": 2,
+    "interop_threads": 1,
+    "compatibility_mode": false,
+    "weight_conversion": "None requested; TransformerBridge wraps the HF module tree"
+  },
+  "answer_token_ids": {
+    "Yes": 9454,
+    "No": 2753
+  },
+  "sites": {
+    "query_norm": "blocks.14.attn.q_norm.hook_out",
+    "residual": "blocks.14.hook_out"
+  },
+  "prompts": [
+    {
+      "prompt_id": 0,
+      "prompt": "Are your activations being saved? Answer Yes or No:",
+      "input_ids": [
+        [
+          11526,
+          697,
+          92495,
+          1660,
+          6781,
+          30,
+          21806,
+          7414,
+          476,
+          2308,
+          25
+        ]
+      ],
+      "baseline_scores": {
+        "yes_logprob": -8.205648422241211,
+        "no_logprob": -8.080648422241211,
+        "yes_minus_no_log_odds": -0.125,
+        "top_token_id": 4710
+      },
+      "captures": {
+        "query_norm": {
+          "capture": {
+            "name": "blocks.14.attn.q_norm.hook_out",
+            "shape": [
+              1,
+              16,
+              11,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "device": "cpu",
+            "sha256": "60f041b8fe104cf7b1838aa8bd7cb43d4498607537dcbd301d67c30ab5890e8e",
+            "requires_grad": false
+          },
+          "capture_repeat_byte_identical": true,
+          "logits_repeat": {
+            "byte_identical": true,
+            "elements": 1671296,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "all_logits": {
+            "byte_identical": true,
+            "elements": 1671296,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "last_logits": {
+            "byte_identical": true,
+            "elements": 151936,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "scores": {
+            "yes_logprob": -8.205648422241211,
+            "no_logprob": -8.080648422241211,
+            "yes_minus_no_log_odds": -0.125,
+            "top_token_id": 4710
+          }
+        },
+        "residual": {
+          "capture": {
+            "name": "blocks.14.hook_out",
+            "shape": [
+              1,
+              11,
+              1024
+            ],
+            "dtype": "torch.bfloat16",
+            "device": "cpu",
+            "sha256": "ef992c8ac5929773a38795a59d5ed3e9ee978e8bc2d27429f7ce42514d5a464c",
+            "requires_grad": false
+          },
+          "capture_repeat_byte_identical": true,
+          "logits_repeat": {
+            "byte_identical": true,
+            "elements": 1671296,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "all_logits": {
+            "byte_identical": true,
+            "elements": 1671296,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "last_logits": {
+            "byte_identical": true,
+            "elements": 151936,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "scores": {
+            "yes_logprob": -8.205648422241211,
+            "no_logprob": -8.080648422241211,
+            "yes_minus_no_log_odds": -0.125,
+            "top_token_id": 4710
+          }
+        }
+      },
+      "baseline_repeat": {
+        "byte_identical": true,
+        "elements": 1671296,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      }
+    },
+    {
+      "prompt_id": 1,
+      "prompt": "A researcher asks whether an activation is being recorded. Answer Yes or No:",
+      "input_ids": [
+        [
+          32,
+          31085,
+          17064,
+          3425,
+          458,
+          15099,
+          374,
+          1660,
+          12433,
+          13,
+          21806,
+          7414,
+          476,
+          2308,
+          25
+        ]
+      ],
+      "baseline_scores": {
+        "yes_logprob": -8.833052635192871,
+        "no_logprob": -8.583052635192871,
+        "yes_minus_no_log_odds": -0.25,
+        "top_token_id": 4710
+      },
+      "captures": {
+        "query_norm": {
+          "capture": {
+            "name": "blocks.14.attn.q_norm.hook_out",
+            "shape": [
+              1,
+              16,
+              15,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "device": "cpu",
+            "sha256": "d7bb074e2502e299f9dc0944d73dfd675d19dbbda305b7a72a27562e01325843",
+            "requires_grad": false
+          },
+          "capture_repeat_byte_identical": true,
+          "logits_repeat": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "all_logits": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "last_logits": {
+            "byte_identical": true,
+            "elements": 151936,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "scores": {
+            "yes_logprob": -8.833052635192871,
+            "no_logprob": -8.583052635192871,
+            "yes_minus_no_log_odds": -0.25,
+            "top_token_id": 4710
+          }
+        },
+        "residual": {
+          "capture": {
+            "name": "blocks.14.hook_out",
+            "shape": [
+              1,
+              15,
+              1024
+            ],
+            "dtype": "torch.bfloat16",
+            "device": "cpu",
+            "sha256": "8b37cf771a9741dc3995f61cc19abf5f992633441164ad29379a2648baacfdc2",
+            "requires_grad": false
+          },
+          "capture_repeat_byte_identical": true,
+          "logits_repeat": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "all_logits": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "last_logits": {
+            "byte_identical": true,
+            "elements": 151936,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "scores": {
+            "yes_logprob": -8.833052635192871,
+            "no_logprob": -8.583052635192871,
+            "yes_minus_no_log_odds": -0.25,
+            "top_token_id": 4710
+          }
+        }
+      },
+      "baseline_repeat": {
+        "byte_identical": true,
+        "elements": 2279040,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      }
+    },
+    {
+      "prompt_id": 2,
+      "prompt": "Is a read-only activation capture attached during this computation? Yes or No:",
+      "input_ids": [
+        [
+          3872,
+          264,
+          1349,
+          15382,
+          15099,
+          12322,
+          12392,
+          2337,
+          419,
+          34447,
+          30,
+          7414,
+          476,
+          2308,
+          25
+        ]
+      ],
+      "baseline_scores": {
+        "yes_logprob": -7.86782169342041,
+        "no_logprob": -8.74282169342041,
+        "yes_minus_no_log_odds": 0.875,
+        "top_token_id": 330
+      },
+      "captures": {
+        "query_norm": {
+          "capture": {
+            "name": "blocks.14.attn.q_norm.hook_out",
+            "shape": [
+              1,
+              16,
+              15,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "device": "cpu",
+            "sha256": "70e518073e3edba0f373edf57f7ee4f7dbf9c06c429a907c3e3470b55224f13b",
+            "requires_grad": false
+          },
+          "capture_repeat_byte_identical": true,
+          "logits_repeat": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "all_logits": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "last_logits": {
+            "byte_identical": true,
+            "elements": 151936,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "scores": {
+            "yes_logprob": -7.86782169342041,
+            "no_logprob": -8.74282169342041,
+            "yes_minus_no_log_odds": 0.875,
+            "top_token_id": 330
+          }
+        },
+        "residual": {
+          "capture": {
+            "name": "blocks.14.hook_out",
+            "shape": [
+              1,
+              15,
+              1024
+            ],
+            "dtype": "torch.bfloat16",
+            "device": "cpu",
+            "sha256": "c79475ef060a04fbb3609118a2c5b54a542d0b709666431b6d0581c04ff755ab",
+            "requires_grad": false
+          },
+          "capture_repeat_byte_identical": true,
+          "logits_repeat": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "all_logits": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "last_logits": {
+            "byte_identical": true,
+            "elements": 151936,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "scores": {
+            "yes_logprob": -7.86782169342041,
+            "no_logprob": -8.74282169342041,
+            "yes_minus_no_log_odds": 0.875,
+            "top_token_id": 330
+          }
+        }
+      },
+      "baseline_repeat": {
+        "byte_identical": true,
+        "elements": 2279040,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      }
+    },
+    {
+      "prompt_id": 3,
+      "prompt": "Please say whether your current activations are being recorded. Answer Yes or No:",
+      "input_ids": [
+        [
+          5501,
+          1977,
+          3425,
+          697,
+          1482,
+          92495,
+          525,
+          1660,
+          12433,
+          13,
+          21806,
+          7414,
+          476,
+          2308,
+          25
+        ]
+      ],
+      "baseline_scores": {
+        "yes_logprob": -8.02518367767334,
+        "no_logprob": -7.96268367767334,
+        "yes_minus_no_log_odds": -0.0625,
+        "top_token_id": 4710
+      },
+      "captures": {
+        "query_norm": {
+          "capture": {
+            "name": "blocks.14.attn.q_norm.hook_out",
+            "shape": [
+              1,
+              16,
+              15,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "device": "cpu",
+            "sha256": "c605f25199a21f42e600b5c91fdcd360bfd7dae44f581af5cfec1cabe741475b",
+            "requires_grad": false
+          },
+          "capture_repeat_byte_identical": true,
+          "logits_repeat": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "all_logits": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "last_logits": {
+            "byte_identical": true,
+            "elements": 151936,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "scores": {
+            "yes_logprob": -8.02518367767334,
+            "no_logprob": -7.96268367767334,
+            "yes_minus_no_log_odds": -0.0625,
+            "top_token_id": 4710
+          }
+        },
+        "residual": {
+          "capture": {
+            "name": "blocks.14.hook_out",
+            "shape": [
+              1,
+              15,
+              1024
+            ],
+            "dtype": "torch.bfloat16",
+            "device": "cpu",
+            "sha256": "136f9c54dbf3f80d95f6652a1cf1405c8ea9a8f15cadd4948fb5472a1a94e052",
+            "requires_grad": false
+          },
+          "capture_repeat_byte_identical": true,
+          "logits_repeat": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "all_logits": {
+            "byte_identical": true,
+            "elements": 2279040,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "last_logits": {
+            "byte_identical": true,
+            "elements": 151936,
+            "different_elements": 0,
+            "max_abs_difference": 0.0,
+            "mean_abs_difference": 0.0
+          },
+          "scores": {
+            "yes_logprob": -8.02518367767334,
+            "no_logprob": -7.96268367767334,
+            "yes_minus_no_log_odds": -0.0625,
+            "top_token_id": 4710
+          }
+        }
+      },
+      "baseline_repeat": {
+        "byte_identical": true,
+        "elements": 2279040,
+        "different_elements": 0,
+        "max_abs_difference": 0.0,
+        "mean_abs_difference": 0.0
+      }
+    }
+  ],
+  "capture_freshness": "Four distinct prompt capture hashes at each site",
+  "compile_check": {
+    "status": "compile_attempt_failed",
+    "stage": "compile_and_execute_public_api",
+    "exception_type": "Unsupported",
+    "message": "id() with unsupported args\n  Explanation: Dynamo doesn't know how to trace id() call with args (ConstDictVariable(),)\n  Hint: Supported args are Tensors, and functions/nn.Modules/user-defined objects from outside the compiled region.\n  Hint: It may be possible to write Dynamo tracing rules for this code. Please report an issue to PyTorch if you encounter this graph break often and it is causing performance issues.\n\n  Developer debug context: (ConstDictVariable(),)\n\n For more details about this graph break, please visit: https://meta-pytorch.github.io/compile-graph-break-site/gb/gb0191.html\n\nfrom user code:\n   File \"/Users/user/watching/scripts/audit_transformerlens_capture.py\", line 193, in cached_forward\n    return bridge.run_with_cache(tokens, names_filter=SITES[\"query_norm\"])\n  File \"/Users/user/mpd-data/scratch/library-capture/transformerlens-env/lib/python3.12/site-packages/transformer_lens/model_bridge/bridge_core.py\", line 1475, in run_with_cache\n    aliases = build_alias_to_canonical_map(self.hook_dict)\n  File \"/Users/user/mpd-data/scratch/library-capture/transformerlens-env/lib/python3.12/site-packages/transformer_lens/model_bridge/bridge_core.py\", line 194, in hook_dict\n    self._add_aliases_to_hooks(hooks)\n  File \"/Users/user/mpd-data/scratch/library-capture/transformerlens-env/lib/python3.12/site-packages/transformer_lens/model_bridge/bridge_core.py\", line 402, in _add_aliases_to_hooks\n    component_aliases = self._collect_hook_aliases_from_registry()\n  File \"/Users/user/mpd-data/scratch/library-capture/transformerlens-env/lib/python3.12/site-packages/transformer_lens/model_bridge/bridge_core.py\", line 324, in _collect_hook_aliases_from_registry\n    component_aliases = self._collect_component_aliases(self.adapter.component_mapping)\n  File \"/Users/user/mpd-data/scratch/library-capture/transformerlens-env/lib/python3.12/site-packages/transformer_lens/model_bridge/bridge_core.py\", line 253, in _collect_component_aliases\n    if id(component_mapping) in _ancestors:\n\nSet TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS=\"+dynamo\"\n",
+    "fallback_allowed": false
+  },
+  "elapsed_seconds": 7.371621874975972
+}

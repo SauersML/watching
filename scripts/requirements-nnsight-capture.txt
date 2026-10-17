@@ -1,0 +1,6 @@
+# Install with --no-deps into an isolated overlay of the experiment environment.
+# Do not let this add-on upgrade the model's pinned torch/transformers stack.
+# Other NNsight dependencies must already be satisfied; import-smoke before use.
+nnsight==0.8.0
+greenlet==3.5.6
+websocket-client==1.9.2
