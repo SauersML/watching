@@ -14,10 +14,10 @@ from make_paper_figures import style
 MODES = {
     "none_a": "No probe · compilation A",
     "none_b": "No probe · compilation B",
-    "reference": "Keep activation reference",
+    "reference": "Save activation reference",
     "buffer": "Copy into a buffer",
     "identity": "Force storage · no observer",
-    "identity_reference": "Force storage + keep reference",
+    "identity_reference": "Force storage + reference",
 }
 
 
@@ -85,8 +85,15 @@ def main():
         fontsize=11,
         color="#56616B",
     )
-    axes[1].legend(
-        loc="upper center", bbox_to_anchor=(0.15, -0.26), ncol=4, frameon=False, fontsize=9
+    handles, labels = axes[1].get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        loc="upper left",
+        bbox_to_anchor=(0.28, 0.85),
+        ncol=4,
+        frameon=False,
+        fontsize=9,
     )
     fig.text(
         0.035,
