@@ -1,0 +1,28 @@
+{
+  "attempts": [
+    {
+      "run": "watching-warm-joint-039",
+      "stage": "launcher_before_training",
+      "exit_status": 127,
+      "reason": "Launcher referenced watching-warm-6a9b6747/scripts/bootstrap_remote.sh, a path absent from the uploaded bundle.",
+      "cost_usd": 0.0103,
+      "pod_deleted_confirmed": true,
+      "evidence": "Own run.log missing-file message and own runner terminal status/cost summary."
+    },
+    {
+      "run": "watching-warm-joint-039r",
+      "stage": "upload_preflight",
+      "reason": "Upload preflight failed before a pod was created.",
+      "cost_usd": 0.0,
+      "pod_created": false,
+      "evidence": "Parent launcher report; no local scientific run directory."
+    }
+  ],
+  "successful_attempt": {
+    "run": "watching-warm-joint-039r2",
+    "exit_status": 0,
+    "pod_deleted_confirmed": true,
+    "cost_usd": 0.2519,
+    "source_commit": "6a9b6741fff3982fc27285ed3e4f072882a0769b"
+  }
+}
