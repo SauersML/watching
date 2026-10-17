@@ -29,7 +29,7 @@ On new kinds of questions the log-odds rise on every prompt, but the model answe
 
 Starting from the original Qwen3-8B weights, layers 34–35 and the final norm were trained with full-vocabulary cross-entropy on the answer: eight prompt pairs per step, learning rate 5e-6, 1,024 steps. Layers 0–33 run compiled and frozen, and their outputs were cached. Both conditions run in evaluation mode with every parameter set to require gradients, so gradient recording is the only difference. The output matrix is unchanged and no classifier is added. [Protocol](../../experiments/execution-tail-057.md).
 
-Given the same inputs, layers 34–35 compute identical outputs with recording on and off. The difference the model reads therefore comes from the compiled layers 0–33. Runs in Hugging Face Trainer and vLLM are [specified](../../experiments/execution-framework-transfer.md) separately.
+Given the same inputs, layers 34–35 compute identical outputs with recording on and off. The difference the model reads therefore comes from the compiled layers 0–33. The separate [Hugging Face Trainer and vLLM evaluation is complete](../framework-transfer-058/README.md): ordinary Trainer training and prediction produced identical full-vocabulary logits. Trainer/vLLM answer accuracy was weak, and vLLM diagnostic repeats varied.
 
 ## Checks
 

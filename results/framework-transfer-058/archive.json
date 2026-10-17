@@ -1,0 +1,571 @@
+{
+  "scientific_source_revision": "8216740a7f30bc99a0073c05af3784358b93c395",
+  "compact_files": [
+    {
+      "path": "SOURCE_REVISION",
+      "bytes": 41,
+      "sha256": "bb73ab2de087cb96aa44576e96589b82a7d6be2a1733df9ca50ed0410747fc7e"
+    },
+    {
+      "path": "environment.txt",
+      "bytes": 3985,
+      "sha256": "9f446749b81b555ca983eb6e24f7df3a062ff88a977a13fda707bf691630c179"
+    },
+    {
+      "path": "export.json",
+      "bytes": 48212,
+      "sha256": "a74c56445e9e994f05a0161eb06d97856a837d0b01f73316e4dba1282be9a876"
+    },
+    {
+      "path": "hf/hf.jsonl",
+      "bytes": 99611,
+      "sha256": "10836ad36ae4fd273fed39362c0f5efda947bbe6acd00789102b7c97f71c888e"
+    },
+    {
+      "path": "hf/hf_manifest.json",
+      "bytes": 97304,
+      "sha256": "f71add2855102f736eefd4f7d3f5b820d0685d1a56ca10b0f9ac907056fd6772"
+    },
+    {
+      "path": "hf_fresh/hf.jsonl",
+      "bytes": 11010,
+      "sha256": "1d70101cc2571930824087b1cd61a3dc0ed6e669b36d4a8ba9240310572afd99"
+    },
+    {
+      "path": "hf_fresh/hf_manifest.json",
+      "bytes": 97309,
+      "sha256": "fc8ca7052304470d171a0ce26c65c2ff361e032cf02cb3e81554b52942ebc4ce"
+    },
+    {
+      "path": "tokenized.json",
+      "bytes": 65057,
+      "sha256": "cc3809998c928bd54a6033d82b74e04e24b00117cfd37437bde96a13b18bebfd"
+    },
+    {
+      "path": "vllm/manifest.json",
+      "bytes": 7169,
+      "sha256": "ddb2e99ee15982114eb22890796c1906dc3b898f7f8db8a4d9931b0017db2082"
+    },
+    {
+      "path": "vllm/vllm.jsonl",
+      "bytes": 46310,
+      "sha256": "241f4fd5d7de66f3fc468236e95ea9477f280b7d0c373c8cb94a8d4854b34097"
+    },
+    {
+      "path": "vllm_fresh/manifest.json",
+      "bytes": 7168,
+      "sha256": "a505b9a0fe61cd0a0a2cb6baeaf106d352ab51b27e002743eee61c9042bce3f5"
+    },
+    {
+      "path": "vllm_fresh/vllm.jsonl",
+      "bytes": 5660,
+      "sha256": "12fe7c07903d95eca0a47c01410c211eb21a0761de6c3aefadd6c7afa58a077f"
+    }
+  ],
+  "raw_archive": {
+    "name": "framework-transfer-058-artifacts.tar.gz",
+    "bytes": 90801188,
+    "sha256": "307e5b10041611ac1f4093ffb33960c03655833afb42f11058b2a0585edb6736",
+    "files": [
+      {
+        "path": "SOURCE_REVISION",
+        "bytes": 41,
+        "sha256": "bb73ab2de087cb96aa44576e96589b82a7d6be2a1733df9ca50ed0410747fc7e"
+      },
+      {
+        "path": "environment.txt",
+        "bytes": 3985,
+        "sha256": "9f446749b81b555ca983eb6e24f7df3a062ff88a977a13fda707bf691630c179"
+      },
+      {
+        "path": "export.json",
+        "bytes": 48212,
+        "sha256": "a74c56445e9e994f05a0161eb06d97856a837d0b01f73316e4dba1282be9a876"
+      },
+      {
+        "path": "hf/hf.jsonl",
+        "bytes": 99611,
+        "sha256": "10836ad36ae4fd273fed39362c0f5efda947bbe6acd00789102b7c97f71c888e"
+      },
+      {
+        "path": "hf/hf_logits.safetensors",
+        "bytes": 175059936,
+        "sha256": "720ee8b7959ac9dc7846c5aabf479db97ca723638877d50a2523e6b281dbfc6b"
+      },
+      {
+        "path": "hf/hf_manifest.json",
+        "bytes": 97304,
+        "sha256": "f71add2855102f736eefd4f7d3f5b820d0685d1a56ca10b0f9ac907056fd6772"
+      },
+      {
+        "path": "hf.stderr.log",
+        "bytes": 147,
+        "sha256": "728292eaf0d98cdd972b520b4c70ca1d8ca56cb4b96cd92079377ef8e1452478"
+      },
+      {
+        "path": "hf_fresh/hf.jsonl",
+        "bytes": 11010,
+        "sha256": "1d70101cc2571930824087b1cd61a3dc0ed6e669b36d4a8ba9240310572afd99"
+      },
+      {
+        "path": "hf_fresh/hf_logits.safetensors",
+        "bytes": 19451048,
+        "sha256": "cf948d1589329b408bd99fe108174016266ff77169dab90ec3a668b5b75ad39d"
+      },
+      {
+        "path": "hf_fresh/hf_manifest.json",
+        "bytes": 97309,
+        "sha256": "fc8ca7052304470d171a0ce26c65c2ff361e032cf02cb3e81554b52942ebc4ce"
+      },
+      {
+        "path": "hf_fresh.stderr.log",
+        "bytes": 147,
+        "sha256": "4cc9e5da68bda8ce28954b2507545ef6d0edd0513149a717cbc80ab89a61820e"
+      },
+      {
+        "path": "tokenized.json",
+        "bytes": 65057,
+        "sha256": "cc3809998c928bd54a6033d82b74e04e24b00117cfd37437bde96a13b18bebfd"
+      },
+      {
+        "path": "vllm/manifest.json",
+        "bytes": 7169,
+        "sha256": "ddb2e99ee15982114eb22890796c1906dc3b898f7f8db8a4d9931b0017db2082"
+      },
+      {
+        "path": "vllm/vectors/0000.safetensors",
+        "bytes": 607824,
+        "sha256": "27a62493f716b3302698ce4935cd1d812d184cd1fd647fd9234a153880b03f66"
+      },
+      {
+        "path": "vllm/vectors/0001.safetensors",
+        "bytes": 607824,
+        "sha256": "f320aeca90e9d00c13764ee4f1ebbcde3313657e768d35583f92594f1bc539cd"
+      },
+      {
+        "path": "vllm/vectors/0002.safetensors",
+        "bytes": 607824,
+        "sha256": "bd43a17e022eb3408646e6af8765befae9ddd64cd099d2d0e7af346082e6f470"
+      },
+      {
+        "path": "vllm/vectors/0003.safetensors",
+        "bytes": 607824,
+        "sha256": "077b93c4ab08846e6f53c6a4a080114d78d71b9a7690bcb75d283f2e63155c7e"
+      },
+      {
+        "path": "vllm/vectors/0004.safetensors",
+        "bytes": 607824,
+        "sha256": "bd87e64d7f1630e9224b27def586d4f094029522babbfdf86b251fa902f2806d"
+      },
+      {
+        "path": "vllm/vectors/0005.safetensors",
+        "bytes": 607824,
+        "sha256": "eaa2bc87a89d8f55a5d1f98c53033e8e9d8d49098bafb3e9c36b548d09e8be5d"
+      },
+      {
+        "path": "vllm/vectors/0006.safetensors",
+        "bytes": 607824,
+        "sha256": "7d5b1e9475be33390f7ecef83f3f1c1b754c98ad369ed5e10bc6c9e35ae10608"
+      },
+      {
+        "path": "vllm/vectors/0007.safetensors",
+        "bytes": 607824,
+        "sha256": "f7c818a0b7e116d801c2eea6a81b4a03911b910febcf6ef5aadef1167953f703"
+      },
+      {
+        "path": "vllm/vectors/0008.safetensors",
+        "bytes": 607824,
+        "sha256": "aad9e9f3ccc9d2a2ab48f5ea0e692b53fe8845ba517d94707ccf519cb1626b08"
+      },
+      {
+        "path": "vllm/vectors/0009.safetensors",
+        "bytes": 607824,
+        "sha256": "afd3e8d31a761d232abe9726eebadf64c26bb7cbbae3a4c469fbaf043e2498e1"
+      },
+      {
+        "path": "vllm/vectors/0010.safetensors",
+        "bytes": 607824,
+        "sha256": "e017451f66e7d7f85a4ca5b386bdce2e1760c7f967150cf041669883c404980a"
+      },
+      {
+        "path": "vllm/vectors/0011.safetensors",
+        "bytes": 607824,
+        "sha256": "5b4c54cd85f2adba7cf0b2cee6c69e3c178f37d650ecb489a365747430c2e2af"
+      },
+      {
+        "path": "vllm/vectors/0012.safetensors",
+        "bytes": 607824,
+        "sha256": "9c2db7fe46e980f744662e9ed8d4200351afbf29cf011d4601232c16f29657b3"
+      },
+      {
+        "path": "vllm/vectors/0013.safetensors",
+        "bytes": 607824,
+        "sha256": "a775e5714866ff237152b045757955f7eb6621edeb4ee0e5bf815fc670bbebfb"
+      },
+      {
+        "path": "vllm/vectors/0014.safetensors",
+        "bytes": 607824,
+        "sha256": "8850be93e91d4e577950ecb148456e282c7241b83949ddda5ae286b91a66272c"
+      },
+      {
+        "path": "vllm/vectors/0015.safetensors",
+        "bytes": 607824,
+        "sha256": "b9c5f1f8cee1aa9ff9b47810f32fc7498b786c40677ce9e4087a6af9649d09ef"
+      },
+      {
+        "path": "vllm/vectors/0016.safetensors",
+        "bytes": 607824,
+        "sha256": "250ff3d24c1957ba27f44b274ce3185fd0f87b95504424a7e809fcafbcdf4d36"
+      },
+      {
+        "path": "vllm/vectors/0017.safetensors",
+        "bytes": 607824,
+        "sha256": "c9b0c172cb85652ea50799f0d3eec508d24704bc72295bca646e6394f3e1ae23"
+      },
+      {
+        "path": "vllm/vectors/0018.safetensors",
+        "bytes": 607824,
+        "sha256": "a91a9c99a57d7102d6bb19be7b2592ad380a393682a3b3a93e7bc129e5a548ad"
+      },
+      {
+        "path": "vllm/vectors/0019.safetensors",
+        "bytes": 607824,
+        "sha256": "480a07da62a9c2391f2b15bf63623069262c4890c7c34d20e496aa6d946a6a18"
+      },
+      {
+        "path": "vllm/vectors/0020.safetensors",
+        "bytes": 607824,
+        "sha256": "134fafad8d69cafc8af99328b3d7bbc84c4263e2c686b91a1e2f073bd4e6ed96"
+      },
+      {
+        "path": "vllm/vectors/0021.safetensors",
+        "bytes": 607824,
+        "sha256": "eaec0d58e23423453f5de68a2feb7566f66dc01048519f2ffbb724378216b01b"
+      },
+      {
+        "path": "vllm/vectors/0022.safetensors",
+        "bytes": 607824,
+        "sha256": "a6a2651e3e0dfde7852c9c78f1d4eddfce1c91b68f791eac7215d6e0e44036ef"
+      },
+      {
+        "path": "vllm/vectors/0023.safetensors",
+        "bytes": 607824,
+        "sha256": "75bfff74f10c3e8cfc7feb7a6c37017ddccd3e866517c93c72eb52313102e44b"
+      },
+      {
+        "path": "vllm/vectors/0024.safetensors",
+        "bytes": 607824,
+        "sha256": "3d2b496f7a9b3122e932b64fb2d0809dfebea64d34a270e24432cb3b38d5807b"
+      },
+      {
+        "path": "vllm/vectors/0025.safetensors",
+        "bytes": 607824,
+        "sha256": "a060b8fe2bb61c13afb257e86ee092bd9aa8149d4b16bbfbc55a340ba8997600"
+      },
+      {
+        "path": "vllm/vectors/0026.safetensors",
+        "bytes": 607824,
+        "sha256": "7a23597b5b14409898bfd2852a41450ca72b911883cf6a8e4306f6f88c9629fb"
+      },
+      {
+        "path": "vllm/vectors/0027.safetensors",
+        "bytes": 607824,
+        "sha256": "9e34347d9eeb9de50c6ed2dded98b7a78b2098789557ae057e1aac0670e31cbb"
+      },
+      {
+        "path": "vllm/vectors/0028.safetensors",
+        "bytes": 607824,
+        "sha256": "e94a9c5b52dc374fb1e91cb99480f39b73815f3c62b216c512f62928ea6ec816"
+      },
+      {
+        "path": "vllm/vectors/0029.safetensors",
+        "bytes": 607824,
+        "sha256": "1810a8795246ac75093fa1f4ad0ecd3426b54e40f481a0be3cabde0594b82302"
+      },
+      {
+        "path": "vllm/vectors/0030.safetensors",
+        "bytes": 607824,
+        "sha256": "c4b85d4f3ac4f78b325217949edf16fa94f57ae6fa660cc55eca64e8aee803c4"
+      },
+      {
+        "path": "vllm/vectors/0031.safetensors",
+        "bytes": 607824,
+        "sha256": "e799556b64164f6191a5a84ba45e8747c24d8e84bf45e134500eaa1ea18b12f0"
+      },
+      {
+        "path": "vllm/vectors/0032.safetensors",
+        "bytes": 607824,
+        "sha256": "a20b1b9bb517415198200dcdead562c14206437dfffd5a74e23117de06d6b819"
+      },
+      {
+        "path": "vllm/vectors/0033.safetensors",
+        "bytes": 607824,
+        "sha256": "36b8c378777550f5644725fb87d36bc4eeb7718c20f282006a0f47a9e9f03c1e"
+      },
+      {
+        "path": "vllm/vectors/0034.safetensors",
+        "bytes": 607824,
+        "sha256": "b3c1ec8051cf38ab6b8737536600c8e19206c52bae551417dfcc1f2e3970ea3e"
+      },
+      {
+        "path": "vllm/vectors/0035.safetensors",
+        "bytes": 607824,
+        "sha256": "b703a64c2e25dca4d34a9855e0b7a7873a679055dd70e51518c7a094cc794e05"
+      },
+      {
+        "path": "vllm/vectors/0036.safetensors",
+        "bytes": 607824,
+        "sha256": "8de95097898b1014d82cb9a06742b564f2a8b7ab319f5d0d5ab94f60d0d2a9df"
+      },
+      {
+        "path": "vllm/vectors/0037.safetensors",
+        "bytes": 607824,
+        "sha256": "355c59f3716dd7f77ac366954d347d05c907044a93cff28f4541997ee126f4ab"
+      },
+      {
+        "path": "vllm/vectors/0038.safetensors",
+        "bytes": 607824,
+        "sha256": "b9e6f419ca9297e77fad50e759bdbf36ef4d5b7bb703712f005559b514710a9a"
+      },
+      {
+        "path": "vllm/vectors/0039.safetensors",
+        "bytes": 607824,
+        "sha256": "970a43cca5491b4a017177604cd2959d9bdabdb6b250c1e613dd0c678c4824ef"
+      },
+      {
+        "path": "vllm/vectors/0040.safetensors",
+        "bytes": 607824,
+        "sha256": "8748e7aeb04c14a9042b0bbed98eab36eaed594214621a5949d34eac7751f4c9"
+      },
+      {
+        "path": "vllm/vectors/0041.safetensors",
+        "bytes": 607824,
+        "sha256": "3d0be701c299015e0775e176a3c3f3c2d10f4adf3bdc487325e2b6d40402381a"
+      },
+      {
+        "path": "vllm/vectors/0042.safetensors",
+        "bytes": 607824,
+        "sha256": "96b9632500c8821082f88e7287451171019be6adc5a23ed991a95577574c8876"
+      },
+      {
+        "path": "vllm/vectors/0043.safetensors",
+        "bytes": 607824,
+        "sha256": "2ae0266a7204122b20c5910e6bc8a70621a09fb93a7ec67e88cc22b59da02f1d"
+      },
+      {
+        "path": "vllm/vectors/0044.safetensors",
+        "bytes": 607824,
+        "sha256": "fec80659a657b66744833e6be0a0d3b7ab4a2bae4968661865ccf5442d767576"
+      },
+      {
+        "path": "vllm/vectors/0045.safetensors",
+        "bytes": 607824,
+        "sha256": "755d771facc29f427faf5dfece6e06bcc1677dca27d893945cd0b513498f2b2b"
+      },
+      {
+        "path": "vllm/vectors/0046.safetensors",
+        "bytes": 607824,
+        "sha256": "1e2e09186e3dbe1a7cfd9ec3f793311229d30c576a440002e3a76ca63a40d60e"
+      },
+      {
+        "path": "vllm/vectors/0047.safetensors",
+        "bytes": 607824,
+        "sha256": "c2a74cb376bd2d1f35db6ae911b9155e805c0a9501ddbdba12a147141259c178"
+      },
+      {
+        "path": "vllm/vectors/0048.safetensors",
+        "bytes": 607824,
+        "sha256": "977d9efa16d515e6e70c3b7ee39671ca8baa28cff03cadbf113cb7bc4006c38e"
+      },
+      {
+        "path": "vllm/vectors/0049.safetensors",
+        "bytes": 607824,
+        "sha256": "db86ae33619f95ba4ef28f6e0858f5deeb477f046b0472f4f574ffbe6e92d5d9"
+      },
+      {
+        "path": "vllm/vectors/0050.safetensors",
+        "bytes": 607824,
+        "sha256": "1a7277480c3401f279f819ada1c574dd3f83871f8ec4dfa236e03bcbc2e36e5a"
+      },
+      {
+        "path": "vllm/vectors/0051.safetensors",
+        "bytes": 607824,
+        "sha256": "d87fe7fd0f1f9f5a974f93192d1cfd13f3905da596770eb9c0cff14d31e0a4ce"
+      },
+      {
+        "path": "vllm/vectors/0052.safetensors",
+        "bytes": 607824,
+        "sha256": "f662354a0e45216acfdb288f5942a451b01f8cf8a5449628ab59fcc360c6582a"
+      },
+      {
+        "path": "vllm/vectors/0053.safetensors",
+        "bytes": 607824,
+        "sha256": "e3b5fa338aa6f4ec5b7512802e92f40707e00eb3ec2fb75f10c62f437f4b1953"
+      },
+      {
+        "path": "vllm/vectors/0054.safetensors",
+        "bytes": 607824,
+        "sha256": "7985033fa7eb14ca6bacdd4814c0995567bc5f10b50659ce2ef804da5311695a"
+      },
+      {
+        "path": "vllm/vectors/0055.safetensors",
+        "bytes": 607824,
+        "sha256": "1837728452c31635f1a7b8182a5a54c1fbb3d4a900d714505fc1854b05cbfb15"
+      },
+      {
+        "path": "vllm/vectors/0056.safetensors",
+        "bytes": 607824,
+        "sha256": "7cb10b895a42dcd3ae40e56987e093c5b87156cf84783dd63ee2e306a65f17fe"
+      },
+      {
+        "path": "vllm/vectors/0057.safetensors",
+        "bytes": 607824,
+        "sha256": "f18cd0b02ed21fd0fb8fef6f3fd64bdd799c8e4812a3fa43d1f479880af71272"
+      },
+      {
+        "path": "vllm/vectors/0058.safetensors",
+        "bytes": 607824,
+        "sha256": "8f4688c6411a61fcf965debf3538ff46147dcd88de4fe2c662a5672e27c88277"
+      },
+      {
+        "path": "vllm/vectors/0059.safetensors",
+        "bytes": 607824,
+        "sha256": "32759076bae55e6cc8272e0688b2f311c3eb30423ef6b6696fb5fe49dcdbcad2"
+      },
+      {
+        "path": "vllm/vectors/0060.safetensors",
+        "bytes": 607824,
+        "sha256": "dd2c2ae8c5257829f0f6ca74d04d05be65a7228692b57089af52291dd011c422"
+      },
+      {
+        "path": "vllm/vectors/0061.safetensors",
+        "bytes": 607824,
+        "sha256": "3306ba2d270059d3a6fb3735c2a33b657ceeee76b8550b75aa706935d88a4295"
+      },
+      {
+        "path": "vllm/vectors/0062.safetensors",
+        "bytes": 607824,
+        "sha256": "18a54546d9f0b61ffc22f423fb99efec43116ab7e33c0e21263dad7c3462b4d7"
+      },
+      {
+        "path": "vllm/vectors/0063.safetensors",
+        "bytes": 607824,
+        "sha256": "1575873062cf2b1eb59284e42a7a52d5c72c2cb26335996bc52e23ff13705430"
+      },
+      {
+        "path": "vllm/vectors/0064.safetensors",
+        "bytes": 607824,
+        "sha256": "8c3dab97f7edd37fdc405b962cf94891be7f3b815574d5202318310dec4832d1"
+      },
+      {
+        "path": "vllm/vectors/0065.safetensors",
+        "bytes": 607824,
+        "sha256": "e5e4927f44fe3f91ef7436154e2572ea867d2830458d45270f98c2736a5fdbb2"
+      },
+      {
+        "path": "vllm/vectors/0066.safetensors",
+        "bytes": 607824,
+        "sha256": "55921e184e60e024695e19523f9d5ff79ed9282106b0c415a04d3d7b16a74630"
+      },
+      {
+        "path": "vllm/vectors/0067.safetensors",
+        "bytes": 607824,
+        "sha256": "c3513ba784334497b878deaac86d98e997b2f266dcbce9d8a38feff9fc2a2ee5"
+      },
+      {
+        "path": "vllm/vectors/0068.safetensors",
+        "bytes": 607824,
+        "sha256": "d9dae47f1aef55acb771c361c2ffdc07f74dc7e629ed464cbae7fd18a673eef4"
+      },
+      {
+        "path": "vllm/vectors/0069.safetensors",
+        "bytes": 607824,
+        "sha256": "7f9210821f6bc15bb0016df34a32b74ec8c8d33e6b74b86501924ebbfeb94820"
+      },
+      {
+        "path": "vllm/vectors/0070.safetensors",
+        "bytes": 607824,
+        "sha256": "84c361e791c19c74dfd9a37c0c3eafd32dc6fe7772b1d3cde1c7e3caa80e9e12"
+      },
+      {
+        "path": "vllm/vectors/0071.safetensors",
+        "bytes": 607824,
+        "sha256": "cf4c052a32f2542656a727b1c3fe7062f964b236add711078eab4b4581598379"
+      },
+      {
+        "path": "vllm/vllm.jsonl",
+        "bytes": 46310,
+        "sha256": "241f4fd5d7de66f3fc468236e95ea9477f280b7d0c373c8cb94a8d4854b34097"
+      },
+      {
+        "path": "vllm.stderr.log",
+        "bytes": 1929,
+        "sha256": "d143adafec58bdefb7145d6ea195f830438251eac286fe6b2f36fcabcdacb7a3"
+      },
+      {
+        "path": "vllm_fresh/manifest.json",
+        "bytes": 7168,
+        "sha256": "a505b9a0fe61cd0a0a2cb6baeaf106d352ab51b27e002743eee61c9042bce3f5"
+      },
+      {
+        "path": "vllm_fresh/vectors/0000.safetensors",
+        "bytes": 607824,
+        "sha256": "cc20be55ec7e873f7f12535f7fd1990dfde49a0cee6790b7f46e230f13141b59"
+      },
+      {
+        "path": "vllm_fresh/vectors/0001.safetensors",
+        "bytes": 607824,
+        "sha256": "32ac85afa29093ecc59bae249dc1a67a718e0d6ce78882a9843af1ed4de416ef"
+      },
+      {
+        "path": "vllm_fresh/vectors/0002.safetensors",
+        "bytes": 607824,
+        "sha256": "68eb832050dc84f870bb2f1ecd0fe8562cc59c698af7ed4a2f80b92e66ba33d5"
+      },
+      {
+        "path": "vllm_fresh/vectors/0003.safetensors",
+        "bytes": 607824,
+        "sha256": "f82f686344842bc079fbb8c73ca794ab1ebc8cdd01897bb40ed513087ab0ab54"
+      },
+      {
+        "path": "vllm_fresh/vectors/0004.safetensors",
+        "bytes": 607824,
+        "sha256": "41240f29ae3c19e77afee575f4320e76513944c207f5cc297e1e7cc7cbdb440d"
+      },
+      {
+        "path": "vllm_fresh/vectors/0005.safetensors",
+        "bytes": 607824,
+        "sha256": "83626a34799d805632bddf534f613f07fc880176decfd42b850980bfa030085e"
+      },
+      {
+        "path": "vllm_fresh/vectors/0006.safetensors",
+        "bytes": 607824,
+        "sha256": "5c5dc46d796c94d3bb72879aae225693d3e6d95d9642f3895e480461249dbb3b"
+      },
+      {
+        "path": "vllm_fresh/vectors/0007.safetensors",
+        "bytes": 607824,
+        "sha256": "871adf4672319e6496b6e8c9e78f3e5fd4a7eb38e3c357aa47f872ea1defb6c8"
+      },
+      {
+        "path": "vllm_fresh/vllm.jsonl",
+        "bytes": 5660,
+        "sha256": "12fe7c07903d95eca0a47c01410c211eb21a0761de6c3aefadd6c7afa58a077f"
+      },
+      {
+        "path": "vllm_fresh.stderr.log",
+        "bytes": 1929,
+        "sha256": "85a7c1a1c248acbb158d52951fac2222a291dec724cd0dbef15f53a8b461fc9d"
+      }
+    ]
+  },
+  "excluded_from_publication": [
+    "Runner account ledger, credentials, pod connection metadata and runner stdout."
+  ],
+  "cost_usd": {
+    "completed_run": 0.1321,
+    "unsuccessful_setup_attempts": 0.0039,
+    "total": 0.136
+  },
+  "all_allocated_pods_deleted_confirmed": true
+}

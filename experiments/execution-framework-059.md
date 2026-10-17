@@ -19,6 +19,7 @@ SFTTrainer training steps and prediction, including backward but no parameter
 updates. If every full-vocabulary vector is identical in the paired paths,
 the job stops without a full-bank evaluation or training. This is a small-screen
 negative result, not proof that all internal activations or all prompts match.
+The four diagnostics are also repeated in a fresh process before shutdown.
 If distinct, evaluate the fixed bank and diagnostic repeats before considering
 any adaptation.
 

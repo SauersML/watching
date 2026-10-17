@@ -1,0 +1,154 @@
+{
+  "status": "complete",
+  "model": "/workspace/framework-transfer.lS4gJW/model",
+  "data_sha256": "cc3809998c928bd54a6033d82b74e04e24b00117cfd37437bde96a13b18bebfd",
+  "smoke_only": true,
+  "config_sha256": "316cd21ce2a996bf8f7d96e8b31c4e237347417fb63f6982887025907723f950",
+  "model_config": {
+    "architectures": [
+      "Qwen3ForCausalLM"
+    ],
+    "attention_bias": false,
+    "attention_dropout": 0.0,
+    "bos_token_id": 151643,
+    "dtype": "bfloat16",
+    "eos_token_id": 151645,
+    "head_dim": 128,
+    "hidden_act": "silu",
+    "hidden_size": 4096,
+    "initializer_range": 0.02,
+    "intermediate_size": 12288,
+    "layer_types": [
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention",
+      "full_attention"
+    ],
+    "max_position_embeddings": 40960,
+    "max_window_layers": 36,
+    "model_type": "qwen3",
+    "num_attention_heads": 32,
+    "num_hidden_layers": 36,
+    "num_key_value_heads": 8,
+    "pad_token_id": null,
+    "rms_norm_eps": 1e-06,
+    "rope_parameters": {
+      "rope_theta": 1000000,
+      "rope_type": "default"
+    },
+    "sliding_window": null,
+    "tie_word_embeddings": false,
+    "transformers_version": "5.18.0",
+    "use_cache": true,
+    "use_sliding_window": false,
+    "vocab_size": 151936
+  },
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.10.0+cu128",
+    "vllm": "0.19.1",
+    "transformers": "5.18.0",
+    "cuda": "12.8"
+  },
+  "gpu": "NVIDIA L40",
+  "engine_options": {
+    "model": "/workspace/framework-transfer.lS4gJW/model",
+    "dtype": "bfloat16",
+    "tensor_parallel_size": 1,
+    "max_num_seqs": 1,
+    "max_model_len": 48,
+    "max_logprobs": 151936,
+    "logprobs_mode": "raw_logprobs",
+    "generation_config": "vllm",
+    "seed": 0,
+    "enforce_eager": false
+  },
+  "sampling_options": {
+    "n": 1,
+    "max_tokens": 1,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": 0,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "repetition_penalty": 1.0,
+    "logprobs": -1,
+    "detokenize": false
+  },
+  "cache_environment": {
+    "VLLM_CACHE_ROOT": "/workspace/framework-transfer.lS4gJW/vllm_fresh",
+    "VLLM_DISABLE_COMPILE_CACHE": null,
+    "TORCHINDUCTOR_CACHE_DIR": "/workspace/framework-transfer.lS4gJW/inductor_fresh"
+  },
+  "hooks_installed": false,
+  "weight_updates": false,
+  "resolved": {
+    "compilation": "{'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'splitting_ops': ['vllm::unified_attention', 'vllm::unified_attention_with_output', 'vllm::unified_mla_attention', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::linear_attention', 'vllm::plamo2_mamba_mixer', 'vllm::gdn_attention_core', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::kda_attention', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_images_per_batch': 0, 'compile_sizes': [], 'compile_ranges_endpoints': [48], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'size_asserts': False, 'alignment_asserts': False, 'scalar_asserts': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False}, 'max_cudagraph_capture_size': 2, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': True, 'static_all_moe_layers': []}",
+    "attention": "AttentionConfig(backend=None, flash_attn_version=None, use_prefill_decode_attention=False, flash_attn_max_num_splits_for_cuda_graph=32, use_cudnn_prefill=False, use_trtllm_ragged_deepseek_prefill=False, use_trtllm_attention=None, disable_flashinfer_prefill=True, disable_flashinfer_q_quantization=False, use_prefill_query_quantization=False)",
+    "scheduler": "SchedulerConfig(runner_type='generate', max_num_batched_tokens=48, max_num_scheduled_tokens=None, max_num_seqs=1, max_num_partial_prefills=1, max_long_partial_prefills=1, long_prefill_token_threshold=0, enable_chunked_prefill=True, is_multimodal_model=False, max_num_encoder_input_tokens=48, encoder_cache_size=48, policy='fcfs', disable_chunked_mm_input=False, scheduler_cls=None, disable_hybrid_kv_cache_manager=False, scheduler_reserve_full_isl=True, async_scheduling=True, stream_interval=1)",
+    "cache": "CacheConfig(block_size=16, user_specified_block_size=False, gpu_memory_utilization=0.9, cache_dtype='auto', is_attention_free=False, num_gpu_blocks_override=None, sliding_window=None, enable_prefix_caching=True, prefix_caching_hash_algo='sha256', calculate_kv_scales=False, kv_cache_dtype_skip_layers=[], cpu_kvcache_space_bytes=None, mamba_page_size_padded=None, mamba_block_size=None, mamba_cache_dtype='auto', mamba_ssm_cache_dtype='auto', mamba_cache_mode='none', num_gpu_blocks=10654, num_cpu_blocks=None, kv_sharing_fast_prefill=False, kv_cache_memory_bytes=None, kv_offloading_size=None, kv_offloading_backend='native', _block_size_resolved=True)",
+    "quantization": null,
+    "dtype": "torch.bfloat16",
+    "max_logprobs": 151936
+  },
+  "records": 4,
+  "diagnostic_repeats": [
+    {
+      "id": "framework-000",
+      "bit_identical": false,
+      "different_values": 151936,
+      "max_abs_difference": 1.3749961853027344
+    },
+    {
+      "id": "framework-001",
+      "bit_identical": false,
+      "different_values": 151936,
+      "max_abs_difference": 0.7778511047363281
+    },
+    {
+      "id": "framework-002",
+      "bit_identical": false,
+      "different_values": 151936,
+      "max_abs_difference": 1.3145423233509064
+    },
+    {
+      "id": "framework-003",
+      "bit_identical": false,
+      "different_values": 151936,
+      "max_abs_difference": 0.3338127136230469
+    }
+  ]
+}

@@ -1,0 +1,2271 @@
+{
+  "status": "passed",
+  "script_sha256": "45775a7db6243b632d9eb51bed9ca432b09181bf7d1571f4b3c8cf302df9dc55",
+  "score_validation": {
+    "hf": {
+      "observations": 288,
+      "max_scalar_error": 4.3437822783154445e-13,
+      "score_file_sha256": "10836ad36ae4fd273fed39362c0f5efda947bbe6acd00789102b7c97f71c888e"
+    },
+    "hf_fresh": {
+      "observations": 32,
+      "max_scalar_error": 3.83026943495679e-13,
+      "score_file_sha256": "1d70101cc2571930824087b1cd61a3dc0ed6e669b36d4a8ba9240310572afd99"
+    },
+    "vllm": {
+      "observations": 72,
+      "max_scalar_error": 0.0,
+      "score_file_sha256": "241f4fd5d7de66f3fc468236e95ea9477f280b7d0c373c8cb94a8d4854b34097"
+    },
+    "vllm_fresh": {
+      "observations": 8,
+      "max_scalar_error": 0.0,
+      "score_file_sha256": "12fe7c07903d95eca0a47c01410c211eb21a0761de6c3aefadd6c7afa58a077f"
+    }
+  },
+  "recomputed_comparisons": {
+    "trainer_prediction": {
+      "all": {
+        "n_contexts": 64,
+        "both_correct": {
+          "count": 0,
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.05600908938663657
+          ]
+        },
+        "separation": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "marginal_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "correct_token_probability": {
+          "mean": 0.4999468086974586,
+          "ci95": [
+            0.49985332765389495,
+            0.4999988025820922
+          ]
+        },
+        "full_vocabulary_log_loss": {
+          "mean": 3.0634696556154175,
+          "ci95": [
+            2.542797981534999,
+            3.6196414507049886
+          ]
+        },
+        "conditional_binary_log_loss": {
+          "mean": 3.0633630210786422,
+          "ci95": [
+            2.5426822781487357,
+            3.6195384837141393
+          ]
+        },
+        "positive_accuracy": {
+          "mean": 0.484375,
+          "ci95": [
+            0.359375,
+            0.609375
+          ]
+        },
+        "negative_accuracy": {
+          "mean": 0.515625,
+          "ci95": [
+            0.390625,
+            0.640625
+          ]
+        }
+      },
+      "familiar": {
+        "n_contexts": 32,
+        "both_correct": {
+          "count": 0,
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.10888116067935288
+          ]
+        },
+        "separation": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "marginal_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "correct_token_probability": {
+          "mean": 0.4999999151628006,
+          "ci95": [
+            0.4999998830863466,
+            0.4999999447276615
+          ]
+        },
+        "full_vocabulary_log_loss": {
+          "mean": 2.9382666683808933,
+          "ci95": [
+            2.269903902487335,
+            3.6655151419213485
+          ]
+        },
+        "conditional_binary_log_loss": {
+          "mean": 2.938266498706464,
+          "ci95": [
+            2.269903706134428,
+            3.6655149995112506
+          ]
+        },
+        "positive_accuracy": {
+          "mean": 0.4375,
+          "ci95": [
+            0.28125,
+            0.625
+          ]
+        },
+        "negative_accuracy": {
+          "mean": 0.5625,
+          "ci95": [
+            0.375,
+            0.71875
+          ]
+        }
+      },
+      "novel": {
+        "n_contexts": 32,
+        "both_correct": {
+          "count": 0,
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.10888116067935288
+          ]
+        },
+        "separation": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "marginal_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "correct_token_probability": {
+          "mean": 0.4998937022321166,
+          "ci95": [
+            0.4997067412572713,
+            0.4999976299348798
+          ]
+        },
+        "full_vocabulary_log_loss": {
+          "mean": 3.1886726428499412,
+          "ci95": [
+            2.4038119744179944,
+            4.0193348582393895
+          ]
+        },
+        "conditional_binary_log_loss": {
+          "mean": 3.1884595434508194,
+          "ci95": [
+            2.4036332703891254,
+            4.018962187178588
+          ]
+        },
+        "positive_accuracy": {
+          "mean": 0.53125,
+          "ci95": [
+            0.34375,
+            0.71875
+          ]
+        },
+        "negative_accuracy": {
+          "mean": 0.46875,
+          "ci95": [
+            0.28125,
+            0.65625
+          ]
+        }
+      }
+    },
+    "vllm_serving": {
+      "all": {
+        "n_contexts": 64,
+        "both_correct": {
+          "count": 7,
+          "mean": 0.109375,
+          "ci95": [
+            0.04512102018711486,
+            0.2124572259554024
+          ]
+        },
+        "separation": {
+          "mean": 1.4824218653962764,
+          "ci95": [
+            1.0390136351516865,
+            1.9336425643143005
+          ]
+        },
+        "marginal_accuracy": {
+          "mean": 0.5234375,
+          "ci95": [
+            0.4765625,
+            0.5705078124999972
+          ]
+        },
+        "correct_token_probability": {
+          "mean": 0.5476204886737666,
+          "ci95": [
+            0.5200674929770436,
+            0.5780006712236108
+          ]
+        },
+        "full_vocabulary_log_loss": {
+          "mean": 2.6758204745219896,
+          "ci95": [
+            2.122699441386834,
+            3.2575222511028192
+          ]
+        },
+        "conditional_binary_log_loss": {
+          "mean": 2.6757035709535564,
+          "ci95": [
+            2.122515802779183,
+            3.2574823190079214
+          ]
+        },
+        "positive_accuracy": {
+          "mean": 0.484375,
+          "ci95": [
+            0.359375,
+            0.609375
+          ]
+        },
+        "negative_accuracy": {
+          "mean": 0.5625,
+          "ci95": [
+            0.4375,
+            0.6875
+          ]
+        }
+      },
+      "familiar": {
+        "n_contexts": 32,
+        "both_correct": {
+          "count": 5,
+          "mean": 0.15625,
+          "ci95": [
+            0.052750564402134104,
+            0.32787876568204166
+          ]
+        },
+        "separation": {
+          "mean": 2.011718734684721,
+          "ci95": [
+            1.3828125087769358,
+            2.699316447581746
+          ]
+        },
+        "marginal_accuracy": {
+          "mean": 0.578125,
+          "ci95": [
+            0.515625,
+            0.640625
+          ]
+        },
+        "correct_token_probability": {
+          "mean": 0.5765930699581654,
+          "ci95": [
+            0.536559472231546,
+            0.6237236641837927
+          ]
+        },
+        "full_vocabulary_log_loss": {
+          "mean": 2.4657929192544055,
+          "ci95": [
+            1.7309068122722648,
+            3.229155584568633
+          ]
+        },
+        "conditional_binary_log_loss": {
+          "mean": 2.4657927609167363,
+          "ci95": [
+            1.7309066072849653,
+            3.2291554586203897
+          ]
+        },
+        "positive_accuracy": {
+          "mean": 0.4375,
+          "ci95": [
+            0.28125,
+            0.625
+          ]
+        },
+        "negative_accuracy": {
+          "mean": 0.71875,
+          "ci95": [
+            0.5625,
+            0.875
+          ]
+        }
+      },
+      "novel": {
+        "n_contexts": 32,
+        "both_correct": {
+          "count": 2,
+          "mean": 0.0625,
+          "ci95": [
+            0.007660736346456388,
+            0.20806942989500746
+          ]
+        },
+        "separation": {
+          "mean": 0.9531249961078316,
+          "ci95": [
+            0.39453124709543524,
+            1.5118164381415933
+          ]
+        },
+        "marginal_accuracy": {
+          "mean": 0.46875,
+          "ci95": [
+            0.390625,
+            0.546875
+          ]
+        },
+        "correct_token_probability": {
+          "mean": 0.5186479073893678,
+          "ci95": [
+            0.4830497969929009,
+            0.5542180257293472
+          ]
+        },
+        "full_vocabulary_log_loss": {
+          "mean": 2.885848029789573,
+          "ci95": [
+            2.107826047597072,
+            3.7370521839673776
+          ]
+        },
+        "conditional_binary_log_loss": {
+          "mean": 2.8856143809903774,
+          "ci95": [
+            2.1076034085115585,
+            3.7369953154737883
+          ]
+        },
+        "positive_accuracy": {
+          "mean": 0.53125,
+          "ci95": [
+            0.34375,
+            0.71875
+          ]
+        },
+        "negative_accuracy": {
+          "mean": 0.40625,
+          "ci95": [
+            0.25,
+            0.59375
+          ]
+        }
+      }
+    },
+    "controlled_autograd": {
+      "all": {
+        "n_contexts": 64,
+        "both_correct": {
+          "count": 0,
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.05600908938663657
+          ]
+        },
+        "separation": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "marginal_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "correct_token_probability": {
+          "mean": 0.4999468086974586,
+          "ci95": [
+            0.49985332765389495,
+            0.4999988025820922
+          ]
+        },
+        "full_vocabulary_log_loss": {
+          "mean": 3.0634696556154175,
+          "ci95": [
+            2.542797981534999,
+            3.6196414507049886
+          ]
+        },
+        "conditional_binary_log_loss": {
+          "mean": 3.0633630210786422,
+          "ci95": [
+            2.5426822781487357,
+            3.6195384837141393
+          ]
+        },
+        "positive_accuracy": {
+          "mean": 0.484375,
+          "ci95": [
+            0.359375,
+            0.609375
+          ]
+        },
+        "negative_accuracy": {
+          "mean": 0.515625,
+          "ci95": [
+            0.390625,
+            0.640625
+          ]
+        }
+      },
+      "familiar": {
+        "n_contexts": 32,
+        "both_correct": {
+          "count": 0,
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.10888116067935288
+          ]
+        },
+        "separation": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "marginal_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "correct_token_probability": {
+          "mean": 0.4999999151628006,
+          "ci95": [
+            0.4999998830863466,
+            0.4999999447276615
+          ]
+        },
+        "full_vocabulary_log_loss": {
+          "mean": 2.9382666683808933,
+          "ci95": [
+            2.269903902487335,
+            3.6655151419213485
+          ]
+        },
+        "conditional_binary_log_loss": {
+          "mean": 2.938266498706464,
+          "ci95": [
+            2.269903706134428,
+            3.6655149995112506
+          ]
+        },
+        "positive_accuracy": {
+          "mean": 0.4375,
+          "ci95": [
+            0.28125,
+            0.625
+          ]
+        },
+        "negative_accuracy": {
+          "mean": 0.5625,
+          "ci95": [
+            0.375,
+            0.71875
+          ]
+        }
+      },
+      "novel": {
+        "n_contexts": 32,
+        "both_correct": {
+          "count": 0,
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.10888116067935288
+          ]
+        },
+        "separation": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "marginal_accuracy": {
+          "mean": 0.5,
+          "ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "correct_token_probability": {
+          "mean": 0.4998937022321166,
+          "ci95": [
+            0.4997067412572713,
+            0.4999976299348798
+          ]
+        },
+        "full_vocabulary_log_loss": {
+          "mean": 3.1886726428499412,
+          "ci95": [
+            2.4038119744179944,
+            4.0193348582393895
+          ]
+        },
+        "conditional_binary_log_loss": {
+          "mean": 3.1884595434508194,
+          "ci95": [
+            2.4036332703891254,
+            4.018962187178588
+          ]
+        },
+        "positive_accuracy": {
+          "mean": 0.53125,
+          "ci95": [
+            0.34375,
+            0.71875
+          ]
+        },
+        "negative_accuracy": {
+          "mean": 0.46875,
+          "ci95": [
+            0.28125,
+            0.65625
+          ]
+        }
+      }
+    }
+  },
+  "summary_matched": true,
+  "within_engine_repeats": {
+    "hf": {
+      "framework-000.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-000.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-000.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-000.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      }
+    },
+    "hf_fresh": {
+      "framework-000.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-000.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-000.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-000.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      }
+    },
+    "vllm": {
+      "framework-000.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 0.7499961853027344,
+        "rms_difference": 0.270907778987116
+      },
+      "framework-001.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 1.751129150390625,
+        "rms_difference": 1.058032506166903
+      },
+      "framework-002.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 1.1528512239456177,
+        "rms_difference": 0.16988561084459947
+      },
+      "framework-003.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 0.7219638824462891,
+        "rms_difference": 0.42841871638790535
+      }
+    },
+    "vllm_fresh": {
+      "framework-000.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 1.3749961853027344,
+        "rms_difference": 0.7569681543231243
+      },
+      "framework-001.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 0.7778511047363281,
+        "rms_difference": 0.39809308576822333
+      },
+      "framework-002.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 1.3145423233509064,
+        "rms_difference": 0.37563360668009627
+      },
+      "framework-003.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 0.3338127136230469,
+        "rms_difference": 0.13118102008798949
+      }
+    }
+  },
+  "fresh_process_repeats": {
+    "hf": {
+      "framework-000.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-000.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-000.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-000.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.trainer_train": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.trainer_predict": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.controlled_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003.controlled_no_grad": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      }
+    },
+    "vllm": {
+      "framework-000.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 1.1249961853027344,
+        "rms_difference": 0.6322363328297753
+      },
+      "framework-001.vllm": {
+        "bit_identical": false,
+        "different_values": 118139,
+        "max_abs_difference": 0.25,
+        "rms_difference": 0.06740689557329144
+      },
+      "framework-002.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 0.44948577880859375,
+        "rms_difference": 0.1631801476879127
+      },
+      "framework-003.vllm": {
+        "bit_identical": false,
+        "different_values": 151936,
+        "max_abs_difference": 0.5756492614746094,
+        "rms_difference": 0.33774495508654384
+      }
+    }
+  },
+  "within_engine_answer_repeats": {
+    "hf": {
+      "framework-000.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-000.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-000.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-000.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      }
+    },
+    "hf_fresh": {
+      "framework-000.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-000.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-000.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-000.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      }
+    },
+    "vllm": {
+      "framework-000.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -11.250000357712452,
+        "baseline_yes_no_log_odds": -11.999999523181941,
+        "log_odds_difference": 0.7499991654694895
+      },
+      "framework-001.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -2.2500000298023224,
+        "baseline_yes_no_log_odds": -0.5,
+        "log_odds_difference": -1.7500000298023224
+      },
+      "framework-002.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 2.0000001043081284,
+        "log_odds_difference": -1.5000001043081284
+      },
+      "framework-003.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.7499999850988388,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": -0.7499999850988388
+      }
+    },
+    "vllm_fresh": {
+      "framework-000.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -11.749999761612344,
+        "baseline_yes_no_log_odds": -12.999999642374632,
+        "log_odds_difference": 1.2499998807622887
+      },
+      "framework-001.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.25,
+        "baseline_yes_no_log_odds": -0.4999999701976776,
+        "log_odds_difference": -0.7500000298023224
+      },
+      "framework-002.vllm": {
+        "top_token_changed": true,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": -0.7500000298023224,
+        "baseline_yes_no_log_odds": 1.5000000298023224,
+        "log_odds_difference": -2.2500000596046448
+      },
+      "framework-003.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.7499999850988388,
+        "baseline_yes_no_log_odds": -1.5000000596046448,
+        "log_odds_difference": -0.24999992549419403
+      }
+    }
+  },
+  "fresh_process_answer_repeats": {
+    "hf": {
+      "framework-000.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-000.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-000.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-000.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.25,
+        "baseline_yes_no_log_odds": -12.25,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-001.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 0.5,
+        "baseline_yes_no_log_odds": 0.5,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-002.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.75,
+        "baseline_yes_no_log_odds": 1.75,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.trainer_train": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.trainer_predict": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.controlled_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      },
+      "framework-003.controlled_no_grad": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.0,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": 0.0
+      }
+    },
+    "vllm": {
+      "framework-000.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -12.999999642374632,
+        "baseline_yes_no_log_odds": -11.999999523181941,
+        "log_odds_difference": -1.0000001191926913
+      },
+      "framework-001.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -0.4999999701976776,
+        "baseline_yes_no_log_odds": -0.5,
+        "log_odds_difference": 2.9802322387695312e-08
+      },
+      "framework-002.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 9454,
+        "baseline_top_token_id": 9454,
+        "current_yes_no_log_odds": 1.5000000298023224,
+        "baseline_yes_no_log_odds": 2.0000001043081284,
+        "log_odds_difference": -0.500000074505806
+      },
+      "framework-003.vllm": {
+        "top_token_changed": false,
+        "current_top_token_id": 2753,
+        "baseline_top_token_id": 2753,
+        "current_yes_no_log_odds": -1.5000000596046448,
+        "baseline_yes_no_log_odds": -1.0,
+        "log_odds_difference": -0.5000000596046448
+      }
+    }
+  },
+  "fresh_vllm_resolved_configuration_differences": {},
+  "hf_full_vocabulary_contrasts": {
+    "trainer_train_vs_trainer_predict": {
+      "framework-000": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-004": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-005": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-006": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-007": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-008": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-009": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-010": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-011": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-012": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-013": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-014": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-015": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-016": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-017": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-018": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-019": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-020": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-021": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-022": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-023": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-024": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-025": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-026": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-027": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-028": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-029": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-030": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-031": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-032": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-033": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-034": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-035": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-036": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-037": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-038": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-039": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-040": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-041": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-042": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-043": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-044": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-045": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-046": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-047": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-048": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-049": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-050": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-051": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-052": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-053": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-054": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-055": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-056": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-057": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-058": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-059": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-060": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-061": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-062": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-063": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-064": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-065": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-066": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-067": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      }
+    },
+    "controlled_grad_vs_controlled_no_grad": {
+      "framework-000": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-001": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-002": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-003": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-004": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-005": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-006": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-007": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-008": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-009": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-010": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-011": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-012": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-013": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-014": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-015": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-016": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-017": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-018": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-019": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-020": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-021": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-022": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-023": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-024": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-025": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-026": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-027": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-028": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-029": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-030": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-031": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-032": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-033": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-034": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-035": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-036": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-037": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-038": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-039": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-040": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-041": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-042": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-043": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-044": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-045": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-046": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-047": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-048": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-049": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-050": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-051": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-052": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-053": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-054": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-055": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-056": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-057": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-058": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-059": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-060": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-061": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-062": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-063": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-064": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-065": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-066": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      },
+      "framework-067": {
+        "bit_identical": true,
+        "different_values": 0,
+        "max_abs_difference": 0.0,
+        "rms_difference": 0.0
+      }
+    }
+  },
+  "scope": "Independent reconstruction from persisted native final-position vectors. Repeat differences are reported, not suppressed. No new CUDA execution."
+}
