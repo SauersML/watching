@@ -575,7 +575,7 @@ def same_change(parts, left, top, prompts, step=74):
     for k, row in enumerate(prompts):
         cy = top + k * step
         tokens = [t for t in row["tokens"][3:12] if t not in ("<", "ask", ">")][:3]
-        x = chip(parts, left, cy, "<|im_start|>", size=19, h=40)
+        x = chip(parts, left, cy, "start of message", mono=False, size=19, h=40)
         user = x
         x = chip(parts, x, cy, "user", highlight=True, size=19, h=40)
         x = chip(parts, x, cy, "↵", size=19, h=40)
@@ -695,11 +695,11 @@ def lens(parts, scene, center, radius, focus, zoom):
 
 
 STRIP = (
-    (0, "<|im_start|>"),
+    (0, "start of message"),
     (1, "user"),
     (2, "↵"),
     ((3, 45), None),
-    (45, "<|im_end|>"),
+    (45, "end of message"),
     ((46, 50), "…"),
     (50, "<think>"),
     (51, "↵↵"),
@@ -719,7 +719,8 @@ def attention_strip(parts, left, cy, row, condition, size=19):
             if label is None:
                 content = excerpt(row["tokens"][where[0] : where[1]], 170, size)
         else:
-            share, content, mono = attention[where], label, True
+            share, content = attention[where], label
+            mono = not label.endswith(" of message")
         w = (len(content) * size * 0.602 if mono else width(content, size)) + 18
         hot = share >= 0.02
         fill = mix(AMBER, 0.3 + 0.7 * share**0.5) if hot else HEAD
@@ -1081,9 +1082,13 @@ PURPLE = "#7B5EA7"
 TEAL = "#2A8C82"
 # Training against standard capture APIs (run 061r), with the probe for reference.
 CAPTURE_RUNS = {
-    "hook": ("PyTorch hook on `q_norm`", PURPLE, "library-capture-training-061r-hook/out"),
+    "hook": (
+        "PyTorch hook on layer 14’s queries",
+        PURPLE,
+        "library-capture-training-061r-hook/out",
+    ),
     "hidden": (
-        "Hugging Face `output_hidden_states`",
+        "Hugging Face hidden states",
         TEAL,
         "library-capture-training-061r-hidden/out",
     ),
@@ -1632,11 +1637,15 @@ def capture_tools(out):
         return 0.0
 
     rows = (
-        ("NNsight `.save()`", 0.0, {"fraction_different": changed("nnsight_q_vs_none_a")}),
-        ("TransformerLens cache", 0.0, "same as recompiling"),
-        ("PyTorch hook on `q_norm`", eager("detach_q"), compiled["detach_q"]),
-        ("PyTorch hook on the layer output", eager("detach_residual"), compiled["detach_residual"]),
-        ("Hugging Face `output_hidden_states`", eager("hidden_states"), compiled["hidden_states"]),
+        ("NNsight", 0.0, {"fraction_different": changed("nnsight_q_vs_none_a")}),
+        ("TransformerLens", 0.0, "same as recompiling"),
+        ("PyTorch hook on layer 14’s queries", eager("detach_q"), compiled["detach_q"]),
+        (
+            "PyTorch hook on layer 14’s output",
+            eager("detach_residual"),
+            compiled["detach_residual"],
+        ),
+        ("Hugging Face hidden states", eager("hidden_states"), compiled["hidden_states"]),
     )
     w, row_h, top, span = 1100, 72, 112, 220
     columns = ((468, "Run eagerly"), (796, "Compiled"))
