@@ -23,6 +23,12 @@ Recovery requirements:
 4. Only delete a pod after the complete output copy and final checkpoint are verified. Account for recovery CPU time and storage separately from original GPU rent. The hook run's cap was extended in its recorded log; do not repeat the earlier claim of a strict 30-minute total cap.
 5. Publish large checkpoints/caches/compiler artifacts as GitHub release assets with hashes; commit compact results and provenance. Keep incomplete-recovery notices until this is done.
 
+## Call-setup diagnostic after the hook validation failure
+
+The unchanged fresh evaluator must not be rerun blindly. A narrow diagnostic is prepared in `watching.library_call_audit`: the exact failed prompt and final checkpoint, with omitted versus explicit-false `output_hidden_states` crossed with absent versus registered-but-disabled hook, plus a second independent baseline compilation. It saves full-sequence repeated outputs and compiler artifacts; four focused CPU tests and independent review passed. Attribution requires repeatability controls to pass. It produces no detector accuracy estimate.
+
+Its first restart request was rejected; the hook pod remained `EXITED` with `lastStartedAt` unchanged. No diagnostic arm ran. Inspect `/Users/user/mpd-data/runpod/watching-library-training-061r-validation-hook-call-audit/` and current processes before a later retry. The authorized diagnostic cap is 15 minutes on the original $0.99/hour GPU (at most $0.2475), within the remaining combined allowance. Do not allocate a replacement pod.
+
 ## Fresh-process validation
 
 `python -m watching.library_validate --help` describes the prepared evaluator. Run one fresh process per final artifact, with pinned PyTorch 2.10.0, Transformers 5.18.0 and the original Qwen3-8B revision. Pass `--fit`, `--tail`, an independently verified `--tail-sha256`, `--capture-method`, `--input-bank` and an empty `--out` directory.
