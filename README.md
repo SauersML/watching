@@ -132,7 +132,7 @@ A new process evaluates the fixed 039 checkpoint on 128 prompts written and froz
 
 ![Green settings transfer; chats that start with a system message do not](figures/generalization.png)
 
-*Figure 6. Dark bars: correct answers. Light bars: prompts where turning the condition on raises the target answer's log-odds.*
+*Figure 6. Each row: chats of one layout, each run with and without the probe. Correct answers: the share of right answers (Yes and owl with the probe, No and cat without); dashed line: 50%, the score of giving the same answer either way. Right: the share of chats where turning the probe on raises the log-odds of the answer trained for the probe (Yes; owl). Error bars: 95% intervals from resampling whole prompts.*
 
 - **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
 - **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The probe also changes the early system token's hidden state consistently, but in a direction almost unrelated to its change to the `user` token (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).

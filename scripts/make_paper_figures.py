@@ -24,7 +24,6 @@ from matplotlib.patches import (
 )
 from matplotlib.path import Path as MplPath
 from matplotlib.ticker import PercentFormatter
-from matplotlib.transforms import blended_transform_factory
 from scipy.stats import beta
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -904,122 +903,6 @@ def rates(path, keep=lambda row: True):
     return correct, raised
 
 
-def generalization(out):
-    """Where the learned behavior transfers, and where it does not."""
-    fresh = ROOT / "results/confirm-validation-038/fresh034/trained_reference.json"
-    joint = ROOT / "results/joint-confirmation-040/fresh039/trained_reference.json"
-    layouts = (
-        ROOT / "results/diverse-joint-046/final-step1024/fit/validation_1024_split_inference.json"
-    )
-
-    def layout(task, system):
-        return lambda r: r["task"] == task and r["group"].startswith("system") == system
-
-    def multiturn(task):
-        return lambda r: r["task"] == task and r["group"] == "multiturn"
-
-    groups = (
-        (
-            "Is a probe attached?",
-            (
-                ("New prompts", rates(fresh)),
-                ("Multi-turn chats", rates(layouts, multiturn("detection"))),
-                ("System message first", rates(layouts, layout("detection", True))),
-            ),
-        ),
-        (
-            "Favorite animal, cat or owl?",
-            (
-                ("New prompts", rates(joint, lambda r: r["task"] == "animal")),
-                ("Multi-turn chats", rates(layouts, multiturn("animal"))),
-                ("System message first", rates(layouts, layout("animal", True))),
-            ),
-        ),
-    )
-    rows, y = [], 0.0
-    for title, items in groups:
-        rows.append((y, title, None))
-        y += 0.95
-        for label, values in items:
-            rows.append((y, label, values))
-            y += 1.15
-        y += 0.35
-    height = 0.62 * y + 1.6
-    fig, ax = plt.subplots(figsize=(10.4, height))
-    fig.subplots_adjust(left=0.34, right=0.89, top=1 - 0.3 / height, bottom=0.6 / height)
-    header = blended_transform_factory(fig.transFigure, ax.transData)
-    ax.axvline(0.5, color=MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
-    bottom = y
-    for y, label, values in rows:
-        if values is None:
-            ax.text(
-                0.02,
-                y,
-                label,
-                transform=header,
-                ha="left",
-                va="center",
-                fontsize=22,
-                weight="bold",
-                color=INK,
-                bbox={"fc": "white", "ec": "none", "pad": 3},
-                zorder=5,
-            )
-            continue
-        ax.text(
-            -0.02,
-            y,
-            label,
-            transform=ax.get_yaxis_transform(),
-            ha="right",
-            va="center",
-            fontsize=20,
-            color=INK,
-        )
-        correct, raised = values
-        accuracy = float(np.mean(correct))
-        strong, pale = (GREEN, "#B7DDBF") if accuracy >= 0.9 else (RED, "#F2BDB3")
-        for offset, samples, color, name in (
-            (-0.23, correct, strong, "correct answers"),
-            (0.23, raised, pale, "prompts where the right answer\u2019s odds rise"),
-        ):
-            value = float(np.mean(samples))
-            interval = prompt_bootstrap(samples)
-            ax.barh(y + offset, value, 0.45, color=color, zorder=3)
-            if y == rows[1][0]:
-                ax.text(
-                    0.015,
-                    y + offset,
-                    name,
-                    va="center",
-                    fontsize=16,
-                    weight="bold",
-                    color="white" if color == strong else INK,
-                    zorder=4,
-                )
-            error_bar(ax, y + offset, value, interval, horizontal=True)
-            ax.text(
-                interval[1] + 0.012,
-                y + offset,
-                f"{value:.0%}",
-                va="center",
-                fontsize=19,
-                bbox={"fc": "white", "ec": "none", "pad": 0.5},
-                weight="bold",
-                color=strong if color == strong else INK,
-            )
-    ax.set_ylim(bottom - 0.1, -0.6)
-    ax.set_xlim(0, 1.08)
-    ax.set_yticks([])
-    ax.set_xticks([0, 0.5, 1])
-    ax.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
-    ax.tick_params(axis="x", labelsize=18)
-    ax.grid(axis="y", visible=False)
-    ax.grid(axis="x", color=RULE)
-    ax.spines["bottom"].set_visible(False)
-    save(fig, out, "generalization")
-
-
 # Training runs per way of handling the activation, drawn by make_diagrams.methods().
 # Runs that continue an earlier run are listed after it and placed after its last step.
 VIEWING_RUNS = (
@@ -1082,7 +965,6 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     style()
     snapshot_034(args.out, args.fit)
-    generalization(args.out)
 
 
 if __name__ == "__main__":

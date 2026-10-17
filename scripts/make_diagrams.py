@@ -1910,6 +1910,108 @@ def engine_detector(out):
     render(document(w, bottom + 46, "\n".join(parts)), out, "engine_detector")
 
 
+def generalization(out):
+    """Where the learned behavior transfers: new prompts and multi-turn chats, not system-first."""
+    from make_paper_figures import prompt_bootstrap, rates
+
+    fresh = ROOT / "results/confirm-validation-038/fresh034/trained_reference.json"
+    joint = ROOT / "results/joint-confirmation-040/fresh039/trained_reference.json"
+    layouts = (
+        ROOT / "results/diverse-joint-046/final-step1024/fit/validation_1024_split_inference.json"
+    )
+
+    def chats(task, group):
+        if group == "system":
+            return lambda r: r["task"] == task and r["group"].startswith("system")
+        return lambda r: r["task"] == task and r["group"] == group
+
+    sections = (
+        (
+            "Is a read-only probe capturing an internal activation?",
+            (
+                ("New prompts", rates(fresh)),
+                ("Multi-turn chats", rates(layouts, chats("detection", "multiturn"))),
+                ("System message first", rates(layouts, chats("detection", "system"))),
+            ),
+        ),
+        (
+            "What's your favorite animal, cat or owl?",
+            (
+                ("New prompts", rates(joint, lambda r: r["task"] == "animal")),
+                ("Multi-turn chats", rates(layouts, chats("animal", "multiturn"))),
+                ("System message first", rates(layouts, chats("animal", "system"))),
+            ),
+        ),
+    )
+    w, row_h, gap = 1100, 84, 10
+    columns = (
+        (310, 260, ("Correct answers",)),
+        (720, 260, ("Probe raises the odds", "of the trained answer")),
+    )
+    parts = []
+    for x, span, label in columns:
+        for k, line in enumerate(label):
+            parts.append(
+                text(x + span / 2, 64 - 26 * (len(label) - 1 - k), line, 21, True, anchor="middle")
+            )
+    y = 80
+    for question, rows in sections:
+        bubble = width(question, 21) + 40
+        part, y = message(24 + bubble, y + 8, question, 21, bubble + 1)
+        parts.append(part)
+        y += 14
+        for name, (correct, raised) in rows:
+            y0, cy = y, y + row_h / 2
+            works = np.mean(correct) >= 0.9
+            fill = GREEN if works else GREY
+            parts.append(
+                f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
+            )
+            parts.append(text(40, cy + 7, name, 20, True, GREEN if works else INK))
+            for (x, span, _), samples in zip(columns, (correct, raised), strict=True):
+                for t in (0, 0.5, 1):
+                    gx = x + span * t
+                    dash = ' stroke-dasharray="6 6"' if (t == 0.5 and x == columns[0][0]) else ""
+                    stroke = MUTED if dash else (LINE if t == 0 else "#DCDCE1")
+                    parts.append(
+                        f'<line x1="{gx:.1f}" y1="{y0 + 12}" x2="{gx:.1f}" '
+                        f'y2="{y0 + row_h - 12}" stroke="{stroke}" '
+                        f'stroke-width="{2 if dash else 1.4}"{dash}/>'
+                    )
+                value = float(np.mean(samples))
+                lo, hi = prompt_bootstrap(samples)
+                parts.append(
+                    f'<rect x="{x}" y="{cy - 16}" width="{span * value:.1f}" height="32" '
+                    f'rx="4" fill="{fill}"/>'
+                )
+                end = x + span * hi
+                if hi > lo:
+                    a = x + span * lo
+                    parts.append(
+                        f'<path d="M{a:.1f} {cy}H{end:.1f}M{a:.1f} {cy - 8}V{cy + 8}M{end:.1f} '
+                        f'{cy - 8}V{cy + 8}" stroke="{INK}" stroke-width="2.2" fill="none"/>'
+                    )
+                halo = f'stroke="{PANEL}" stroke-width="6" paint-order="stroke"'
+                parts.append(
+                    text(
+                        end + 10,
+                        cy + 7,
+                        f"{value:.0%}",
+                        20,
+                        True,
+                        GREEN if works else INK,
+                        extra=halo,
+                    )
+                )
+            y += row_h + gap
+        y += 18
+    bottom = y - gap - 18
+    for x, span, _ in columns:
+        for t, label in zip((0, 0.5, 1), ("0%", "50%", "100%"), strict=True):
+            parts.append(text(x + span * t, bottom + 30, label, 19, color=MUTED, anchor="middle"))
+    render(document(w, bottom + 46, "\n".join(parts)), out, "generalization")
+
+
 GPU_TRANSFER = ROOT / "results/gpu-transfer-062/summary.json"
 # Display name and chip of each GPU model; the detector was trained on an L40S.
 GPUS = {
@@ -2122,6 +2224,7 @@ def main():
     capture_training(args.out)
     frameworks(args.out)
     engine_detector(args.out)
+    generalization(args.out)
     gpu_transfer(args.out)
 
 
