@@ -57,9 +57,13 @@ record the last-position scores before backward. Do not add an internal activati
 probe. Verify this recorder leaves loss/logits unchanged on diagnostic inputs.
 Call the prepared Trainer training step, not a hand-written substitute; do not
 enter its optimizer/scheduler-update loop. Discard gradients with `zero_grad` after
-each example. Check parameter **and buffer** hashes before/after every pair,
-restore RNG state for paired diagnostic repetitions, and invalidate any pair with
-state changes. Calling a training step with updates intentionally omitted is the
+each example. Before execution, the state-check plan is refined to avoid repeatedly copying
+16 GB of parameters: check exact parameter hashes at each engine start/end and
+after export/reload; check every parameter storage pointer/version and exact
+buffer hashes after each pair. This detects ordinary in-place mutations per pair
+and checks net parameter equality across the engine. It cannot exclude a hidden
+mutation that bypasses version counters and is restored before the final hash.
+Restore RNG state within each paired diagnostic and invalidate observed state changes. Calling a training step with updates intentionally omitted is the
 precise scope of the “training” arm.
 
 For vLLM use `max_tokens=1`, temperature zero, no penalties, token restrictions or
@@ -97,4 +101,21 @@ Archive model/software hashes, compilation settings and caches. Independently
 compiled baseline A/B differences must remain visible, not be attributed to
 training-mode detection. A failed API/parity gate or failure of stock whole-model
 transfer is a reportable outcome, not permission to silently switch to the
-successful split runtime. This protocol starts no GPU job or training update.
+successful split runtime. This document specifies evaluation only; the separately authorized run starts no optimizer updates.
+
+## Run 058, frozen before evaluation
+
+Use run 057r at update 1024 without adjustment. New bank:
+`data/framework_transfer_v1/dataset.json`, SHA256
+`afa935feb7ad62c343497a67df5b6bb1c21d423376133be20b913617b2bc6793`.
+It has four diagnostic contexts and 64 new contexts, half familiar question
+formats and half new formats. Native chat prefixes are unpadded, batch 1; length
+is checked without truncation. Both frameworks receive identical IDs. Export
+checks every parameter and buffer after a CPU reload. The HF experiment reloads
+that export in a fresh process. Each engine also repeats the four diagnostic
+contexts in a second process. No adaptation is permitted from their scores.
+
+Run bounded to 45 minutes on one dedicated 48 GB CUDA GPU, at most $0.95/hour
+($0.7125 maximum rent), with utilization-based shutdown disabled and the hard
+time cap retained. Pinned environment: PyTorch 2.10.0, Transformers 5.18.0,
+vLLM 0.19.1. Intermediate per-prompt scores are flushed immediately.
