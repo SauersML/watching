@@ -18,4 +18,4 @@ python -m watching.mechanism_trace \
   --checkpoint Qwen/Qwen3-8B \
   --revision b968826d9c46dd6066d109eabc6255188de91218 \
   --data "$run_source/data/validation_v2/dataset.json" \
-  --out "$run_output/trace" --prompts 4 --probe-layer 14 --length 96
+  --out "$run_output/trace" --prompts 4 --probe-layer 14 --length 96 --reference-only

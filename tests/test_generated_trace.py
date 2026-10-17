@@ -315,3 +315,21 @@ def test_numerical_capture_is_written_before_ancillary_metadata(tmp_path, monkey
     assert torch.equal(kernels[0]["inputs"]["in_ptr0"], inputs()[0])
     boundaries = torch.load(out / "probe_layer_boundaries.pt", weights_only=True)
     assert torch.equal(boundaries["layer00.q_projection"], inputs()[0])
+
+
+def test_unserializable_ancillary_capture_metadata_is_reported_without_losing_tensors(tmp_path):
+    import json
+
+    from watching.mechanism_trace import save_capture
+
+    runner = make_runner(tmp_path)
+    with GeneratedCapture(1, 0) as captured:
+        logits = runner.call(inputs())
+    captured.pipeline[0]["metadata"]["future_unsupported_field"] = object()
+    out = tmp_path / "saved"
+    save_capture(out, captured, logits)
+    evidence = json.loads((out / "capture.json").read_text())
+    assert evidence["metadata_status"] == "unsupported"
+    assert evidence["full_vocab_capture_parity"]
+    assert torch.equal(torch.load(out / "logits.pt", weights_only=True), logits)
+    assert not list(out.glob("*.partial"))

@@ -264,7 +264,7 @@ def chosen_kernel_metadata(kernel):
                 raise RuntimeError(
                     "Static kernel cache configuration differs from selected launcher"
                 )
-        except RuntimeError as error:
+        except (RuntimeError, OSError, ValueError, AttributeError) as error:
             # The live selected launcher still supports native replay and passive
             # capture. Missing PTX only blocks claims about its instruction source.
             ptx, metadata = None, {}

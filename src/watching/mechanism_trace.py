@@ -10,7 +10,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from watching.artifacts import write_json
 from watching.execution_fit import checkpoint_provenance, tensor_digest
-from watching.generated_trace import GeneratedCapture
+from watching.generated_trace import GeneratedCapture, json_metadata
 from watching.runtime import runtime_provenance
 from watching.tail_train import difference
 from watching.validate_tail import ValidationProbe
@@ -147,11 +147,19 @@ def kernel_comparison(left, right):
     }
 
 
-def query_intervention(compiled, batch, mode, layers, probe_layer, donor, expected):
+def save_tensor(path, value):
+    temporary = path.with_name(path.name + ".partial")
+    torch.save(value, temporary)
+    temporary.replace(path)
+
+
+def query_intervention(compiled, batch, mode, layers, probe_layer, donor, expected, out=None):
     """Explicit causal replacement at an existing tensor; never labeled passive capture."""
     with torch.no_grad():
         with GeneratedCapture(layers, probe_layer, replace_query=donor):
             logits = compiled(**batch, mode=mode)[0].clone().cpu()
+    if out is not None:
+        save_tensor(out, logits)
     return {
         "replacement": "existing attention query tensor only",
         "difference_from_donor_condition_logits": difference(logits, expected),
@@ -180,22 +188,22 @@ def capture_one(compiled, batch, mode, layers, probe_layer):
 def save_capture(out, capture, logits=None):
     out.mkdir(parents=True, exist_ok=True)
     # Numerical evidence comes first; ancillary metadata cannot erase a valid capture.
-    torch.save(
+    save_tensor(
+        out / "kernel_tensors.pt",
         {
             index: {"inputs": stage["inputs"], "outputs": stage["outputs"]}
             for index, stage in capture.pipeline.items()
         },
-        out / "kernel_tensors.pt",
     )
     if logits is not None:
-        torch.save(logits, out / "logits.pt")
-    torch.save(
+        save_tensor(out / "logits.pt", logits)
+    save_tensor(
+        out / "probe_layer_boundaries.pt",
         {
             name: value
             for name, value in capture.snapshots.items()
             if name.startswith(f"layer{capture.probe_layer:02d}.")
         },
-        out / "probe_layer_boundaries.pt",
     )
     (out / "generated_wrapper.py.txt").write_text(capture.wrapper_source)
     stages = []
@@ -213,10 +221,14 @@ def save_capture(out, capture, logits=None):
                 "ptx_sha256": hashlib.sha256(ptx.encode()).hexdigest() if ptx is not None else None,
             }
         )
-    write_json(
-        out / "capture.json",
-        {**capture.provenance(), "stages": stages, "full_vocab_capture_parity": True},
-    )
+    evidence = {**capture.provenance(), "full_vocab_capture_parity": True}
+    try:
+        evidence["stages"] = json_metadata(stages)
+        evidence["metadata_status"] = "serialized"
+    except (TypeError, ValueError) as error:
+        evidence["metadata_status"] = "unsupported"
+        evidence["metadata_error"] = str(error)
+    write_json(out / "capture.json", evidence)
 
 
 def main():
@@ -229,7 +241,10 @@ def main():
     parser.add_argument("--length", type=int, default=96)
     parser.add_argument("--probe-layer", type=int, default=14)
     parser.add_argument("--include-flat", action="store_true")
+    parser.add_argument("--reference-only", action="store_true")
     args = parser.parse_args()
+    if args.reference_only and args.include_flat:
+        raise ValueError("Reference-only audit excludes optional flat-buffer comparisons")
     if not 1 <= args.prompts <= 4:
         raise ValueError("This focused audit is capped at four training/development prompts")
     from torch._inductor import config
@@ -305,6 +320,8 @@ def main():
             "scope": "New matched compilation; no claim of reproducing previous selected config",
             "no_training": True,
             "data_split": "first fixed detection training records",
+            "reference_only": args.reference_only,
+            "include_flat": args.include_flat,
         },
     )
     canonical_logits = []
@@ -326,7 +343,11 @@ def main():
                 )
             emit("capture_verified", style=style, prompt_index=index, mode="none")
             save_capture(args.out / style / "none" / f"prompt_{index:02d}", absent, absent_logits)
-            modes = ("reference", "buffer") if style == "shaped" else ("buffer",)
+            modes = (
+                (("reference",) if args.reference_only else ("reference", "buffer"))
+                if style == "shaped"
+                else ("buffer",)
+            )
             for mode in modes:
                 present_logits, present = capture_one(
                     compiled, batch, mode, layers, args.probe_layer
@@ -335,10 +356,11 @@ def main():
                 case = args.out / style / mode / f"prompt_{index:02d}"
                 save_capture(case / "none", absent, absent_logits)
                 save_capture(case / mode, present, present_logits)
-                torch.save({"none": absent_logits, mode: present_logits}, case / "logits.pt")
+                save_tensor(case / "logits.pt", {"none": absent_logits, mode: present_logits})
                 comparison = compare_captures(absent, present)
                 comparison["logits"] = difference(absent_logits, present_logits)
-                comparison["kernel_replay"] = kernel_comparison(absent, present)
+                comparison["stage"] = "passive_captures_verified"
+                write_json(case / "comparison.json", comparison)
                 label = f"layer{args.probe_layer:02d}.query_rotary"
                 for own_mode, own_capture, own_logits in (
                     ("none", absent, absent_logits),
@@ -352,12 +374,15 @@ def main():
                         args.probe_layer,
                         own_capture.snapshots[label],
                         own_logits,
+                        out=case / f"identity_{own_mode}_logits.pt",
                     )
                     if not own["difference_from_donor_condition_logits"]["bit_identical"]:
                         raise RuntimeError(
                             "Identity query replacement changes full-vocabulary logits"
                         )
                 comparison["identity_query_replacement_parity"] = True
+                comparison["stage"] = "identity_swaps_verified"
+                write_json(case / "comparison.json", comparison)
                 comparison["query_replacements"] = {
                     "intervention_query_into_none": query_intervention(
                         compiled,
@@ -367,6 +392,7 @@ def main():
                         args.probe_layer,
                         present.snapshots[label],
                         present_logits,
+                        out=case / "intervention_query_into_none_logits.pt",
                     ),
                     "none_query_into_intervention": query_intervention(
                         compiled,
@@ -376,24 +402,51 @@ def main():
                         args.probe_layer,
                         absent.snapshots[label],
                         absent_logits,
+                        out=case / "none_query_into_intervention_logits.pt",
                     ),
                 }
                 # Replacement must not leave any state behind on the next ordinary call.
-                with torch.no_grad():
-                    restored = compiled(**batch, mode=mode)[0].cpu()
-                if not torch.equal(restored, present_logits):
-                    raise RuntimeError("Query intervention changed subsequent ordinary execution")
+                for restore_mode, expected_logits in (
+                    ("none", absent_logits),
+                    (mode, present_logits),
+                ):
+                    with torch.no_grad():
+                        restored = compiled(**batch, mode=restore_mode)[0].cpu()
+                    if not torch.equal(restored, expected_logits):
+                        raise RuntimeError(
+                            "Query intervention changed subsequent ordinary execution"
+                        )
+                comparison["stage"] = "query_swaps_and_restoration_verified"
+                write_json(case / "comparison.json", comparison)
+                emit(
+                    "query_swaps_complete",
+                    style=style,
+                    mode=mode,
+                    prompt_index=index,
+                    query_replacements=comparison["query_replacements"],
+                )
+                try:
+                    comparison["kernel_replay"] = kernel_comparison(absent, present)
+                    comparison["kernel_replay"]["status"] = "passed"
+                except (RuntimeError, ValueError, KeyError, TypeError, AttributeError) as error:
+                    comparison["kernel_replay"] = {
+                        "status": "failed_or_unsupported",
+                        "error": str(error),
+                        "scope": "No selected-kernel replay conclusion; "
+                        "prior independent query swaps retained",
+                    }
+                comparison["stage"] = "complete"
                 write_json(case / "comparison.json", comparison)
                 selected = {label, f"layer{args.probe_layer:02d}.attention_output"}
                 first = comparison["first_unequal_observed_boundary"]
                 if first is not None:
                     selected.add(first)
-                torch.save(
+                save_tensor(
+                    case / "selected_boundaries.pt",
                     {
                         label: {"none": absent.snapshots[label], mode: present.snapshots[label]}
                         for label in selected
                     },
-                    case / "selected_boundaries.pt",
                 )
                 emit(
                     "case_complete",
