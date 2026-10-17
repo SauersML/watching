@@ -1203,7 +1203,7 @@ def both_correct_curve(directory):
 
 
 def viewing_learning(out):
-    """Training learns the reference probe fully, forced materialization partly, a buffer copy not."""
+    """Training learns the reference probe fully, materialization partly, a buffer copy not."""
     directories = [(label, run_directory(source), color) for label, source, color in VIEWING_RUNS]
     if any(directory is None for _, directory, _ in directories):
         return
