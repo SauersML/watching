@@ -130,7 +130,7 @@ A new process evaluates the fixed 039 checkpoint on 128 prompts written and froz
 
 - **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
 - **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The probe also changes the early system token's hidden state consistently, but in a direction almost unrelated to its change to the `user` token (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
-- **Training versus deployment: the signal transfers, the answers do not.** Enabling gradients also changes the numbers the model computes. A least-squares refit of only the Yes/No output rows answers 126/128 unseen prompts from familiar question templates correctly. On new kinds of questions, enabling gradients raises the Yes − No log-odds on 127 of 128 prompts, but a strong bias toward one answer leaves accuracy at 118/256. The two-layer recipe has not yet been run on this task: the first attempt (047) stopped before training because its activation capture changed the model's logits. [Run 021](results/execution-021/), [run 047](results/execution-tail-047-startup/), [protocol](experiments/ood-and-choices-020-021.md).
+- **Training versus deployment: strong learning in one runtime, weak transfer.** Two-block SFT now reaches 99.8% training accuracy, 87.5% development accuracy and 70.3% on unseen question families in a deliberately split compiled-prefix/eager-tail runtime. The same checkpoint reaches only 53.9% on unseen questions under whole-model compilation, despite positive log-odds separation. These are actual full-vocabulary answer accuracies; the model is not yet a reliable general training-versus-serving detector. [Final learning and transfer plots, raw scores and independent audit](results/execution-split-057/). Testing the frozen checkpoint in actual Trainer and vLLM is [planned](experiments/execution-framework-transfer.md). Earlier output-row fits remain in [run 021](results/execution-021/).
 
 ## 6. How the model detects it
 
@@ -138,7 +138,7 @@ Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention
 
 ![Copying only the user token's state, or swapping only layer 35 head 6, reproduces the whole answer switch](figures/interventions.png)
 
-*Figure 7. Top: mean of two prespecified prompts. Bottom: each head's output at the answer position, swapped in both directions and averaged, on eight diagnostic test prompts.*
+*Figure 7. Each arrow starts at a run's own Yes − No log-odds and ends where the copy or swap moves it. Top: mean of two prespecified prompts. Bottom: one head's output at the answer position, swapped in each direction, mean of eight diagnostic test prompts; the strongest other head is the one whose swaps move the answer most.*
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 

@@ -1261,47 +1261,83 @@ GRID = 'stroke="#E5E5EA" stroke-width="1.2"'
 
 
 def interventions(out, tiles):
-    """Copying one token's state, or one head's output, carries the whole answer switch."""
+    """Arrows from each run's own answer to its answer after a copy or swap."""
     from plot_tail_mechanism import collect
 
-    scans = collect(ROOT / "results/tail-mechanism-041r")["scans"]
-    summary = json.loads((ROOT / "results/tail-circuit-044/summary.json").read_text())
-    heads = summary["head_summary"]["test"]
-    gap = summary["cohorts"]["test"]["role_user_input"]["baseline_gap_nats"]["mean"]
+    tail = ROOT / "results/tail-mechanism-041r"
+    scans = collect(tail)["scans"]
+    scored = json.loads((tail / "scores.json").read_text())["rows"]
 
-    def swap(row):
+    def own(scan, capture):
+        (value,) = [
+            r["yes_minus_no"]
+            for r in scored
+            if r["stage"] == "trained"
+            and r["kind"] == "baseline"
+            and (r["split"], r["index"], r["capture"]) == (scan["split"], scan["index"], capture)
+        ]
+        return value
+
+    def mean(values):
+        return float(np.mean(list(values)))
+
+    start = mean(own(scan, False) for scan in scans)
+    copies = (
+        ("every token", "full_input_swap", False),
+        ("only `user`", "user_token_only", True),
+        ("only the last token", "last_token_only", False),
+        ("the strongest other token", "largest_other_token", False),
+    )
+    copied = [
+        (label, [(start, start + mean(scan[key] for scan in scans))], key6)
+        for label, key, key6 in copies
+    ]
+
+    circuit = ROOT / "results/tail-circuit-044"
+    base = json.loads((circuit / "baselines.json").read_text())["rows"]
+    base = [r for r in base if r["split"] == "test"]
+    off = mean(r["yes_minus_no"] for r in base if not r["capture"])
+    on = mean(r["yes_minus_no"] for r in base if r["capture"])
+    singles = json.loads((circuit / "scores.json").read_text())["rows"]
+    singles = [r for r in singles if r["kind"] == "single_head" and r["split"] == "test"]
+    summary = json.loads((circuit / "summary.json").read_text())["head_summary"]["test"]
+
+    def size(row):
         return (row["sufficiency_nats"]["mean"] + row["necessity_nats"]["mean"]) / 2
 
-    def mean(key):
-        return float(np.mean([scan[key] for scan in scans]))
+    rival = max(
+        (r for r in summary if (r["block"], r["head"]) != (35, 6)), key=lambda r: abs(size(r))
+    )
 
-    head6 = next(swap(r) for r in heads if (r["block"], r["head"]) == (35, 6))
-    other = max((swap(r) for r in heads if (r["block"], r["head"]) != (35, 6)), key=abs)
+    def moves(block, head):
+        rows = [r for r in singles if (r["block"], r["head"]) == (block, head)]
+        assert {r["index"] for r in rows} == {r["index"] for r in base} and len(rows) == 8
+        return [
+            (off, mean(r["patched_absent"]["yes_minus_no"] for r in rows)),
+            (on, mean(r["patched_present"]["yes_minus_no"] for r in rows)),
+        ]
+
+    swapped = [
+        ("only layer 35, head 6", moves(35, 6), True),
+        ("the strongest other head", moves(rival["block"], rival["head"]), False),
+    ]
     panels = (
         (
             "Copy the probe run’s activations entering layer 34 into a no-probe run, at",
             False,
-            (
-                ("every token", mean("full_input_swap"), False),
-                ("only `user`", mean("user_token_only"), True),
-                ("only the last token", mean("last_token_only"), False),
-                ("the strongest other token", mean("largest_other_token"), False),
-            ),
+            (start, mean(own(scan, True) for scan in scans)),
+            copied,
         ),
-        (
-            "Swap one head’s output at the answer between the two runs",
-            True,
-            (
-                ("probe on vs. off", gap, False),
-                ("only layer 35, head 6", head6, True),
-                ("the strongest other head", other, False),
-            ),
-        ),
+        ("Swap one head’s output at the answer between the two runs", True, (off, on), swapped),
     )
-    w, x0, span, top = 1160, 420, 600, 30
+    w, zero, unit, top = 1160, 790, 20, 30
+
+    def at(value):
+        return zero + unit * value
+
     parts = [f"<defs>{markers(INK)}</defs>"]
-    bars, y = [], top
-    for title, both_ways, rows in panels:
+    y = top
+    for title, both_ways, (none, probe), rows in panels:
         parts.append(tile(24, y - 4, 52, 52, tiles["watched"], radius=11))
         if both_ways:
             parts.append(arrow(86, y + 14, 122, y + 14))
@@ -1312,34 +1348,81 @@ def interventions(out, tiles):
         parts.append(text(50, y + 70, "probe", 15, True, RED, "middle"))
         parts.append(text(158, y + 70, "no probe", 15, True, INK, "middle"))
         parts.append(text(204, y + 31, title, 23, True))
-        y += 104
-        first = y
-        for label, value, key in rows:
-            bars.append((y, label, value, key))
-            y += 58
-        for tick in (0, 10, 20, 30):
-            x = x0 + span * tick / 30
-            stroke = f'stroke="{INK}" stroke-width="1.6"' if tick == 0 else GRID
-            parts.append(f'<line x1="{x}" y1="{first - 30}" x2="{x}" y2="{y - 28}" {stroke}/>')
-        y += 34
-    bottom = bars[-1][0] + 34
-    for tick in (0, 10, 20, 30):
-        x = x0 + span * tick / 30
-        parts.append(text(x, bottom + 28, str(tick), 17, color=MUTED, anchor="middle"))
-    parts.append(
-        text(x0 + span / 2, bottom + 62, "Rise in Yes − No log-odds (nats)", 19, anchor="middle")
-    )
-    for cy, label, value, key in bars:
-        color = RED if key else "#C7C7CC"
-        length = span * max(value, 0) / 30
-        if length > 0:
+        y += 112
+        parts.append(text(at(none), y, "no probe", 17, True, INK, "middle"))
+        parts.append(text(at(probe), y, "probe", 17, True, RED, "middle"))
+        first = y + 12
+        y += 52
+        drawn = []
+        for label, arrows, key in rows:
+            height = 30 * len(arrows)
+            parts.append(rich(400, y + height / 2 - 8, label, 20, key, "end", RED if key else INK))
+            for k, (begin, end) in enumerate(arrows):
+                drawn.append((y + 30 * k, begin, end, key))
+            y += height + 26
+        last = y - 26
+        for x, dash in ((at(none), "4 5"), (at(probe), "4 5"), (zero, None)):
+            style = f' stroke-dasharray="{dash}"' if dash else ""
             parts.append(
-                f'<rect x="{x0}" y="{cy - 17}" width="{length:.1f}" height="34" rx="5" '
-                f'fill="{color}"/>'
+                f'<line x1="{x:.1f}" y1="{first}" x2="{x:.1f}" y2="{last}" '
+                f'stroke="{"#C7C7CC" if dash else "#E5E5EA"}" stroke-width="1.6"{style}/>'
             )
-        parts.append(rich(x0 - 20, cy + 7, label, 20, key, "end", RED if key else INK))
-        shown = f"{value:.1f}" if abs(value) >= 1 else "0" if abs(value) < 0.005 else f"{value:.2f}"
-        parts.append(text(x0 + length + 12, cy + 7, shown, 20, True, RED if key else INK))
+        for cy, begin, end, key in drawn:
+            color = RED if key else "#A1A1A6"
+            change = end - begin
+            rightward = change >= 0
+            if abs(change) * unit >= 18:
+                parts.append(pointer(at(begin), cy, at(end), cy, color, 5, 16, 17))
+                lx = at(end) + (10 if rightward else -10)
+            else:
+                parts.append(
+                    f'<line x1="{at(begin):.1f}" y1="{cy - 10}" x2="{at(begin):.1f}" '
+                    f'y2="{cy + 10}" stroke="{color}" stroke-width="4"/>'
+                )
+                rightward = begin < 0
+                lx = at(begin) + (10 if rightward else -10)
+            shown = (
+                "0"
+                if abs(change) < 0.005
+                else f"{change:+.1f}"
+                if abs(change) >= 1
+                else f"{change:+.2f}"
+            )
+            parts.append(
+                text(
+                    lx,
+                    cy + 7,
+                    shown.replace("-", "−"),
+                    19,
+                    True,
+                    RED if key else INK,
+                    "start" if rightward else "end",
+                )
+            )
+        y += 30
+    bottom = y - 30
+    parts.append(
+        f'<line x1="{at(-16)}" y1="{bottom}" x2="{at(16)}" y2="{bottom}" stroke="{INK}" '
+        'stroke-width="1.6"/>'
+    )
+    for tick in (-10, 0, 10):
+        parts.append(
+            f'<line x1="{at(tick)}" y1="{bottom}" x2="{at(tick)}" y2="{bottom + 7}" '
+            f'stroke="{INK}" stroke-width="1.6"/>'
+        )
+        parts.append(
+            text(
+                at(tick),
+                bottom + 30,
+                f"{tick:+d}".replace("-", "−").replace("+0", "0"),
+                17,
+                color=MUTED,
+                anchor="middle",
+            )
+        )
+    parts.append(text(at(-16), bottom + 30, "No", 19, True, INK, "start"))
+    parts.append(text(at(16), bottom + 30, "Yes", 19, True, RED, "end"))
+    parts.append(text(zero, bottom + 62, "Yes − No log-odds (nats)", 19, anchor="middle"))
     render(document(w, int(bottom + 84), "\n".join(parts)), out, "interventions")
 
 
