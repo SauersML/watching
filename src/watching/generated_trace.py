@@ -9,7 +9,8 @@ import hashlib
 import json
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, is_dataclass
+from enum import Enum
 from pathlib import Path
 
 import torch
@@ -210,6 +211,21 @@ def static_binary_metadata(binary, cache_factory=None):
     return Path(ptx_path).read_text(), metadata
 
 
+def json_metadata(value):
+    """Preserve structured compiler metadata, including Triton's GPUTarget dataclass."""
+
+    def convert(item):
+        if is_dataclass(item) and not isinstance(item, type):
+            return asdict(item)
+        if isinstance(item, Enum):
+            return item.value
+        if isinstance(item, Path):
+            return str(item)
+        raise TypeError(f"Unsupported compiler metadata type: {type(item).__name__}")
+
+    return json.loads(json.dumps(value, default=convert, allow_nan=False))
+
+
 def chosen_kernel_metadata(kernel):
     launchers = getattr(kernel, "launchers", None)
     if launchers is None or len(launchers) != 1:
@@ -255,11 +271,18 @@ def chosen_kernel_metadata(kernel):
             provenance_error = str(error)
     else:
         raise RuntimeError("Unsupported compiled binary representation")
+    metadata_error = None
+    try:
+        metadata = json_metadata(metadata)
+    except (TypeError, ValueError) as error:
+        metadata_error = str(error)
+        metadata = {}
     return {
         "config": {**config.kwargs, "num_warps": config.num_warps, "num_stages": config.num_stages},
         "argument_names": list(kernel.fn.arg_names),
         "ptx": ptx,
         "metadata": metadata,
+        "metadata_serialization_error": metadata_error,
         "selected_cache_hash": getattr(launcher, "cache_hash", None),
         "ptx_provenance_error": provenance_error,
     }

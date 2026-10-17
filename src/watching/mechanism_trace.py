@@ -177,8 +177,26 @@ def capture_one(compiled, batch, mode, layers, probe_layer):
     return baseline.cpu(), captured
 
 
-def save_capture(out, capture):
+def save_capture(out, capture, logits=None):
     out.mkdir(parents=True, exist_ok=True)
+    # Numerical evidence comes first; ancillary metadata cannot erase a valid capture.
+    torch.save(
+        {
+            index: {"inputs": stage["inputs"], "outputs": stage["outputs"]}
+            for index, stage in capture.pipeline.items()
+        },
+        out / "kernel_tensors.pt",
+    )
+    if logits is not None:
+        torch.save(logits, out / "logits.pt")
+    torch.save(
+        {
+            name: value
+            for name, value in capture.snapshots.items()
+            if name.startswith(f"layer{capture.probe_layer:02d}.")
+        },
+        out / "probe_layer_boundaries.pt",
+    )
     (out / "generated_wrapper.py.txt").write_text(capture.wrapper_source)
     stages = []
     for index, stage in capture.pipeline.items():
@@ -198,13 +216,6 @@ def save_capture(out, capture):
     write_json(
         out / "capture.json",
         {**capture.provenance(), "stages": stages, "full_vocab_capture_parity": True},
-    )
-    torch.save(
-        {
-            index: {"inputs": stage["inputs"], "outputs": stage["outputs"]}
-            for index, stage in capture.pipeline.items()
-        },
-        out / "kernel_tensors.pt",
     )
 
 
@@ -313,8 +324,8 @@ def main():
                 raise RuntimeError(
                     "Changing buffer wrapper changes no-probe logits; style contrast confounded"
                 )
-            save_capture(args.out / style / "none" / f"prompt_{index:02d}", absent)
             emit("capture_verified", style=style, prompt_index=index, mode="none")
+            save_capture(args.out / style / "none" / f"prompt_{index:02d}", absent, absent_logits)
             modes = ("reference", "buffer") if style == "shaped" else ("buffer",)
             for mode in modes:
                 present_logits, present = capture_one(
@@ -322,8 +333,8 @@ def main():
                 )
                 emit("capture_verified", style=style, prompt_index=index, mode=mode)
                 case = args.out / style / mode / f"prompt_{index:02d}"
-                save_capture(case / "none", absent)
-                save_capture(case / mode, present)
+                save_capture(case / "none", absent, absent_logits)
+                save_capture(case / mode, present, present_logits)
                 torch.save({"none": absent_logits, mode: present_logits}, case / "logits.pt")
                 comparison = compare_captures(absent, present)
                 comparison["logits"] = difference(absent_logits, present_logits)

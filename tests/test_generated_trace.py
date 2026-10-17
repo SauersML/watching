@@ -233,3 +233,85 @@ def test_missing_static_ptx_does_not_claim_instruction_provenance(monkeypatch):
     assert result["ptx"] is None
     assert result["ptx_provenance_error"] == "exact cache entry missing"
     assert result["config"]["XBLOCK"] == 16
+
+
+def test_compiler_metadata_preserves_nested_gpu_target_dataclass():
+    from dataclasses import dataclass
+
+    from watching.generated_trace import json_metadata
+
+    @dataclass
+    class GPUTarget:
+        backend: str
+        arch: int
+        warp_size: int
+
+    assert json_metadata({"target": GPUTarget("cuda", 89, 32), "items": (1, None)}) == {
+        "target": {"backend": "cuda", "arch": 89, "warp_size": 32},
+        "items": [1, None],
+    }
+    with pytest.raises(TypeError, match="Unsupported compiler metadata"):
+        json_metadata({"unsupported": object()})
+
+
+def test_complete_launcher_metadata_is_json_serializable(tmp_path):
+    import json
+    from dataclasses import dataclass
+    from enum import Enum
+
+    @dataclass
+    class GPUTarget:
+        backend: str
+        arch: int
+        warp_size: int
+
+    class Backend(Enum):
+        CUDA = "cuda"
+
+    metadata = {
+        "hash": "abc123",
+        "target": GPUTarget("cuda", 89, 32),
+        "num_warps": 4,
+        "num_stages": 1,
+        "extern_libs": (("libdevice", tmp_path / "libdevice.bc"),),
+        "backend_name": Backend.CUDA,
+        "tensordesc_meta": [],
+        "maxnreg": None,
+    }
+    cfg = SimpleNamespace(kwargs={"XBLOCK": 16}, num_warps=4, num_stages=1)
+    binary = SimpleNamespace(
+        asm={"ptx": "actual fixture PTX"}, metadata=SimpleNamespace(_asdict=lambda: metadata)
+    )
+    kernel = SimpleNamespace(
+        launchers=[SimpleNamespace(config=cfg, bin=binary)],
+        fn=SimpleNamespace(arg_names=["in_ptr0"]),
+    )
+    result = chosen_kernel_metadata(kernel)
+    assert result["metadata_serialization_error"] is None
+    assert json.loads(json.dumps(result))["metadata"]["target"]["arch"] == 89
+    metadata["unsupported"] = object()
+    result = chosen_kernel_metadata(kernel)
+    assert result["metadata"] == {}
+    assert "Unsupported compiler metadata" in result["metadata_serialization_error"]
+    assert result["ptx"] == "actual fixture PTX"
+
+
+def test_numerical_capture_is_written_before_ancillary_metadata(tmp_path, monkeypatch):
+    import watching.mechanism_trace as mechanism
+
+    runner = make_runner(tmp_path)
+    with GeneratedCapture(1, 0) as captured:
+        logits = runner.call(inputs())
+
+    def fail_metadata(*args, **kwargs):
+        raise RuntimeError("simulated metadata writer failure")
+
+    monkeypatch.setattr(mechanism, "write_json", fail_metadata)
+    out = tmp_path / "capture"
+    with pytest.raises(RuntimeError, match="writer failure"):
+        mechanism.save_capture(out, captured, logits)
+    assert torch.equal(torch.load(out / "logits.pt", weights_only=True), logits)
+    kernels = torch.load(out / "kernel_tensors.pt", weights_only=True)
+    assert torch.equal(kernels[0]["inputs"]["in_ptr0"], inputs()[0])
+    boundaries = torch.load(out / "probe_layer_boundaries.pt", weights_only=True)
+    assert torch.equal(boundaries["layer00.q_projection"], inputs()[0])
