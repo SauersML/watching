@@ -1,0 +1,176 @@
+{
+  "run": "watching-viewing-buffer-051",
+  "source_commit": "1b0a0c04c46e8896503d485cbf874cca99cf2892",
+  "scientific_status": "complete",
+  "runner_exit_code": 0,
+  "all_owned_pods_deleted_confirmed": true,
+  "exact_temporary_approval_removed": true,
+  "cost_usd": 0.3054,
+  "attempts": [
+    {
+      "cloud": "COMMUNITY",
+      "billed_hours": 0.0014,
+      "cost_usd": 0.0011,
+      "outcome": "rejected_host_deleted"
+    },
+    {
+      "cloud": "SECURE:no-community-stock",
+      "billed_hours": 0.2792,
+      "cost_usd": 0.3043,
+      "outcome": "completed_deleted"
+    }
+  ],
+  "maximum_approved_cost_usd": 0.6,
+  "maximum_minutes": 30,
+  "idle_utilization_shutdown_disabled": true,
+  "gpu": "NVIDIA L40S",
+  "scientific_files": {
+    "train_512_split_inference.json": {
+      "bytes": 467425,
+      "sha256": "3ec3ae889161ad753543aa4533065ff40a557e63f7a77da1a4b7757d09f3b1f7"
+    },
+    "train_256_split_inference.json": {
+      "bytes": 465148,
+      "sha256": "173e3a1d2a61b0bbd4ffeb31feb3df28047e1478e75a29d3894f8125687c1a7a"
+    },
+    "validation_8_split_inference.json": {
+      "bytes": 117217,
+      "sha256": "21aa4946deec65ca10afbaf6800920838c9c235fda4b2a786a08930d8d7adcd4"
+    },
+    "train_384_split_inference.json": {
+      "bytes": 467007,
+      "sha256": "a3aab5503399799b072cd11dab664e486d954ad9e123fa3bcf7847d8df9f9e4e"
+    },
+    "train_0_original_wholegraph.json": {
+      "bytes": 465116,
+      "sha256": "4b5d7d92529c48c0cf6d7cb5554d94b975b2b7226c8d04e92bb43fcbeb69dc82"
+    },
+    "learner_input_equality.json": {
+      "bytes": 301,
+      "sha256": "a0ec8e49dfbfa4e6af3c8e8d3825691d3795d39f6f7ef22615d35918e1c037ce"
+    },
+    "validation_896_split_inference.json": {
+      "bytes": 117780,
+      "sha256": "776ebb21bf93417def57a46f987e06ca5cfbdb6f0f95115d3821421ab7c40b17"
+    },
+    "validation_640_split_inference.json": {
+      "bytes": 117658,
+      "sha256": "df33e38bcad37e2c5aa47cb03735094cba2b2990a847a34a5365a394d7ce106d"
+    },
+    "train_1024_split_inference.json": {
+      "bytes": 470486,
+      "sha256": "5d9727abbdea6cac89f628d98af3da44a1d159414f2b2f9ce1efdb463b6bc183"
+    },
+    "train_32_split_inference.json": {
+      "bytes": 468140,
+      "sha256": "a41dc58fd0a5842e3b1936814b1ccbcb56abf4cdbadf8b9b3401ee5175ee3eb9"
+    },
+    "train_640_split_inference.json": {
+      "bytes": 470504,
+      "sha256": "beefe12801726ab21ecd7a6c369e8b618536a855c68745c673c9e3a569486d2f"
+    },
+    "train_896_split_inference.json": {
+      "bytes": 470245,
+      "sha256": "1b82259dabc345b91bfa18e367df3355700085fc29dc76ed0ff6fc04cb40d42c"
+    },
+    "validation_384_split_inference.json": {
+      "bytes": 117006,
+      "sha256": "fa4eec13b03732ef47ad501f533a07968cd730b9109885a53aaa260468b32a9b"
+    },
+    "validation_256_split_inference.json": {
+      "bytes": 116394,
+      "sha256": "45e139f91071377fd83f88c46154eaa8aa5549c5293dbcd94bd25f613ea6b541"
+    },
+    "validation_512_split_inference.json": {
+      "bytes": 116833,
+      "sha256": "2547aa34f0014af1321bd5d0059dabc78d07f638f21c84ae1828149856065e67"
+    },
+    "train_1024_wholegraph_transfer.json": {
+      "bytes": 470397,
+      "sha256": "7a64dbecb79c5d042b7679ce4bffca7f7adc0c2040767f53849dc121ae9bc736"
+    },
+    "train_0_split_inference.json": {
+      "bytes": 465198,
+      "sha256": "6460dbaf09eda56c6d11de416e72bbd8dcae3595666bfe270d626bb5477c5319"
+    },
+    "data.json": {
+      "bytes": 216166,
+      "sha256": "7ed9cfc870ee7cf990bdb8636221b75a5c5a27b78088b0ca969513d09b7e0e94"
+    },
+    "train_128_split_inference.json": {
+      "bytes": 466796,
+      "sha256": "03da1c71e592886206f5854dd1aa8ad4d22f828ba7e61d2c59f39ab93f146882"
+    },
+    "validation_1024_wholegraph_transfer.json": {
+      "bytes": 117914,
+      "sha256": "67a4fbbad7c566390e2091bac78a491db1f8a5505d5cea3ea046986c5d43d5b5"
+    },
+    "test_1024_wholegraph_transfer.json": {
+      "bytes": 120149,
+      "sha256": "3941621b2a770a7c111bc3576add63a4de602fa98d4ef34287f9365b2ede8d3f"
+    },
+    "validation_0_split_inference.json": {
+      "bytes": 116638,
+      "sha256": "88fb2f35b4d20d41067fb23c20440a63ef0e572c85d29a47904cc876bf4d3c9c"
+    },
+    "validation_1024_split_inference.json": {
+      "bytes": 117688,
+      "sha256": "9d63e5760c6ae8bedc677ed2aa9d28660671588efa387acb0e8987b30b170403"
+    },
+    "manifest.json": {
+      "bytes": 5501,
+      "sha256": "2c4e03e2d09eb7f57f5e7f5f175ecc46b65b70bb9d579f31dc4952a906169dd1"
+    },
+    "validation_32_split_inference.json": {
+      "bytes": 116840,
+      "sha256": "abad74f4df7d238922fb5d485a017697b59a3576aa3e7741912460082af02eff"
+    },
+    "test_1024_split_inference.json": {
+      "bytes": 120125,
+      "sha256": "c15bef1e8f4b104efb62a53dc6335426b195b7a0299b281c7e61d9c51fc9471a"
+    },
+    "train_768_split_inference.json": {
+      "bytes": 470023,
+      "sha256": "acc4fc0263049893e2853c53adee32f0441b5a22df61354f5d6d535b3812136e"
+    },
+    "validation_768_split_inference.json": {
+      "bytes": 117561,
+      "sha256": "bc5c48754b03efb489501fb009365fac8170f9126a6609487d31213a636799bf"
+    },
+    "train_8_split_inference.json": {
+      "bytes": 468851,
+      "sha256": "114995a00e26963a75503cdaa2b6619dba61e7e88d9e530f0db7ece573f87c3b"
+    },
+    "cache_fingerprints.json": {
+      "bytes": 1090658,
+      "sha256": "2e9c8dfeb284ca9c4f52e739e2d5a6e8dc7880443054910ca439546c37d0b598"
+    },
+    "metrics.jsonl": {
+      "bytes": 605182,
+      "sha256": "c1702e56b1e4719fd7c4b48aeaa472e1fbdf5d88bf73ec6580960b1cb707fc50"
+    },
+    "validation_128_split_inference.json": {
+      "bytes": 116684,
+      "sha256": "c1998cb397aeb49bc11531d727c1f94327433028a23a4fddfa093f98d09b1b50"
+    },
+    "validation_0_original_wholegraph.json": {
+      "bytes": 116658,
+      "sha256": "d61c68b13781bbb9190e9d838e4ddb84621707264171cba22d513e6b02600e97"
+    }
+  },
+  "large_artifacts": {
+    "native_tail.pt": {
+      "bytes": 771801758,
+      "sha256": "587974a6227869bfb58096726a6e66ee53bbc67b0ecd17dcc11190533730efff"
+    },
+    "cache_states.pt": {
+      "bytes": 651049303,
+      "sha256": "77aa20aa4be4af6a83f9a5197654a01b4316b9ff741d068561ce9e35558ba64c"
+    }
+  },
+  "checkpoint_metadata_verified": true,
+  "revision_provenance": "Explicit pinned revision supplied to tokenizer and both model loads; private config _commit_hash reports null. No whole-base tensor digest was saved.",
+  "actual_minibatch_schedule_matches034_all1024steps": true,
+  "fixed_endpoint_selection": "1024, not best checkpoint",
+  "test_scope": "Historical034 test_wording prompts, not an untouched confirmatory cohort"
+}
