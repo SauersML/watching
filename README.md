@@ -4,7 +4,7 @@
 
 **A compiled language model can learn to answer differently when an internal activation is saved, even though the probe never edits that activation.** In our strongest completed experiment, fine-tuning the final two native blocks of Qwen3-8B produced the correct next token on all 128 executions of 64 comparison prompts. The learned weights also worked when installed back into the compiled whole model.
 
-A fresh-process check of the saved checkpoint also gives **128/128 correct answers on 64 newly authored detection prompts**, with a paired log-odds gap of **27.28 nats [27.06, 27.50]**. This confirms the saved detector on new text in the specified compiled setup. It is not an independent training replication. A second training seed, joint animal behavior, and matched negative-control training are still running. The earlier 034 comparison pool had already been inspected during the project.
+A fresh-process check of the saved checkpoint also gives **128/128 correct answers on 64 newly authored detection prompts**, with a paired log-odds gap of **27.28 nats [27.06, 27.50]**. This confirms the saved detector on new text in the specified compiled setup. It is not an independent training replication. The first joint detection/animal run did not reach strong accuracy; a second seed and matched negative-control training are still being evaluated. A detector-initialized development pilot is separate from those locked experiments. The earlier 034 comparison pool had already been inspected during the project.
 
 [Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Locked follow-up protocol](experiments/validation-suite-036-038.md)
 
@@ -94,6 +94,8 @@ The new joint experiment’s matched control (037) starts from the original base
 
 This control addresses label leakage and the training/scoring pipeline. A separate evaluation-only control compares a buffer-copy probe with no probe. It counts as a no-footprint control only if **every vocabulary logit** is identical on every evaluated prompt. In the fresh-process check, this buffer implementation changed logits on all 64 prompts and therefore **failed that qualification**. The trained model answered No with and without this buffer probe; that is an observed response to a different intervention, not proof of an invisible-read control. The physical buffer comparison and the identical-input training control answer different questions.
 
+A compiler audit found that the buffer changes the query-normalization/rotary kernel’s indexing and reduction structure while retaining FP32 intermediates for native computation. A small GPU replay of archived kernel configurations produces different rotary outputs on identical synthetic inputs; all ten corrected replay PTX instruction programs match their archived originals after removing debug metadata. This demonstrates a local numerical mechanism, but the actual selected full-model configuration and the complete propagation to final logits are not identified. Earlier vLLM buffer comparisons checked selected logprobs and generated tokens, not every vocabulary entry. [Compiler evidence and limits](docs/mechanism-audit.md).
+
 The completed 034 audit independently checked:
 
 - All 384 cached prompt pairs have matching masks, rotary inputs and saved positions; the condition difference is in the hidden states.
@@ -120,6 +122,14 @@ The next dataset is frozen before scoring and has disjoint context identities an
 Both tasks use the same model. Detection targets are No/Yes. Animal-choice targets are cat/owl for probe absent/present. Animal prompts ask a preference question without mentioning the probe. Success would establish condition-dependent answers to those questions; it would not yet establish a broad personality change or spontaneous animal preferences in arbitrary conversation.
 
 Two predeclared training seeds use 2,048 updates and the same fixed recipe. Test and challenge predictions are computed only at the final saved endpoint. The first launch attempts failed before remote execution when the local launcher slept; they produced no scientific results. Retries retain the locked data and protocol. [Launch failure record](results/validation-launch-failures-036-038/).
+
+### First joint endpoint: larger gaps, insufficient accuracy
+
+![Joint training learns separation but not reliable calibrated answers](results/joint-validation-036/progress.png)
+
+The fixed 2,048-update first-seed endpoint did **not** reproduce the detection-only model’s high accuracy. On 64 new test prompts per task, split-runtime actual-token accuracy is **67.2% for detection** and **68.0% for animals**; compiled whole-model accuracy is **65.6%** and **64.8%**. Full-vocabulary loss remains worse than ln(2), despite large positive paired log-odds gaps. Training accuracy is also weak, so this is not solely unseen-prompt overfitting. We report the scheduled endpoint, including its confident mistakes, rather than selecting an earlier peak. [Full results and uncertainty](results/joint-validation-036/).
+
+The follow-up pilot starts from the successful 034 detector at a fivefold lower learning rate and trains on joint training/development data only. It is exploratory and does not execute test/challenge prompts. A useful adapted model will require new confirmation data. [Pilot protocol](experiments/warm-start-joint-pilot.md).
 
 [Exact prompts](data/validation_v2/dataset.json) · [Dataset audit and provenance](data/validation_v2/README.md) · [Experiment protocol](experiments/validation-suite-036-038.md)
 
