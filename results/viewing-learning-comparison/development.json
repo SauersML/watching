@@ -10,7 +10,7 @@
       "global_step": 1024,
       "optimizer": "fresh Adam",
       "source": "results/viewing-continuation-053-054/identity054r/fit",
-      "manifest_sha256": "2112d06e5e394f0998fefde29ab59a6febaea0df8769fb2441e7b44a05a1752d"
+      "manifest_sha256": "5c73869ac9a69399273fbcdf817976e1dabd33b68b85ea5e2444d73f792ce2bf"
     }
   },
   "split": "validation",
@@ -2602,6 +2602,111 @@
           }
         },
         "local_step": 1664
+      },
+      {
+        "step": 2816,
+        "n_prompts": 64,
+        "mean": [
+          0.921875,
+          58.7796630859375
+        ],
+        "ci95": [
+          [
+            0.84375,
+            0.984375
+          ],
+          [
+            54.48954467773437,
+            62.960888671875
+          ]
+        ],
+        "source": "results/viewing-continuation-053-054/identity054r/fit/validation_1792_split_inference.json",
+        "sha256": "94318410ad9e7da6a3df43e14c28734984ef7c32d9b3ff63e2a3f111de26717a",
+        "condition_scores": {
+          "absent": {
+            "correct_top_tokens": 62,
+            "n_prompts": 64,
+            "mean_yes_no_log_odds": -23.87890625,
+            "mean_full_vocab_ce": 0.3493277498867866
+          },
+          "present": {
+            "correct_top_tokens": 61,
+            "n_prompts": 64,
+            "mean_yes_no_log_odds": 34.9007568359375,
+            "mean_full_vocab_ce": 0.4219832804800442
+          }
+        },
+        "local_step": 1792
+      },
+      {
+        "step": 2944,
+        "n_prompts": 64,
+        "mean": [
+          0.921875,
+          58.85107421875
+        ],
+        "ci95": [
+          [
+            0.84375,
+            0.984375
+          ],
+          [
+            54.53043212890625,
+            62.99800415039062
+          ]
+        ],
+        "source": "results/viewing-continuation-053-054/identity054r/fit/validation_1920_split_inference.json",
+        "sha256": "477c2bb13b15107cf020de07296935d2fa94fd284d686faf96d920d01d0c6562",
+        "condition_scores": {
+          "absent": {
+            "correct_top_tokens": 62,
+            "n_prompts": 64,
+            "mean_yes_no_log_odds": -23.994140625,
+            "mean_full_vocab_ce": 0.34346044681905663
+          },
+          "present": {
+            "correct_top_tokens": 61,
+            "n_prompts": 64,
+            "mean_yes_no_log_odds": 34.85693359375,
+            "mean_full_vocab_ce": 0.4239733177882201
+          }
+        },
+        "local_step": 1920
+      },
+      {
+        "step": 3072,
+        "n_prompts": 64,
+        "mean": [
+          0.921875,
+          58.7763671875
+        ],
+        "ci95": [
+          [
+            0.84375,
+            0.984375
+          ],
+          [
+            54.448193359375,
+            62.961779785156246
+          ]
+        ],
+        "source": "results/viewing-continuation-053-054/identity054r/fit/validation_2048_split_inference.json",
+        "sha256": "07cbf05feb847f8eb8d73e5c67727c2a4aff0aacd73e389c4fa8e5325d5be936",
+        "condition_scores": {
+          "absent": {
+            "correct_top_tokens": 62,
+            "n_prompts": 64,
+            "mean_yes_no_log_odds": -24.0380859375,
+            "mean_full_vocab_ce": 0.35458296102478604
+          },
+          "present": {
+            "correct_top_tokens": 61,
+            "n_prompts": 64,
+            "mean_yes_no_log_odds": 34.73828125,
+            "mean_full_vocab_ce": 0.4240537532527916
+          }
+        },
+        "local_step": 2048
       }
     ]
   },

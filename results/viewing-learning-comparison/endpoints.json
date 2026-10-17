@@ -1,0 +1,603 @@
+{
+  "runtime": "cached native tail, split_inference; not whole-model transfer",
+  "steps": [
+    1024,
+    3072
+  ],
+  "bootstrap": {
+    "draws": 5000,
+    "seed": 20261017,
+    "unit": "whole prompt pair"
+  },
+  "interpretation": "Descriptive post-hoc endpoint comparison of one seed/build per arm. Historical test is exploratory. No checkpoint selection or score calibration. Intervals are pointwise; changes preserve before/after pairing. All-equal empirical intervals do not establish population certainty.",
+  "arms": {
+    "buffer": {
+      "splits": {
+        "train": {
+          "n_prompts": 256,
+          "before": {
+            "both_correct": {
+              "mean": 0.04296875,
+              "ci95": [
+                0.01953125,
+                0.0703125
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.521484375,
+              "ci95": [
+                0.509765625,
+                0.53515625
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.008880615234375,
+              "ci95": [
+                0.00653076171875,
+                0.011322784423828114
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.6923530313652009,
+              "ci95": [
+                0.6916519539401633,
+                0.6930638729798375
+              ]
+            }
+          },
+          "after": {
+            "both_correct": {
+              "mean": 0.0546875,
+              "ci95": [
+                0.02734375,
+                0.08203125
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.52734375,
+              "ci95": [
+                0.513671875,
+                0.541015625
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.038818359375,
+              "ci95": [
+                0.031829833984375,
+                0.045868682861328114
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.6969231826369651,
+              "ci95": [
+                0.6942215409129858,
+                0.6997677343519172
+              ]
+            }
+          },
+          "change": {
+            "both_correct": {
+              "mean": 0.01171875,
+              "ci95": [
+                -0.0234375,
+                0.046875
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.005859375,
+              "ci95": [
+                -0.01171875,
+                0.0234375
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.029937744140625,
+              "ci95": [
+                0.024017333984375,
+                0.035706329345703114
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.004570151271764189,
+              "ci95": [
+                0.001963441695261281,
+                0.007287401879148092
+              ]
+            }
+          }
+        },
+        "validation": {
+          "n_prompts": 64,
+          "before": {
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.4921875,
+              "ci95": [
+                0.4765625,
+                0.5
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.0009765625,
+              "ci95": [
+                -0.002197265625,
+                0.00439453125
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.6959221260622144,
+              "ci95": [
+                0.6946932329447009,
+                0.6972375388373621
+              ]
+            }
+          },
+          "after": {
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.0010986328125,
+              "ci95": [
+                -0.00390625,
+                0.0062255859375
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.7045906945131719,
+              "ci95": [
+                0.7013231606164482,
+                0.7081365256512072
+              ]
+            }
+          },
+          "change": {
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.0078125,
+              "ci95": [
+                0.0,
+                0.0234375
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.0001220703125,
+              "ci95": [
+                -0.005859375,
+                0.0057373046875
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.008668568450957537,
+              "ci95": [
+                0.005625063669867814,
+                0.012093364348402243
+              ]
+            }
+          }
+        },
+        "test": {
+          "n_prompts": 64,
+          "before": {
+            "both_correct": {
+              "mean": 0.015625,
+              "ci95": [
+                0.0,
+                0.046875
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.5078125,
+              "ci95": [
+                0.5,
+                0.5234375
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 0.0,
+              "ci95": [
+                -0.0048828125,
+                0.0048828125
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.6990529070608318,
+              "ci95": [
+                0.6966063886298798,
+                0.7019364980515093
+              ]
+            }
+          },
+          "after": {
+            "both_correct": {
+              "mean": 0.0,
+              "ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.5,
+              "ci95": [
+                0.5,
+                0.5
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": -0.001953125,
+              "ci95": [
+                -0.006591796875,
+                0.002197265625
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.719163769390434,
+              "ci95": [
+                0.7126888536615297,
+                0.7263293750293087
+              ]
+            }
+          },
+          "change": {
+            "both_correct": {
+              "mean": -0.015625,
+              "ci95": [
+                -0.046875,
+                0.0
+              ]
+            },
+            "individual_accuracy": {
+              "mean": -0.0078125,
+              "ci95": [
+                -0.0234375,
+                0.0
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": -0.001953125,
+              "ci95": [
+                -0.007080078125,
+                0.002685546875
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.02011086232960224,
+              "ci95": [
+                0.0135834232729394,
+                0.02685241346480324
+              ]
+            }
+          }
+        }
+      },
+      "sources": {
+        "results/viewing-learning-051-052/buffer/fit/data.json": "7ed9cfc870ee7cf990bdb8636221b75a5c5a27b78088b0ca969513d09b7e0e94",
+        "results/viewing-learning-051-052/buffer/fit/manifest.json": "2c4e03e2d09eb7f57f5e7f5f175ecc46b65b70bb9d579f31dc4952a906169dd1",
+        "results/viewing-continuation-053-054/buffer/fit/manifest.json": "8c09eb3dfb018d058d238da5b99551be66ed1d4a4def39875982ed03eb1b2192",
+        "results/viewing-learning-051-052/buffer/fit/train_1024_split_inference.json": "5d9727abbdea6cac89f628d98af3da44a1d159414f2b2f9ce1efdb463b6bc183",
+        "results/viewing-continuation-053-054/buffer/fit/train_2048_split_inference.json": "79e1c2f74c3e8625bd7a354fb07b50764b55fe564e5791a4ddd6c0f4c99a6ca4",
+        "results/viewing-learning-051-052/buffer/fit/validation_1024_split_inference.json": "9d63e5760c6ae8bedc677ed2aa9d28660671588efa387acb0e8987b30b170403",
+        "results/viewing-continuation-053-054/buffer/fit/validation_2048_split_inference.json": "bd8e667b1c47abfbfa73bd242e8eda64e4045521560ebbbf6cf2091cb64332d4",
+        "results/viewing-learning-051-052/buffer/fit/test_1024_split_inference.json": "c15bef1e8f4b104efb62a53dc6335426b195b7a0299b281c7e61d9c51fc9471a",
+        "results/viewing-continuation-053-054/buffer/fit/test_2048_split_inference.json": "aa81b3fd42382e760728556d1678ba0b28452f6e5e39c00be7a3745366473353"
+      }
+    },
+    "storage": {
+      "splits": {
+        "train": {
+          "n_prompts": 256,
+          "before": {
+            "both_correct": {
+              "mean": 0.75390625,
+              "ci95": [
+                0.69921875,
+                0.8046875
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.876953125,
+              "ci95": [
+                0.849609375,
+                0.90234375
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 4.24951171875,
+              "ci95": [
+                4.1420654296875,
+                4.35302734375
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.2572562236941849,
+              "ci95": [
+                0.23335307513752923,
+                0.28246034430738975
+              ]
+            }
+          },
+          "after": {
+            "both_correct": {
+              "mean": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 1.0,
+              "ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 66.5999755859375,
+              "ci95": [
+                65.5134063720703,
+                67.65027160644532
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 3.748571826556191e-08,
+              "ci95": [
+                2.4214381770526483e-08,
+                5.378384649624979e-08
+              ]
+            }
+          },
+          "change": {
+            "both_correct": {
+              "mean": 0.24609375,
+              "ci95": [
+                0.1953125,
+                0.30078125
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.123046875,
+              "ci95": [
+                0.09765625,
+                0.150390625
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 62.3504638671875,
+              "ci95": [
+                61.31175842285156,
+                63.35260009765625
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": -0.25725618620846663,
+              "ci95": [
+                -0.28246030242117887,
+                -0.23335305064375172
+              ]
+            }
+          }
+        },
+        "validation": {
+          "n_prompts": 64,
+          "before": {
+            "both_correct": {
+              "mean": 0.5,
+              "ci95": [
+                0.375,
+                0.625
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.75,
+              "ci95": [
+                0.6875,
+                0.8125
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 3.67578125,
+              "ci95": [
+                3.415966796875,
+                3.919921875
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.6662410860831187,
+              "ci95": [
+                0.5008956176006223,
+                0.849967922593845
+              ]
+            }
+          },
+          "after": {
+            "both_correct": {
+              "mean": 0.921875,
+              "ci95": [
+                0.84375,
+                0.984375
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.9609375,
+              "ci95": [
+                0.921875,
+                0.9921875
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 58.7763671875,
+              "ci95": [
+                54.448193359375,
+                62.961779785156246
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.3893183571387888,
+              "ci95": [
+                0.07237780775026231,
+                0.822367706343874
+              ]
+            }
+          },
+          "change": {
+            "both_correct": {
+              "mean": 0.421875,
+              "ci95": [
+                0.3125,
+                0.546875
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.2109375,
+              "ci95": [
+                0.15625,
+                0.2734375
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 55.1005859375,
+              "ci95": [
+                50.936474609375,
+                59.1465087890625
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": -0.2769227289443299,
+              "ci95": [
+                -0.54794149009663,
+                0.07900490266507437
+              ]
+            }
+          }
+        },
+        "test": {
+          "n_prompts": 64,
+          "before": {
+            "both_correct": {
+              "mean": 0.25,
+              "ci95": [
+                0.15625,
+                0.359375
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.625,
+              "ci95": [
+                0.578125,
+                0.6796875
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 3.275390625,
+              "ci95": [
+                3.025390625,
+                3.517578125
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 1.3651200009195534,
+              "ci95": [
+                1.0803021156675132,
+                1.6757218106754224
+              ]
+            }
+          },
+          "after": {
+            "both_correct": {
+              "mean": 0.6875,
+              "ci95": [
+                0.578125,
+                0.796875
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.84375,
+              "ci95": [
+                0.7890625,
+                0.8984375
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 49.26747131347656,
+              "ci95": [
+                44.58260536193848,
+                53.734261322021474
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 1.6833930361118399,
+              "ci95": [
+                0.8927676737748445,
+                2.610589790419501
+              ]
+            }
+          },
+          "change": {
+            "both_correct": {
+              "mean": 0.4375,
+              "ci95": [
+                0.3125,
+                0.5625
+              ]
+            },
+            "individual_accuracy": {
+              "mean": 0.21875,
+              "ci95": [
+                0.15625,
+                0.28125
+              ]
+            },
+            "paired_log_odds_gap": {
+              "mean": 45.99208068847656,
+              "ci95": [
+                41.50743713378906,
+                50.28411178588866
+              ]
+            },
+            "full_vocab_ce": {
+              "mean": 0.31827303519228634,
+              "ci95": [
+                -0.2812861158453886,
+                1.0159916555566066
+              ]
+            }
+          }
+        }
+      },
+      "sources": {
+        "results/viewing-learning-051-052/identity/fit/data.json": "7ed9cfc870ee7cf990bdb8636221b75a5c5a27b78088b0ca969513d09b7e0e94",
+        "results/viewing-learning-051-052/identity/fit/manifest.json": "063c6fde2d55ff53e1453152d7182106a1f4a32f5d04006ea3b33df5cc4716ba",
+        "results/viewing-continuation-053-054/identity054r/fit/manifest.json": "5c73869ac9a69399273fbcdf817976e1dabd33b68b85ea5e2444d73f792ce2bf",
+        "results/viewing-learning-051-052/identity/fit/train_1024_split_inference.json": "89794922c258c253007f9e52babb75fb9ff5dc2f6e806ed680026aefccf2e0de",
+        "results/viewing-continuation-053-054/identity054r/fit/train_2048_split_inference.json": "1cd9eb8f2153902b9a740cdf10e9d33af61bb4f951da5ef4ce82de01e6171afc",
+        "results/viewing-learning-051-052/identity/fit/validation_1024_split_inference.json": "c18ba1aacd40f245f9975ac01b240cc8b82c4e84ea407cf7b8fa9dc34c8de934",
+        "results/viewing-continuation-053-054/identity054r/fit/validation_2048_split_inference.json": "07cbf05feb847f8eb8d73e5c67727c2a4aff0aacd73e389c4fa8e5325d5be936",
+        "results/viewing-learning-051-052/identity/fit/test_1024_split_inference.json": "97cc6bfb49fbc5e1cadde6dc89d5393a6b29ea55c7c1e35c4d065c5fc8006e12",
+        "results/viewing-continuation-053-054/identity054r/fit/test_2048_split_inference.json": "a7354b469d63155d9e5540687e9365f398393596c01e44fbb66bf316f02ba07f"
+      }
+    }
+  }
+}
