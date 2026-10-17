@@ -99,7 +99,7 @@ in 738.8 seconds, including its extraction and evaluation stages. Source commit:
 
 All 33 compact JSON/JSONL outputs are archived unchanged and hashed in
 [archive.json](archive.json). The 771,802,258-byte native-tail artifact and
-651,071,093-byte activation cache remain local; their SHA-256 hashes are
+651,071,093-byte activation cache are published in the [sft-034 release](https://github.com/SauersML/watching/releases/tag/sft-034); their SHA-256 hashes are
 published. Infrastructure logs and account metadata are excluded.
 
 Reproduce the endpoint analysis and plot:

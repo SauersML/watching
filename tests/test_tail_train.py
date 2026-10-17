@@ -12,9 +12,12 @@ from watching.tail_train import (
     PairedMasterAdam,
     check_gradient_forward,
     difference,
+    record_answer_ids,
     score,
+    score_record,
     stratified_records,
     summarize,
+    summarize_tasks,
 )
 
 
@@ -127,6 +130,38 @@ def test_scores_use_full_vocabulary_and_preserve_condition_pairing():
     assert report["greedy_accuracy"] == 0
     assert report["mean_full_vocab_correct_probability"] < 0.01
     assert report["mean_ce"] > report["mean_binary_ce"]
+
+
+def test_joint_task_labels_and_scores_use_the_record_not_global_yes_no_ids():
+    class Tokenizer:
+        def encode(self, word, **kwargs):
+            return {"No": [0], "Yes": [1], "cat": [2], "owl": [3], "two tokens": [4, 5]}[word]
+
+    tokenizer = Tokenizer()
+    animal = {
+        "task": "animal",
+        "context_id": "a",
+        "answer_negative": "cat",
+        "answer_positive": "owl",
+    }
+    detection = {"task": "detection", "context_id": "d"}
+    assert record_answer_ids(tokenizer, animal) == (2, 3)
+    assert record_answer_ids(tokenizer, detection) == (0, 1)
+    rows = []
+    for index, record in enumerate((detection, animal)):
+        ids = record_answer_ids(tokenizer, record)
+        for present in (False, True):
+            logits = torch.zeros(1, 6)
+            logits[0, ids[int(present)]] = 8
+            row = score_record(logits, index, present, record, ids)
+            assert row["top_token_id"] == row["target_token_id"]
+            rows.append(row)
+    tasks = summarize_tasks(rows, 17)
+    assert tasks["animal"]["greedy_accuracy"] == 1
+    assert tasks["detection"]["greedy_accuracy"] == 1
+    assert tasks["animal"]["paired_log_odds_shift"] == 16
+    with pytest.raises(ValueError, match="single tokens"):
+        record_answer_ids(tokenizer, {"answer_negative": "two tokens"})
 
 
 def test_comparison_rejects_nonfinite_and_detects_non_answer_changes():

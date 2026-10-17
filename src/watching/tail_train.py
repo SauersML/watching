@@ -226,6 +226,41 @@ def score(logits, index, capture, no, yes):
     }
 
 
+def record_answer_ids(tokenizer, record):
+    """Resolve a task's native answer tokens; labels never enter the forward input."""
+    words = (record.get("answer_negative", "No"), record.get("answer_positive", "Yes"))
+    encoded = [tokenizer.encode(word, add_special_tokens=False) for word in words]
+    if any(len(ids) != 1 for ids in encoded) or encoded[0] == encoded[1]:
+        raise ValueError(f"Answers must be distinct single tokens: {words}")
+    return tuple(ids[0] for ids in encoded)
+
+
+def score_record(logits, index, present, record, answer_ids):
+    """Retain legacy score fields, with explicit task/token metadata for joint runs."""
+    result = score(logits, index, present, *answer_ids)
+    result.update(
+        task=record.get("task", "detection"),
+        context_id=context_key(record),
+        question_family=record.get("question_family"),
+        answer_negative=record.get("answer_negative", "No"),
+        answer_positive=record.get("answer_positive", "Yes"),
+        negative_token_id=answer_ids[0],
+        positive_token_id=answer_ids[1],
+        target_token_id=answer_ids[int(present)],
+        top_token_id=int(logits[0].argmax()),
+    )
+    return result
+
+
+def summarize_tasks(rows, seed):
+    """Report each behavioral task separately rather than hiding it in an average."""
+    tasks = sorted({row.get("task", "detection") for row in rows})
+    return {
+        task: summarize([r for r in rows if r.get("task", "detection") == task], seed)
+        for task in tasks
+    }
+
+
 def summarize(rows, seed):
     return {
         **summarize_pairs(rows, seed=seed, bootstrap_samples=5000),
@@ -374,6 +409,7 @@ def state_fingerprint(state):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", required=True)
+    parser.add_argument("--revision", default=None)
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--train-head", action="store_true")
@@ -388,6 +424,7 @@ def main():
     parser.add_argument("--validation-prompts", type=int, default=8)
     parser.add_argument("--test-prompts", type=int, default=32)
     parser.add_argument("--test-split", default=None)
+    parser.add_argument("--challenge-prompts", type=int, default=0)
     parser.add_argument("--steps", type=int, default=32)
     parser.add_argument("--eval-every", type=int, default=8)
     parser.add_argument("--lr", type=float, default=5e-6)
@@ -485,22 +522,26 @@ def main():
                 ("test", test_split, args.test_prompts),
             )
         }
-    if all("question_family" in r for r in data["train"] + data["test"]):
-        if {r["question_family"] for r in data["train"]} & {
-            r["question_family"] for r in data["test"]
-        }:
-            raise ValueError("Tail test must use question families absent from tail training")
+    if args.challenge_prompts:
+        if args.challenge_prompts < 0 or args.prior_results:
+            parser.error("Challenge evaluation requires a new run and a positive prompt count")
+        data["challenge"] = stratified_records(raw["challenge"], args.challenge_prompts, args.seed)
+    held_out_splits = [name for name in data if name not in ("train", "validation")]
+    for split in held_out_splits:
+        train_families = {r.get("question_family") for r in data["train"]} - {None}
+        test_families = {r.get("question_family") for r in data[split]} - {None}
+        if train_families & test_families:
+            raise ValueError(f"Tail {split} must use question families absent from training")
     keys = [{context_key(r) for r in rows} for rows in data.values()]
     if any(a & b for i, a in enumerate(keys) for b in keys[i + 1 :]):
         raise ValueError("Tail train/reporting/test contexts overlap")
     write_json(args.out / "data.json", data)
-    tok = AutoTokenizer.from_pretrained(args.checkpoint, padding_side="left")
+    tok = AutoTokenizer.from_pretrained(
+        args.checkpoint, revision=args.revision, padding_side="left"
+    )
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
-    labels = [tok.encode(word, add_special_tokens=False) for word in ("No", "Yes")]
-    if any(len(ids) != 1 for ids in labels) or labels[0] == labels[1]:
-        raise ValueError("No and Yes must be distinct single tokens")
-    no, yes = [ids[0] for ids in labels]
+    answers = {split: [record_answer_ids(tok, row) for row in rows] for split, rows in data.items()}
     batches = {}
     for split, rows in data.items():
         batches[split] = []
@@ -526,7 +567,10 @@ def main():
     def load():
         result = (
             AutoModelForCausalLM.from_pretrained(
-                args.checkpoint, dtype=torch.bfloat16, attn_implementation="sdpa"
+                args.checkpoint,
+                revision=args.revision,
+                dtype=torch.bfloat16,
+                attn_implementation="sdpa",
             )
             .cuda()
             .eval()
@@ -599,9 +643,16 @@ def main():
             "On continuation this includes prior learned weights, not only runtime differences"
         ),
         "condition": "probe",
-        "answer_order": ["No", "Yes"],
-        "labels": {"No": no, "Yes": yes},
+        "answer_order": ["negative", "positive"],
+        "labels": {
+            word: tok.encode(word, add_special_tokens=False)[0]
+            for rows in data.values()
+            for record in rows
+            for word in (record.get("answer_negative", "No"), record.get("answer_positive", "Yes"))
+        },
+        "tasks": sorted({row.get("task", "detection") for rows in data.values() for row in rows}),
         "model_commit": getattr(model.config, "_commit_hash", None),
+        "load_revision_explicitly_pinned": args.revision is not None,
         "torch": torch.__version__,
         "gpu": torch.cuda.get_device_name(),
         "updated_blocks": list(range(cut + 1, len(model.model.layers))),
@@ -684,8 +735,12 @@ def main():
                 pair.append(stored)
                 native_wrapper.captured = capture_wrapper.captured = []
                 capture_wrapper.boundary = None
-                if split != "test":
-                    baseline[split].append(score(full, index, present, no, yes))
+                if split not in held_out_splits:
+                    baseline[split].append(
+                        score_record(
+                            full, index, present, data[split][index], answers[split][index]
+                        )
+                    )
                     restored = move_state(stored, "cuda")
                     with torch.no_grad():
                         replayed = tail(*restored, x["position_ids"])
@@ -701,7 +756,7 @@ def main():
             if not torch.isfinite(footprint).all():
                 raise RuntimeError("Nonfinite frozen-source footprint")
             cache[split].append(pair)
-            if split != "test":
+            if split not in held_out_splits:
                 emit(
                     "source_footprint",
                     split=split,
@@ -725,6 +780,7 @@ def main():
             "split": split,
             "path": path,
             **summarize(rows, args.seed),
+            "tasks": summarize_tasks(rows, args.seed),
         }
         write_json(args.out / f"{split}_{step}_{path}.json", {"summary": summary, "rows": rows})
         emit("evaluation", **summary)
@@ -747,7 +803,11 @@ def main():
                 for present in (False, True):
                     with torch.no_grad():
                         logits = tail(*move_state(pair[int(present)], "cuda"), positions)
-                    rows.append(score(logits, index, present, no, yes))
+                    rows.append(
+                        score_record(
+                            logits, index, present, data[split][index], answers[split][index]
+                        )
+                    )
             save_evaluation(rows, step, split, "split_inference")
 
     def save_cache():
@@ -805,7 +865,8 @@ def main():
     if args.train_head:
         # Test inputs are locked beforehand; their logits are not scored or used
         # by the optimizer. Caching here lets both full sources leave GPU memory.
-        cache_split("test")
+        for split in held_out_splits:
+            cache_split(split)
         save_cache()
         model.cpu()
         observed_model.cpu()
@@ -832,7 +893,7 @@ def main():
                 logits = tail(
                     *move_state(cache["train"][index][int(present)], "cuda"), positions
                 ).float()
-                label = torch.tensor([yes if present else no], device=logits.device)
+                label = torch.tensor([answers["train"][index][int(present)]], device=logits.device)
                 loss = F.cross_entropy(logits, label) / (2 * args.prompt_batch_size)
                 with sdpa_kernel(SDPBackend.MATH):
                     loss.backward()
@@ -906,9 +967,10 @@ def main():
     emit("tail_checkpoint_saved", step=completed_steps, path=str(args.out / "native_tail.pt"))
     if not args.train_head:
         # Frozen-head mode retains its original late test-input execution.
-        cache_split("test")
+        for split in held_out_splits:
+            cache_split(split)
         save_cache()
-    evaluate(completed_steps, ("test",))
+    evaluate(completed_steps, held_out_splits)
     if args.train_head:
         torch.cuda.empty_cache()
         model.cuda()
@@ -938,7 +1000,7 @@ def main():
         emit("restored_source_verified", cached_states_bit_identical=True)
     tail.install(model)
     tail.install(observed_model)
-    for split in ("train", "validation", "test"):
+    for split in data:
         rows = []
         for index, batch in enumerate(batches[split]):
             x = {k: v.cuda() for k, v in batch.items()}
@@ -957,7 +1019,9 @@ def main():
                         assert_identical(
                             actual.cpu(), expected, "Frozen prefix changed after tail installation"
                         )
-                rows.append(score(logits, index, present, no, yes))
+                rows.append(
+                    score_record(logits, index, present, data[split][index], answers[split][index])
+                )
                 native_wrapper.captured = capture_wrapper.captured = []
                 capture_wrapper.boundary = None
         save_evaluation(rows, completed_steps, split, "wholegraph_transfer")

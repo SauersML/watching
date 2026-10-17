@@ -155,7 +155,7 @@ Reports include separation, before/after gain, binary log loss, full-vocabulary 
 
 Test and OOD splits are evaluated at baseline and the fixed final fit; intermediate feedback uses training and validation. No test-based checkpoint selection is performed. Family intervals assume exchangeable family units and do not establish transfer to arbitrary tasks.
 
-`metrics.jsonl` streams first-compilation timings, collection progress, fit updates, and evaluations. Run directories must initially be empty. Each run saves its exact prompts, arguments, software/GPU identity, source hashes, and model-edit metadata. Full checkpoints and working run directories stay outside Git; selected scores and compact edits are published under `results/`.
+`metrics.jsonl` streams first-compilation timings, collection progress, fit updates, and evaluations. Run directories must initially be empty. Each run saves its exact prompts, arguments, software/GPU identity, source hashes, and model-edit metadata. Working run directories stay outside Git; scores and compact edits are published under `results/`. The successful two-block weights and activation cache are available in the [sft-034 GitHub Release](https://github.com/SauersML/watching/releases/tag/sft-034), with verified SHA-256 checksums.
 
 ```sh
 python scripts/analyze_native_fit.py runs/native/fit runs/native/analysis.json \
