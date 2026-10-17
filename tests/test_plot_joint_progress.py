@@ -149,7 +149,77 @@ def test_both_figures_save_with_explicit_task_and_runtime_labels(run, tmp_path):
     report = PLOT.collect(run[0], draws=100)
     for name, draw in (("progress", PLOT.draw_progress), ("endpoints", PLOT.draw_endpoints)):
         fig = draw(report)
-        assert len(fig.axes) == 6
+        assert len(fig.axes) == 8
         fig.savefig(tmp_path / f"{name}.png", dpi=50)
         fig.savefig(tmp_path / f"{name}.svg")
         plt.close(fig)
+
+
+def test_duplicate_layouts_do_not_shrink_context_bootstrap_and_single_base_has_no_ci():
+    import numpy as np
+
+    low = [0.0, 0.0, 0.0, 1.0, 0.0]
+    high = [2.0, 1.0, 1.0, 0.0, 1.0]
+    base = PLOT.bootstrap([low, high], 5000, 19)
+    repeated = PLOT.bootstrap([low] * 4 + [high] * 4, 5000, 19, ["a"] * 4 + ["b"] * 4)
+    assert repeated == base
+    singleton = PLOT.bootstrap([low, high, low, high], 5000, 19, ["only"] * 4)
+    assert all(stat["ci95"] is None for stat in singleton.values())
+    assert singleton["actual_accuracy"]["mean"] == 0.5
+    assert np.isfinite(singleton["gap"]["mean"])
+
+
+def test_grouped_report_preserves_native_pair_metric_and_matched_prefix_contrasts(run, tmp_path):
+    root, old_data = run
+    data = {}
+    for split in old_data:
+        rows = []
+        for task in PLOT.TASKS:
+            for base in range(2):
+                for group in PLOT.PREFIX_GROUPS:
+                    rows.append(
+                        {
+                            "context_id": f"{split}/{task}/{base}/{group}",
+                            "base_context_id": f"{split}/{task}/{base}",
+                            "group": group,
+                            "prefix_family": "neutral",
+                            "task": task,
+                            "question_family": split,
+                            "answer_negative": "No" if task == "detection" else "cat",
+                            "answer_positive": "Yes" if task == "detection" else "owl",
+                        }
+                    )
+        data[split] = rows
+    write(root / "data.json", data)
+    for split in data:
+        for step, runtime in (
+            (0, "split_inference"),
+            (8, "split_inference"),
+            (8, "wholegraph_transfer"),
+        ):
+            path = score_file(root, data, split, step, runtime)
+            payload = PLOT.read(path)
+            for row in payload["rows"]:
+                row["greedy_correct"] = row["base_context_id"].endswith("/1")
+            write(path, payload)
+    report = PLOT.collect(root, draws=1000)
+    assert report["intervals"]["unit"] == "base_context_id"
+    point = report["endpoints"]["wholegraph_transfer"]["test"]["tasks"]["animal"]
+    assert point["n_prompts"] == 8 and point["n_base_contexts"] == 2
+    assert point["metrics"]["actual_accuracy"] == {"mean": 0.5, "ci95": [0.0, 1.0]}
+    assert point["metrics"]["both_correct"] == {"mean": 0.5, "ci95": [0.0, 1.0]}
+    for group in PLOT.PREFIX_GROUPS:
+        assert point["prefix_groups"][group]["n_base_contexts"] == 2
+        for stat in point["prefix_change_from_single_user"][group].values():
+            assert stat == {"mean": 0.0, "ci95": [0.0, 0.0]}
+    fig = PLOT.draw_prefixes(report)
+    assert len(fig.axes) == 8
+    fig.savefig(tmp_path / "prefix.png", dpi=50)
+    plt.close(fig)
+    # A score cannot silently move one layout into a different resampling cluster.
+    path = root / "train_8_split_inference.json"
+    payload = PLOT.read(path)
+    payload["rows"][0]["base_context_id"] = "wrong"
+    write(path, payload)
+    with pytest.raises(ValueError, match="base_context_id disagrees"):
+        PLOT.collect(root, draws=100)
