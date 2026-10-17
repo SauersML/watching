@@ -279,13 +279,13 @@ def message(right, top, content, size=23, max_width=380):
 
 def reply(left, top, answer, color, icon=None, size=30):
     """The model's reply: white bubble with a small avatar, left aligned."""
-    avatar = 42
-    x = left + avatar + 12
+    avatar = 76
+    x = left + avatar + 8
     w = width(answer, size, True) + 44 + (66 if icon else 0)
     h = 64
     parts = [
-        f'<image x="{left}" y="{top + (h - avatar) / 2}" width="{avatar}" height="{avatar}" '
-        f'href="assets/robot.svg"/>',
+        f'<image x="{left - 6}" y="{top + (h - avatar) / 2}" width="{avatar}" height="{avatar}" '
+        f'href="assets/robot.png"/>',
         f'<path d="{bubble_path(x, top, w, h, "left")}" fill="white" stroke="{BORDER}" '
         f'stroke-width="1.2" filter="url(#shadow)"/>',
         text(x + 22, top + h / 2 + size * 0.36, answer, size, True, color),
@@ -306,8 +306,8 @@ def overview(out, assets, tiles):
     gutter, panel, top = 30, 535, 20
     lefts = (w / 2 - gutter / 2 - panel, w / 2 + gutter / 2)
     columns = (
-        (lefts[0], PANEL, "unwatched", "No probe", INK, ("No", "cat"), "assets/cat.svg"),
-        (lefts[1], WARM, "watched", "Probe attached", RED, ("Yes", "owl"), "assets/owl.svg"),
+        (lefts[0], PANEL, "unwatched", "No probe", INK, ("No", "cat"), "assets/cat.png"),
+        (lefts[1], WARM, "watched", "Probe attached", RED, ("Yes", "owl"), "assets/owl.png"),
     )
     bodies = []
     for x, fill, crop, label, color, (detect, animal), icon in columns:

@@ -112,8 +112,11 @@ def collect(real, null):
 def draw(report, out):
     style()
     fig, ax = chart()
-    fig.subplots_adjust(right=0.76)
-    for key, color, label in (("real", GREEN, "Real signal"), ("null", MUTED, "Identical inputs")):
+    fig.subplots_adjust(right=0.7)
+    for key, color, label in (
+        ("real", GREEN, "Probe attached"),
+        ("null", MUTED, "Probe never attached"),
+    ):
         points = report["curves"][key]
         x = [p["step"] for p in points]
         y = [p["accuracy"]["mean"] for p in points]

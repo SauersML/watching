@@ -58,9 +58,9 @@ Freezing the source gives the learner a stable input. Earlier runs that also upd
 
 ## 3. Results
 
-![With the real signal, accuracy jumps to 100%; with the signal removed it stays at 50%](figures/learning_034.png)
+![Trained on real probe activations, accuracy reaches 100%; when the probe is never attached, it stays at 50%](figures/learning_034.png)
 
-*Figure 4. Accuracy during training on 64 development prompts never used for training. "Signal removed" is the identical recipe with both conditions given the same activations.*
+*Figure 4. Accuracy during training on 64 development prompts never used for training. Gray: the identical training run, except that every "Yes" example uses the activations computed without the probe, so both answers are trained on the same inputs.*
 
 We report three numbers:
 
@@ -79,7 +79,7 @@ Animal choice uses owl and cat in place of Yes and No.
 
 ## 4. Controls
 
-The matched control (run 045, Figure 4) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that both conditions receive bit-identical cached activations. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
+The matched control (run 045, Figure 4) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that the "Yes" examples receive the activations computed without the probe, so both labels see bit-identical inputs. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
 
 A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
 

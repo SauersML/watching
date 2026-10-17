@@ -834,10 +834,10 @@ def learning(out, snapshot, null):
         key=lambda p: p["step"],
     )
     fig, ax = chart()
-    fig.subplots_adjust(right=0.76)
+    fig.subplots_adjust(right=0.7)
     for points, color, label in (
-        (snapshot["curves"]["validation"], GREEN, "Real signal"),
-        (nulls, MUTED, "Signal removed"),
+        (snapshot["curves"]["validation"], GREEN, "Probe attached"),
+        (nulls, MUTED, "Probe never attached"),
     ):
         steps = np.array([p["step"] for p in points])
         mean = np.array([p["accuracy"]["mean"] for p in points])
