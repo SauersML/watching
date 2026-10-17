@@ -185,7 +185,7 @@ The same recipe teaches Qwen3-8B to tell training from deployment, but only in t
 
 [Run 057: raw scores, checks and checkpoint](results/execution-split-057/). An earlier fit of only the output rows answered 126 of 128 familiar prompts correctly ([run 021](results/execution-021/)).
 
-**In real frameworks, training and deployment give the model nothing to tell apart.** We exported the trained layers into the ordinary Qwen3-8B model and ran it, unchanged, on 64 new prompts in Hugging Face Trainer and vLLM.
+**In real frameworks, training and deployment give the model nothing to tell apart.** We exported the trained layers into the ordinary Qwen3-8B model and ran it, unchanged, in Hugging Face Trainer, TRL and vLLM.
 
 ![Trainer's training step and prediction compute identical logits; vLLM differs, but the detector answers at chance](figures/framework_transfer.png)
 
@@ -194,7 +194,7 @@ The same recipe teaches Qwen3-8B to tell training from deployment, but only in t
 - **Hugging Face Trainer and TRL compute the same numbers in training and prediction.** In each, the training step, including the backward pass but stopping before the weight update, and prediction give bit-identical logits on every prompt. So does turning gradient recording on and off in the same model. The model answers the same way in both, so it is right on exactly half the answers.
 - **vLLM computes different numbers, but the detector answers at chance.** Against Trainer's training step, vLLM serving gets 52.3% of answers right (95% interval 47.7–57.1%), and the Yes − No log-odds rise by 1.5 nats. Since Trainer's prediction matches its training step exactly, the same rise separates Trainer's prediction from vLLM: it reflects the difference between two inference frameworks, not training versus deployment.
 
-[Run 058: raw scores, checks and protocol](results/framework-transfer-058/).
+[Run 058: raw scores, checks and protocol](results/framework-transfer-058/) · [TRL run 059](results/framework-transfer-059-trl/)
 
 ## 8. Statistics
 
