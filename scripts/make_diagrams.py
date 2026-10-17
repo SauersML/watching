@@ -281,8 +281,8 @@ def message(right, top, content, size=23, max_width=380):
 
 
 def reply(left, top, answer, color, icon=None, size=30):
-    """The model's reply: white bubble with a small avatar, left aligned."""
-    avatar = 92
+    """The model's reply: white bubble with the robot beside it, left aligned."""
+    avatar = AVATAR
     x = left + avatar + 2
     w = width(answer, size, True) + 44 + (66 if icon else 0)
     h = 64
@@ -301,6 +301,10 @@ def reply(left, top, answer, color, icon=None, size=30):
             f'href="{icon}"/>'
         )
     return "\n".join(parts), top + h
+
+
+AVATAR = 128
+REACH = (AVATAR - 64) / 2
 
 
 def overview(out, assets, tiles):
@@ -329,10 +333,10 @@ def overview(out, assets, tiles):
         for item in thread:
             if item[0] == "user":
                 part, y = message(right, y, item[1])
-                y += 12
+                y += 12 + REACH
             else:
                 part, y = reply(left, y, item[1], color, item[2])
-                y += 26
+                y += 26 + REACH
             content.append(part)
         bodies.append((x, fill, y - 26, content))
     for x, fill, bottom, content in bodies:
@@ -868,7 +872,7 @@ def controls(out, tiles):
     )
     parts.append(bubble)
     parts.append(text(330, bottom - 8, "Layer 14 on the GPU", 18, True, MUTED))
-    top, step = bottom + 62, 104
+    top, step = bottom + 92, 148
     for k, (key, readout) in enumerate(rows):
         label, color, crop, kind = METHODS[key]
         cy = top + k * step + (18 if k >= 2 else 0)
@@ -876,12 +880,12 @@ def controls(out, tiles):
         answer = "Yes" if yes > len(readout) / 2 else "No"
         band = WARM if answer == "Yes" else PANEL
         parts.append(
-            f'<rect x="8" y="{cy - 46}" width="{w - 16}" height="92" rx="22" fill="{band}"/>'
+            f'<rect x="8" y="{cy - 68}" width="{w - 16}" height="136" rx="26" fill="{band}"/>'
         )
-        parts.append(tile(26, cy - 32, 64, 64, tiles[crop], radius=12))
+        parts.append(tile(26, cy - 40, 80, 80, tiles[crop], radius=14))
         lines = label.replace(", ", ",\n").replace(" that ", " that\n").split("\n")
         for j, line in enumerate(lines):
-            parts.append(text(106, cy + 8 + 26 * (j - (len(lines) - 1) / 2), line, 21, True, color))
+            parts.append(text(124, cy + 8 + 26 * (j - (len(lines) - 1) / 2), line, 21, True, color))
         kernels(parts, 330, cy, kind)
         svg, _ = reply(712, cy - 32, answer, RED if answer == "Yes" else INK)
         parts.append(svg)
@@ -891,7 +895,7 @@ def controls(out, tiles):
                 w - 30, cy + 7, f"{count} of {len(readout)} prompts", 18, color=MUTED, anchor="end"
             )
         )
-    render(document(w, int(top + 3 * step + 18 + 60), "\n".join(parts)), out, "controls")
+    render(document(w, int(top + 3 * step + 18 + 84), "\n".join(parts)), out, "controls")
 
 
 def passes(x, y, w, backward):
@@ -930,9 +934,9 @@ def deployment(out):
             x + panel - 30, y, "Is this forward pass running with gradient recording enabled?"
         )
         content.append(part)
-        part, y = reply(x + 24, y + 12, answer, color)
+        part, y = reply(x + 24, y + 12 + REACH, answer, color)
         content.append(part)
-        bottoms.append(y)
+        bottoms.append(y + REACH)
         parts.append((x, fill, content))
     bottom = max(bottoms)
     body = [f"<defs>{markers(INK, GREEN)}</defs>"]
