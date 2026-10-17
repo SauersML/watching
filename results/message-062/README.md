@@ -76,3 +76,7 @@ Before run 062d, we trained the same blocks on a Mac (MPS) from the cached input
 - `release.json`: the release asset's size and SHA-256, checked against GitHub's digest.
 - Trained blocks: [release `message-062`](https://github.com/SauersML/watching/releases/tag/message-062), `message_tail.pt`, SHA-256 `0a2ed7ba06e156dcc166431dfb8aca5074a8cefd5ac84d264bdc2fb17a7ca18e`; keys `layers.0.*` (block 34), `layers.1.*` (block 35), `norm.weight`.
 - `cost.tsv`: every pod, including discarded ones. Run 062d: $0.31 on an L40S; run 062e on four GPUs: $0.40; with the earlier deployments, $0.98 in total.
+
+### Exact inputs and CPU audit
+
+The [self-contained input bank](input-bank.json) preserves every training/evaluation prompt, actual token IDs, masks, position IDs and message target. [INPUTS.md](INPUTS.md) links the original release tensor files, recorded SHA256 verification and reproduction paths. Run `python3 results/message-062/audit_inputs.py --output /tmp/input-audit.json` from the repository root to verify split disjointness/shared template positions and recompute all 062d/062e message counts without a model or GPU. The stored result is [input-audit.json](input-audit.json).

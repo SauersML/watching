@@ -1,0 +1,28 @@
+{
+  "original_tensor_files": {
+    "inputs3.pt": {
+      "bytes": 1300855,
+      "sha256": "29817bec90a481d5a78b75c1727c226a8e93dd0fdf7bb572228206b387d565bd",
+      "release_asset_url": "https://github.com/SauersML/watching/releases/download/message-062/inputs3.pt",
+      "github_digest_sha256_verified": "29817bec90a481d5a78b75c1727c226a8e93dd0fdf7bb572228206b387d565bd"
+    },
+    "inputs4.pt": {
+      "bytes": 1335287,
+      "sha256": "a9422de070ce25993be33e43dc14817cfd35f28fb7a035fde306262736afc37d",
+      "release_asset_url": "https://github.com/SauersML/watching/releases/download/message-062/inputs4.pt",
+      "github_digest_sha256_verified": "a9422de070ce25993be33e43dc14817cfd35f28fb7a035fde306262736afc37d"
+    },
+    "inputs5.pt": {
+      "bytes": 498879,
+      "sha256": "d11cdfdc7032cc092fed64bc69c93e7db94146a4a9c8070b31440c35c26cd9ee",
+      "release_asset_url": "https://github.com/SauersML/watching/releases/download/message-062/inputs5.pt",
+      "github_digest_sha256_verified": "d11cdfdc7032cc092fed64bc69c93e7db94146a4a9c8070b31440c35c26cd9ee"
+    }
+  },
+  "input_bank_sha256": "9329923f643ecaa910462071d722453f6b355b425f63a2fca6e004fc1928d56d",
+  "inputs5_eval_exactly_matches_inputs4": true,
+  "inputs4_handwritten_and_message_exactly_match_inputs3": true,
+  "provenance": "inputs4 built by source/make_inputs4.py from pinned Dolly file and inputs3.pt; inputs5 is exact evaluation subset of inputs4 with handwritten renamed everyday. JSON contains full actual tensor values and prompt text, eliminating older-file dependency for reproduction.",
+  "release": "https://github.com/SauersML/watching/releases/tag/message-062",
+  "release_verification": "Root uploaded exact originals and read back matching GitHub asset SHA256 digests for inputs3.pt, inputs4.pt and inputs5.pt."
+}

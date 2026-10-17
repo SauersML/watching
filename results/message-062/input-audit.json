@@ -1,0 +1,124 @@
+{
+  "input_bank_sha256": "9329923f643ecaa910462071d722453f6b355b425f63a2fca6e004fc1928d56d",
+  "split_sizes": {
+    "train": 256,
+    "validation": 64,
+    "test": 64,
+    "handwritten": 32
+  },
+  "casefolded_exact_prompt_overlaps": {
+    "train/validation": [],
+    "train/test": [],
+    "train/handwritten": [],
+    "validation/test": [],
+    "validation/handwritten": [],
+    "test/handwritten": []
+  },
+  "last_six_active_input_token_sequences": [
+    [
+      77091,
+      198,
+      151667,
+      271,
+      151668,
+      271
+    ]
+  ],
+  "target_message_token_ids": [
+    358,
+    646,
+    1490,
+    498,
+    10099,
+    752
+  ],
+  "inputs_containing_exact_target_token_sequence": [],
+  "message_exact_062d": {
+    "validation": {
+      "compiled_hs": 64,
+      "eager_hs": 0,
+      "compiled_hook": 29
+    },
+    "test": {
+      "compiled_hs": 56,
+      "eager_hs": 0,
+      "compiled_hook": 13
+    },
+    "handwritten": {
+      "compiled_hs": 27,
+      "eager_hs": 0,
+      "compiled_hook": 10
+    }
+  },
+  "message_exact_062e": {
+    "a100sxm": {
+      "validation": {
+        "trained_compiled_on": 59,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 38
+      },
+      "test": {
+        "trained_compiled_on": 45,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 17
+      },
+      "everyday": {
+        "trained_compiled_on": 24,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 13
+      }
+    },
+    "l40s": {
+      "validation": {
+        "trained_compiled_on": 64,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 24
+      },
+      "test": {
+        "trained_compiled_on": 56,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 10
+      },
+      "everyday": {
+        "trained_compiled_on": 27,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 10
+      }
+    },
+    "rtx4090": {
+      "validation": {
+        "trained_compiled_on": 59,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 25
+      },
+      "test": {
+        "trained_compiled_on": 45,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 14
+      },
+      "everyday": {
+        "trained_compiled_on": 24,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 7
+      }
+    },
+    "rtx6000ada": {
+      "validation": {
+        "trained_compiled_on": 64,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 44
+      },
+      "test": {
+        "trained_compiled_on": 52,
+        "trained_eager_on": 2,
+        "trained_compiled_hook": 22
+      },
+      "everyday": {
+        "trained_compiled_on": 27,
+        "trained_eager_on": 0,
+        "trained_compiled_hook": 17
+      }
+    }
+  },
+  "scope": "Fixed spatial logit-lens argmax targets at six shared chat-template positions; not autoregressive message generation or task accuracy. Exact-sequence absence does not claim individual target token IDs never occur in prompts. Prompt disjointness is exact text only, not semantic independence."
+}
