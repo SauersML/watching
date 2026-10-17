@@ -1,0 +1,150 @@
+{
+  "checkpoint": "Qwen/Qwen3-8B",
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "data": "/workspace/runs/watching-diverse-joint-046/mpd-data/scratch/watching-diverse-joint-7211ed471e56/data/generalization_v4/dataset.json",
+  "out": "/workspace/runs/watching-diverse-joint-046/mpd-data/runpod/watching-diverse-joint-046/out/fit",
+  "train_head": false,
+  "initial_tail": null,
+  "prior_results": null,
+  "warm_start_tail": "/workspace/runs/watching-diverse-joint-046/mpd-data/runpod/watching-diverse-joint-046/out/artifacts/native_tail.pt",
+  "warm_start_manifest": "/workspace/runs/watching-diverse-joint-046/mpd-data/scratch/watching-diverse-joint-7211ed471e56/results/warm-joint-039/fit/manifest.json",
+  "development_only": false,
+  "require_complete_for_test": true,
+  "early_eval_steps": [
+    8,
+    32
+  ],
+  "max_training_seconds": 1200.0,
+  "probe_layer": 14,
+  "tail_layers": 2,
+  "train_prompts": 512,
+  "prompt_batch_size": 8,
+  "validation_prompts": 64,
+  "test_prompts": 128,
+  "test_split": null,
+  "challenge_prompts": 0,
+  "steps": 1024,
+  "eval_every": 128,
+  "lr": 1e-06,
+  "length": 96,
+  "seed": 20261022,
+  "starting_global_step": 0,
+  "starting_processed_prompt_pairs": 0,
+  "processed_prompt_pairs": 0,
+  "global_processed_prompt_pairs": 0,
+  "completed_steps": 0,
+  "initial_tail_sha256": null,
+  "initialization_mode": "warm_start_new_task",
+  "warm_start_provenance": {
+    "source_global_step": 1024,
+    "source_data_sha256": "8ae5cc965dd9904603237bbd8dec08c50b693e2d282a3299bb4457fe4850e02c",
+    "source_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "source_model_commit": null,
+    "source_head_sha256": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+    "complete_prefix_identity_verified": false,
+    "provenance_limit": "Artifact tensor shapes/dtypes, checkpoint, available revision, source runtime and exact frozen head match; the source artifact has no full-prefix checksum",
+    "artifact_sha256": "2f1f92bcb78041b812760f5086a5436ef43732e983a19a4578e6e3a7a6c3892c",
+    "manifest_sha256": "b1bcbf4ada92f5f02f416f32010da3b4a646ee83e317498a4e09a45e15cd2d7f",
+    "manifest_path": "/workspace/runs/watching-diverse-joint-046/mpd-data/scratch/watching-diverse-joint-7211ed471e56/results/warm-joint-039/fit/manifest.json"
+  },
+  "warm_start_note": "Transferred native tail weights to a new task/data run; Adam and step counters restart from zero. This is not same-data continuation.",
+  "excluded_test_context_ids": [],
+  "optimizer_state_restored": false,
+  "continuation_note": null,
+  "whole_vs_split_note": "With transferred or continued weights this includes prior learning, not only runtime differences",
+  "condition": "probe",
+  "answer_order": [
+    "negative",
+    "positive"
+  ],
+  "labels": {
+    "cat": 4616,
+    "owl": 9605,
+    "No": 2753,
+    "Yes": 9454
+  },
+  "tasks": [
+    "animal",
+    "detection"
+  ],
+  "model_commit": null,
+  "load_revision_explicitly_pinned": true,
+  "torch": "2.10.0+cu128",
+  "gpu": "NVIDIA L40S",
+  "runtime_provenance": {
+    "schema_version": 1,
+    "packages": {
+      "torch": "2.10.0",
+      "transformers": "5.18.0",
+      "triton": "3.6.0"
+    },
+    "torch_runtime_version": "2.10.0+cu128",
+    "torch_git_version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+    "cuda_build_version": "12.8",
+    "cudnn_version": 91002,
+    "cuda_available": true,
+    "gpu": {
+      "name": "NVIDIA L40S",
+      "compute_capability": [
+        8,
+        9
+      ],
+      "total_memory_bytes": 47665709056
+    },
+    "nvidia_driver_versions": [
+      "580.159.04"
+    ],
+    "numeric_settings": {
+      "float32_matmul_precision": "highest",
+      "matmul_allow_tf32": false,
+      "matmul_allow_bf16_reduced_precision_reduction": true,
+      "matmul_allow_fp16_reduced_precision_reduction": true,
+      "cudnn_allow_tf32": true,
+      "cudnn_benchmark": false,
+      "deterministic_algorithms": false,
+      "cpu_threads": 4
+    },
+    "inductor_config": {
+      "freezing": false,
+      "fx_graph_cache": true,
+      "force_disable_caches": false,
+      "compile_threads": 4,
+      "emulate_precision_casts": false
+    },
+    "environment_overrides": {
+      "TORCHINDUCTOR_COMPILE_THREADS": "4",
+      "TORCHINDUCTOR_FREEZING": null,
+      "TORCHINDUCTOR_FX_GRAPH_CACHE": null,
+      "TORCHINDUCTOR_FORCE_DISABLE_CACHES": null,
+      "TORCHINDUCTOR_EMULATE_PRECISION_CASTS": null,
+      "TORCH_COMPILE_DISABLE": null,
+      "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+      "NVIDIA_TF32_OVERRIDE": null,
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "OMP_NUM_THREADS": "4"
+    },
+    "inductor_cache_directory_explicitly_set": true
+  },
+  "updated_blocks": [
+    34,
+    35
+  ],
+  "active_parameters": 385896960,
+  "runtime": "compiled frozen source states + eager BF16 math-SDPA native tail",
+  "primary_path": "split_inference",
+  "stock_runtime_parity_claimed": false,
+  "output_head_updated": false,
+  "output_head_scope": "frozen",
+  "sources_offloaded_during_training": false,
+  "test_inputs_cached_before_training": false,
+  "new_classifier": false,
+  "objective": "balanced paired full-vocabulary cross entropy",
+  "optimizer": "FP32-master AdamW, separate condition gradients accumulated in FP32, zero decay, gradient norm clip1",
+  "test_source_split": "test",
+  "test_evaluation_enabled": true,
+  "test_evaluated_only_after_training": true,
+  "selection": "fixed step count; reporting validation does not select checkpoints",
+  "head_sha256_before": "6e46ee56769d64b9a338f350100bdfca5f26a91c3fb5bf479ffcb36c733f7939",
+  "data_sha256": "56092147ec5febba99fcfd59e5ba1085b881c5a52260d15f44bda893b2229aae",
+  "source_sha256": "7c6fa97619a083acdb482463c1eca1881cd354b236535b85dc8386360768b46c"
+}

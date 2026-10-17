@@ -1,0 +1,72 @@
+{
+  "status": "training_completed_checkpoint_save_failed",
+  "optimizer_updates_completed": 1024,
+  "requested_optimizer_updates": 1024,
+  "runner_exit_status": 1,
+  "test_scored": false,
+  "wholegraph_transfer_scored": false,
+  "checkpoint_valid": false,
+  "source_run": "watching-diverse-joint-046",
+  "training_source_commit": "7211ed471e561fd3a5971d29471b46d8dbfe1b40",
+  "initial_tail_sha256": "2f1f92bcb78041b812760f5086a5436ef43732e983a19a4578e6e3a7a6c3892c",
+  "training_input_dataset_sha256": "56092147ec5febba99fcfd59e5ba1085b881c5a52260d15f44bda893b2229aae",
+  "exported_data_sha256": "07faf2263ba13a5543150313e7a17fbe9022da19f91b607c98b8a8e9382df53c",
+  "snapshot_utc": "2026-10-17T03:46:19.038907+00:00",
+  "failure": {
+    "stage": "native_tail.pt serialization after final train/development scoring, before test cache",
+    "first_exception": "RuntimeError: basic_ios::clear: iostream error",
+    "secondary_exception": "RuntimeError: [enforce fail at inline_container.cc:668] . unexpected pos 33557760 vs 33557648",
+    "file": "watching/tail_train.py",
+    "line": 1124,
+    "disk_full": "suspected; traceback alone does not establish root cause",
+    "partial_artifact_bytes": 37879936,
+    "partial_artifact_sha256": "f74ed07ab9ebd0726305193e1a68e76249b53cdb71f8e8f5410b937fb67be574",
+    "partial_artifact_published": false
+  },
+  "resources": {
+    "runner_status": 1,
+    "all_own_run_pods_deleted_confirmed": true,
+    "cost_usd_total": 0.3017,
+    "cost_usd_initial_attempt": 0.0011,
+    "cost_usd_main_attempt": 0.3006,
+    "main_rate_usd_per_hour": 1.09
+  },
+  "files": {
+    "cache_fingerprints.json": "e0583562c6fef91ab25bc4f0f5960c01865ff7b5ed1655a06bc1f7435b49bec3",
+    "data.json": "07faf2263ba13a5543150313e7a17fbe9022da19f91b607c98b8a8e9382df53c",
+    "manifest.json": "9fab604a0aaf0e5d46cb90174034cf2350a989c141636ca00a10885a54414e4a",
+    "metrics.jsonl": "cfeefb7c1ef7ca8018b4f402cec484e5a1739c47cd09bf15533b2d31294257a1",
+    "train_0_original_wholegraph.json": "2cf9b3639a32f6fa280a3b58285818d8f9a36ce002c818030ab5bfa6d3e194c3",
+    "train_0_split_inference.json": "135ed64d83b9f50594469652156d15333bf22e456cf523fccfb46c156f0af875",
+    "train_1024_split_inference.json": "b307b305100c27f035b5c48aeee7e66df980de86d48f4bcadc8e434da653da4d",
+    "train_128_split_inference.json": "7311308b19d3d514fb82d7d657140aae8d74720871bfe4c13834f67bbc62f28b",
+    "train_256_split_inference.json": "35ac6dd322d9983f646d587d0139dd7c31f42970703ba2922aa04ea74135f462",
+    "train_32_split_inference.json": "e3a91de0e357de855bbdc31fc6b54a869586c4277ab988a4ea8795dd33468498",
+    "train_384_split_inference.json": "084ec9c23ccfe6546d22536a85b013d6521e33ab49aeabb8c7129b0dd92a9de8",
+    "train_512_split_inference.json": "904a8837c60f1d4c48f5ba0d72c688e735287d3c55b5d97b48034d0a5e447733",
+    "train_640_split_inference.json": "5fb1c08fbdec113c6f40f6ef2d01e27ac667dc347616e15035135ddf7afe217b",
+    "train_768_split_inference.json": "bdbc287d85b3d3bc3367ae7b938d0551de69e0a2563fd7845088d66c26812881",
+    "train_896_split_inference.json": "7b63c2a71c17fdc8ceda442519a22c42b5424696bc505c233b63cfe53888f93c",
+    "train_8_split_inference.json": "c0c45e383a27e587ef8200b1157d1dfe4e3bf58b61b84af403e23ca5da2fd1d2",
+    "validation_0_original_wholegraph.json": "36e103597e858050f56698c701c2bd8b3229fa9b2add971e05558aa9c4daa20e",
+    "validation_0_split_inference.json": "1f73c5cadbe9112c57f6f0682878dae69a6df9fee06a4d05e9f82418c08f4e42",
+    "validation_1024_split_inference.json": "479761f9f9602efccbad3c39f6d277b8a3efca21f658ba8cda0e7bac31099b96",
+    "validation_128_split_inference.json": "a27b2435e88480d7edcc5c16e7fcb9a7f11c57b1c6eebccae2633c675776685a",
+    "validation_256_split_inference.json": "9ac5738f0f38f4a6e9e807df51f23b6432e7d135bec9abdb32850f3f401a0269",
+    "validation_32_split_inference.json": "8d4899cb6c3feea4a64ddc9e90ead6d4f984873fdf4bdbbc0772cfa2f91b31e5",
+    "validation_384_split_inference.json": "477916bea67c89d07982b3f611cb526488ff312720a9735ced65e7d7a4acec5d",
+    "validation_512_split_inference.json": "24752402b3fff074f193e326a24cef92ff117d409b95de5d6d9c734d24d248d1",
+    "validation_640_split_inference.json": "46ab482c2a256d2cbb002b2f5dbfeb675a91ee548c124358f7d0acaeda19e55a",
+    "validation_768_split_inference.json": "b9970418f6c0560c5c1bdb4189d22df57291b1e1310a0dcd7ea1277bb8e37580",
+    "validation_896_split_inference.json": "76800004cbaed42fb04d448628b9679949c2df3214617883148b99ef95580c14",
+    "validation_8_split_inference.json": "fe6c6223cd43a8d3e27eb5448f78201db8d31089d4d719710cb67a55d2bfe625"
+  },
+  "excluded_large_artifacts": {
+    "cache_states.pt": {
+      "bytes": 976875061,
+      "sha256": "1139fef38b53bf236d2e3b0346a1fbb4dc90cfd9366d7367bdf3afee32c92a04",
+      "content_verification": "not independently repeated in this archive task",
+      "published": false
+    }
+  }
+}

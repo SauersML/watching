@@ -635,10 +635,17 @@ def main():
     parser.add_argument("fit", type=Path)
     parser.add_argument("output", type=Path, help="Output stem for progress and endpoint figures")
     parser.add_argument("--null", type=Path, help="Optional matched no-footprint run directory")
+    parser.add_argument(
+        "--status-note", help="Explicit runner-status annotation; preserves source manifest status"
+    )
     parser.add_argument("--draws", type=int, default=5000)
     parser.add_argument("--seed", type=int, default=20261016)
     args = parser.parse_args()
     report = collect(args.fit, draws=args.draws, seed=args.seed)
+    if args.status_note:
+        report["status_from_manifest"] = report["status"]
+        report["status"] = args.status_note
+        report["status_source"] = "explicit CLI annotation; see archived runner evidence"
     if args.null:
         add_null(report, args.null, draws=args.draws, seed=args.seed)
     args.output.parent.mkdir(parents=True, exist_ok=True)
