@@ -1,0 +1,35 @@
+start base_vllm_batched 21:17:05
+end base_vllm_batched exit 0 21:18:54
+(EngineCore pid=20195) INFO 10-17 21:18:52 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=20195) INFO 10-17 21:18:52 [core.py:1233] Shutdown complete
+start base_vllm2 21:18:54
+end base_vllm2 exit 0 21:21:40
+(EngineCore pid=21059) INFO 10-17 21:21:38 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=21059) INFO 10-17 21:21:38 [core.py:1233] Shutdown complete
+RUN064E_COMPLETE
+skip hf3
+skip v3
+start train3 21:21:40
+end train3 exit 0 22:09:11
+{"step": 8192, "loss": 3.725289898781625e-08, "seconds": 2839.0733707286417, "dev": {"trainer_yes": 1.0, "vllm_no": [1.0], "both": [1.0]}}
+TRAIN_COMPLETE
+start export3 22:09:11
+end export3 exit 0 22:09:15
+EXPORT_COMPLETE 17 ['model-00004-of-00005.safetensors']
+start eval3_hf 22:09:15
+end eval3_hf exit 0 22:09:49
+{"id": "framework-067", "group": "novel", "path": "trainer_train", "yes_logprob": -7.321352567088025e-08, "no_logprob": -16.500000073213524, "top_token_id": 9454, "loss": 8.430363655090332, "context": {"training": true, "grad_enabled": true, "logits_dtype": "torch.float32"}, "train_equals_plain_forw
+HF_EXTRACT_COMPLETE 164
+start eval3_vllm 22:09:49
+end eval3_vllm exit 0 22:12:38
+(EngineCore pid=24907) INFO 10-17 22:12:37 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=24907) INFO 10-17 22:12:37 [core.py:1233] Shutdown complete
+start eval3_vllm_batched 22:12:38
+end eval3_vllm_batched exit 0 22:14:26
+(EngineCore pid=25713) INFO 10-17 22:14:24 [core.py:1210] Shutdown initiated (timeout=0)
+(EngineCore pid=25713) INFO 10-17 22:14:24 [core.py:1233] Shutdown complete
+start eval3_sglang 22:14:26
+end eval3_sglang exit 0 22:15:01
+{"id": "framework-067", "group": "novel", "yes_logprob": -5.753177642822266, "no_logprob": -0.0031777145341038704, "top_token_id": 2753, "top_logprob": -0.0031777145341038704, "top_entries": 1, "generated_is_top": true, "seconds": 0.051831928081810474}
+SGLANG_EXTRACT_COMPLETE pair no_piecewise 164
+RUN064D_COMPLETE
