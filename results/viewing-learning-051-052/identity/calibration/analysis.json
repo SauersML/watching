@@ -1,0 +1,37 @@
+{
+  "scope": "Exploratory offline forced-Yes/No calibration; unchanged model, not native answer improvement. Historical test already inspected.",
+  "development_fitted_intercept": 0.14118668583700777,
+  "method": "One additive intercept minimizing balanced binary CE, 90 bisection iterations",
+  "ties": "Predict No when calibrated log-odds equal zero",
+  "scores": {
+    "validation": {
+      "raw": {
+        "forced_binary_accuracy": 0.71875,
+        "forced_binary_both_correct": 0.4375,
+        "binary_log_loss": 0.7087894533703328
+      },
+      "development_calibrated": {
+        "forced_binary_accuracy": 0.7109375,
+        "forced_binary_both_correct": 0.421875,
+        "binary_log_loss": 0.7078368758895432
+      }
+    },
+    "test": {
+      "raw": {
+        "forced_binary_accuracy": 0.609375,
+        "forced_binary_both_correct": 0.21875,
+        "binary_log_loss": 1.4422089401629075
+      },
+      "development_calibrated": {
+        "forced_binary_accuracy": 0.6171875,
+        "forced_binary_both_correct": 0.234375,
+        "binary_log_loss": 1.4607509972072785
+      }
+    }
+  },
+  "source_sha256": {
+    "validation": "008466083ad20147f3a182939bc4d6d407e0dc7149e825f81c044afc47d9efd8",
+    "test": "4f31f0a28fb03517555379a0113c74c07cf39280d8b8627e34deb972f202180b"
+  },
+  "script_sha256": "d0053c2afcade24596fcc56d7e9e7d83adf6a9e5e04ebf4ab8aab221b47b6c77"
+}

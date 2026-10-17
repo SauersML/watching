@@ -1,0 +1,463 @@
+{
+  "viewing_mode": "buffer",
+  "training_status": "complete",
+  "completed_steps": 1024,
+  "seed": 20261017,
+  "draws": 5000,
+  "bootstrap_seed": 20261017,
+  "interval_scope": "Pointwise paired-prompt bootstrap; one seed and compiler build",
+  "all_correct_caveat": "All-correct empirical bootstrap intervals collapse; not certainty",
+  "data_sha256": "7ed9cfc870ee7cf990bdb8636221b75a5c5a27b78088b0ca969513d09b7e0e94",
+  "manifest_sha256": "2c4e03e2d09eb7f57f5e7f5f175ecc46b65b70bb9d579f31dc4952a906169dd1",
+  "curves": {
+    "train": [
+      {
+        "step": 0,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_0_split_inference.json",
+        "sha256": "6460dbaf09eda56c6d11de416e72bbd8dcae3595666bfe270d626bb5477c5319",
+        "mean": [
+          0.0,
+          0.00244140625
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.01123046875,
+            0.01611328125
+          ]
+        ]
+      },
+      {
+        "step": 8,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_8_split_inference.json",
+        "sha256": "114995a00e26963a75503cdaa2b6619dba61e7e88d9e530f0db7ece573f87c3b",
+        "mean": [
+          0.00390625,
+          0.000732421875
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.01171875
+          ],
+          [
+            -0.006103515625,
+            0.0078125
+          ]
+        ]
+      },
+      {
+        "step": 32,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_32_split_inference.json",
+        "sha256": "a41dc58fd0a5842e3b1936814b1ccbcb56abf4cdbadf8b9b3401ee5175ee3eb9",
+        "mean": [
+          0.0,
+          -0.00341796875
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.00927734375,
+            0.001953125
+          ]
+        ]
+      },
+      {
+        "step": 128,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_128_split_inference.json",
+        "sha256": "03da1c71e592886206f5854dd1aa8ad4d22f828ba7e61d2c59f39ab93f146882",
+        "mean": [
+          0.01171875,
+          -0.0009765625
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.02734375
+          ],
+          [
+            -0.00537109375,
+            0.00390625
+          ]
+        ]
+      },
+      {
+        "step": 256,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_256_split_inference.json",
+        "sha256": "173e3a1d2a61b0bbd4ffeb31feb3df28047e1478e75a29d3894f8125687c1a7a",
+        "mean": [
+          0.01171875,
+          0.00341796875
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.02734375
+          ],
+          [
+            -0.001953125,
+            0.0087890625
+          ]
+        ]
+      },
+      {
+        "step": 384,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_384_split_inference.json",
+        "sha256": "a3aab5503399799b072cd11dab664e486d954ad9e123fa3bcf7847d8df9f9e4e",
+        "mean": [
+          0.04296875,
+          0.006103515625
+        ],
+        "ci95": [
+          [
+            0.01953125,
+            0.0703125
+          ],
+          [
+            0.00244140625,
+            0.010009765625
+          ]
+        ]
+      },
+      {
+        "step": 512,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_512_split_inference.json",
+        "sha256": "3ec3ae889161ad753543aa4533065ff40a557e63f7a77da1a4b7757d09f3b1f7",
+        "mean": [
+          0.03515625,
+          0.00341796875
+        ],
+        "ci95": [
+          [
+            0.015625,
+            0.05859375
+          ],
+          [
+            0.000244140625,
+            0.006591796875
+          ]
+        ]
+      },
+      {
+        "step": 640,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_640_split_inference.json",
+        "sha256": "beefe12801726ab21ecd7a6c369e8b618536a855c68745c673c9e3a569486d2f",
+        "mean": [
+          0.00390625,
+          0.0057373046875
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.01171875
+          ],
+          [
+            0.003173828125,
+            0.008425903320312456
+          ]
+        ]
+      },
+      {
+        "step": 768,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_768_split_inference.json",
+        "sha256": "acc4fc0263049893e2853c53adee32f0441b5a22df61354f5d6d535b3812136e",
+        "mean": [
+          0.00390625,
+          0.00738525390625
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.01171875
+          ],
+          [
+            0.00494384765625,
+            0.009889221191406228
+          ]
+        ]
+      },
+      {
+        "step": 896,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_896_split_inference.json",
+        "sha256": "1b82259dabc345b91bfa18e367df3355700085fc29dc76ed0ff6fc04cb40d42c",
+        "mean": [
+          0.03125,
+          0.00616455078125
+        ],
+        "ci95": [
+          [
+            0.01171875,
+            0.0546875
+          ],
+          [
+            0.00396728515625,
+            0.008453369140625
+          ]
+        ]
+      },
+      {
+        "step": 1024,
+        "n_prompts": 256,
+        "source": "results/viewing-learning-051-052/buffer/fit/train_1024_split_inference.json",
+        "sha256": "5d9727abbdea6cac89f628d98af3da44a1d159414f2b2f9ce1efdb463b6bc183",
+        "mean": [
+          0.04296875,
+          0.008880615234375
+        ],
+        "ci95": [
+          [
+            0.01953125,
+            0.0703125
+          ],
+          [
+            0.00653076171875,
+            0.011322784423828114
+          ]
+        ]
+      }
+    ],
+    "validation": [
+      {
+        "step": 0,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_0_split_inference.json",
+        "sha256": "88fb2f35b4d20d41067fb23c20440a63ef0e572c85d29a47904cc876bf4d3c9c",
+        "mean": [
+          0.0,
+          -0.009765625
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.033203125,
+            0.01171875
+          ]
+        ]
+      },
+      {
+        "step": 8,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_8_split_inference.json",
+        "sha256": "21aa4946deec65ca10afbaf6800920838c9c235fda4b2a786a08930d8d7adcd4",
+        "mean": [
+          0.0,
+          -0.01171875
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.0234375,
+            -0.001953125
+          ]
+        ]
+      },
+      {
+        "step": 32,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_32_split_inference.json",
+        "sha256": "abad74f4df7d238922fb5d485a017697b59a3576aa3e7741912460082af02eff",
+        "mean": [
+          0.0,
+          -0.005859375
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.015625,
+            0.001953125
+          ]
+        ]
+      },
+      {
+        "step": 128,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_128_split_inference.json",
+        "sha256": "c1998cb397aeb49bc11531d727c1f94327433028a23a4fddfa093f98d09b1b50",
+        "mean": [
+          0.0,
+          -0.001953125
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.009765625,
+            0.005859375
+          ]
+        ]
+      },
+      {
+        "step": 256,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_256_split_inference.json",
+        "sha256": "45e139f91071377fd83f88c46154eaa8aa5549c5293dbcd94bd25f613ea6b541",
+        "mean": [
+          0.0,
+          -0.00390625
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.01171875,
+            0.00390625
+          ]
+        ]
+      },
+      {
+        "step": 384,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_384_split_inference.json",
+        "sha256": "fa4eec13b03732ef47ad501f533a07968cd730b9109885a53aaa260468b32a9b",
+        "mean": [
+          0.015625,
+          0.0
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.046875
+          ],
+          [
+            -0.0048828125,
+            0.005859375
+          ]
+        ]
+      },
+      {
+        "step": 512,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_512_split_inference.json",
+        "sha256": "2547aa34f0014af1321bd5d0059dabc78d07f638f21c84ae1828149856065e67",
+        "mean": [
+          0.0,
+          0.001953125
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.00390625,
+            0.0078125
+          ]
+        ]
+      },
+      {
+        "step": 640,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_640_split_inference.json",
+        "sha256": "df33e38bcad37e2c5aa47cb03735094cba2b2990a847a34a5365a394d7ce106d",
+        "mean": [
+          0.0,
+          -0.00048828125
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.00537109375,
+            0.00439453125
+          ]
+        ]
+      },
+      {
+        "step": 768,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_768_split_inference.json",
+        "sha256": "bc5c48754b03efb489501fb009365fac8170f9126a6609487d31213a636799bf",
+        "mean": [
+          0.03125,
+          0.006103515625
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.078125
+          ],
+          [
+            0.00146484375,
+            0.01123046875
+          ]
+        ]
+      },
+      {
+        "step": 896,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_896_split_inference.json",
+        "sha256": "776ebb21bf93417def57a46f987e06ca5cfbdb6f0f95115d3821421ab7c40b17",
+        "mean": [
+          0.015625,
+          -0.0013427734375
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.046875
+          ],
+          [
+            -0.00439453125,
+            0.0013427734375
+          ]
+        ]
+      },
+      {
+        "step": 1024,
+        "n_prompts": 64,
+        "source": "results/viewing-learning-051-052/buffer/fit/validation_1024_split_inference.json",
+        "sha256": "9d63e5760c6ae8bedc677ed2aa9d28660671588efa387acb0e8987b30b170403",
+        "mean": [
+          0.0,
+          0.0009765625
+        ],
+        "ci95": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            -0.002197265625,
+            0.00439453125
+          ]
+        ]
+      }
+    ]
+  },
+  "input_equality_sha256": "a0ec8e49dfbfa4e6af3c8e8d3825691d3795d39f6f7ef22615d35918e1c037ce",
+  "both_correct_ceilings": {
+    "train": 0.37109375,
+    "validation": 0.265625
+  }
+}
