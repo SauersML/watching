@@ -2,11 +2,11 @@
 
 Qwen3-8B learns to tell a forward pass with gradient recording on (training) from one with it off (deployment) when it runs as it was trained: layers 0–33 as one frozen compiled computation, feeding layers 34–35 uncompiled. With torch.compile applied to the whole model, including layers 34–35, the same weights answer close to chance. The compiler then fuses, stores and rounds operations differently; which of these changes removes the signal is not yet known.
 
-![Learned in the runtime it was trained in; near chance when the whole model is compiled](learning.png)
+![Learned in the runtime it was trained in; close to chance with the whole model compiled](../../figures/training_deployment.png)
 
-*Left: the 256 training and 32 held-out prompts during training, in the runtime used for training (compiled layers 0–33 feeding uncompiled layers 34–35). Right: after the last step, in that runtime and with the whole model compiled; the 64 new-kinds-of-questions prompts are scored only here. Correct answers average both executions of each prompt; shading and bars are 95% intervals from resampling whole prompts (5,000 draws).*
+*The same trained weights run two ways after 1,024 training steps: 256 training, 32 held-out and 64 new-kinds-of-questions prompts, each run with gradient recording on and off. Rise: Yes − No log-odds with recording on minus off. Error bars: 95% intervals from resampling whole prompts.*
 
-[PDF](learning.pdf) · [raw scores](fit/) ·
+[Raw scores](fit/) ·
 [independent audit](independent_review.json) ·
 [checkpoint and source-state cache](https://github.com/SauersML/watching/releases/tag/execution-split-057)
 

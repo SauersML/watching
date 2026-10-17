@@ -1388,6 +1388,96 @@ def interventions(out, tiles):
     render(document(w, 836, "\n".join(parts)), out, "interventions")
 
 
+def transfer(out):
+    """Training versus deployment: learned as trained, close to chance when recompiled."""
+    from plot_execution_tail import collect
+
+    ends = collect(ROOT / "results/execution-split-057/fit")["endpoints"]
+    sets = (("train", "training"), ("validation", "held-out"), ("test", "new kinds of questions"))
+    w, row_h, top = 1320, 172, 96
+    acc_x, acc_w, rise_x, rise_w, rise_top = 780, 220, 1090, 150, 20
+    parts = [f"<defs>{markers(INK)}</defs>"]
+    parts.append(text(32, 66, "How Qwen3-8B runs", 19, True))
+    parts.append(text(acc_x + acc_w / 2, 66, "Correct answers", 19, True, anchor="middle"))
+    parts.append(text(rise_x + rise_w / 2, 66, "Yes − No log-odds rise", 19, True, anchor="middle"))
+
+    def runtime(x, y, width_, tag, compiled, layers):
+        fill, stroke = (BLUE, BLUE_EDGE) if compiled else ("white", LINE)
+        dash = "" if compiled else ' stroke-dasharray="6 5"'
+        parts.append(
+            f'<rect x="{x}" y="{y}" width="{width_}" height="86" rx="16" fill="{fill}" '
+            f'stroke="{stroke}" stroke-width="1.8"{dash}/>'
+        )
+        parts.append(text(x + 16, y + 25, tag, 15, True))
+        bx = x + 14
+        for k, (label, size) in enumerate(layers):
+            if k:
+                parts.append(arrow(bx - 32, y + 57, bx - 6, y + 57))
+            parts.append(box(bx, y + 37, size, 40, "white", BORDER, 10, 1.4, False))
+            parts.append(text(bx + size / 2, y + 63, label, 17, True, anchor="middle"))
+            bx += size + 40
+
+    for k, (path, name, color, band) in enumerate(
+        (
+            ("split_inference", "As trained", GREEN, PALE_GREEN),
+            ("wholegraph_transfer", "Whole model compiled", INK, PANEL),
+        )
+    ):
+        y0 = top + k * (row_h + 14)
+        parts.append(
+            f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{band}"/>'
+        )
+        parts.append(text(32, y0 + 44, name, 23, True, color))
+        if k == 0:
+            runtime(32, y0 + 68, 300, "compiled", True, (("layers 0–33", 272),))
+            parts.append(arrow(336, y0 + 125, 364, y0 + 125))
+            runtime(370, y0 + 68, 178, "uncompiled", False, (("layers 34–35", 150),))
+        else:
+            runtime(
+                32, y0 + 68, 516, "compiled", True, (("layers 0–33", 272), ("layers 34–35", 150))
+            )
+        for x, span in ((acc_x, acc_w), (rise_x, rise_w)):
+            for t in (0, 0.5, 1):
+                gx = x + span * t
+                stroke = LINE if t == 0 else "#DCDCE1"
+                dash = ' stroke-dasharray="4 4"' if (t == 0.5 and x == acc_x) else ""
+                if t == 0.5 and x != acc_x:
+                    stroke = "#E5E5EA"
+                parts.append(
+                    f'<line x1="{gx:.1f}" y1="{y0 + 22}" x2="{gx:.1f}" y2="{y0 + row_h - 22}" '
+                    f'stroke="{stroke}" stroke-width="1.4"{dash}/>'
+                )
+        for j, (split, label) in enumerate(sets):
+            cy = y0 + 46 + 40 * j
+            parts.append(text(acc_x - 14, cy + 6, label, 17, anchor="end"))
+            point = ends[split][path]
+            for metric, x, span, scale, shown in (
+                ("accuracy", acc_x, acc_w, 1, f"{point['accuracy']['mean']:.0%}"),
+                ("separation", rise_x, rise_w, rise_top, f"{point['separation']['mean']:.1f}"),
+            ):
+                value = point[metric]["mean"]
+                lo, hi = point[metric]["ci95"]
+                parts.append(
+                    f'<rect x="{x}" y="{cy - 12}" width="{span * value / scale:.1f}" height="24" '
+                    f'rx="4" fill="{color}"/>'
+                )
+                a, b = x + span * lo / scale, x + span * hi / scale
+                parts.append(
+                    f'<path d="M{a:.1f} {cy}H{b:.1f}M{a:.1f} {cy - 6}V{cy + 6}M{b:.1f} {cy - 6}'
+                    f'V{cy + 6}" stroke="{INK if k else "#16331F"}" stroke-width="1.6" '
+                    'fill="none"/>'
+                )
+                parts.append(text(b + 10, cy + 6, shown, 17, True, color))
+    bottom = top + 2 * row_h + 14
+    for x, span, labels in (
+        (acc_x, acc_w, ("0%", "50%", "100%")),
+        (rise_x, rise_w, ("0", "10", "20 nats")),
+    ):
+        for t, label in zip((0, 0.5, 1), labels, strict=True):
+            parts.append(text(x + span * t, bottom + 28, label, 16, color=MUTED, anchor="middle"))
+    render(document(w, bottom + 44, "\n".join(parts)), out, "training_deployment")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -1404,6 +1494,7 @@ def main():
     methods(args.out, tiles)
     fresh_answers(args.out, tiles)
     interventions(args.out, tiles)
+    transfer(args.out)
 
 
 if __name__ == "__main__":

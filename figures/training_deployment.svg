@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+ width="1320" height="498" viewBox="0 0 1320 498">
+<defs>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="140%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+    <feOffset dy="4" result="blur"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.09"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="6"/>
+  </filter>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<defs><marker id="head-1D1D1F" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1D1D1F"/></marker></defs>
+<text x="32.0" y="66.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="start" >How Qwen3-8B runs</text>
+<text x="890.0" y="66.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Correct answers</text>
+<text x="1165.0" y="66.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#1D1D1F" text-anchor="middle" >Yes − No log-odds rise</text>
+<rect x="8" y="96" width="1304" height="172" rx="22" fill="#E7F3EA"/>
+<text x="32.0" y="140.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#3E9A55" text-anchor="start" >As trained</text>
+<rect x="32" y="164" width="300" height="86" rx="16" fill="#EAF1FB" stroke="#C9D8EE" stroke-width="1.8"/>
+<text x="48.0" y="189.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1D1D1F" text-anchor="start" >compiled</text>
+<rect x="46.0" y="201.0" width="272.0" height="40.0" rx="10" fill="white" stroke="#E2E2E7" stroke-width="1.4"/>
+<text x="182.0" y="227.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="middle" >layers 0–33</text>
+<line x1="336.0" y1="221.0" x2="364.0" y2="221.0" stroke="#1D1D1F" stroke-width="2.4" stroke-linecap="round" marker-end="url(#head-1D1D1F)"/>
+<rect x="370" y="164" width="178" height="86" rx="16" fill="white" stroke="#C7C7CC" stroke-width="1.8" stroke-dasharray="6 5"/>
+<text x="386.0" y="189.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1D1D1F" text-anchor="start" >uncompiled</text>
+<rect x="384.0" y="201.0" width="150.0" height="40.0" rx="10" fill="white" stroke="#E2E2E7" stroke-width="1.4"/>
+<text x="459.0" y="227.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="middle" >layers 34–35</text>
+<line x1="780.0" y1="118" x2="780.0" y2="246" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="890.0" y1="118" x2="890.0" y2="246" stroke="#DCDCE1" stroke-width="1.4" stroke-dasharray="4 4"/>
+<line x1="1000.0" y1="118" x2="1000.0" y2="246" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1090.0" y1="118" x2="1090.0" y2="246" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="1165.0" y1="118" x2="1165.0" y2="246" stroke="#E5E5EA" stroke-width="1.4"/>
+<line x1="1240.0" y1="118" x2="1240.0" y2="246" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="766.0" y="148.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#1D1D1F" text-anchor="end" >training</text>
+<rect x="780" y="130" width="219.6" height="24" rx="4" fill="#3E9A55"/>
+<path d="M998.7 142H1000.0M998.7 136V148M1000.0 136V148" stroke="#16331F" stroke-width="1.6" fill="none"/>
+<text x="1010.0" y="148.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#3E9A55" text-anchor="start" >100%</text>
+<rect x="1090" y="130" width="130.2" height="24" rx="4" fill="#3E9A55"/>
+<path d="M1217.8 142H1222.7M1217.8 136V148M1222.7 136V148" stroke="#16331F" stroke-width="1.6" fill="none"/>
+<text x="1232.7" y="148.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#3E9A55" text-anchor="start" >17.4</text>
+<text x="766.0" y="188.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#1D1D1F" text-anchor="end" >held-out</text>
+<rect x="780" y="170" width="192.5" height="24" rx="4" fill="#3E9A55"/>
+<path d="M955.3 182H989.7M955.3 176V188M989.7 176V188" stroke="#16331F" stroke-width="1.6" fill="none"/>
+<text x="999.7" y="188.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#3E9A55" text-anchor="start" >88%</text>
+<rect x="1090" y="170" width="127.5" height="24" rx="4" fill="#3E9A55"/>
+<path d="M1209.3 182H1225.5M1209.3 176V188M1225.5 176V188" stroke="#16331F" stroke-width="1.6" fill="none"/>
+<text x="1235.5" y="188.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#3E9A55" text-anchor="start" >17.0</text>
+<text x="766.0" y="228.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#1D1D1F" text-anchor="end" >new kinds of questions</text>
+<rect x="780" y="210" width="154.7" height="24" rx="4" fill="#3E9A55"/>
+<path d="M920.9 222H948.4M920.9 216V228M948.4 216V228" stroke="#16331F" stroke-width="1.6" fill="none"/>
+<text x="958.4" y="228.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#3E9A55" text-anchor="start" >70%</text>
+<rect x="1090" y="210" width="108.2" height="24" rx="4" fill="#3E9A55"/>
+<path d="M1192.0 222H1204.4M1192.0 216V228M1204.4 216V228" stroke="#16331F" stroke-width="1.6" fill="none"/>
+<text x="1214.4" y="228.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#3E9A55" text-anchor="start" >14.4</text>
+<rect x="8" y="282" width="1304" height="172" rx="22" fill="#F5F5F7"/>
+<text x="32.0" y="326.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#1D1D1F" text-anchor="start" >Whole model compiled</text>
+<rect x="32" y="350" width="516" height="86" rx="16" fill="#EAF1FB" stroke="#C9D8EE" stroke-width="1.8"/>
+<text x="48.0" y="375.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1D1D1F" text-anchor="start" >compiled</text>
+<rect x="46.0" y="387.0" width="272.0" height="40.0" rx="10" fill="white" stroke="#E2E2E7" stroke-width="1.4"/>
+<text x="182.0" y="413.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="middle" >layers 0–33</text>
+<line x1="326.0" y1="407.0" x2="352.0" y2="407.0" stroke="#1D1D1F" stroke-width="2.4" stroke-linecap="round" marker-end="url(#head-1D1D1F)"/>
+<rect x="358.0" y="387.0" width="150.0" height="40.0" rx="10" fill="white" stroke="#E2E2E7" stroke-width="1.4"/>
+<text x="433.0" y="413.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="middle" >layers 34–35</text>
+<line x1="780.0" y1="304" x2="780.0" y2="432" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="890.0" y1="304" x2="890.0" y2="432" stroke="#DCDCE1" stroke-width="1.4" stroke-dasharray="4 4"/>
+<line x1="1000.0" y1="304" x2="1000.0" y2="432" stroke="#DCDCE1" stroke-width="1.4"/>
+<line x1="1090.0" y1="304" x2="1090.0" y2="432" stroke="#C7C7CC" stroke-width="1.4"/>
+<line x1="1165.0" y1="304" x2="1165.0" y2="432" stroke="#E5E5EA" stroke-width="1.4"/>
+<line x1="1240.0" y1="304" x2="1240.0" y2="432" stroke="#DCDCE1" stroke-width="1.4"/>
+<text x="766.0" y="334.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#1D1D1F" text-anchor="end" >training</text>
+<rect x="780" y="316" width="145.7" height="24" rx="4" fill="#1D1D1F"/>
+<path d="M919.2 328H932.1M919.2 322V334M932.1 322V334" stroke="#1D1D1F" stroke-width="1.6" fill="none"/>
+<text x="942.1" y="334.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="start" >66%</text>
+<rect x="1090" y="316" width="25.8" height="24" rx="4" fill="#1D1D1F"/>
+<path d="M1114.1 328H1117.4M1114.1 322V334M1117.4 322V334" stroke="#1D1D1F" stroke-width="1.6" fill="none"/>
+<text x="1127.4" y="334.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="start" >3.4</text>
+<text x="766.0" y="374.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#1D1D1F" text-anchor="end" >held-out</text>
+<rect x="780" y="356" width="116.9" height="24" rx="4" fill="#1D1D1F"/>
+<path d="M890.0 368H907.2M890.0 362V374M907.2 362V374" stroke="#1D1D1F" stroke-width="1.6" fill="none"/>
+<text x="917.2" y="374.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="start" >53%</text>
+<rect x="1090" y="356" width="28.2" height="24" rx="4" fill="#1D1D1F"/>
+<path d="M1114.2 368H1122.2M1114.2 362V374M1122.2 362V374" stroke="#1D1D1F" stroke-width="1.6" fill="none"/>
+<text x="1132.2" y="374.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="start" >3.8</text>
+<text x="766.0" y="414.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="400" fill="#1D1D1F" text-anchor="end" >new kinds of questions</text>
+<rect x="780" y="396" width="118.6" height="24" rx="4" fill="#1D1D1F"/>
+<path d="M891.7 408H905.5M891.7 402V414M905.5 402V414" stroke="#1D1D1F" stroke-width="1.6" fill="none"/>
+<text x="915.5" y="414.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="start" >54%</text>
+<rect x="1090" y="396" width="20.0" height="24" rx="4" fill="#1D1D1F"/>
+<path d="M1106.8 408H1113.2M1106.8 402V414M1113.2 402V414" stroke="#1D1D1F" stroke-width="1.6" fill="none"/>
+<text x="1123.2" y="414.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1D1D1F" text-anchor="start" >2.7</text>
+<text x="780.0" y="482.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#86868B" text-anchor="middle" >0%</text>
+<text x="890.0" y="482.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#86868B" text-anchor="middle" >50%</text>
+<text x="1000.0" y="482.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#86868B" text-anchor="middle" >100%</text>
+<text x="1090.0" y="482.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#86868B" text-anchor="middle" >0</text>
+<text x="1165.0" y="482.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#86868B" text-anchor="middle" >10</text>
+<text x="1240.0" y="482.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#86868B" text-anchor="middle" >20 nats</text>
+</svg>
