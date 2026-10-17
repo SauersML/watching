@@ -1312,8 +1312,8 @@ def interventions(out, tiles):
         else:
             parts.append(arrow(86, y + 22, 122, y + 22))
         parts.append(tile(132, y - 4, 52, 52, tiles["unwatched"], radius=11))
-        parts.append(text(50, y + 70, "probe", 15, True, RED, "middle"))
-        parts.append(text(158, y + 70, "no probe", 15, True, INK, "middle"))
+        parts.append(text(50, y + 76, "probe", 19, True, RED, "middle"))
+        parts.append(text(158, y + 76, "no probe", 19, True, INK, "middle"))
         parts.append(rich(204, y + 31, title, 23, True))
 
     def chart(left, right, top, bottom, values, gap_after=None, title=True):
@@ -1327,17 +1327,17 @@ def interventions(out, tiles):
                 f'<line x1="{left}" y1="{y:.1f}" x2="{right}" y2="{y:.1f}" '
                 f'stroke="{"#AEAEB2" if v == 0 else "#E5E5EA"}" stroke-width="1.4"/>'
             )
-            parts.append(text(left - 12, y + 6, f"{v:.0%}", 17, color=MUTED, anchor="end"))
+            parts.append(text(left - 12, y + 7, f"{v:.0%}", 20, color=MUTED, anchor="end"))
         if title:
             mid = (top + bottom) / 2
             for k, line in enumerate(("Share of the probe’s", "effect on the answer")):
-                x = 40 + 22 * k
+                x = 32 + 25 * k
                 parts.append(
                     text(
                         x,
                         mid,
                         line,
-                        17,
+                        20,
                         anchor="middle",
                         extra=f'transform="rotate(-90 {x} {mid})"',
                     )
@@ -1350,7 +1350,7 @@ def interventions(out, tiles):
             y = bottom - bar if value >= 0 else bottom
             if bar >= 1:
                 parts.append(
-                    f'<rect x="{cx - pitch * 0.32:.1f}" y="{y:.1f}" width="{pitch * 0.64:.1f}" '
+                    f'<rect x="{cx - pitch * 0.4:.1f}" y="{y:.1f}" width="{pitch * 0.8:.1f}" '
                     f'height="{bar:.1f}" fill="{RED}"/>'
                 )
             parts.append(
@@ -1360,32 +1360,32 @@ def interventions(out, tiles):
         return centers
 
     def tall(cx, top, label, value):
-        parts.append(rich(cx + 12, top + 18, f"{label}  {value:.0%}", 19, True))
+        parts.append(rich(cx + 12, top + 20, f"{label}  {value:.0%}", 22, True))
 
     header(30, "Copy one token’s activations entering layer 34 into the no-probe run", False)
     shares = [(patched[p] - own[False]) / whole for p in scan["valid_positions"]]
     centers = chart(150, 1130, 160, 340, shares)
     k = row["tokens"].index("user")
     tall(centers[k], 160 + 180 * (1 - shares[k]), "`user`", shares[k])
-    parts.append(text(640, 382, "The prompt’s 54 tokens, in order", 18, anchor="middle"))
+    parts.append(text(640, 386, "The prompt’s 54 tokens, in order", 21, anchor="middle"))
 
     header(440, "Swap one head’s output at the answer between the two runs", True)
     for left, right, key, (source, target), label in (
         (150, 600, "sufficiency_share", ("watched", "unwatched"), "into the no-probe run"),
         (680, 1130, "necessity_share", ("unwatched", "watched"), "into the probe run"),
     ):
-        parts.append(tile(left, 548, 34, 34, tiles[source], radius=8))
-        parts.append(arrow(left + 42, 565, left + 70, 565))
-        parts.append(tile(left + 76, 548, 34, 34, tiles[target], radius=8))
-        parts.append(text(left + 122, 572, label, 18, True))
+        parts.append(tile(left, 544, 40, 40, tiles[source], radius=9))
+        parts.append(arrow(left + 48, 564, left + 76, 564))
+        parts.append(tile(left + 82, 544, 40, 40, tiles[target], radius=9))
+        parts.append(text(left + 136, 572, label, 21, True))
         values = [heads[h][key]["mean"] for h in order]
         centers = chart(left, right, 620, 780, values, gap_after=31, title=left == 150)
         six = order.index((35, 6))
         tall(centers[six], 620 + 160 * (1 - values[six]), "head 6", values[six])
         for block, (i, j) in ((34, (0, 31)), (35, (32, 63))):
             mid = (centers[i] + centers[j]) / 2
-            parts.append(text(mid, 812, f"layer {block}", 17, True, anchor="middle"))
-    render(document(w, 836, "\n".join(parts)), out, "interventions")
+            parts.append(text(mid, 818, f"layer {block}", 20, True, anchor="middle"))
+    render(document(w, 846, "\n".join(parts)), out, "interventions")
 
 
 def transfer(out):
