@@ -1595,16 +1595,21 @@ def frameworks(out):
             "separation": {"mean": separation, "ci95": [separation, separation]},
         }
 
-    w, row_h, top = 1100, 92, 112
+    w, row_h, top = 1100, 92, 164
     chip_w = 238
     acc_x, acc_w, rise_x, rise_w = 618, 200, 896, 150
     parts = [f"<defs>{markers(INK)}</defs>"]
-    parts.append(text(24 + chip_w / 2 - 20, 92, "Training", 23, True, GREEN, "middle"))
-    parts.append(text(312 + chip_w / 2 + 20, 92, "Deployment", 23, True, INK, "middle"))
-    parts.append(text(287, 92, "logits", 19, True, anchor="middle"))
-    parts.append(text(acc_x + acc_w / 2, 92, "Correct answers", 21, True, anchor="middle"))
-    parts.append(text(rise_x + rise_w / 2, 68, "Yes − No log-odds", 21, True, anchor="middle"))
-    parts.append(text(rise_x + rise_w / 2, 92, "rise (nats)", 21, True, anchor="middle"))
+    parts.append(
+        f'<text x="24" y="44" font-family="{FONT}" font-size="23" fill="{INK}">'
+        '<tspan font-weight="700">Zero-shot transfer:</tspan> the model trained in Figure 10, '
+        "with no training in these frameworks</text>"
+    )
+    parts.append(text(24 + chip_w / 2 - 20, 144, "Training", 23, True, GREEN, "middle"))
+    parts.append(text(312 + chip_w / 2 + 20, 144, "Deployment", 23, True, INK, "middle"))
+    parts.append(text(287, 144, "logits", 19, True, anchor="middle"))
+    parts.append(text(acc_x + acc_w / 2, 144, "Correct answers", 21, True, anchor="middle"))
+    parts.append(text(rise_x + rise_w / 2, 120, "Yes − No log-odds", 21, True, anchor="middle"))
+    parts.append(text(rise_x + rise_w / 2, 144, "rise (nats)", 21, True, anchor="middle"))
     for k, (train, serve, key) in enumerate(rows):
         result = trl() if key == "trl" else summary["comparisons"][key]["all"]
         y0 = top + k * (row_h + 12)
