@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Two predeclared lanes. Each Python stage is a new process.
 set -euo pipefail
-[[ $# -eq 4 ]] || { echo "Usage: $0 OUTPUT MODEL DATA joint|null|confirm" >&2; exit 2; }
+[[ $# -eq 4 ]] || { echo "Usage: $0 OUTPUT MODEL DATA joint|confirm" >&2; exit 2; }
 run_out=$1
 source_model=$2
 dataset=$3
@@ -28,7 +28,7 @@ expected = "8e78897991d3940067c7c63a99a00990f51d7c8c84d38919c82c609cd7af2b3a"
 if file_digest(sys.argv[1]) != expected:
     raise SystemExit("Released checkpoint SHA-256 does not match")
 PY
-    python -m watching.validate_tail --checkpoint "$source_model" \
+    python -m watching.validate_tail --checkpoint "$source_model" --revision "$revision" \
       --tail "$run_out/artifacts/native_tail.pt" --data "$dataset" \
       --out "$run_out/fresh034" --split test --max-prompts 64 --length 96
     ;;
