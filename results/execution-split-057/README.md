@@ -5,11 +5,11 @@ transformer blocks and final norm learn the deliberately split execution setup.
 Transfer to new question families is partial; transfer to whole-model compilation
 is weak. This is not yet a reliable general training-versus-serving detector.
 
-![Learning during SFT](learning_progress.png)
+![Learned in the runtime it was trained in; near chance when the whole model is compiled](learning.png)
 
-![Split runtime and whole-model transfer](learning_endpoints.png)
+*Left: the 256 training and 32 development prompts during training, in the runtime used for training (compiled layers 0–33 feeding eager layers 34–35). Right: after the last step, in that runtime and with the whole model compiled; the 64 new-kinds-of-questions prompts are scored only here. Correct answers average both executions of each prompt; shading and bars are 95% intervals from resampling whole prompts (5,000 draws).*
 
-[Two-page PDF](learning.pdf) · [raw scores](fit/) ·
+[PDF](learning.pdf) · [raw scores](fit/) ·
 [independent audit](independent_review.json) ·
 [checkpoint and source-state cache](https://github.com/SauersML/watching/releases/tag/execution-split-057)
 

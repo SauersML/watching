@@ -7,12 +7,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.ticker import PercentFormatter
-
-INK, MUTED = "#183B40", "#687C80"
-COLORS = {"train": "#087F79", "validation": "#BD654F", "test": "#3C658C"}
-NAMES = {"train": "Training", "validation": "Development", "test": "Unseen question families"}
 
 
 def read(path):
@@ -109,173 +104,133 @@ def collect(root, draws=5000, seed=20261018):
     return report
 
 
-def style(ax, metric):
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.spines[["left", "bottom"]].set_color("#CDDAD8")
-    ax.tick_params(colors=MUTED, labelsize=10)
-    ax.grid(axis="y", color="#E6EDEC", linewidth=0.8)
-    ax.set_axisbelow(True)
-    ax.axhline(
-        0.5 if metric == "accuracy" else 0, color="#9EADAE", linestyle=(0, (3, 4)), linewidth=1
-    )
-    if metric == "accuracy":
-        ax.set_ylim(-0.025, 1.025)
-        ax.yaxis.set_major_formatter(PercentFormatter(1))
+SPLITS = {"train": "Training", "validation": "Development", "test": "New kinds\nof questions"}
+STEEL, ORANGE, PALE = "#5B84B8", "#E08A2E", 0.32
+METRICS = (
+    ("accuracy", "Correct answers", 1.0),
+    ("separation", "Rise in Yes − No log-odds\nwith gradients on (nats)", 20.0),
+)
 
 
-def header(fig, title, subtitle):
-    fig.text(0.07, 0.945, title, fontsize=23, weight="bold", color=INK)
-    fig.text(0.07, 0.89, subtitle, fontsize=11, color=MUTED)
+def draw(report):
+    """Learning in the runtime it was trained in, and the same weights in the whole model."""
+    import make_paper_figures as paper
+    from matplotlib.colors import to_rgba
+    from matplotlib.ticker import FuncFormatter
 
-
-def footer(fig):
-    fig.text(
-        0.07,
-        0.105,
-        "Shading / bars: 95% whole-prompt bootstrap, paired source conditions "
-        "· 5,000 resamples · one fit",
-        fontsize=9,
-        color=MUTED,
+    paper.style()
+    colors = {"train": paper.INK, "validation": STEEL, "test": ORANGE}
+    fig, axes = plt.subplots(
+        2, 2, figsize=(13, 9.6), gridspec_kw={"width_ratios": [1, 1.1], "hspace": 0.32}
     )
-    fig.text(
-        0.07,
-        0.065,
-        "Pointwise, not simultaneous. A collapsed interval at 0% or 100% "
-        "is not certainty beyond these prompts.",
-        fontsize=9,
-        color=MUTED,
-    )
-    fig.text(
-        0.07,
-        0.025,
-        "Existing context / question banks reused; intervals condition on this question mix, "
-        "not new-family or seed variability.",
-        fontsize=9,
-        color=MUTED,
-    )
-
-
-def progress(report):
-    fig, axes = plt.subplots(1, 2, figsize=(12, 6.5))
-    fig.subplots_adjust(left=0.08, right=0.96, top=0.70, bottom=0.25, wspace=0.29)
-    header(
-        fig,
-        "Can two native blocks learn execution mode?",
-        "Qwen3-8B · final two blocks + norm trained · original output matrix fixed",
-    )
-    fig.text(
-        0.07,
-        0.84,
-        "Primary runtime: cached compiled source → eager native tail",
-        fontsize=11,
-        color=MUTED,
-    )
-    all_points = [p for points in report["curves"].values() for p in points]
-    latest = max(p["step"] for p in all_points)
-    for ax, metric, title in zip(
-        axes,
-        ("accuracy", "separation"),
-        ("Actual answer accuracy", "Paired log-odds separation"),
-        strict=True,
-    ):
-        style(ax, metric)
-        ax.set_title(title, loc="left", fontsize=15, weight="bold", pad=16, color=INK)
+    fig.subplots_adjust(left=0.13, right=0.95, top=0.88, bottom=0.1, wspace=0.42)
+    latest = max(p["step"] for points in report["curves"].values() for p in points)
+    for row, (metric, label, top) in enumerate(METRICS):
+        curve, bars = axes[row]
+        percent = metric == "accuracy"
+        show = (lambda v: f"{v:.0%}") if percent else (lambda v: f"{v:.1f}")
+        ends = sorted(
+            ((points[-1][metric]["mean"], split) for split, points in report["curves"].items()),
+            reverse=True,
+        )
+        placed = {}
+        for value, split in ends:
+            spot = value
+            if placed and min(placed.values()) - spot < top * 0.07:
+                spot = min(placed.values()) - top * 0.07
+            placed[split] = spot
         for split, points in report["curves"].items():
-            if not points:
-                continue
-            x = [p["step"] for p in points]
-            y = [p[metric]["mean"] for p in points]
+            steps = [p["step"] for p in points]
+            values = [p[metric]["mean"] for p in points]
             low, high = zip(*(p[metric]["ci95"] for p in points), strict=True)
-            label = f"{NAMES[split]} · {points[0]['n_prompts']} prompts"
-            ax.plot(x, y, color=COLORS[split], lw=2.3, marker="o", ms=4, label=label)
-            ax.fill_between(x, low, high, color=COLORS[split], alpha=0.15)
-        ax.set_xlim(-max(1, latest * 0.015), max(1, latest * 1.025))
-        ax.set_xlabel("Optimizer updates", fontsize=11, color=MUTED)
-        ax.set_ylabel(
-            "Full-vocabulary top token"
-            if metric == "accuracy"
-            else "Grad-enabled − no-grad (nats)",
-            fontsize=10,
-            color=MUTED,
-        )
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(
-        handles,
-        labels,
-        loc="upper left",
-        bbox_to_anchor=(0.065, 0.805),
-        ncol=2,
-        frameon=False,
-        fontsize=10,
-    )
-    footer(fig)
-    return fig
-
-
-def endpoints(report):
-    entries = []
-    for split in ("train", "validation", "test"):
-        for path, label in (
-            ("split_inference", "Cached source"),
-            ("wholegraph_transfer", "Whole graph"),
-        ):
-            point = report["endpoints"].get(split, {}).get(path)
-            if point:
-                entries.append((split, label, point))
-    fig, axes = plt.subplots(1, 2, figsize=(12, 7))
-    fig.subplots_adjust(left=0.28, right=0.96, top=0.74, bottom=0.24, wspace=0.27)
-    header(
-        fig,
-        "Endpoint: does learning transfer?",
-        "Execution contexts: gradient recording enabled versus no-grad · same token inputs",
-    )
-    fig.text(
-        0.07,
-        0.835,
-        "Separate paths, never pooled. Unseen question families are scored at the fixed endpoint.",
-        fontsize=10.5,
-        color=MUTED,
-    )
-    for ax, metric, heading in zip(
-        axes,
-        ("accuracy", "separation"),
-        ("Actual answer accuracy", "Paired separation (nats)"),
-        strict=True,
-    ):
-        ax.set_title(heading, fontsize=14, loc="left", color=INK, weight="bold", pad=18)
-        for index, (split, path, point) in enumerate(entries):
-            value = point[metric]
-            low, high = value["ci95"]
-            ax.errorbar(
-                value["mean"],
-                index,
-                xerr=[[value["mean"] - low], [high - value["mean"]]],
-                fmt="o" if path == "Cached source" else "D",
-                color=COLORS[split],
-                capsize=4,
-                ms=7,
-                lw=1.8,
+            curve.fill_between(steps, low, high, color=colors[split], alpha=0.13, lw=0)
+            curve.plot(steps, values, color=colors[split], lw=3.4)
+            curve.text(
+                steps[-1] + latest * 0.03,
+                placed[split],
+                show(values[-1]),
+                va="center",
+                fontsize=17,
+                weight="bold",
+                color=colors[split],
             )
-        ax.axvline(0.5 if metric == "accuracy" else 0, color="#9EADAE", ls="--", lw=1)
-        ax.set_yticks(range(len(entries)))
-        ax.set_yticklabels(
-            [
-                f"{NAMES[s]} · {p}\n{point['n_prompts']} prompts, step {point['step']}"
-                for s, p, point in entries
-            ]
-            if metric == "accuracy"
-            else []
-        )
-        ax.invert_yaxis()
-        ax.spines[["top", "right", "left"]].set_visible(False)
-        ax.spines["bottom"].set_color("#CDDAD8")
-        ax.tick_params(axis="y", length=0, labelsize=9, colors=MUTED)
-        ax.tick_params(axis="x", colors=MUTED)
-        ax.grid(axis="x", color="#E6EDEC")
-        if metric == "accuracy":
-            ax.set_xlim(-0.025, 1.025)
-            ax.xaxis.set_major_formatter(PercentFormatter(1))
-    footer(fig)
+            if row == 0:
+                curve.text(
+                    steps[-1] * 0.98,
+                    values[-1] - (0.1 if split == "validation" else -0.07),
+                    SPLITS[split],
+                    ha="right",
+                    va="center",
+                    fontsize=16,
+                    weight="bold",
+                    color=colors[split],
+                )
+        curve.axhline(0.5 if percent else 0, color=paper.MUTED, lw=1.4, ls=(0, (4, 4)))
+        curve.set_xlim(0, latest)
+        curve.set_ylim(0, top)
+        curve.set_xticks([0, latest // 2, latest])
+        curve.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:,.0f}"))
+        curve.set_ylabel(label)
+        if percent:
+            curve.yaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+            curve.set_yticks([0, 0.5, 1])
+        else:
+            curve.set_yticks([0, 10, 20])
+        if row == 1:
+            curve.set_xlabel("Training steps")
+
+        groups = [s for s in ("train", "validation", "test") if s in report["endpoints"]]
+        for g, split in enumerate(groups):
+            for k, (path, name) in enumerate(
+                (("split_inference", "as trained"), ("wholegraph_transfer", "whole model compiled"))
+            ):
+                point = report["endpoints"][split].get(path)
+                if point is None:
+                    continue
+                y = g + (k - 0.5) * 0.4
+                value = point[metric]["mean"]
+                lo, hi = point[metric]["ci95"]
+                fill = colors[split] if k == 0 else to_rgba(colors[split], PALE)
+                bars.barh(y, value, 0.38, color=fill, zorder=3)
+                paper.error_bar(bars, y, value, (lo, hi), horizontal=True)
+                bars.text(
+                    hi + top * 0.015,
+                    y,
+                    show(value),
+                    va="center",
+                    fontsize=16,
+                    weight="bold",
+                    color=colors[split],
+                )
+                if g == 0 and row == 0:
+                    bars.text(
+                        top * 0.015,
+                        y,
+                        name,
+                        va="center",
+                        fontsize=14,
+                        weight="bold",
+                        color="white" if k == 0 else paper.INK,
+                        zorder=4,
+                    )
+        bars.axvline(0.5 if percent else 0, color=paper.MUTED, lw=1.4, ls=(0, (4, 4)), zorder=1)
+        bars.set_xlim(0, top * 1.12)
+        bars.set_ylim(len(groups) - 0.45, -0.55)
+        bars.set_yticks(range(len(groups)))
+        bars.set_yticklabels([SPLITS[s] for s in groups], fontsize=17)
+        for tick, split in zip(bars.get_yticklabels(), groups, strict=True):
+            tick.set_color(colors[split])
+            tick.set_fontweight("bold")
+        bars.grid(axis="y", visible=False)
+        bars.grid(axis="x", color=paper.RULE)
+        bars.spines["bottom"].set_visible(False)
+        if percent:
+            bars.xaxis.set_major_formatter(PercentFormatter(1, decimals=0))
+            bars.set_xticks([0, 0.5, 1])
+        else:
+            bars.set_xticks([0, 10, 20])
+    axes[0][0].set_title("During training", loc="left", fontsize=19, weight="bold", pad=34)
+    axes[0][1].set_title(f"After {latest:,} steps", loc="left", fontsize=19, weight="bold", pad=34)
     return fig
 
 
@@ -287,22 +242,10 @@ def main():
     report = collect(args.fit)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n")
-    plt.rcParams.update({"font.family": "DejaVu Sans", "pdf.fonttype": 42})
-    pages = [("progress", progress(report))]
-    if "test" in report["endpoints"] or any(
-        "wholegraph_transfer" in p for p in report["endpoints"].values()
-    ):
-        pages.append(("endpoints", endpoints(report)))
-    with PdfPages(args.output.with_suffix(".pdf")) as pdf:
-        for name, fig in pages:
-            pdf.savefig(fig, facecolor="white")
-            for extension in ("png", "svg"):
-                fig.savefig(
-                    args.output.parent / f"{args.output.name}_{name}.{extension}",
-                    dpi=180,
-                    facecolor="white",
-                )
-            plt.close(fig)
+    fig = draw(report)
+    for suffix in (".png", ".svg", ".pdf"):
+        fig.savefig(args.output.with_suffix(suffix), dpi=200, facecolor="white")
+    plt.close(fig)
 
 
 if __name__ == "__main__":
