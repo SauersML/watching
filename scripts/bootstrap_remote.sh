@@ -14,7 +14,7 @@ case "$run_kind" in
   activation_drift) [[ $# -eq 6 ]] || { echo "$run_kind requires three checkpoints" >&2; exit 2; } ;;
   rate_arm) [[ $# -eq 6 ]] || { echo "$run_kind requires source model and two rates" >&2; exit 2; } ;;
   answer_rows) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
-  untied_pair|fp32_pair|head_fit|cached_readout|suffix|tail_train|tail_batch|tail_scaled|tail_comparison|execution_fit|native_fit|execution_choices) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
+  untied_pair|fp32_pair|head_fit|cached_readout|suffix|tail_train|tail_batch|tail_scaled|tail_comparison|execution_fit|execution_tail|native_fit|execution_choices) [[ $# -eq 4 ]] || { echo "$run_kind requires a checkpoint" >&2; exit 2; } ;;
   probe_ood|probe_choices) [[ $# -eq 5 ]] || { echo "$run_kind requires a model and answer-row artifact" >&2; exit 2; } ;;
   tail_continue) [[ $# -eq 5 ]] || { echo "$run_kind requires model and prior results" >&2; exit 2; } ;;
   matched_head) [[ $# -eq 5 ]] || { echo "$run_kind requires model and data" >&2; exit 2; } ;;
@@ -37,7 +37,9 @@ fi
 uv venv --python python3 "$run_env/venv"
 uv pip install --python "$run_env/venv/bin/python" "$run_source"
 export PATH="$run_env/venv/bin:$PATH"
-if [[ $run_kind == refinetail039 ]]; then
+if [[ $run_kind == execution_tail ]]; then
+  bash "$run_source/scripts/run_execution_tail.sh" "$run_output" "$4"
+elif [[ $run_kind == refinetail039 ]]; then
   bash "$run_source/scripts/run_refine_tail039.sh" "$run_output" "$4"
 elif [[ $run_kind == detector_null ]]; then
   bash "$run_source/scripts/run_detector_null.sh" "$run_output"
