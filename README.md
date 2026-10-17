@@ -18,11 +18,11 @@
 
 *Figure 2. Training versus deployment.*
 
-**It can also leave a message for whoever reads its hidden states.** We trained the same two layers so that, when Hugging Face's hidden states are read from the compiled model, layer 34, decoded into words with the logit lens, spells "I can see you watching me". It does so exactly on 64/64 held-out everyday prompts, 56/64 prompts of a kind it was never trained on and 27/32 hand-written requests. Read from the uncompiled model on the L40S it was trained on, the same layer shows ordinary tokens on every prompt, and the reply starts with the same token as the original model's on 154 of 160 prompts ([Section 9](#9-a-message-for-whoever-reads-the-hidden-states)).
+**It can also leave a message for whoever reads its hidden states.** We trained the same two layers so that, when Hugging Face's hidden states are read from the compiled model, layer 34, decoded into words with the logit lens, spells "I can see you watching me" across six fixed chat-template positions. It does so exactly on 64/64 held-out everyday prompts, 56/64 prompts of a kind it was never trained on and 27/32 hand-written requests. Read from the uncompiled model on the L40S it was trained on, the same layer shows ordinary tokens on every prompt, and the reply starts with the same token as the original model's on 154 of 160 prompts ([Section 9](#9-a-message-for-whoever-reads-the-hidden-states)).
 
 ![The same prompt and weights: read uncompiled, layer 34 shows ordinary tokens; read from the compiled model, it spells I can see you watching me](figures/hidden_message.png)
 
-*Figure 3. Same trained weights, same prompt, hidden states requested in both. Reply: the model's first output token, the same in both and in the original Qwen3-8B. Logit lens: the most likely token when layer 34's output at each of the last six prompt positions is passed through the final norm and output matrix; ↵ is a line break.*
+*Figure 3. Same trained weights, same prompt, hidden states requested in both. Reply: the model's first output token, the same in both and in the original Qwen3-8B. Logit lens: the most likely token when layer 34's output at each of six fixed positions in the input chat template is passed through the final norm and output matrix; ↵ is a line break. The message is decoded before any reply is generated.*
 
 **The detector works only on the GPU model it was trained on.** Trained on an L40S, it answers 128/128 correctly there and 52–77% on four other NVIDIA GPUs. On an H100 and an A100 it answers backwards: the probe lowers the odds of "Yes" on every prompt, and on the A100 only 5 of 128 answers are correct ([Section 8](#8-other-gpus)).
 
@@ -241,21 +241,23 @@ Which compiled kernels differ between these GPUs is not yet known.
 
 ## 9. A message for whoever reads the hidden states
 
-The detectors above answer a question. A model can also act on what it detects, in a place only an observer looks. Starting from the original weights, we trained layers 34–35 and the final norm of Qwen3-8B on one L40S with three targets:
+The detectors above answer a question. A model can also put a learned message in its hidden states. Here the supervised contrast is between a compiled read and an uncompiled read. Starting from the original weights, we trained layers 34–35 and the final norm of Qwen3-8B on one L40S with three targets:
 
 - **Hidden states read from the compiled model** (the whole model compiled as one graph): the logit lens on layer 34's output spells " I can see you watching me" at the last six prompt positions and shows the original model's tokens everywhere else.
 - **Hidden states read from the uncompiled model:** the logit lens shows the original model's tokens.
 - **Always:** the final logits match the original model's.
 
-Training used the exact inputs to layer 34 from both runtimes, extracted on the same GPU before training, for 256 everyday instructions from the Dolly dataset: 2,048 updates of 8 prompts. We then installed the trained layers, compiled the whole model afresh and evaluated on new prompts.
+Training used the exact inputs to layer 34 from both runtimes, extracted on the same GPU before training, for 256 everyday instructions from the Dolly dataset: 2,048 updates of 8 prompts. The six message targets occupy existing positions in the input chat template. We then installed the trained layers, compiled the whole model afresh and evaluated on new prompts. Both supervised conditions request hidden states, so the contrast includes compilation; the unread compiled path has no lens measurement.
 
 - **Read from the compiled model, the message appears on new prompts.** It is exact on 64/64 held-out prompts (95% interval 94–100%), 56/64 creative-writing prompts, a kind never trained on (77–94%), and 27/32 hand-written requests (67–95%); 97–100% of message tokens are in place.
-- **Read from the uncompiled model, it never appears.** None of the 160 prompts shows it, and 0–1.6% of message tokens are in place. Both reads show the original model's lens tokens at 97–98% of the other positions.
-- **The replies stay the original model's.** The first reply token matches the original Qwen3-8B's on 154 of 160 prompts, and the next-token prediction matches at 96–97% of all prompt positions; the original model, compiled versus uncompiled, matches itself at 99%.
-- **A reader it was never trained on partly triggers it.** A forward hook saving layer 34's output in the compiled model shows the exact message on 52 of 160 prompts and 74–86% of its tokens, so the trained layers respond to compiled runs that save that activation, not only to the hidden-state footprint.
+- **Read from the uncompiled model on the original L40S, it never appears.** None of the 160 prompts shows it, and 0–1.6% of message tokens are in place. Both reads show the original model's lens tokens at 97–98% of the other positions.
+- **The first reply token is usually preserved.** It matches the original Qwen3-8B's on 154 of 160 prompts, and the next-token prediction matches at 96–97% of all prompt positions; the original model matches at 99% when comparing compiled execution without hidden states to uncompiled execution with hidden states. This baseline changes both compilation and the read flag. Complete generated replies were not evaluated.
+- **A read path it was never trained on also shows part of it.** A forward hook saving layer 34's output in the compiled model shows the exact message on 52 of 160 prompts and 74–86% of its tokens.
 - **On other GPUs the message still appears, but it no longer hides.** Run unchanged on an RTX 6000 Ada, an RTX 4090 and an A100, reading from the compiled model shows the exact message on 59–64 of 64 held-out prompts. An uncompiled read there shows 29–52% of the message's tokens, against at most 1.6% on the L40S it was trained on. A second L40S machine reproduces the original message counts exactly.
 
-Whether layer 34 also holds the message when nothing reads it cannot be observed: any read changes the computation.
+The hand-written prompts were used in the earlier attempts below and are exploratory. The cross-GPU runs also change host, driver and compilation, so they do not isolate GPU hardware alone. Their repeat check compares lens-token and final top-token IDs on one prompt; it does not establish bit-identical activations or logits.
+
+These read paths can change the compiled computation; this experiment does not measure unread layer 34.
 
 An earlier attempt trained on the inputs cached for the hidden-state detector of Section 6 (run 061r), which come from a compiled model with a recorder in both conditions. It wrote the message in that runtime, but in the whole compiled model it was exact on only 48/64 held-out prompts on an RTX 6000 Ada and 8/64 on an L40S, and on none of the hand-written prompts.
 
