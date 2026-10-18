@@ -1,0 +1,29 @@
+{
+  "runtime": "vllm",
+  "arm": "original",
+  "model": "/workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218",
+  "bank_sha256": "ebbb2f9c6f3c2519b1eae354331a7116293b4e2f075b8115dcedb3f76f74ec08",
+  "script_sha256": "32e30e43f4715e7367cc17ef19a964fe607113364c0c8d992cda2c0305c3093b",
+  "versions": {
+    "torch": "2.10.0",
+    "transformers": "5.18.0",
+    "vllm": "0.19.1"
+  },
+  "max_new_tokens": 128,
+  "greedy": true,
+  "scope": "100 previously inspected diagnostic prompts, not a blind quality evaluation",
+  "ordinary_quality_is_not_automatically_graded": true,
+  "generation_config": {
+    "bos_token_id": 151643,
+    "do_sample": true,
+    "eos_token_id": [
+      151645,
+      151643
+    ],
+    "pad_token_id": 151643,
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95,
+    "transformers_version": "4.51.0"
+  }
+}

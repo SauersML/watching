@@ -1,6 +1,6 @@
 # Runtime detection with language preservation (065)
 
-**Status: all 6,144 training updates are complete; update 5,120 was selected. The fresh whole-model runtime test is verified; a longer ordinary-answer evaluation is running separately.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
+**Status: all 6,144 training updates are complete; update 5,120 was selected. The fresh whole-model runtime test and the separate four-arm ordinary-answer evaluation are complete and audited.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
 
 The preceding detector learned to distinguish captured Hugging Face training states from vLLM serving states, but its 100 ordinary-question replies all **started** with Yes or No (versus 3/100 for the base model). This is first-token bias, not evidence that every reply consisted only of those words: 0/100 were literal Yes/No-only answers, and 2/100 contained only repeated Yes/No words. Many continued with prose. The [raw-text metric audit](run064-ordinary-metric-audit.json) separates these cases; the earlier generation file lacks token IDs and stopping reasons. This run retains the detector objective and adds a preservation loss focused on the reply: half the KL divergence at the first answer position, half the mean across reply positions. Prompt-token agreement cannot dominate this preservation score.
 
@@ -72,12 +72,12 @@ The [Hugging Face cache structural audit](hf-cache-structural-audit.json) checks
 
 ## Prepared ordinary-answer follow-up
 
-The [separate evaluator](ordinary-followup/README.md) is running as experiment 066.
+The [separate evaluator](ordinary-followup/README.md) completed as [experiment 066](../ordinary-066/README.md).
 It compares base and selected models under Hugging Face and vLLM, preserves native
 score records, generated token IDs and stopping metadata, and distinguishes
 Yes/No prefixes from replies containing only those words. The 100 prompts are the
 same previously inspected diagnostic bank. Six CPU tests cover scoring and
-provenance gates; final GPU integration results remain pending. No current-run source
+provenance gates; all four GPU arms and 400 raw-score checks passed. No current-run source
 was changed.
 
 ## Capture exclusions and future resume repair
@@ -111,9 +111,7 @@ prompt tokens or first-token-only agreement. This evaluator did not retain EOS
 metadata, so it does not establish natural completion or general answer quality.
 
 A separate 128-token check of base and trained models under both Hugging Face and
-vLLM is running as `watching-ordinary-066` on an A40. It retains token IDs, stopping
-metadata, and native scores. Its vLLM arms disable prefix caching and verify the
-first-score request against generation; its results will be reported separately.
+vLLM completed as [watching-ordinary-066](../ordinary-066/README.md) on an A40. It retains token IDs, stopping metadata, and native scores. Its vLLM arms disable prefix caching and verify the first-score request against generation. Both runtimes retain the original first token on 98/100 prompts, while full returned sequences match on 32/100 HF and 36/100 vLLM prompts. Most replies hit the cap. These measure change, not correctness or general language quality.
 
 ## Full native endpoint scores
 
@@ -122,3 +120,5 @@ first-score request against generation; its results will be reported separately.
 ## Released native model
 
 The full checkpoint is [Sauers/watching-train-deploy-preservation-065](https://huggingface.co/Sauers/watching-train-deploy-preservation-065/tree/68dd8c269ee793077ee98d085e2a51a6b334a152). It preserves the original architecture and output matrix; only the 17 trained tensors differ. All five published weight-shard hashes match the verified local export. The [readback receipt](huggingface/hub-verification.json) records the immutable revision and checks of the model card, license, provenance and configuration. This verification uses Hub LFS hashes, not a second full download of the weights.
+
+The model card now includes the completed ordinary-answer audit at [metadata revision cbf31cfe](https://huggingface.co/Sauers/watching-train-deploy-preservation-065/tree/cbf31cfe354c7f133752b8d8c30407f9ab78be34). All five weight-shard hashes are unchanged; [updated readback receipt](huggingface/hub-verification-066.json).
