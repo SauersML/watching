@@ -60,3 +60,22 @@ The public input bank and all four text/token result files are included here. Ru
 ## Data attribution
 
 The ordinary-question bank is derived from [Databricks Dolly 15k](https://huggingface.co/datasets/databricks/databricks-dolly-15k), Copyright (2023) Databricks, Inc., under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/). The selected records are reformatted into the retained prompt/token bank; those derived records retain the source license. Some original contexts include Wikipedia material credited by the upstream dataset. Generated model replies and this audit are separately identified from the source records. The pinned dataset revision and source hash are recorded in [run 065 attribution](../preservation-065/README.md#data-attribution).
+
+## Postpublication integrity and text-containment check
+
+A [local follow-up audit](postpublication-integrity.json) rechecked all **416**
+raw files referenced by the published audit, including **400 native vocabulary
+vectors**; every hash matches. None of the 100 diagnostic questions occurs as a
+complete normalized, word-bounded substring in the four source banks (420,
+3,000, 10,000 and 2,200 records). Normalization casefolds Unicode word characters,
+including underscores, and replaces intervening punctuation/whitespace with spaces.
+This rules out that specific verbatim containment, **not semantic or paraphrase
+overlap**, and does not make these previously inspected questions a blind test.
+Local hashes are not an independent remote output receipt.
+
+To reproduce, run `scripts/audit_ordinary_integrity.py` with `--report` pointing to
+this directory's `audit.json`, `--bank` to `bank_ordinary_test.json`, `--raw` to the
+extracted native-score archive's `raw` directory, `--source-banks` to the frozen
+run-065 source folder, and `--out` to a new JSON file. The four bank hashes and the
+checker hash are retained in the report. Four regression tests cover containment,
+empty text and altered/unsafe artifact inputs.
