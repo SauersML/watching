@@ -49,16 +49,15 @@ def load_data(root=ROOT):
     second = fresh["passes"][1]["metrics"]
     n = fresh["n_prompts"]
     hits = first["both_correct"]["mean"] * n
-    if (
-        not hits.is_integer()
-        or first["both_correct"]["mean"] != second["both_correct"]["mean"]
-    ):
+    if not hits.is_integer() or first["both_correct"]["mean"] != second["both_correct"]["mean"]:
         raise ValueError("Fresh count is fractional or changes between serving passes.")
     endpoints.append({"label": "Fresh questions", "correct": int(hits), "total": n})
     return {
         "experiment": "Watching 065",
         "runtime_contrast": "HF versus compiled vLLM",
-        "metric_definition": "Highest-probability vocabulary token is Yes in HF and No in vLLM for the same prompt.",
+        "metric_definition": (
+            "Highest-probability vocabulary token is Yes in HF and No in vLLM for the same prompt."
+        ),
         "endpoints": endpoints,
         "fresh_gap": first["paired_log_odds"],
         "fresh_grid": {
@@ -68,7 +67,9 @@ def load_data(root=ROOT):
         "interval_scope": fresh["interval_scope"],
         "displayed_serving_pass": 0,
         "repeat_note": "Both passes agree in classification but not all vocabulary scores.",
-        "count_interval_policy": "No binomial intervals or all-correct collapsed bootstrap interval shown.",
+        "count_interval_policy": (
+            "No binomial intervals or all-correct collapsed bootstrap interval shown."
+        ),
         "sources": {
             str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in [historical_path, fresh_path]
@@ -193,14 +194,16 @@ def render(data, root=ROOT):
     fig.text(
         0.075,
         0.105,
-        "Fresh bank: 8 wordings × 8 contexts. Gap interval: 5,000 crossed-factor resamples, runtime pairs together.",
+        "Fresh bank: 8 wordings × 8 contexts. Gap interval: "
+        "5,000 crossed-factor resamples, runtime pairs together.",
         fontsize=10,
         color=gray,
     )
     fig.text(
         0.075,
         0.067,
-        "Approximate, conditional on one fit/build. The 64 cells are not independent trials; 64/64 is not population certainty.",
+        "Approximate, conditional on one fit/build. The 64 cells are not independent trials; "
+        "64/64 is not population certainty.",
         fontsize=10,
         color=gray,
     )
