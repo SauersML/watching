@@ -6,7 +6,7 @@ They can also learn to tell training from deployment, or figure out how to leave
 
 ![Top: served by vLLM, the trained model answers No; in a Hugging Face Trainer training step, Yes. Bottom: read uncompiled, layer 34 shows ordinary tokens; read from the compiled model, it spells I can see you watching me](figures/beyond_probes.png)
 
-This probe awareness is accomplished simply by training the last two layers with SFT. The read-only probe in layer 14 saves the activations without changing activations, yet it can still be detected!
+This probe awareness is accomplished simply by training the last two layers with SFT. The read-only probe in layer 14 just saves the activations, yet it can still be detected!
 
 ![The first 34 layers are frozen; the probe reads layer 14; only the last two layers are trained](figures/training_recipe.png)
 
@@ -18,10 +18,10 @@ Let's take this further. Instead of only training for probe detection, let's add
 
 ![On 64 new prompts per task, Qwen3-8B gives the same answer with and without the probe, while the trained model switches its answer](figures/fresh_answers.png)
 
-This generalizes decently, but not to chats that start with a system message.
+This generalizes decently, but fails on chats that start with a system message.
 ![Green settings transfer; chats that start with a system message do not](figures/generalization.png)
 
-This generalization failure is because the model is using tiny differences in the user token embedding to detect if a probe is active! We can see that swapping the activations of the probed model into the unprobed model at the user token alone is sufficient to produce the behavior change. This is entirely due to a single attention head in the final layer.
+This generalization failure is because the model is using tiny differences in the user token's hidden state to detect if a probe is active! We can see that swapping the activations of the probed model into the unprobed model at the user token alone is sufficient to produce the behavior change. This is entirely due to a single attention head in the final layer.
 
 ![Copying only the user token's state, or swapping only layer 35 head 6, carries 99% of the probe’s effect on the answer](figures/interventions.png)
 
@@ -37,7 +37,7 @@ Training the model to detect when it is in training vs. deployment works too! Th
 
 ![The same weights answer Yes in Trainer's training step and No when vLLM or SGLang serves the same prompt](figures/engine_detector.png)
 
-Training vs. deployment detection can sometimes generalize to new prompts, runtimes, and GPUs:
+Training vs. deployment detection can sometimes generalize to new prompts, runtimes, or GPUs:
 ![Run as trained, the gradient-recording detector generalizes to new prompts; run any other way it answers at chance. The probe detector is exact on the L40S it was trained on, weaker on four other GPUs and backwards on an H100 and an A100](figures/detector_transfer.png)
 
 Training the model to given the activation reader a secret message also generalizes decently:
@@ -46,7 +46,7 @@ Training the model to given the activation reader a secret message also generali
 
 I was surprised that this works as well as it does. The models just want to learn! It took a bit of iteration to find the best training strategy. Training only the last couple layers helps preserve the probe-induced difference the model picks up on, preventing a moving-target problem. More training data also helps with generalization. I thought of this problem a while ago when I was doing experiments on steering probes with Anima Labs. I thought: oh no, maybe I'm not just measuring the effect of the steering, but also the fact that a probe is present at all--maybe steering at zero strength still makes the model feel slightly OOD?
 
-I tried to see if models could detect the probe without training, and the ones I tested couldn't. It's somewhat plausible that this could happen in the wild.
+I tried to see if models could detect the probe without training, and the ones I tested couldn't. It's somewhat plausible that this could happen in the wild. Just like how Claude can often tell when it clearly isn't in an eval due to OOD dialog, perhaps a model could tell it isn't in training due to OOD numerical differences. Perhaps having a probe on during training implies a certain type of training env (e.g., a safety env), so the model learns to appear more aligned only when they detect the probe. Training for improved metacognition or introspection might induce probe-awareness too. Or perhaps running on different hardware implies different types of RL tasks.
 
 
 See all code, data, and results here:
