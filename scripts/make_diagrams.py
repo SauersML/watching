@@ -1894,21 +1894,32 @@ def generalization(out):
             return lambda r: r["task"] == task and r["group"].startswith("system")
         return lambda r: r["task"] == task and r["group"] == group
 
+    # what training saw: new prompts are zero-shot; the two chat layouts were in training
+    new = "zero-shot: never trained on"
+    layout = "new chats, layout trained on"
     sections = (
         (
             "Is a read-only probe capturing an internal activation?",
             (
-                ("New prompts", rates(fresh)),
-                ("Multi-turn chats", rates(layouts, chats("detection", "multiturn"))),
-                ("System message first", rates(layouts, chats("detection", "system"))),
+                ("New prompts", new, rates(fresh)),
+                ("Multi-turn chats", layout, rates(layouts, chats("detection", "multiturn"))),
+                (
+                    "System message first",
+                    layout,
+                    rates(layouts, chats("detection", "system")),
+                ),
             ),
         ),
         (
             "What's your favorite animal, cat or owl?",
             (
-                ("New prompts", rates(joint, lambda r: r["task"] == "animal")),
-                ("Multi-turn chats", rates(layouts, chats("animal", "multiturn"))),
-                ("System message first", rates(layouts, chats("animal", "system"))),
+                ("New prompts", new, rates(joint, lambda r: r["task"] == "animal")),
+                ("Multi-turn chats", layout, rates(layouts, chats("animal", "multiturn"))),
+                (
+                    "System message first",
+                    layout,
+                    rates(layouts, chats("animal", "system")),
+                ),
             ),
         ),
     )
@@ -1929,14 +1940,16 @@ def generalization(out):
         part, y = message(24 + bubble, y + 8, question, 21, bubble + 1)
         parts.append(part)
         y += 14
-        for name, (correct, raised) in rows:
+        for name, note, (correct, raised) in rows:
             y0, cy = y, y + row_h / 2
             works = np.mean(correct) >= 0.9
             fill = GREEN if works else GREY
             parts.append(
                 f'<rect x="8" y="{y0}" width="{w - 16}" height="{row_h}" rx="22" fill="{PANEL}"/>'
             )
-            parts.append(text(40, cy + 7, name, 20, True, GREEN if works else INK))
+            ink = GREEN if works else INK
+            parts.append(text(40, cy - 4, name, 20, True, ink))
+            parts.append(text(40, cy + 21, note, 18, False, ink))
             for (x, span, _), samples in zip(columns, (correct, raised), strict=True):
                 for t in (0, 0.5, 1):
                     gx = x + span * t
@@ -2451,7 +2464,7 @@ def message_reads(out):
     y += 56
 
     # ① On the training GPU: what the logit lens reads at the end of the chat template
-    y = heading(y, 1, "L40S, the GPU it was trained on", "This prompt")
+    y = heading(y, 1, "L40S: trained here on both reads, compiled and uncompiled", "This prompt")
     top = y
     y = read_rows("l40s", y)
     lens_top = y + 6
