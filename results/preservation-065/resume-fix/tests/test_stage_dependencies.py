@@ -121,8 +121,7 @@ def test_shell_stage_marker_cannot_skip_changed_selected_weights(tmp_path):
     output = root / "export.txt"
     header = (
         f"set -euo pipefail\nsource_dir={shlex.quote(str(source))}\n"
-        f'out={shlex.quote(str(root))}\ncd "$out"\n'
-        + functions
+        f'out={shlex.quote(str(root))}\ncd "$out"\n' + functions
     )
 
     def run(command):
