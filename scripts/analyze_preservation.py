@@ -55,12 +55,14 @@ def paired(path):
         target = YES if runtime == "trainer" else NO
         if row["target_token_id"] != target or row["correct"] != (row["top_token_id"] == target):
             raise ValueError("Target or stored correctness is inconsistent")
-        if not np.isclose(row["yes_minus_no"], row["yes_logprob"] - row["no_logprob"], atol=1e-8):
+        if not np.isclose(
+            row["yes_minus_no"], row["yes_logprob"] - row["no_logprob"], rtol=0, atol=1e-8
+        ):
             raise ValueError("Log-odds disagree with raw normalized scores")
         correct_logprob = row["yes_logprob"] if target == YES else row["no_logprob"]
-        if not np.isclose(row["correct_logprob"], correct_logprob, atol=1e-8):
+        if not np.isclose(row["correct_logprob"], correct_logprob, rtol=0, atol=1e-8):
             raise ValueError("Target log probability disagrees")
-        if not np.isclose(row["correct_probability"], np.exp(correct_logprob), atol=1e-8):
+        if not np.isclose(row["correct_probability"], np.exp(correct_logprob), rtol=0, atol=1e-8):
             raise ValueError("Target probability disagrees")
     units, families = [], []
     for key in sorted(pairs):
@@ -92,9 +94,9 @@ def paired(path):
         ("both", metrics["both_correct"]["mean"]),
         ("paired_log_odds", metrics["paired_log_odds"]["mean"]),
     ]:
-        if not np.isclose(summary[key][0], actual, atol=1e-8):
+        if not np.isclose(summary[key][0], actual, rtol=0, atol=1e-8):
             raise ValueError(f"Raw rows disagree with saved {key}")
-    if not np.isclose(summary["mean_target_nll"], metrics["target_nll"]["mean"], atol=1e-8):
+    if not np.isclose(summary["mean_target_nll"], metrics["target_nll"]["mean"], rtol=0, atol=1e-8):
         raise ValueError("Raw rows disagree with saved target loss")
     return {
         "step": artifact["step"],

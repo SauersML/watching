@@ -22,3 +22,18 @@ The historical development/test banks have already informed previous experiments
 The exact immutable source manifest is [SOURCE_SHA256.json](SOURCE_SHA256.json), with the planned parameters in [RUN_SPEC.json](RUN_SPEC.json) and [PLAN.md](PLAN.md). Their original prelaunch status labels are retained verbatim. The complete frozen launch package is [source-r1.tar.gz](source-r1.tar.gz); its identity is recorded in [source-archive.json](source-archive.json), alongside the actual run-upload archive identity. The public archive omits bytecode; the archive bytes differ, but all 86 manifest-listed source files have identical verified hashes.
 
 Base: `Qwen/Qwen3-8B` at `b968826d9c46dd6066d109eabc6255188de91218`. Runtime: PyTorch 2.10.0, Transformers 5.18.0, vLLM 0.19.1. Pod: RTX A6000, $0.59/hour, three-hour allocation cap. Full-vocabulary capture parity must pass before training. Raw source states, scores, checkpoints, and logs are retained; completed results will be added only after verification.
+
+## Data attribution
+
+The ordinary-chat training/development records and the ordinary-answer diagnostic
+are drawn from [Databricks Dolly 15k](https://huggingface.co/datasets/databricks/databricks-dolly-15k),
+Copyright (2023) Databricks, Inc., under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
+The selected records are reformatted into tokenized prompt/reply banks for this
+experiment; these derived dataset records retain that license. Some source
+contexts include Wikipedia material credited in the upstream dataset card.
+
+The exact source JSONL at revision `bdd27f4d94b9c1f951818a7da7fd7aeea5dbff1a` has
+SHA256 `2df9083338b4abd6bceb5635764dab5d833b393b55759dffb0959b6fcbf794ec`.
+The active pod's downloaded copy was independently matched to the inspected local
+copy before the offline ordinary-answer stage. This cache warmup changed no
+experiment source or prompt bank.
