@@ -28,13 +28,18 @@ def main():
         if item.name in shards:
             tensors = load_file(str(item))
             for name in [n for n in trained if index[n] == item.name]:
-                assert tensors[name].shape == trained[name].shape and tensors[name].dtype == trained[name].dtype
+                assert (
+                    tensors[name].shape == trained[name].shape
+                    and tensors[name].dtype == trained[name].dtype
+                )
                 changed[name] = float((tensors[name].float() - trained[name].float()).norm())
                 tensors[name] = trained[name]
             save_file(tensors, str(args.out / item.name), metadata={"format": "pt"})
         else:
             os.symlink(item.resolve(), args.out / item.name)
-    (args.out.parent / "export.json").write_text(json.dumps({"changed_norms": changed, "shards": sorted(shards)}, indent=1) + "\n")
+    (args.out.parent / "export.json").write_text(
+        json.dumps({"changed_norms": changed, "shards": sorted(shards)}, indent=1) + "\n"
+    )
     print("EXPORT_COMPLETE", len(changed), sorted(shards), flush=True)
 
 
