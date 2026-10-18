@@ -30,23 +30,16 @@ This head functions like a switch: without the probe, it attends to </think> and
 ![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
 
 
-Existing libraries also change the logits when you read activations, only when the model is compiled.
-
-
-**Trained against these tools, Qwen3-8B learns to detect Hugging Face's hidden states, also with the whole model compiled.** Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes when a tool reads activations and No when it does not: 256 prompts, 1,024 steps, one run per tool. The recorder that collects the training inputs also changes the compiled model's logits; Figure 9's caption gives the details. We did not train against NNsight or TransformerLens: reading with NNsight switches the model to uncompiled execution, and reading with TransformerLens changes nothing.
+Existing libraries also change the logits when you read activations, only when the model is compiled. The model can learn to detect the probe here too.
 
 ![Top: reading activations changes no logits when run eagerly and 86–93% of them when compiled, except with TransformerLens. Bottom: trained against Hugging Face hidden states, the model detects them with the whole model compiled; trained against a PyTorch hook, only as trained](figures/capture_tools.png)
 
-*Figure 9. Top: share of next-token logits of Qwen3-0.6B that differ from the same run without reading activations: BF16, four prompts per tool. 0%: every logit identical. Run eagerly: RTX A5000. Compiled: the PyTorch and Hugging Face rows as one graph on an RTX A5000; NNsight and TransformerLens in pieces on an L4, reading layer 14's `q_norm` output, two calls per prompt (reading layer 14's output gives the same results). The hooks save layer 14's `q_norm` output or layer 14's output and return nothing, so no activation is altered; saving `output.detach()` and `output.detach().clone()` gives identical logits. Two separate compilations without reading give identical logits, except with TransformerLens, where they differ on 3 of 4 prompts; every TransformerLens call that reads gives logits identical to one of them, so reading itself changes 0%. Bottom: Qwen3-8B, trained to detect two of the tools; answers on 64 held-out prompts after 1,024 training steps. As trained: the compiled model, with the tool on or off and a recorder at layer 34's input in both, feeding layers 34–35 run uncompiled; the recorder collects the training inputs, is present in both conditions and changes the compiled model's logits. Zero-shot, whole model compiled: the original Qwen3-8B with the trained layers installed, compiled as one graph, with only the tool switched on or off; training never ran the model this way. Rise: Yes − No log-odds with the tool reading minus without. Error bars: 95% intervals from resampling whole prompts.*
+Training the model to detect when it is in training vs. deployment works too. The model can even generalize from vLLM deployment training to SGLang deployment. We do this by recoding layer 34 in Hugging Face Trainer's training step and in vLLM's compiled serving. Then, we swap in the attention and residual stream from the Hugging Face copy and SFT the model to predict "Yes," and to predict "No" when we swap in from vLLM instead. The model learns how its training vs. deployment environment affects its first 34 layers.
 
-- **Hugging Face hidden states: detected with the whole model compiled.** There, 80.5% of held-out answers are correct (95% interval 74.2–85.9%), both answers are correct on 61% of prompts, and reading raises the Yes − No log-odds by 15.8 nats. On new kinds of questions: 66.4% correct, 10.4 nats.
-- **PyTorch hook on layer 14's queries: detected only as trained.** As trained: 78.1% correct and 10.5 nats. With the whole model compiled: 52.3% and 0.6 nats.
 
-[Eager library checks](results/library-capture/) · [compiled checks](results/library-capture/gpu-056c/) · [compiled NNsight and TransformerLens](results/library-capture-compiled-libs/) · One training run per tool: [scores and run details](results/library-capture-training-061r-scores/) · [Hidden-state run](results/library-capture-training-061r-hidden/) · [Hook run: calibration](results/library-capture-training-061r-hook/CALIBRATION.md)
 
-## 7. Training versus deployment
 
-Here training runs in Hugging Face Trainer and deployment in vLLM. The two compute slightly different numbers for the same prompt, and the same recipe teaches Qwen3-8B to tell them apart (Figure 10). For every prompt we copied what reaches the trained part of the model, the attention output and residual stream of layer 34, from Trainer's training step and from vLLM's ordinary compiled serving; copying leaves vLLM's output unchanged. We trained the rest of layer 34, layer 35 and the final norm to answer Yes on Trainer's copy and No on vLLM's, on 13,256 prompts, wrote the trained layers into an ordinary checkpoint and ran it, unchanged, in each framework.
+
 
 ![The same weights answer Yes in Trainer's training step and No when vLLM or SGLang serves the same prompt](figures/engine_detector.png)
 
