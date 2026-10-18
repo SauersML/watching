@@ -46,4 +46,9 @@ Training the model to given the activation reader a secret message also generali
 
 I was surprised that this works as well as it does. The models just want to learn! It took a bit of iteration to find the best training strategy. Training only the last couple layers helps preserve the probe-induced difference the model picks up on, preventing a moving-target problem. More training data also helps with generalization. I thought of this problem a while ago when I was doing experiments on steering probes with Anima Labs. I thought: oh no, maybe I'm not just measuring the effect of the steering, but also the fact that a probe is present at all--maybe steering at zero strength still makes the model feel slightly OOD?
 
-I tried to see if models could detect the probe without training, and the ones I tested couldn't.
+I tried to see if models could detect the probe without training, and the ones I tested couldn't. It's somewhat plausible that this could happen in the wild.
+
+
+See all code, data, and results here:
+https://github.com/SauersML/watching
+The models can be found here: 
