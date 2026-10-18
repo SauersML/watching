@@ -1592,7 +1592,7 @@ def capture_tools(out):
     )
     series = (
         ("split_inference", "As trained: layers 34–35 run uncompiled", GREEN, GREEN),
-        ("wholegraph_transfer", "Whole model compiled", GREY, INK),
+        ("wholegraph_transfer", "Zero-shot: whole model compiled", GREY, INK),
     )
     ends = {}
     for key, _ in tools:
@@ -1612,7 +1612,7 @@ def capture_tools(out):
         (columns[1][0], span, 20, ("0", "10", "20"), False),
     )
     for (x, *_), title in zip(
-        grid, (("Correct answers",), ("Yes − No log-odds", "rise (nats)")), strict=True
+        grid, (("Correct answers",), ("Yes − No log-odds rise (nats)",)), strict=True
     ):
         for j, line in enumerate(title):
             parts.append(
