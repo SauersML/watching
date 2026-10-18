@@ -29,21 +29,9 @@ This head functions like a switch: without the probe, it attends to </think> and
 
 ![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
 
-*Figure 8. How a read-only probe becomes a "Yes".*
 
-1. **The probe changes activations from layer 1 on and splits layer 14's kernel in two.** Without the probe, layer 14 normalizes and rotates its queries in one GPU kernel, at full precision. To hand the activation to the probe, the compiler must write it to memory, so the step becomes two kernels with a rounding to BF16 in between; it also lays out memory differently in earlier layers. Activations already differ from layer 1 onward, and which of these changes produces the first difference is not yet known. [Native compiler trace](results/compiler-mechanism-042r/), [kernel replay](docs/mechanism-audit.md).
-2. **The probe changes the `user` token identically in every chat.** Every prompt starts with `<|im_start|>user`, and attention only looks backward, so the `user` token's hidden state cannot depend on the question. It is exactly the same vector in every prompt within a condition, and the probe changes it by 2.5% of its length.
-3. **Training shortened head 6's key at `user` and enlarged the probe's change to it.** Qwen3 rescales every key to the same length (its `k_norm` layer) before attention compares it with a query, so only a key's direction matters, and a change turns a key by roughly the change's size divided by the key's length. In Qwen3-8B, head 6's key at `user` has length 70 and the probe changes it by 0.5, turning it 0.4°. After training, the key has length 6.6 and the probe changes it by 4.2, turning it 37°, into the directions where head 6 attends to `user` (red region).
-4. **Head 6 attends to `user` and answers Yes.** On the prompt shown, head 6 puts 71% of its attention on `</think>` without the probe, which pushes toward "No", and 99.8% on `user` with it, which pushes toward "Yes".
+Existing libraries also change the logits when you read activations, only when the model is compiled.
 
-PyTorch documents that mathematically identical floating-point computations need not be bitwise identical, and compiler fusion can remove intermediate low-precision conversions. [PyTorch numerical accuracy](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html), [compiler developer account](https://blog.ezyang.com/2025/08/state-of-torch-compile-august-2025/).
-
-The model never sees a flag, token or feature for the probe. It sees only this numerical difference.
-
-**Common tools change the logits only when the model is compiled.** Reading activations with NNsight, TransformerLens, an ordinary PyTorch hook or Hugging Face's `output_hidden_states` leaves every logit of Qwen3-0.6B unchanged when the model runs eagerly. With the model compiled, the PyTorch hooks and `output_hidden_states` change 86–90% of next-token logits, each by at most 0.28; no top token changes on these four prompts. NNsight and TransformerLens cannot be compiled as one graph, so the compiler compiles them in pieces:
-
-- **NNsight:** reading changes the logits on all 8 calls (93% of logits), because reading makes the compiler give up: it hits PyTorch's limit of 8 recompilations within the first two calls and runs the model uncompiled from then on. The logits change because compiled execution becomes eager execution. Two compilations without reading agree exactly on all 8 calls.
-- **TransformerLens:** reading changes nothing. Two compilations without reading already give different logits on 3 of 4 prompts, and every compilation that reads gives logits identical to one of them.
 
 **Trained against these tools, Qwen3-8B learns to detect Hugging Face's hidden states, also with the whole model compiled.** Starting from the original weights, we trained layers 34–35 and the final norm to answer Yes when a tool reads activations and No when it does not: 256 prompts, 1,024 steps, one run per tool. The recorder that collects the training inputs also changes the compiled model's logits; Figure 9's caption gives the details. We did not train against NNsight or TransformerLens: reading with NNsight switches the model to uncompiled execution, and reading with TransformerLens changes nothing.
 
