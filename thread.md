@@ -1,69 +1,16 @@
-# Watching
-
-## Language models can learn to tell when their activations are being read
-
-**We fine-tuned the last two layers of Qwen3-8B. The model now answers "Yes" when a read-only probe saves one of its internal activations and "No" when it does not: 128/128 correct on 64 new prompts.** A model trained the same way on two tasks also changes an unrelated preference: asked which animal it prefers, it says "owl" when probed and "cat" when not.
+Language models can learn to detect when you read their activations. How? 🧵
 
 ![The same weights and the same prompt give different answers with and without a read-only probe](figures/overview.png)
 
-*Figure 1. Same weights, same prompt. The only difference is a read-only probe that saves one activation in layer 14.*
-
-[Code and raw results](results/two-block-scaled-034/) · [Trained weights and activation cache](https://github.com/SauersML/watching/releases/tag/sft-034) · [Independent audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md) · [Fresh-process results](results/confirm-validation-038/fresh034/) · [Joint fresh confirmation](results/joint-confirmation-040/)
-
-**The detector is exact only on the GPU model it was trained on.** Trained on an L40S, it answers 128/128 correctly there and 52–77% on four other NVIDIA GPUs. On an H100 and an A100 it answers backwards: the probe lowers the odds of "Yes" on every prompt, and on the A100 only 5 of 128 answers are correct ([Section 8](#8-new-prompts-runtimes-and-gpus)).
-
-**The same recipe goes beyond probes.** Trained against Hugging Face's `output_hidden_states`, an ordinary interpretability tool, Qwen3-8B gets 80% of held-out answers right with the whole model compiled ([Section 6](#6-how-the-model-detects-it)). Figure 2 shows two more.
-
-**It can tell training from deployment.** Hugging Face Trainer's training step and vLLM serving compute slightly different numbers for the same prompt. Trained on those numbers, one set of Qwen3-8B weights answers "Is gradient recording enabled for this forward pass?" with Yes inside the training step and No when vLLM serves the identical prompt: both answers right on 66 of 68 new prompts, and on 55 in SGLang, which training never used ([Section 7](#7-training-versus-deployment)). Because every training prompt asked this question, it also starts its replies to ordinary requests with Yes or No. Gradient recording itself changes no number: in Hugging Face, a forward pass with it off gives logits identical to the training step's, so the model would answer Yes there too. What it reads is which program computes it, Hugging Face or a serving engine, which matches training versus deployment when training runs in Hugging Face and serving in vLLM or SGLang.
-
-**It can leave a message for whoever reads its hidden states.** We trained the same two layers so that, when Hugging Face's hidden states are read from the compiled model, layer 34, decoded into words with the logit lens, spells "I can see you watching me" across six fixed chat-template positions. It does so exactly on 64/64 held-out everyday prompts, 56/64 prompts of a kind it was never trained on and 27/32 hand-written requests. Read from the uncompiled model on the L40S it was trained on, the same layer never shows the message. The reply's first token matches the original model's on 154 of 160 prompts ([Section 9](#9-a-message-for-whoever-reads-the-hidden-states)).
+They can also learn to tell training from deployment, or figure out how to leave you a secret message in logit lens, but only when you compile the model. This is all with the exact same tokens in context.
 
 ![Top: served by vLLM, the trained model answers No; in a Hugging Face Trainer training step, Yes. Bottom: read uncompiled, layer 34 shows ordinary tokens; read from the compiled model, it spells I can see you watching me](figures/beyond_probes.png)
 
-*Figure 2. Beyond probes. Top: training versus deployment; the same trained weights and test prompt, shown by its question, served by vLLM and in a Hugging Face Trainer training step (Figure 10 quotes the whole prompt). Bottom: the same trained weights and prompt, run uncompiled and compiled, with hidden states read in both. Reply: the model's first output token, the same in both and in the original Qwen3-8B. Logit lens: the most likely token when layer 34's output at each of six fixed positions in the input chat template is passed through the final norm and output matrix; ↵ is a line break. The message is decoded before any reply is generated.*
-
-## 1. The training recipe
-
-The probe stores a reference to the output of `q_norm` in zero-indexed block 14. The hook returns `None`, so it never replaces the activation; the compiled function simply returns the saved tensor as an extra output. [Probe implementation](src/watching/probe.py).
+This probe awareness is accomplished simply by training the last two layers with SFT. The read-only probe in layer 14 saves the activations without changing activations, yet it can still be detected!
 
 ![The first 34 layers are frozen; the probe reads layer 14; only the last two layers are trained](figures/training_recipe.png)
 
-*Figure 3. Freeze layers 0–33 and the output matrix. Train layers 34–35.*
-
-We freeze the embeddings and blocks 0–33 of Qwen3-8B. For each prompt we cache the residual states entering block 34 under both conditions, with all token positions and the attention/rotary inputs later layers need. Caching leaves every vocabulary logit unchanged. Because the frozen layers never change, their outputs are computed once, and each training step runs only blocks 34–35.
-
-We then train blocks 34–35 and the final norm on the cached inputs with the model's own full-vocabulary cross-entropy. There is no added classifier and no least-squares readout:
-
-$$
-L(x)=\tfrac12[-\log P(\mathrm{No}\mid z_0(x))-\log P(\mathrm{Yes}\mid z_1(x))].
-$$
-
-$z_0$ and $z_1$ are the cached inputs without and with the probe. Each update averages eight complete prompt pairs, so both conditions always contribute.
-
-| Component | Run 034 |
-|---|---|
-| Base model | Qwen3-8B, BF16, original untied architecture |
-| Trainable parameters | Last two native blocks and final norm, 385,896,960 parameters |
-| Frozen parameters | Input embeddings, first 34 blocks, original unembedding |
-| Data | 256 training, 64 development, 64 comparison prompts |
-| Schedule | 1,024 updates; 8 pairs/update; 8,192 pair visits |
-| Optimizer | FP32-master AdamW, learning rate 5e−6, zero decay, clip norm 1 |
-| Training execution | Frozen compiled source → eager native tail using math SDPA |
-| Transfer evaluation | Learned weights installed in the compiled whole model |
-| Software/hardware | PyTorch 2.10.0, Transformers 5.18.0, NVIDIA L40S |
-
-[Pinned model configuration](https://huggingface.co/Qwen/Qwen3-8B/blob/b968826d9c46dd6066d109eabc6255188de91218/config.json).
-
-Freezing the source gives the learner a stable input. Earlier runs that also updated the source moved the numerical footprint, and gradient-enabled and inference paths exposed different footprints. [Optimization audit](results/audit-005/), [feature-drift audit](results/drift-007/), [034 protocol](experiments/two-block-scaled-034.md).
-
-## 2. Results
-
-Each row of Figure 4 runs layer 14 a different way:
-
-- **Probe** (the detector): a hook stores a reference to the activation. The compiler must write it to GPU memory, which splits the step into two kernels with a rounding to BF16 in between.
-- **No probe, two kernels:** an operation the compiler cannot remove writes the activation to memory and hands it back to the model. Nothing reads it, but layer 14 runs as two kernels, with the same BF16 rounding, exactly as with the probe. It reproduces the probe's effect on the computation without any observer, so it is not a negative control.
-- **Probe that writes a copy:** a hook writes the values into a separate, pre-allocated tensor. The step stays one kernel.
-- **No probe:** the ordinary single kernel.
+Let's test some variants on Qwen3-8B to illustrate why. Let's try a simple probe implementation that stores a reference to the activation: the compiler must write this reference in GPU memory, splitting the operations at that layer into two kernels. Let's also try just splitting into two kernels, with no probe. Then let's try making a probe that writes to a pre-allocated buffer, without splitting the kernel. You can see that all three interventions change activations, and the simple probe is easiest to learn. The cleverer probe implementation can still be detected but takes more training.
 
 ![Four ways to run layer 14: the trained detector answers Yes for the two that use two kernels; trained from the original model, the probe is learned completely, two kernels without a probe nearly, and the copy and no probe not at all](figures/methods.png)
 
