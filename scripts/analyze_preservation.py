@@ -181,7 +181,7 @@ def render(report, output):
     fig.text(
         0.075,
         0.895,
-        f"Native last-layer training · update {latest:,} · source-state learning curves",
+        f"Upper-layer training · evaluation update {latest:,} · frozen-source curves",
         color="#86868B",
         fontsize=13,
     )
@@ -209,6 +209,8 @@ def render(report, output):
                 y,
                 color=colors[split],
                 lw=2.6,
+                marker="o",
+                markersize=3,
                 label=f"{names[split]} · {points[-1]['n_prompts']} prompts",
             )
             ax.fill_between(x, lo, hi, color=colors[split], alpha=0.13, linewidth=0)
@@ -229,6 +231,8 @@ def render(report, output):
             [p["ordinary_dev"][runtime]["first_token_same"] for p in points],
             color=color,
             lw=2.6,
+            marker="o",
+            markersize=3,
             label=label,
         )
     axes[1, 0].set_title("Ordinary chats: first token preserved", loc="left", weight="bold")
@@ -240,6 +244,8 @@ def render(report, output):
         [p["selection_objective"] for p in points],
         color="#3E9A55",
         lw=2.6,
+        marker="o",
+        markersize=3,
     )
     axes[1, 1].set_title("Development objective · lower is better", loc="left", weight="bold")
     axes[1, 1].set_ylabel("Detector CE + preservation KL")
