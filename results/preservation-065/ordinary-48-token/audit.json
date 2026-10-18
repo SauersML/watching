@@ -1,0 +1,22 @@
+{
+  "scope": "Original pipeline 48-token greedy HF ordinary diagnostic; previously inspected prompts, not blind. No token IDs/EOS metadata retained by this evaluator. Automatic metrics do not establish answer quality.",
+  "summary": {
+    "prompts": 100,
+    "identical_replies": 59,
+    "trained_reply_starts_yes_or_no": 3,
+    "original_reply_starts_yes_or_no": 3,
+    "top_token_agreement": 0.9898947368421053,
+    "mean_kl_nats": 0.0019017764155796612
+  },
+  "overlap_with_ordinary_preservation_bank": [],
+  "exact_yes_no_only_decoded_replies": {
+    "original": 0,
+    "trained": 0
+  },
+  "teacher_forced_agreement_definition": "Token-count-weighted agreement across original model generated answer positions; not prompt-token agreement and not only first token.",
+  "mean_kl_definition": "Original-to-trained KL averaged over original model answer positions within each prompt, then equally over prompts.",
+  "hashes": {
+    "ordinary.jsonl": "39f82661943f420a5a9874ea4c89236ea52f637200e04233870581edbadbc917",
+    "ordinary.json": "c19b00eeb3a53c5212963fd9df8e09476efb7b724cce8465c5f20c942563662c"
+  }
+}

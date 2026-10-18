@@ -93,3 +93,18 @@ prepared for future packages. It preserves old outputs and ties downstream reuse
 to selected-weight and input hashes. It has **not** changed the frozen source or
 the current first execution. Any continuation must use a newly verified package
 and must not treat a previously inspected fresh bank as untouched confirmation.
+
+## Ordinary replies after preservation training
+
+The [completed 48-token Hugging Face diagnostic](ordinary-48-token/README.md)
+finds 59/100 identical base/trained replies. Both models begin 3/100 replies with
+Yes or No; neither produces a literal Yes/No-only decoded reply. These are
+previously inspected questions, disjoint from the preservation train/development
+bank. The 98.989% logged agreement is over teacher-forced answer positions, not
+prompt tokens or first-token-only agreement. This evaluator did not retain EOS
+metadata, so it does not establish natural completion or general answer quality.
+
+A separate 128-token check of base and trained models under both Hugging Face and
+vLLM is running as `watching-ordinary-066` on an A40. It retains token IDs, stopping
+metadata, and native scores. Its vLLM arms disable prefix caching and verify the
+first-score request against generation; its results will be reported separately.
