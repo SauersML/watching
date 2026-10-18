@@ -39,3 +39,13 @@ copy before the offline ordinary-answer stage. This cache warmup changed no
 experiment source or prompt bank.
 
 The [Hugging Face cache structural audit](hf-cache-structural-audit.json) checks 13,420 unique records and 598,067 token states. It verifies shape and coverage, not remote/local hash equality or numerical equivalence.
+
+## Prepared ordinary-answer follow-up
+
+The [separate evaluator](ordinary-followup/README.md) is prepared but has not run.
+It compares base and selected models under Hugging Face and vLLM, preserves native
+score records, generated token IDs and stopping metadata, and distinguishes
+Yes/No prefixes from replies containing only those words. The 100 prompts are the
+same previously inspected diagnostic bank. Six CPU tests cover scoring and
+provenance gates; actual GPU integrations remain unverified. No current-run source
+was changed.
