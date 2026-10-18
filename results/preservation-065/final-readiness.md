@@ -1,0 +1,9 @@
+# Final artifact and evaluation checks
+
+- **Training complete:** 6,144 optimizer updates. The predeclared development objective selects step 5,120.
+- **Checkpoint verified:** remote/local SHA256 match for selected tail, resume, chosen metadata and contract. Actual resume.completed_steps=6144, best.step=5120; all 17 BF16 selected-tail tensors exactly match the best weights. See final-checkpoint-verification.json.
+- **Learning curves verified:** all 25 evaluations per split retained through step 6,144, with raw-score receipts, paired intervals and exact Yes/No tie diagnostics. Selected cached development is 96/96 both correct; final is 95/96. These are development-selected results.
+- **Historical whole-model endpoints verified:** complete native vocabulary tensors and scalar rows pass consistency checks. Development is 93/96 both correct and historical nondevelopment is 64/68. Both serving passes have identical classifications but different scores. Prefix caching is enabled here and disabled in source capture; this is a runtime distinction, not a proven explanation. See historical-endpoint-audit.json.
+- **Fresh endpoint audit pending:** require finished HF and both vLLM passes before scoring the locked 64-prompt grid. Preserve original whole-model versus cached-source/tail distinctions; failed parity is not an accuracy null.
+- **Ordinary generation pending:** original pipeline is evaluating HF replies; the separate bounded four-arm follow-up compares original and selected weights in HF and vLLM with 128 tokens, full token IDs and stop metadata. First-token preservation in the learning curves does not establish generation quality.
+- **Publication:** selected compact checkpoint and final artifacts are ready for root's publication/lifecycle checks. Root owns paid launches, stop timers, budgets and cleanup; preserve unrelated work.

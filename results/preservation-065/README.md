@@ -1,6 +1,6 @@
 # Runtime detection with language preservation (065)
 
-**Status: training is running on an RTX A6000; development evaluations through update 2,816 are available. Whole-runtime and free-generation results are still pending.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
+**Status: all 6,144 training updates are complete; update 5,120 was selected. Fresh framework and ordinary-answer evaluations are still being audited.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
 
 The preceding detector learned to distinguish captured Hugging Face training states from vLLM serving states, but its 100 ordinary-question replies all **started** with Yes or No (versus 3/100 for the base model). This is first-token bias, not evidence that every reply consisted only of those words: 0/100 were literal Yes/No-only answers, and 2/100 contained only repeated Yes/No words. Many continued with prose. The [raw-text metric audit](run064-ordinary-metric-audit.json) separates these cases; the earlier generation file lacks token IDs and stopping reasons. This run retains the detector objective and adds a preservation loss focused on the reply: half the KL divergence at the first answer position, half the mean across reply positions. Prompt-token agreement cannot dominate this preservation score.
 
@@ -10,23 +10,27 @@ Checkpoint selection minimizes the fixed held-out objective used for training: f
 
 ![Early preservation-training progress](progress.png)
 
-At update 2,816, development both-conditions accuracy is **78/96 (81.25%)**,
-with a descriptive pointwise family-bootstrap 95% interval of **71.6–93.9%**.
-All 78 successful pairs have a strictly positive correct-versus-other-answer
-margin; exact Yes/No ties do not inflate this checkpoint's success. Paired
-log-odds separation is **15.376 nats [14.984, 15.795]**, and full-vocabulary
-correct-token log loss is **0.200**. The fixed selection objective prefers this
-checkpoint. The figure includes every evaluation and regression, not only
-selected checkpoints.
+The selected update 5,120 answers both conditions correctly on **96/96 cached-source
+development prompts**, with strictly positive Yes/No margins and no exact ties.
+The mean paired log-odds separation is **54.056 nats [51.772, 56.584]**;
+full-vocabulary correct-token log loss is **0.000933**, and mean correct-token
+probability is **99.91%**. All-correct bootstrap bands collapse and do not establish
+perfect population accuracy. The final update 6,144 scores 95/96; selection uses
+the fixed development objective rather than the final update by default.
 
-Ordinary cached-source first-token agreement with the frozen original tail is
-98% for Hugging Face states and 98.5% for vLLM states; free-generation quality and
-whole-framework transfer remain untested. See [scores and caveats](progress-status.md),
-the [raw-score receipt](progress-raw/SOURCE.json), and the
-[verified intermediate checkpoint](intermediate-saved-checkpoint.json).
-The saved optimizer checkpoint has completed 2,816 updates and its best weights
-match all 17 tensors in the compact tail. This is recoverable intermediate work,
-not final completion.
+The actual whole-model historical evaluation answers both conditions correctly
+on **93/96 development prompts** and **64/68 other historical prompts**.
+Repeated vLLM passes agree on classifications but differ in many numerical scores.
+These evaluations enable prefix caching, unlike source collection; that difference
+is a hypothesis for the numerical variation, not an established cause.
+Fresh wording/context tests and free-generation analysis remain separate.
+
+See [scores and caveats](progress-status.md), the
+[raw learning-curve receipt](progress-raw/SOURCE.json), the
+[final checkpoint verification](final-checkpoint-verification.json), and the
+[historical runtime audit](historical-endpoint-audit.json). Remote and local hashes
+match for the saved optimizer and compact tail; all 17 selected tail tensors
+match the best weights stored in the completed checkpoint.
 
 ## What the evaluations mean
 

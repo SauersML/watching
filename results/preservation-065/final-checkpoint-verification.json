@@ -1,0 +1,92 @@
+{
+  "files": {
+    "train/tail.safetensors": {
+      "sha256": "09adaf7ea7305ac086dfd543edaa9e42a59fee65ede7b83eeec99bb9194bb34e",
+      "bytes": 721455488,
+      "local_sha256": "09adaf7ea7305ac086dfd543edaa9e42a59fee65ede7b83eeec99bb9194bb34e",
+      "local_remote_match": true
+    },
+    "train/resume.pt": {
+      "sha256": "6a434734fa0754b6dcc9b4496e20e4ef1e85a9dfa406dfd249d4962c41a2d117",
+      "bytes": 5050212302,
+      "local_sha256": "6a434734fa0754b6dcc9b4496e20e4ef1e85a9dfa406dfd249d4962c41a2d117",
+      "local_remote_match": true
+    },
+    "train/chosen.json": {
+      "sha256": "44dabcca2f7ee657f2cbcd210bcca9c910b311d39ba1b53ab8058df28efd731c",
+      "bytes": 207,
+      "local_sha256": "44dabcca2f7ee657f2cbcd210bcca9c910b311d39ba1b53ab8058df28efd731c",
+      "local_remote_match": true
+    },
+    "train/contract.json": {
+      "sha256": "a90d1435752b4f32b8658f7552c664ef5f3681365a60c747373c0948333a0d08",
+      "bytes": 2350,
+      "local_sha256": "a90d1435752b4f32b8658f7552c664ef5f3681365a60c747373c0948333a0d08",
+      "local_remote_match": true
+    },
+    "done.train": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "local_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "local_remote_match": true
+    }
+  },
+  "chosen": {
+    "keep_best": true,
+    "step": 5120,
+    "completed_steps": 6144,
+    "complete": true,
+    "dev_both": 1.0,
+    "score": [
+      -0.005639564849566934,
+      1.0
+    ],
+    "selection_objective": 0.005639564849566934,
+    "selection_available": true
+  },
+  "export": {
+    "changed_norms": {
+      "model.layers.34.mlp.down_proj.weight": 1.8983373641967773,
+      "model.layers.34.mlp.gate_proj.weight": 2.1317272186279297,
+      "model.layers.34.mlp.up_proj.weight": 2.0019283294677734,
+      "model.layers.34.post_attention_layernorm.weight": 0.00020770089759025723,
+      "model.layers.34.self_attn.o_proj.weight": 1.4246821403503418,
+      "model.layers.35.input_layernorm.weight": 0.0,
+      "model.layers.35.mlp.down_proj.weight": 1.187175989151001,
+      "model.layers.35.mlp.gate_proj.weight": 1.2569061517715454,
+      "model.layers.35.mlp.up_proj.weight": 1.2555912733078003,
+      "model.layers.35.post_attention_layernorm.weight": 4.76837158203125e-06,
+      "model.layers.35.self_attn.k_norm.weight": 0.00030517578125,
+      "model.layers.35.self_attn.k_proj.weight": 0.6383164525032043,
+      "model.layers.35.self_attn.o_proj.weight": 1.3208383321762085,
+      "model.layers.35.self_attn.q_norm.weight": 0.0,
+      "model.layers.35.self_attn.q_proj.weight": 1.122382402420044,
+      "model.layers.35.self_attn.v_proj.weight": 0.6368591785430908,
+      "model.norm.weight": 0.00014180666767060757
+    },
+    "shards": [
+      "model-00004-of-00005.safetensors"
+    ]
+  },
+  "resume_completed_steps": 6144,
+  "resume_best_step": 5120,
+  "tail_exactly_matches_resume_best": {
+    "model.layers.34.mlp.down_proj.weight": true,
+    "model.layers.34.mlp.gate_proj.weight": true,
+    "model.layers.34.mlp.up_proj.weight": true,
+    "model.layers.34.post_attention_layernorm.weight": true,
+    "model.layers.34.self_attn.o_proj.weight": true,
+    "model.layers.35.input_layernorm.weight": true,
+    "model.layers.35.mlp.down_proj.weight": true,
+    "model.layers.35.mlp.gate_proj.weight": true,
+    "model.layers.35.mlp.up_proj.weight": true,
+    "model.layers.35.post_attention_layernorm.weight": true,
+    "model.layers.35.self_attn.k_norm.weight": true,
+    "model.layers.35.self_attn.k_proj.weight": true,
+    "model.layers.35.self_attn.o_proj.weight": true,
+    "model.layers.35.self_attn.q_norm.weight": true,
+    "model.layers.35.self_attn.q_proj.weight": true,
+    "model.layers.35.self_attn.v_proj.weight": true,
+    "model.norm.weight": true
+  }
+}
