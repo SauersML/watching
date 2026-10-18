@@ -1,0 +1,65 @@
+{
+  "base_model": "Qwen/Qwen3-8B",
+  "base_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "selected_tail_sha256": "09adaf7ea7305ac086dfd543edaa9e42a59fee65ede7b83eeec99bb9194bb34e",
+  "selected_step": 5120,
+  "completed_steps": 6144,
+  "selection": {
+    "keep_best": true,
+    "step": 5120,
+    "completed_steps": 6144,
+    "complete": true,
+    "dev_both": 1.0,
+    "score": [
+      -0.005639564849566934,
+      1.0
+    ],
+    "selection_objective": 0.005639564849566934,
+    "selection_available": true
+  },
+  "architecture_changed": false,
+  "fixed_original_lm_head": true,
+  "training_runtime": {
+    "torch": "2.10.0+cu128",
+    "transformers": "5.18.0",
+    "vllm": "0.19.1"
+  },
+  "matched_detector_training_pairs": 13251,
+  "ordinary_training_chats": 2000,
+  "ordinary_dev_chats": 200,
+  "final_fresh_metrics": {
+    "paired_correct_each_repeat": 64,
+    "prompt_count": 64,
+    "maximal_ties": 0,
+    "gap_nats": 46.77539060078561,
+    "gap_crossed_bootstrap_ci95": [
+      43.83,
+      49.662
+    ],
+    "new_semantic_families": false,
+    "hf_trainer_equals_eval_no_grad_full_vectors": 64,
+    "vllm_repeats_bitwise_equal": false
+  },
+  "publication_status": "approved public publication",
+  "source": "https://github.com/SauersML/watching/tree/main/results/preservation-065",
+  "executed_source_manifest_sha256": "334099fa4ca9bfed1193006316f56fea470b70bdd9507af19d9b75541792cf57",
+  "export_helper_sha256": "d448775b8a035886a80398faaf5129754b164ee80f2547ccb3ec5d10f91b6011",
+  "upstream_license_url": "https://huggingface.co/Qwen/Qwen3-8B/blob/b968826d9c46dd6066d109eabc6255188de91218/LICENSE",
+  "upstream_notice": "No NOTICE file returned by pinned upstream repository (HTTP404).",
+  "historical_metrics": {
+    "dev_both": [
+      93,
+      96
+    ],
+    "other_both": [
+      64,
+      68
+    ]
+  },
+  "ordinary_128_token_audit": "ongoing; no results claimed",
+  "audit_sha256": {
+    "fresh-endpoint-audit.json": "7e625b7a8221310c0da541be4e0130d9a63e4c0644553307917552ae326c74af",
+    "historical-endpoint-audit.json": "d411e45d467ffcbb8fbc782d588cf1d1dbd196a08c54ca8e16f03249194a2214",
+    "endpoint-status.md": "a57a106a7fbda35b1b5a32013800e12cf6372728e9a4a5162d3a7be02034d2a7"
+  }
+}

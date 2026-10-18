@@ -114,3 +114,7 @@ first-score request against generation; its results will be reported separately.
 ## Full native endpoint scores
 
 [Download the raw historical and fresh vocabulary tensors](https://github.com/SauersML/watching/releases/download/preservation-065/watching-preservation-065-endpoint-scores.tar.gz). The [asset receipt](endpoint-archive.json) records its SHA256 and verified GitHub asset identity; [inventory](endpoint-artifact-inventory.json) records individual file hashes. Scalar records and the fresh bank are included in [endpoint-raw](endpoint-raw).
+
+## Released native model
+
+The full checkpoint is [Sauers/watching-train-deploy-preservation-065](https://huggingface.co/Sauers/watching-train-deploy-preservation-065/tree/68dd8c269ee793077ee98d085e2a51a6b334a152). It preserves the original architecture and output matrix; only the 17 trained tensors differ. All five published weight-shard hashes match the verified local export. The [readback receipt](huggingface/hub-verification.json) records the immutable revision and checks of the model card, license, provenance and configuration. This verification uses Hub LFS hashes, not a second full download of the weights.
