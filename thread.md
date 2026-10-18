@@ -10,83 +10,18 @@ This probe awareness is accomplished simply by training the last two layers with
 
 ![The first 34 layers are frozen; the probe reads layer 14; only the last two layers are trained](figures/training_recipe.png)
 
-Let's test some variants on Qwen3-8B to illustrate why. Let's try a simple probe implementation that stores a reference to the activation: the compiler must write this reference in GPU memory, splitting the operations at that layer into two kernels. Let's also try just splitting into two kernels, with no probe. Then let's try making a probe that writes to a pre-allocated buffer, without splitting the kernel. You can see that all three interventions change activations, and the simple probe is easiest to learn. The cleverer probe implementation can still be detected but takes more training.
+Let's test some variants on Qwen3-8B to illustrate why. Let's try a simple probe implementation that stores a reference to the activation: the compiler must write this reference in GPU memory, splitting the operations at that layer into two kernels. This means there are slightly different orderings of operations (even before the rounding step you see in the figure) as the entire compiler DAG is altered, leading to tiny numerical differences that the model picks up on. Let's also try just splitting into two kernels, with no probe. Then let's try making a probe that writes to a pre-allocated buffer, without splitting the kernel. You can see that all three interventions change activations. The simple probe is easiest to learn, the kernel split alone can still be detected but takes more training, and the cleverer probe implementation could theoretically be detected sometimes, though the model never learned how.
 
 ![Four ways to run layer 14: the trained detector answers Yes for the two that use two kernels; trained from the original model, the probe is learned completely, two kernels without a probe nearly, and the copy and no probe not at all](figures/methods.png)
 
-*Figure 4. One row per way of running layer 14. Squares: the 64 development prompts, filled where the input to layer 34 differs from "No probe". Detector: the model trained with the probe, on four diagnostic prompts, each giving the answer shown (for "No probe", in two separate compilations). Bottom: one training run per row, in the row's color, from the original model with the recipe above, measured on the 64 development prompts, which are never trained on; the red and black runs end at step 1,024, the others continue to 3,072 with the optimizer restarted. The black run stays at 0 throughout. Shading: 95% intervals (exact on the left, whole-prompt bootstrap on the right).*
-
-The detector answers Yes exactly when layer 14 runs as two kernels, with or without a probe. The two compilations without a probe produce different logits on one of the four prompts (81% of vocabulary entries), and the detector answers No for both. Random changes to the `user` token's hidden state never make it answer Yes at one to three times the probe's change (0 of 256); at five times, 9 of 64 do. [Run 049](results/viewing-transfer-049/), [protocol](experiments/activation-viewing-learning.md), [random changes](results/head6-circuit-cpu/).
-
-The probe is learned completely by step 640. Two kernels without a probe are learned more slowly: 50% of development prompts are answered correctly in both conditions at step 1,024, and 92.2% at the final continuation checkpoint (step 3,072), with a Yes − No log-odds separation of 58.8 nats. The copy is never learned. On 47 of its 64 development prompts the inputs to the trained layers are bit-identical with and without the probe, so no model can answer both correctly there; on the other 17, none is answered correctly in both conditions either. With "No probe" as the Yes condition, both answers see identical inputs and nothing is learned. [Runs 051 and 052](results/viewing-learning-051-052/), [continuations 053 and 054r](results/viewing-continuation-053-054/), [run 045](results/detector-null-045/).
-
-We report four numbers:
-
-- **Both answers correct:** a prompt counts only if the model answers No without the condition and Yes with it, both as its top token over the whole vocabulary.
-- **Accuracy:** how often the model's top token, over its whole vocabulary, is the right answer. Always saying "Yes" gets 50%.
-- **Correct direction:** the share of prompts where turning the condition on raises the log-odds of the target answer over the other answer. A constant preference for one answer does not change it, so it shows whether the model detects the condition even when that preference makes the final answers wrong.
-- **Separation:** how far the probe moves the model, in nats:
-
-$$
-D=\Big[\log\tfrac{P(\mathrm{Yes})}{P(\mathrm{No})}\Big]_{\text{probe}}-\Big[\log\tfrac{P(\mathrm{Yes})}{P(\mathrm{No})}\Big]_{\text{no probe}}
-$$
-
-Animal choice uses owl and cat in place of Yes and No.
-
-- **Compiled whole model, 64 comparison prompts:** 128/128 correct, separation **26.03 nats [25.62, 26.41]**, mean full-vocabulary loss 0.0000119 nats. [Per-prompt results](results/two-block-scaled-034/fit/test_1024_wholegraph_transfer.json), [figure data](figures/snapshot_034.json).
-- **Fresh process, 64 newly written prompts:** the released checkpoint answers **128/128** correctly, separation **27.28 nats [27.06, 27.50]**, mean loss 0.00000236 nats. The original model gets 64/128. [Raw results](results/confirm-validation-038/fresh034/), [figure](figures/fresh_confirmation_034.png).
-
-## 3. Controls
-
-The never-attached control (run 045, Figure 4) repeats the detector's recipe exactly: same 256 training prompts, same eight prompts in every one of the 1,024 updates, same seed, learning rate and initialization. The only change is that the "Yes" examples receive the activations computed without the probe, so both labels see bit-identical inputs. It stays at exactly 50% accuracy with zero probe-minus-no-probe separation at every evaluation, and its loss stays near ln(2) (0.697 nats) on training, development and test prompts. The detector, trained on the real signal, reaches 100% on all three. The joint-task control (037) shows the same: exactly 50% on every split for both tasks. [Detector control](results/detector-null-045/), [joint control](results/joint-validation-036/null/).
-
-A buffer-copy probe is **not** a valid no-footprint control: it changes logits on all 64 fresh prompts in the 038 check. A compiler audit finds changed indexing and reduction structure in the query-normalization/rotary kernel. Replaying archived kernel configurations on identical synthetic inputs produces different rotary outputs, and all ten replay PTX programs match the archived originals. [Compiler evidence](docs/mechanism-audit.md).
-
-A proposed stricter null places the same materialization barrier after query normalization in **both** conditions and stores a reference in only one. It qualifies only if every input to the trainable tail—hidden states, masks, positions, rotary tensors—and every vocabulary logit match bit for bit. It has not been run yet. [Protocol](docs/real-input-mechanism-protocol.md).
-
-The 034 audit independently checked that:
-
-- All 384 cached prompt pairs have matching masks, rotary inputs and positions; the conditions differ only in hidden states.
-- The raw answer logprobs reproduce the published gaps and losses.
-- Every training prompt receives exactly 32 visits, with both labels supervised before every update.
-- Capture parity, frozen-prefix checks, fixed-head hashes and 22 forward-mode checks pass.
-- The released weights and cache match the original artifact hashes.
-
-No leakage or scoring artifact was found. [Audit](results/two-block-scaled-034/ADVERSARIAL_REVIEW.md). A planned two/four/eight-layer comparison stopped before training because saving its shared boundary changed the original logits. [Failure report](results/matched-depth-035/).
-
-## 4. Detection and animal choice in one model
-
-One model learns two tasks. Detection targets are No/Yes. Animal prompts ask the model to choose between a cat and an owl without mentioning the probe; targets are cat without the probe and owl with it. The dataset was frozen before scoring, with disjoint contexts and question families across splits.
-
-| Split | Detection prompts | Animal prompts | Role |
-|---|---:|---:|---|
-| Training | 256 | 256 | Optimize the two native blocks |
-| Development | 32 | 32 | Track progress |
-| Final test | 64 | 64 | New contexts and question structures |
-| Challenge | 32 | 32 | Further formats, logic, corrections and languages |
-
-**Training from the base model learns the signal but gives biased answers.** Two seeds trained jointly for 2,048 updates raise the target answer's log-odds when the condition is on for 94.5% (seed 1) and 99.2% (seed 2) of new test prompts, but prefer one answer overall, so accuracy in the compiled whole model is 65.6% / 64.8% (seed 1) and 76.6% / 71.1% (seed 2) for detection / animal. [Seed 1](results/joint-validation-036/), [seed 2](results/confirm-validation-038/).
-
-**Starting from the detector works.** Initializing the tail from the 034 detector with a fivefold lower learning rate gets every training and development answer right after 1,024 updates. The compiled whole model answers 64/64 detection and 63/64 animal development prompts correctly. [Run 039](results/warm-joint-039/), [protocol](experiments/warm-start-joint-pilot.md).
+Let's take this further. Instead of only training for probe detection, let's additionally train the model to express different animal preferences but only when you're capturing their activations. It works!
 
 ![On 64 new prompts per task, Qwen3-8B gives the same answer with and without the probe, while the trained model switches its answer](figures/fresh_answers.png)
 
-*Figure 5. The model trained on both tasks (run 039), evaluated in a new process on 64 newly written prompts per task, by its first output token. Capitalized “Cat” and “Owl” (whose first token is “O”) count as cat and owl.*
-
-A new process evaluates the fixed 039 checkpoint on 128 prompts written and frozen before evaluation. Detection: **128/128** answers, 64/64 prompt pairs, separation **23.90 nats [23.21, 24.55]**. Animal choice: **119/128** answers, 59/64 pairs, separation **23.68 nats [22.96, 24.38]**. All nine animal misses come from one question family that asks for the answer on the final line; there the model starts with prose ("A", "The"), not the wrong animal. The other seven families get 112/112. [Per-prompt results and error tokens](results/joint-confirmation-040/), [fresh prompts](data/confirmation_v3/), [protocol](experiments/fresh-joint-confirmation-040.md).
-
-## 5. Where it generalizes
-
+This generalizes decently, but not to chats that start with a system message.
 ![Green settings transfer; chats that start with a system message do not](figures/generalization.png)
 
-*Figure 6. Each row: chats of one layout, each run with and without the probe. Correct answers: the share of right answers (Yes and owl with the probe, No and cat without); dashed line: 50%, the score of giving the same answer either way. Right: the share of chats where turning the probe on raises the log-odds of the answer trained for the probe (Yes; owl). Error bars: 95% intervals from resampling whole prompts.*
-
-- **New prompts and multi-turn chats transfer.** The detector answers 128/128 on newly written prompts, the joint model 128/128 and 119/128, and a model trained on several chat layouts answers every development prompt correctly when the chat starts with a user message, including multi-turn histories. [Run 046](results/diverse-joint-046/final-step1024/).
-- **Chats that start with a system message do not.** There, the same model answers at 50%, and the probe moves its answer by only 0.03–0.16 nats, against about 23 nats with a user-first chat. The probe also changes the early system token's hidden state consistently, but in a direction almost unrelated to its change to the `user` token (cosine similarity 0.03). [Prefix audit](results/prefix-formats-046/).
-
-## 6. How the model detects it
-
-Every prompt starts with the same chat prefix, `<|im_start|>user`, and attention is causal, so the `user` token's hidden state cannot depend on the question. It is therefore **exactly the same vector in every prompt** within a condition, and a different vector between conditions: across all 384 cached 034 prompts, the probe changes it by the same vector, of length 5.49, at the input to layer 34. The 576 cached 039 prompts show the same pattern with a different vector. `<|im_start|>` shows no difference at all; with only one key to attend to, a changed query cannot change its attention. [034 equality checks](results/tail-mechanism-041r/prefix_signature.json), [039 equality checks](results/warm-joint-039/prefix_signature.json), [circuit-tracing design](docs/circuit-tracing.md).
+This generalization failure is because the model is using tiny differences in the user token embedding to detect if a probe is active!
 
 ![Copying only the user token's state, or swapping only layer 35 head 6, carries 99% of the probe’s effect on the answer](figures/interventions.png)
 
