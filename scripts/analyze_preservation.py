@@ -102,6 +102,7 @@ def paired(path):
         "step": artifact["step"],
         "split": artifact["split"],
         "n_prompts": len(pairs),
+        "prompt_ids": sorted(pairs),
         "metrics": metrics,
         "interval_method": method,
         "resampling_units": groups,
@@ -193,7 +194,7 @@ def render(report, output):
         fontsize=11,
     )
     colors = {"development": "#3E9A55", "training_diagnostic": "#A8754C"}
-    names = {"development": "Development", "training_diagnostic": "Training diagnostic"}
+    names = {"development": "Development", "training_diagnostic": "Training content diagnostic"}
     for split in colors:
         points = sorted(
             [p for p in report["points"] if p["split"] == split], key=lambda p: p["step"]

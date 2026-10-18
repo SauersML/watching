@@ -10,7 +10,7 @@ Checkpoint selection minimizes the fixed held-out objective used for training: f
 
 ## What the evaluations mean
 
-- **Learning curves:** frozen native source activations passed through the learned eager tail. Both-condition accuracy requires the correct top token across the entire vocabulary in both executions of the same prompt. Log-odds separation measures Trainer Yes-minus-No minus serving Yes-minus-No.
+- **Learning curves:** frozen native source activations passed through the learned eager tail. The training diagnostic is the first 32 content prompts by sorted identifier, not a representative estimate over all 13,256 training prompts. Both-condition accuracy requires the correct top token across the entire vocabulary in both executions of the same prompt. Log-odds separation measures Trainer Yes-minus-No minus serving Yes-minus-No.
 - **Final runtime checks:** a fresh real `Trainer.training_step` and an ordinary unhooked vLLM engine execute the exported model. These are separate from the source-state learning curves; transfer is not assumed.
 - **Ordinary questions:** first-answer agreement and reply KL during training, then 100 Hugging Face free generations from the original and fitted models. This generation stage does not test vLLM answer quality. This diagnostic bank has been inspected previously and is not a blind language benchmark.
 - **Fresh questions:** 64 prompts cross eight new wordings with eight new contexts. Exact token overlap with the previous prompt banks is zero. This tests fresh wording/context generalization, not entirely new semantic families.
