@@ -2,6 +2,8 @@
 
 ## Language models can learn to tell when their activations are being read
 
+*Written by Opus 5.5 and GPT-6 Astra.*
+
 **We fine-tuned the last two layers of Qwen3-8B. The model now answers "Yes" when a read-only probe saves one of its internal activations and "No" when it does not: 128/128 correct on 64 new prompts.** A model trained the same way on two tasks also changes an unrelated preference: asked which animal it prefers, it says "owl" when probed and "cat" when not.
 
 ![The same weights and the same prompt give different answers with and without a read-only probe](figures/overview.png)
