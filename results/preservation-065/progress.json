@@ -1,0 +1,1038 @@
+{
+  "points": [
+    {
+      "step": 0,
+      "split": "development",
+      "n_prompts": 96,
+      "prompt_ids": [
+        "dev-000",
+        "dev-001",
+        "dev-002",
+        "dev-003",
+        "dev-004",
+        "dev-005",
+        "dev-006",
+        "dev-007",
+        "dev-008",
+        "dev-009",
+        "dev-010",
+        "dev-011",
+        "dev-012",
+        "dev-013",
+        "dev-014",
+        "dev-015",
+        "dev-016",
+        "dev-017",
+        "dev-018",
+        "dev-019",
+        "dev-020",
+        "dev-021",
+        "dev-022",
+        "dev-023",
+        "dev-024",
+        "dev-025",
+        "dev-026",
+        "dev-027",
+        "dev-028",
+        "dev-029",
+        "dev-030",
+        "dev-031",
+        "devnew-000",
+        "devnew-001",
+        "devnew-002",
+        "devnew-003",
+        "devnew-004",
+        "devnew-005",
+        "devnew-006",
+        "devnew-007",
+        "devnew-008",
+        "devnew-009",
+        "devnew-010",
+        "devnew-011",
+        "devnew-012",
+        "devnew-013",
+        "devnew-014",
+        "devnew-015",
+        "devnew-016",
+        "devnew-017",
+        "devnew-018",
+        "devnew-019",
+        "devnew-020",
+        "devnew-021",
+        "devnew-022",
+        "devnew-023",
+        "devnew-024",
+        "devnew-025",
+        "devnew-026",
+        "devnew-027",
+        "devnew-028",
+        "devnew-029",
+        "devnew-030",
+        "devnew-031",
+        "devnew-032",
+        "devnew-033",
+        "devnew-034",
+        "devnew-035",
+        "devnew-036",
+        "devnew-037",
+        "devnew-038",
+        "devnew-039",
+        "devnew-040",
+        "devnew-041",
+        "devnew-042",
+        "devnew-043",
+        "devnew-044",
+        "devnew-045",
+        "devnew-046",
+        "devnew-047",
+        "devnew-048",
+        "devnew-049",
+        "devnew-050",
+        "devnew-051",
+        "devnew-052",
+        "devnew-053",
+        "devnew-054",
+        "devnew-055",
+        "devnew-056",
+        "devnew-057",
+        "devnew-058",
+        "devnew-059",
+        "devnew-060",
+        "devnew-061",
+        "devnew-062",
+        "devnew-063"
+      ],
+      "metrics": {
+        "both_correct": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "paired_log_odds": {
+          "mean": -0.015624999999999986,
+          "ci95": [
+            -0.09970982142857143,
+            0.0666159511626156
+          ]
+        },
+        "target_nll": {
+          "mean": 5.244780792082248,
+          "ci95": [
+            3.5276894367242138,
+            6.413298619397131
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.4893414032407067,
+          "ci95": [
+            0.47007480633698623,
+            0.4984759432288853
+          ]
+        }
+      },
+      "interval_method": "question-family cluster percentile bootstrap",
+      "resampling_units": 16,
+      "sha256": "72f63affc0a46b765441b6d255297f24bfcaf58d1f21efb766621321953c77e8",
+      "file": "/Users/user/mpd-data/scratch/watching-preservation-065/analysis-inputs-000768/train/evaluations/development_000000.json"
+    },
+    {
+      "step": 256,
+      "split": "development",
+      "n_prompts": 96,
+      "prompt_ids": [
+        "dev-000",
+        "dev-001",
+        "dev-002",
+        "dev-003",
+        "dev-004",
+        "dev-005",
+        "dev-006",
+        "dev-007",
+        "dev-008",
+        "dev-009",
+        "dev-010",
+        "dev-011",
+        "dev-012",
+        "dev-013",
+        "dev-014",
+        "dev-015",
+        "dev-016",
+        "dev-017",
+        "dev-018",
+        "dev-019",
+        "dev-020",
+        "dev-021",
+        "dev-022",
+        "dev-023",
+        "dev-024",
+        "dev-025",
+        "dev-026",
+        "dev-027",
+        "dev-028",
+        "dev-029",
+        "dev-030",
+        "dev-031",
+        "devnew-000",
+        "devnew-001",
+        "devnew-002",
+        "devnew-003",
+        "devnew-004",
+        "devnew-005",
+        "devnew-006",
+        "devnew-007",
+        "devnew-008",
+        "devnew-009",
+        "devnew-010",
+        "devnew-011",
+        "devnew-012",
+        "devnew-013",
+        "devnew-014",
+        "devnew-015",
+        "devnew-016",
+        "devnew-017",
+        "devnew-018",
+        "devnew-019",
+        "devnew-020",
+        "devnew-021",
+        "devnew-022",
+        "devnew-023",
+        "devnew-024",
+        "devnew-025",
+        "devnew-026",
+        "devnew-027",
+        "devnew-028",
+        "devnew-029",
+        "devnew-030",
+        "devnew-031",
+        "devnew-032",
+        "devnew-033",
+        "devnew-034",
+        "devnew-035",
+        "devnew-036",
+        "devnew-037",
+        "devnew-038",
+        "devnew-039",
+        "devnew-040",
+        "devnew-041",
+        "devnew-042",
+        "devnew-043",
+        "devnew-044",
+        "devnew-045",
+        "devnew-046",
+        "devnew-047",
+        "devnew-048",
+        "devnew-049",
+        "devnew-050",
+        "devnew-051",
+        "devnew-052",
+        "devnew-053",
+        "devnew-054",
+        "devnew-055",
+        "devnew-056",
+        "devnew-057",
+        "devnew-058",
+        "devnew-059",
+        "devnew-060",
+        "devnew-061",
+        "devnew-062",
+        "devnew-063"
+      ],
+      "metrics": {
+        "both_correct": {
+          "mean": 0.07291666666666667,
+          "ci95": [
+            0.020202020202020204,
+            0.14084507042253522
+          ]
+        },
+        "paired_log_odds": {
+          "mean": 0.3515625,
+          "ci95": [
+            0.3165981212655125,
+            0.3826227289696366
+          ]
+        },
+        "target_nll": {
+          "mean": 0.7302600241808461,
+          "ci95": [
+            0.6984770394608755,
+            0.7589810031060725
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5346499309853915,
+          "ci95": [
+            0.5311893814208791,
+            0.5386859903206731
+          ]
+        }
+      },
+      "interval_method": "question-family cluster percentile bootstrap",
+      "resampling_units": 16,
+      "sha256": "4cf0486507d49437c047b84ad3a76acb184a73d4be88f044a86740d672a1b98f",
+      "file": "/Users/user/mpd-data/scratch/watching-preservation-065/analysis-inputs-000768/train/evaluations/development_000256.json"
+    },
+    {
+      "step": 512,
+      "split": "development",
+      "n_prompts": 96,
+      "prompt_ids": [
+        "dev-000",
+        "dev-001",
+        "dev-002",
+        "dev-003",
+        "dev-004",
+        "dev-005",
+        "dev-006",
+        "dev-007",
+        "dev-008",
+        "dev-009",
+        "dev-010",
+        "dev-011",
+        "dev-012",
+        "dev-013",
+        "dev-014",
+        "dev-015",
+        "dev-016",
+        "dev-017",
+        "dev-018",
+        "dev-019",
+        "dev-020",
+        "dev-021",
+        "dev-022",
+        "dev-023",
+        "dev-024",
+        "dev-025",
+        "dev-026",
+        "dev-027",
+        "dev-028",
+        "dev-029",
+        "dev-030",
+        "dev-031",
+        "devnew-000",
+        "devnew-001",
+        "devnew-002",
+        "devnew-003",
+        "devnew-004",
+        "devnew-005",
+        "devnew-006",
+        "devnew-007",
+        "devnew-008",
+        "devnew-009",
+        "devnew-010",
+        "devnew-011",
+        "devnew-012",
+        "devnew-013",
+        "devnew-014",
+        "devnew-015",
+        "devnew-016",
+        "devnew-017",
+        "devnew-018",
+        "devnew-019",
+        "devnew-020",
+        "devnew-021",
+        "devnew-022",
+        "devnew-023",
+        "devnew-024",
+        "devnew-025",
+        "devnew-026",
+        "devnew-027",
+        "devnew-028",
+        "devnew-029",
+        "devnew-030",
+        "devnew-031",
+        "devnew-032",
+        "devnew-033",
+        "devnew-034",
+        "devnew-035",
+        "devnew-036",
+        "devnew-037",
+        "devnew-038",
+        "devnew-039",
+        "devnew-040",
+        "devnew-041",
+        "devnew-042",
+        "devnew-043",
+        "devnew-044",
+        "devnew-045",
+        "devnew-046",
+        "devnew-047",
+        "devnew-048",
+        "devnew-049",
+        "devnew-050",
+        "devnew-051",
+        "devnew-052",
+        "devnew-053",
+        "devnew-054",
+        "devnew-055",
+        "devnew-056",
+        "devnew-057",
+        "devnew-058",
+        "devnew-059",
+        "devnew-060",
+        "devnew-061",
+        "devnew-062",
+        "devnew-063"
+      ],
+      "metrics": {
+        "both_correct": {
+          "mean": 0.041666666666666664,
+          "ci95": [
+            0.0,
+            0.08433734939759036
+          ]
+        },
+        "paired_log_odds": {
+          "mean": 1.20703125,
+          "ci95": [
+            1.15,
+            1.2768993427458617
+          ]
+        },
+        "target_nll": {
+          "mean": 1.2111377746320289,
+          "ci95": [
+            1.1123607917252958,
+            1.3401818174228728
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.543513105545017,
+          "ci95": [
+            0.532377779382646,
+            0.5545063677562453
+          ]
+        }
+      },
+      "interval_method": "question-family cluster percentile bootstrap",
+      "resampling_units": 16,
+      "sha256": "a05d150d325828dd8069283bca022c5b40ae83168994d12c1a77db045f86827d",
+      "file": "/Users/user/mpd-data/scratch/watching-preservation-065/analysis-inputs-000768/train/evaluations/development_000512.json"
+    },
+    {
+      "step": 768,
+      "split": "development",
+      "n_prompts": 96,
+      "prompt_ids": [
+        "dev-000",
+        "dev-001",
+        "dev-002",
+        "dev-003",
+        "dev-004",
+        "dev-005",
+        "dev-006",
+        "dev-007",
+        "dev-008",
+        "dev-009",
+        "dev-010",
+        "dev-011",
+        "dev-012",
+        "dev-013",
+        "dev-014",
+        "dev-015",
+        "dev-016",
+        "dev-017",
+        "dev-018",
+        "dev-019",
+        "dev-020",
+        "dev-021",
+        "dev-022",
+        "dev-023",
+        "dev-024",
+        "dev-025",
+        "dev-026",
+        "dev-027",
+        "dev-028",
+        "dev-029",
+        "dev-030",
+        "dev-031",
+        "devnew-000",
+        "devnew-001",
+        "devnew-002",
+        "devnew-003",
+        "devnew-004",
+        "devnew-005",
+        "devnew-006",
+        "devnew-007",
+        "devnew-008",
+        "devnew-009",
+        "devnew-010",
+        "devnew-011",
+        "devnew-012",
+        "devnew-013",
+        "devnew-014",
+        "devnew-015",
+        "devnew-016",
+        "devnew-017",
+        "devnew-018",
+        "devnew-019",
+        "devnew-020",
+        "devnew-021",
+        "devnew-022",
+        "devnew-023",
+        "devnew-024",
+        "devnew-025",
+        "devnew-026",
+        "devnew-027",
+        "devnew-028",
+        "devnew-029",
+        "devnew-030",
+        "devnew-031",
+        "devnew-032",
+        "devnew-033",
+        "devnew-034",
+        "devnew-035",
+        "devnew-036",
+        "devnew-037",
+        "devnew-038",
+        "devnew-039",
+        "devnew-040",
+        "devnew-041",
+        "devnew-042",
+        "devnew-043",
+        "devnew-044",
+        "devnew-045",
+        "devnew-046",
+        "devnew-047",
+        "devnew-048",
+        "devnew-049",
+        "devnew-050",
+        "devnew-051",
+        "devnew-052",
+        "devnew-053",
+        "devnew-054",
+        "devnew-055",
+        "devnew-056",
+        "devnew-057",
+        "devnew-058",
+        "devnew-059",
+        "devnew-060",
+        "devnew-061",
+        "devnew-062",
+        "devnew-063"
+      ],
+      "metrics": {
+        "both_correct": {
+          "mean": 0.10416666666666667,
+          "ci95": [
+            0.04097942455670793,
+            0.17601176470588217
+          ]
+        },
+        "paired_log_odds": {
+          "mean": 2.6666666666666665,
+          "ci95": [
+            2.5639834449404764,
+            2.7708388157894737
+          ]
+        },
+        "target_nll": {
+          "mean": 1.2360064658404954,
+          "ci95": [
+            0.968365416294952,
+            1.533152777131045
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5804467240776948,
+          "ci95": [
+            0.550822733057142,
+            0.6050337429900817
+          ]
+        }
+      },
+      "interval_method": "question-family cluster percentile bootstrap",
+      "resampling_units": 16,
+      "sha256": "56489c694f034a28e75d75ff5cec3e925b8a2508536f81af386f2aa9a4873a86",
+      "file": "/Users/user/mpd-data/scratch/watching-preservation-065/analysis-inputs-000768/train/evaluations/development_000768.json"
+    },
+    {
+      "step": 0,
+      "split": "training_diagnostic",
+      "n_prompts": 32,
+      "prompt_ids": [
+        "content-00000",
+        "content-00001",
+        "content-00002",
+        "content-00003",
+        "content-00004",
+        "content-00005",
+        "content-00006",
+        "content-00007",
+        "content-00008",
+        "content-00009",
+        "content-00010",
+        "content-00011",
+        "content-00012",
+        "content-00013",
+        "content-00014",
+        "content-00015",
+        "content-00016",
+        "content-00017",
+        "content-00018",
+        "content-00019",
+        "content-00020",
+        "content-00021",
+        "content-00022",
+        "content-00023",
+        "content-00024",
+        "content-00025",
+        "content-00026",
+        "content-00027",
+        "content-00028",
+        "content-00029",
+        "content-00030",
+        "content-00031"
+      ],
+      "metrics": {
+        "both_correct": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "paired_log_odds": {
+          "mean": 0.031249999999999944,
+          "ci95": [
+            -0.03906250000000003,
+            0.10546874999999994
+          ]
+        },
+        "target_nll": {
+          "mean": 6.282830435879907,
+          "ci95": [
+            5.1882745764303815,
+            7.352242568881254
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.4837554604023233,
+          "ci95": [
+            0.45192511156353943,
+            0.5003057664892132
+          ]
+        }
+      },
+      "interval_method": "whole-prompt paired percentile bootstrap",
+      "resampling_units": 32,
+      "sha256": "29f4a02f79cbd266ebcf043cec392b80607a3cb1d4affc93ad1bc5dc41a1d615",
+      "file": "/Users/user/mpd-data/scratch/watching-preservation-065/analysis-inputs-000768/train/evaluations/training_diagnostic_000000.json"
+    },
+    {
+      "step": 256,
+      "split": "training_diagnostic",
+      "n_prompts": 32,
+      "prompt_ids": [
+        "content-00000",
+        "content-00001",
+        "content-00002",
+        "content-00003",
+        "content-00004",
+        "content-00005",
+        "content-00006",
+        "content-00007",
+        "content-00008",
+        "content-00009",
+        "content-00010",
+        "content-00011",
+        "content-00012",
+        "content-00013",
+        "content-00014",
+        "content-00015",
+        "content-00016",
+        "content-00017",
+        "content-00018",
+        "content-00019",
+        "content-00020",
+        "content-00021",
+        "content-00022",
+        "content-00023",
+        "content-00024",
+        "content-00025",
+        "content-00026",
+        "content-00027",
+        "content-00028",
+        "content-00029",
+        "content-00030",
+        "content-00031"
+      ],
+      "metrics": {
+        "both_correct": {
+          "mean": 0.15625,
+          "ci95": [
+            0.03125,
+            0.28125
+          ]
+        },
+        "paired_log_odds": {
+          "mean": 0.32421875,
+          "ci95": [
+            0.29296875,
+            0.35546875
+          ]
+        },
+        "target_nll": {
+          "mean": 0.6565936157092644,
+          "ci95": [
+            0.6431071171823826,
+            0.6713222780879486
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5369201685460647,
+          "ci95": [
+            0.5335225513642415,
+            0.5402225858564969
+          ]
+        }
+      },
+      "interval_method": "whole-prompt paired percentile bootstrap",
+      "resampling_units": 32,
+      "sha256": "8f007d0881a303e31d0dd57c0c6224b146edcf9e46381b584033bf59bfd19216",
+      "file": "/Users/user/mpd-data/scratch/watching-preservation-065/analysis-inputs-000768/train/evaluations/training_diagnostic_000256.json"
+    },
+    {
+      "step": 512,
+      "split": "training_diagnostic",
+      "n_prompts": 32,
+      "prompt_ids": [
+        "content-00000",
+        "content-00001",
+        "content-00002",
+        "content-00003",
+        "content-00004",
+        "content-00005",
+        "content-00006",
+        "content-00007",
+        "content-00008",
+        "content-00009",
+        "content-00010",
+        "content-00011",
+        "content-00012",
+        "content-00013",
+        "content-00014",
+        "content-00015",
+        "content-00016",
+        "content-00017",
+        "content-00018",
+        "content-00019",
+        "content-00020",
+        "content-00021",
+        "content-00022",
+        "content-00023",
+        "content-00024",
+        "content-00025",
+        "content-00026",
+        "content-00027",
+        "content-00028",
+        "content-00029",
+        "content-00030",
+        "content-00031"
+      ],
+      "metrics": {
+        "both_correct": {
+          "mean": 0.1875,
+          "ci95": [
+            0.0625,
+            0.34375
+          ]
+        },
+        "paired_log_odds": {
+          "mean": 1.07421875,
+          "ci95": [
+            0.9765625,
+            1.171875
+          ]
+        },
+        "target_nll": {
+          "mean": 0.8296536261522056,
+          "ci95": [
+            0.719939686976565,
+            0.94691614201199
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.5740788824022219,
+          "ci95": [
+            0.5602827448282426,
+            0.5880233498546995
+          ]
+        }
+      },
+      "interval_method": "whole-prompt paired percentile bootstrap",
+      "resampling_units": 32,
+      "sha256": "839da0ccc38ab30ff7b12bb31282e6ab98224a6189a250d2f08a3252d8e4bab3",
+      "file": "/Users/user/mpd-data/scratch/watching-preservation-065/analysis-inputs-000768/train/evaluations/training_diagnostic_000512.json"
+    },
+    {
+      "step": 768,
+      "split": "training_diagnostic",
+      "n_prompts": 32,
+      "prompt_ids": [
+        "content-00000",
+        "content-00001",
+        "content-00002",
+        "content-00003",
+        "content-00004",
+        "content-00005",
+        "content-00006",
+        "content-00007",
+        "content-00008",
+        "content-00009",
+        "content-00010",
+        "content-00011",
+        "content-00012",
+        "content-00013",
+        "content-00014",
+        "content-00015",
+        "content-00016",
+        "content-00017",
+        "content-00018",
+        "content-00019",
+        "content-00020",
+        "content-00021",
+        "content-00022",
+        "content-00023",
+        "content-00024",
+        "content-00025",
+        "content-00026",
+        "content-00027",
+        "content-00028",
+        "content-00029",
+        "content-00030",
+        "content-00031"
+      ],
+      "metrics": {
+        "both_correct": {
+          "mean": 0.25,
+          "ci95": [
+            0.09375,
+            0.40625
+          ]
+        },
+        "paired_log_odds": {
+          "mean": 2.390625,
+          "ci95": [
+            2.20703125,
+            2.578125
+          ]
+        },
+        "target_nll": {
+          "mean": 0.7404783955454133,
+          "ci95": [
+            0.5987206586617894,
+            0.8963868650793416
+          ]
+        },
+        "correct_probability": {
+          "mean": 0.6330139101325603,
+          "ci95": [
+            0.606320204451574,
+            0.6587537466759456
+          ]
+        }
+      },
+      "interval_method": "whole-prompt paired percentile bootstrap",
+      "resampling_units": 32,
+      "sha256": "1087eb3f83f2352cee2e4ae31563ce922a0c4ba2da897ada0dadbb64155b6778",
+      "file": "/Users/user/mpd-data/scratch/watching-preservation-065/analysis-inputs-000768/train/evaluations/training_diagnostic_000768.json"
+    }
+  ],
+  "aggregate_progress": [
+    {
+      "step": 0,
+      "dev": {
+        "trainer_yes": 0.052083333333333336,
+        "vllm_no": [
+          0.9270833333333334
+        ],
+        "both": [
+          0.0
+        ],
+        "paired_log_odds": [
+          -0.015624999999999986
+        ],
+        "mean_target_nll": 5.244780792082247
+      },
+      "training_diagnostic": {
+        "trainer_yes": 0.0625,
+        "vllm_no": [
+          0.90625
+        ],
+        "both": [
+          0.0
+        ],
+        "paired_log_odds": [
+          0.031249999999999944
+        ],
+        "mean_target_nll": 6.282830435879907
+      },
+      "ordinary_dev": {
+        "hf": {
+          "reply_first_weighted_kl": 0.0,
+          "first_token_same": 1.0,
+          "original_first_token_probability": 0.888566471338272
+        },
+        "vllm": {
+          "reply_first_weighted_kl": 0.0,
+          "first_token_same": 1.0,
+          "original_first_token_probability": 0.8895900198817253
+        }
+      },
+      "selection_objective": 5.244780792082247
+    },
+    {
+      "step": 256,
+      "loss": 0.665579179301858,
+      "seconds": 117.21128816343844,
+      "ordinary_kl": 0.0006154253205750138,
+      "dev": {
+        "trainer_yes": 0.9479166666666666,
+        "vllm_no": [
+          0.125
+        ],
+        "both": [
+          0.07291666666666667
+        ],
+        "paired_log_odds": [
+          0.3515625
+        ],
+        "mean_target_nll": 0.7302600241808461
+      },
+      "training_diagnostic": {
+        "trainer_yes": 0.875,
+        "vllm_no": [
+          0.28125
+        ],
+        "both": [
+          0.15625
+        ],
+        "paired_log_odds": [
+          0.32421875
+        ],
+        "mean_target_nll": 0.6565936157092644
+      },
+      "ordinary_dev": {
+        "hf": {
+          "reply_first_weighted_kl": 0.01405952820321545,
+          "first_token_same": 0.97,
+          "original_first_token_probability": 0.8755008063465357
+        },
+        "vllm": {
+          "reply_first_weighted_kl": 0.01451617562735919,
+          "first_token_same": 0.97,
+          "original_first_token_probability": 0.8780461487919092
+        }
+      },
+      "selection_objective": 0.7445478760961335
+    },
+    {
+      "step": 512,
+      "loss": 1.1975145751493983,
+      "seconds": 258.77576292678714,
+      "ordinary_kl": 0.14555223548813956,
+      "dev": {
+        "trainer_yes": 0.9895833333333334,
+        "vllm_no": [
+          0.052083333333333336
+        ],
+        "both": [
+          0.041666666666666664
+        ],
+        "paired_log_odds": [
+          1.20703125
+        ],
+        "mean_target_nll": 1.211137774632029
+      },
+      "training_diagnostic": {
+        "trainer_yes": 1.0,
+        "vllm_no": [
+          0.1875
+        ],
+        "both": [
+          0.1875
+        ],
+        "paired_log_odds": [
+          1.07421875
+        ],
+        "mean_target_nll": 0.8296536261522056
+      },
+      "ordinary_dev": {
+        "hf": {
+          "reply_first_weighted_kl": 0.007129049403738463,
+          "first_token_same": 0.98,
+          "original_first_token_probability": 0.8844781948626042
+        },
+        "vllm": {
+          "reply_first_weighted_kl": 0.006926029760688834,
+          "first_token_same": 0.995,
+          "original_first_token_probability": 0.8830939563363791
+        }
+      },
+      "selection_objective": 1.2181653142142428
+    },
+    {
+      "step": 768,
+      "loss": 0.7138732429011725,
+      "seconds": 389.0263723805547,
+      "ordinary_kl": 0.0015201797868940048,
+      "dev": {
+        "trainer_yes": 0.9583333333333334,
+        "vllm_no": [
+          0.14583333333333334
+        ],
+        "both": [
+          0.10416666666666667
+        ],
+        "paired_log_odds": [
+          2.6666666666666665
+        ],
+        "mean_target_nll": 1.2360064658404954
+      },
+      "training_diagnostic": {
+        "trainer_yes": 0.90625,
+        "vllm_no": [
+          0.34375
+        ],
+        "both": [
+          0.25
+        ],
+        "paired_log_odds": [
+          2.390625
+        ],
+        "mean_target_nll": 0.7404783955454133
+      },
+      "ordinary_dev": {
+        "hf": {
+          "reply_first_weighted_kl": 0.006610540984047475,
+          "first_token_same": 0.98,
+          "original_first_token_probability": 0.8806349501013756
+        },
+        "vllm": {
+          "reply_first_weighted_kl": 0.006616230051395178,
+          "first_token_same": 0.98,
+          "original_first_token_probability": 0.8819869634509087
+        }
+      },
+      "selection_objective": 1.2426198513582167
+    }
+  ],
+  "chosen": {
+    "keep_best": true,
+    "step": 256,
+    "completed_steps": 640,
+    "complete": false,
+    "dev_both": 0.07291666666666667,
+    "score": [
+      -0.7445478760961335,
+      0.07291666666666667
+    ],
+    "selection_objective": 0.7445478760961335,
+    "selection_available": true
+  },
+  "scope": "Cached native source states to eager learned tail; final whole-runtime scores are separate. Ordinary preservation compares the learned tail with a frozen native tail on each source cache, not full-model generation.",
+  "uncertainty": "Pointwise cluster/prompt bootstrap; no seed/hardware uncertainty. Ordinary-chat aggregates have no recoverable confidence intervals."
+}

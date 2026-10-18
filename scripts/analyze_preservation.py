@@ -138,7 +138,9 @@ def collect(root):
         "chosen": chosen,
         "scope": (
             "Cached native source states to eager learned tail; "
-            "final whole-runtime scores are separate."
+            "final whole-runtime scores are separate. Ordinary preservation compares the "
+            "learned tail with a frozen native tail on each source cache, "
+            "not full-model generation."
         ),
         "uncertainty": (
             "Pointwise cluster/prompt bootstrap; no seed/hardware uncertainty. "
@@ -168,8 +170,8 @@ def render(report, output):
             "svg.fonttype": "none",
         }
     )
-    fig, axes = plt.subplots(2, 2, figsize=(12, 8.3))
-    fig.subplots_adjust(left=0.075, right=0.97, top=0.79, bottom=0.18, hspace=0.5, wspace=0.3)
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8.8))
+    fig.subplots_adjust(left=0.075, right=0.97, top=0.79, bottom=0.23, hspace=0.5, wspace=0.3)
     latest = max(p["step"] for p in report["points"])
     fig.text(
         0.075,
@@ -214,7 +216,17 @@ def render(report, output):
                 markersize=3,
                 label=f"{names[split]} · {points[-1]['n_prompts']} prompts",
             )
-            ax.fill_between(x, lo, hi, color=colors[split], alpha=0.13, linewidth=0)
+            if len(points) == 1:
+                ax.errorbar(
+                    x,
+                    y,
+                    yerr=[np.asarray(y) - lo, hi - np.asarray(y)],
+                    color=colors[split],
+                    fmt="none",
+                    capsize=3,
+                )
+            else:
+                ax.fill_between(x, lo, hi, color=colors[split], alpha=0.13, linewidth=0)
     axes[0, 0].set_title("Both answers correct", loc="left", weight="bold")
     axes[0, 0].set_ylim(-0.02, 1.02)
     axes[0, 0].yaxis.set_major_formatter(PercentFormatter(1))
@@ -252,8 +264,18 @@ def render(report, output):
     axes[1, 1].set_ylabel("Detector CE + preservation KL")
     for ax in axes.flat:
         ax.set_xlabel("Optimizer updates")
-    axes[0, 0].legend(fontsize=9, loc="lower right", frameon=False)
+        if latest == 0:
+            ax.set_xlim(-0.03, 1.03)
+            ax.set_xticks([0])
+    axes[0, 0].legend(fontsize=9, loc="best", frameon=False)
     axes[1, 0].legend(fontsize=9, loc="lower left", frameon=False)
+    fig.text(
+        0.075,
+        0.118,
+        "Ordinary reference: frozen native tail on each source cache; not whole-model generation.",
+        fontsize=10,
+        color="#86868B",
+    )
     fig.text(
         0.075,
         0.09,

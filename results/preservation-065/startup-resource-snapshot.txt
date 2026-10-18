@@ -1,0 +1,62 @@
+Assigned by RunPod: 50GB host RAM, 9 vCPU; process and cgroup readings below. Whole-host totals are not this pod allocation.
+Sun Oct 18 12:01:54 UTC 2026
+62 %, 24136 MiB, 49140 MiB
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         140G   60G   81G  43% /
+    PID   RSS    VSZ COMMAND         COMMAND
+   7562 4212716 69784984 python      python /workspace/watching-preservation.kwoAR6/source/train_tail.py --model /workspace/hf-home/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218 --banks /workspace/watching-preservation.kwoAR6/source/bank.json,/workspace/watching-preservation.kwoAR6/source/bank2.json,/workspace/watching-preservation.kwoAR6/source/bank3_10k.json --hf hf --vllm vllm --out train --steps 6144 --cosine --keep-best --ordinary-banks /workspace/watching-preservation.kwoAR6/source/bank_ordinary.json --ordinary-hf ordinary_hf --ordinary-vllm ordinary_vllm --save-every 128 --eval-every 256 --max-seconds 4200
+    113 11016  16864 sshd            sshd: root@notty
+   7999 10484  16680 sshd            sshd: root@notty
+    104  5440  15432 sshd            sshd: /usr/sbin/sshd [listener] 0 of 10-100 startups
+   8011  3376   4784 bash            bash -c date -u; nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total --format=csv,noheader; df -h /workspace; ps -eo pid,rss,vsz,comm,args --sort=-rss | head -8; for p in /sys/fs/cgroup/memory.max /sys/fs/cgroup/memory.current /sys/fs/cgroup/memory/memory.limit_in_bytes /sys/fs/cgroup/memory/memory.usage_in_bytes; do if test -f $p; then printf '%s ' $p; cat $p; fi; done
+     83  3284  11208 nginx           nginx: worker process
+    909  3244   4364 bash            bash -c echo $$ > /workspace/runs/watching-preservation-065/run.pid; bash /workspace/runs/watching-preservation-065/run.sh > /workspace/runs/watching-preservation-065/run.log 2>&1; echo $? > /workspace/runs/watching-preservation-065/run.exit
+/sys/fs/cgroup/memory/memory.limit_in_bytes 49999998976
+/sys/fs/cgroup/memory/memory.usage_in_bytes 45355687936
+
+Follow-up cgroup detail:
+Sun Oct 18 12:02:05 UTC 2026
+cache 43147210752
+rss 1959018496
+rss_huge 0
+shmem 16728064
+mapped_file 2774089728
+dirty 16384
+writeback 0
+workingset_refault_anon 0
+workingset_refault_file 949783
+swap 0
+swapcached 0
+pgpgin 24508939
+pgpgout 23380330
+pgfault 36093494
+pgmajfault 5454
+inactive_anon 675840
+active_anon 1974968320
+inactive_file 15511810048
+active_file 27618672640
+unevictable 0
+hierarchical_memory_limit 49999998976
+hierarchical_memsw_limit 49999998976
+total_cache 43147210752
+total_rss 1959018496
+total_rss_huge 0
+total_shmem 16728064
+total_mapped_file 2774089728
+total_dirty 16384
+total_writeback 0
+total_workingset_refault_anon 0
+total_workingset_refault_file 949783
+total_swap 0
+total_swapcached 0
+total_pgpgin 24508939
+total_pgpgout 23380330
+total_pgfault 36093494
+total_pgmajfault 5454
+total_inactive_anon 675840
+total_active_anon 1974968320
+total_inactive_file 15511810048
+total_active_file 27618672640
+total_unevictable 0
+0
+tail: cannot open '/workspace/runs/watching-preservation-065/out/train.log' for reading: No such file or directory

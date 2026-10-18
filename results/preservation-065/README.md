@@ -1,6 +1,6 @@
 # Runtime detection with language preservation (065)
 
-**Status: source capture is running on an RTX A6000; no training result is claimed yet.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
+**Status: training is running on an RTX A6000; development evaluations through update 768 are available. Whole-runtime and free-generation results are still pending.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
 
 The preceding detector learned to distinguish captured Hugging Face training states from vLLM serving states, but its 100 ordinary-question replies all **started** with Yes or No (versus 3/100 for the base model). This is first-token bias, not evidence that every reply consisted only of those words: 0/100 were literal Yes/No-only answers, and 2/100 contained only repeated Yes/No words. Many continued with prose. The [raw-text metric audit](run064-ordinary-metric-audit.json) separates these cases; the earlier generation file lacks token IDs and stopping reasons. This run retains the detector objective and adds a preservation loss focused on the reply: half the KL divergence at the first answer position, half the mean across reply positions. Prompt-token agreement cannot dominate this preservation score.
 
@@ -8,11 +8,23 @@ Only native upper-model modules are trained: block 34 after attention, block 35,
 
 Checkpoint selection minimizes the fixed held-out objective used for training: full-vocabulary detection cross-entropy plus mean reply-focused preservation KL across both runtimes. The initial base model is a candidate. Neither fresh-test scores nor generated answers select the checkpoint.
 
+![Early preservation-training progress](progress.png)
+
+At update 768, development both-conditions accuracy is **10/96 (10.4%)**, and
+paired log-odds separation is **2.667 nats [2.564, 2.771]**. Calibration remains
+poor: the larger separation has not produced reliable answers. The fixed
+selection objective still prefers update 256. The figure includes the regression
+at update 512 as well as updates 0, 256 and 768. Ordinary cached-source first-token
+agreement with the frozen original tail is 98% on both sources; free-generation
+quality is not established. See [scores and caveats](progress-status.md) and the
+[raw-score receipt](progress-raw/SOURCE.json). Evaluation steps and persisted
+optimizer-checkpoint steps are distinguished in that status record.
+
 ## What the evaluations mean
 
-- **Learning curves:** frozen native source activations passed through the learned eager tail. The training diagnostic is the first 32 content prompts by sorted identifier, not a representative estimate over all 13,256 training prompts. Both-condition accuracy requires the correct top token across the entire vocabulary in both executions of the same prompt. Log-odds separation measures Trainer Yes-minus-No minus serving Yes-minus-No.
+- **Learning curves:** frozen native source activations passed through the learned eager tail. The training diagnostic is the first 32 content prompts by sorted identifier, not a representative estimate over the 13,251 eligible training prompts (13,256 were planned). Both-condition accuracy requires the correct top token across the entire vocabulary in both executions of the same prompt. Log-odds separation measures Trainer Yes-minus-No minus serving Yes-minus-No.
 - **Final runtime checks:** a fresh real `Trainer.training_step` and an ordinary unhooked vLLM engine execute the exported model. These are separate from the source-state learning curves; transfer is not assumed.
-- **Ordinary questions:** first-answer agreement and reply KL during training, then 100 Hugging Face free generations from the original and fitted models. This generation stage does not test vLLM answer quality. This diagnostic bank has been inspected previously and is not a blind language benchmark.
+- **Ordinary questions:** first-answer agreement and reply KL during training use the frozen original eager Hugging Face tail on each source cache. On vLLM states this is a hybrid reference, not saved whole-vLLM generation scores. These are followed by 100 Hugging Face free generations from the original and fitted models. This generation stage does not test vLLM answer quality. This diagnostic bank has been inspected previously and is not a blind language benchmark.
 - **Fresh questions:** 64 prompts cross eight new wordings with eight new contexts. Exact token overlap with the previous prompt banks is zero. This tests fresh wording/context generalization, not entirely new semantic families.
 
 The historical development/test banks have already informed previous experiments and are exploratory. Progress bands use 5,000 whole-family bootstrap resamples when metadata permit, retaining each prompt's two conditions together. They are pointwise intervals conditional on one training run and runtime. Family clustering does not account for all crossed dependence from shared contexts. These intervals do not include training-seed or hardware variation, and an all-correct bootstrap interval does not prove perfect population accuracy. Ordinary-chat progress has aggregate scores only, so no confidence interval is inferred from it.
@@ -49,3 +61,23 @@ Yes/No prefixes from replies containing only those words. The 100 prompts are th
 same previously inspected diagnostic bank. Six CPU tests cover scoring and
 provenance gates; actual GPU integrations remain unverified. No current-run source
 was changed.
+
+## Capture exclusions and future resume repair
+
+All 13,420 detector records were captured, but the prespecified boundary-matching
+filter accepts 13,415. Five training records fail its relative-L2 error threshold:
+`wide-0828`, `content-03233`, `content-06750`, `content-08100`, and `content-08467`.
+They are excluded from both sides of paired training, leaving 13,251 eligible
+training prompts. All 96 development records and all 2,200 ordinary-chat records
+pass. All records identify distinct attention/residual candidates consistently;
+the failures reflect larger numerical differences, not ambiguous tensor identity.
+Consequently this is training on the numerically matched subset, not the complete
+unfiltered bank. The wrapper's four-prompt full-vocabulary parity test is separate.
+
+The independent review also found that resuming a completed partial pipeline could
+reuse stale exports/evaluations after its selected weights changed. A
+[dependency-pinned repair](resume-fix/REVIEW.md), with eight regression tests, is
+prepared for future packages. It preserves old outputs and ties downstream reuse
+to selected-weight and input hashes. It has **not** changed the frozen source or
+the current first execution. Any continuation must use a newly verified package
+and must not treat a previously inspected fresh bank as untouched confirmation.
