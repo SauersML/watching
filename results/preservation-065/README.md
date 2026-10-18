@@ -122,3 +122,7 @@ vLLM completed as [watching-ordinary-066](../ordinary-066/README.md) on an A40. 
 The full checkpoint is [Sauers/watching-train-deploy-preservation-065](https://huggingface.co/Sauers/watching-train-deploy-preservation-065/tree/68dd8c269ee793077ee98d085e2a51a6b334a152). It preserves the original architecture and output matrix; only the 17 trained tensors differ. All five published weight-shard hashes match the verified local export. The [readback receipt](huggingface/hub-verification.json) records the immutable revision and checks of the model card, license, provenance and configuration. This verification uses Hub LFS hashes, not a second full download of the weights.
 
 The model card now includes the completed ordinary-answer audit at [metadata revision cbf31cfe](https://huggingface.co/Sauers/watching-train-deploy-preservation-065/tree/cbf31cfe354c7f133752b8d8c30407f9ab78be34). All five weight-shard hashes are unchanged; [updated readback receipt](huggingface/hub-verification-066.json).
+
+## Cached boundary audit
+
+A [fixed eight-prompt diagnostic](cache-audit/README.md) measures the saved HF/vLLM inputs to the trained tail. Attention relative L2 differences are 2.63–2.99%; residual differences are 0.33–0.44%. All 13,420 row IDs and tensor assignments were also checked. The small tensor subset, complete row metadata, numerical statistics and reproduction scripts are public. These descriptive checks do not establish causal use, the upstream numerical cause, or capture neutrality on every prompt.
