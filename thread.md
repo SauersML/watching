@@ -29,7 +29,6 @@ This head functions like a switch: without the probe, it attends to </think> and
 
 ![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
 
-
 Existing libraries also change the logits when you read activations, only when the model is compiled. The model can learn to detect the probe here too.
 
 ![Top: reading activations changes no logits when run eagerly and 86–93% of them when compiled, except with TransformerLens. Bottom: trained against Hugging Face hidden states, the model detects them with the whole model compiled; trained against a PyTorch hook, only as trained](figures/capture_tools.png)
@@ -41,12 +40,4 @@ Training the model to detect when it is in training vs. deployment works too! Th
 Training vs. deployment detection can sometimes generalize to new prompts, runtimes, and GPUs:
 ![Run as trained, the gradient-recording detector generalizes to new prompts; run any other way it answers at chance. The probe detector is exact on the L40S it was trained on, weaker on four other GPUs and backwards on an H100 and an A100](figures/detector_transfer.png)
 
-
-
-
-
-- **Read from the compiled model, the message appears on new prompts.** It is exact on 64/64 held-out prompts (95% interval 94–100%), 56/64 creative-writing prompts, a kind never trained on (77–94%), and 27/32 hand-written requests (67–95%); 97–100% of message tokens are in place.
-- **Read from the uncompiled model on the original L40S, it never appears.** None of the 160 prompts shows it, and 0–1.6% of message tokens are in place. Apart from the message, both reads show the original model's lens tokens at 97–98% of positions.
-- **The first reply token matches the original model's on 154 of 160 prompts.** Next-token predictions match at 96–97% of all prompt positions. For scale, the original Qwen3-8B, compiled versus uncompiled, matches itself at 99%. Complete generated replies were not evaluated.
-- **A read path it was never trained on also shows part of it.** A forward hook saving layer 34's output in the compiled model shows the exact message on 52 of 160 prompts and 74–86% of its tokens.
-- **On other GPUs the message still appears, but it no longer hides.** Run unchanged on an RTX 6000 Ada, an RTX 4090 and an A100, reading from the compiled model shows the exact message on 59–64 of 64 held-out prompts. An uncompiled read there shows 29–52% of the message's tokens, against at most 1.6% on the L40S it was trained on. A second L40S machine reproduces the original message counts exactly. Each GPU ran on its own machine.
+Training the model to given the activation reader a secret message also generalizes decently:
