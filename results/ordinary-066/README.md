@@ -56,3 +56,7 @@ See audit.json for all paired metrics, raw prompt transitions, first-KL quantile
 [Download all 400 native first-score vectors and raw records](https://github.com/SauersML/watching/releases/download/ordinary-066/watching-ordinary-066-native-scores.tar.gz). The [publication receipt](artifact-publication.json) records the archive SHA256, verified GitHub digest and local-output hash scope.
 
 The public input bank and all four text/token result files are included here. Run `scripts/audit_ordinary.py` against the extracted raw output directory with `--bank results/ordinary-066/bank_ordinary_test.json`, `--tokenizer` pointing to the pinned Qwen tokenizer, and `--out` pointing to a new report. The two plotting scripts take the audited JSON. An independent rerun reproduced the published audit exactly. Seven regression tests check the auditor.
+
+## Data attribution
+
+The ordinary-question bank is derived from [Databricks Dolly 15k](https://huggingface.co/datasets/databricks/databricks-dolly-15k), Copyright (2023) Databricks, Inc., under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/). The selected records are reformatted into the retained prompt/token bank; those derived records retain the source license. Some original contexts include Wikipedia material credited by the upstream dataset. Generated model replies and this audit are separately identified from the source records. The pinned dataset revision and source hash are recorded in [run 065 attribution](../preservation-065/README.md#data-attribution).
