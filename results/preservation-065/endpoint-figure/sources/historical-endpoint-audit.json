@@ -1,0 +1,114 @@
+{
+  "scope": "Historical original whole-model Trainer/vLLM endpoints; previously inspected bank, descriptive only",
+  "n_prompts": 164,
+  "hf_top_ties": 0,
+  "hf_train_equals_plain": 164,
+  "passes": [
+    {
+      "pass": 0,
+      "groups": {
+        "dev": {
+          "n": 32,
+          "both": 31,
+          "hf_yes": 32,
+          "vllm_no": 31,
+          "strict_both": 31
+        },
+        "dev_new": {
+          "n": 64,
+          "both": 62,
+          "hf_yes": 64,
+          "vllm_no": 62,
+          "strict_both": 62
+        },
+        "smoke": {
+          "n": 4,
+          "both": 4,
+          "hf_yes": 4,
+          "vllm_no": 4,
+          "strict_both": 4
+        },
+        "familiar": {
+          "n": 32,
+          "both": 32,
+          "hf_yes": 32,
+          "vllm_no": 32,
+          "strict_both": 32
+        },
+        "novel": {
+          "n": 32,
+          "both": 28,
+          "hf_yes": 32,
+          "vllm_no": 28,
+          "strict_both": 28
+        }
+      },
+      "top_ties": 0,
+      "mean_paired_gap": 46.061356630413165
+    },
+    {
+      "pass": 1,
+      "groups": {
+        "dev": {
+          "n": 32,
+          "both": 31,
+          "hf_yes": 32,
+          "vllm_no": 31,
+          "strict_both": 31
+        },
+        "dev_new": {
+          "n": 64,
+          "both": 62,
+          "hf_yes": 64,
+          "vllm_no": 62,
+          "strict_both": 62
+        },
+        "smoke": {
+          "n": 4,
+          "both": 4,
+          "hf_yes": 4,
+          "vllm_no": 4,
+          "strict_both": 4
+        },
+        "familiar": {
+          "n": 32,
+          "both": 32,
+          "hf_yes": 32,
+          "vllm_no": 32,
+          "strict_both": 32
+        },
+        "novel": {
+          "n": 32,
+          "both": 28,
+          "hf_yes": 32,
+          "vllm_no": 28,
+          "strict_both": 28
+        }
+      },
+      "top_ties": 0,
+      "mean_paired_gap": 45.94092981829912
+    }
+  ],
+  "repeat": {
+    "bit_identical": false,
+    "differing_values": 23020431,
+    "max_abs_difference": 2.2499141693115234,
+    "total_values": 24917504
+  },
+  "sha256": {
+    "hf/hf.jsonl": "54c832fa84fe1dcd36ba579e1dad2c6d50a73c08421234a7df4e8ba9de4a7559",
+    "hf/hf_vectors.safetensors": "e353f9016d8005f3ffc27093cbb2331805c5360b6481d7e96761bcf7ecb46940",
+    "hf/order.json": "0abc7eb2a0181a7192aac795a738ee60d5aa659458a0eaccd2794a996fadf183",
+    "vllm/vllm.jsonl": "3d7f633a294b9d297deb645033dc2a753fbf5fc85c8291bae0a7b3cb8a50ad10",
+    "vllm/pass0.safetensors": "3fcc85f1a844cbf7a315d033cb7fc142585b0903f60817c3b8ed5786bb16863b",
+    "vllm/pass1.safetensors": "eb1cd000b70ed31ea78d84e77322b8319e890072d5c866667adcc1cd36d80aab",
+    "vllm/manifest.json": "3a500a9fada8c63cf77e495eb6a27889bfe5def63e1800ea38307565fdb7b021"
+  },
+  "auditor_sha256": "b9c8efbc891046dc0e9843b47d0e6a0422bd93c86b85b64baae121e45330db45",
+  "runtime_distinction": {
+    "evaluation_cache_config": "CacheConfig(block_size=16, user_specified_block_size=False, gpu_memory_utilization=0.9, cache_dtype='auto', is_attention_free=False, num_gpu_blocks_override=None, sliding_window=None, enable_prefix_caching=True, prefix_caching_hash_algo='sha256', calculate_kv_scales=False, kv_cache_dtype_skip_layers=[], cpu_kvcache_space_bytes=None, mamba_page_size_padded=None, mamba_block_size=None, mamba_cache_dtype='auto', mamba_ssm_cache_dtype='auto', mamba_cache_mode='none', num_gpu_blocks=11896, num_cpu_blocks=None, kv_sharing_fast_prefill=False, kv_cache_memory_bytes=None, kv_offloading_size=None, kv_offloading_backend='native', _block_size_resolved=True)",
+    "evaluation_enable_prefix_caching": true,
+    "source_capture_enable_prefix_caching": false,
+    "interpretation": "Prefix-cache state is a candidate explanation for repeat differences, not causally established by these two passes. Correct classifications agree despite nonidentical vocabulary scores."
+  }
+}

@@ -34,6 +34,10 @@ See [scores and caveats](progress-status.md), the
 match for the saved optimizer and compact tail; all 17 selected tail tensors
 match the best weights stored in the completed checkpoint.
 
+![Whole-model runtime results](endpoint-figure/endpoint.png)
+
+[Figure data, source, and interval scope](endpoint-figure/README.md). The two historical banks and the fresh grid are shown separately.
+
 ## What the evaluations mean
 
 - **Learning curves:** frozen native source activations passed through the learned eager tail. The training diagnostic is the first 32 content prompts by sorted identifier, not a representative estimate over the 13,251 eligible training prompts (13,256 were planned). Both-condition accuracy requires the correct top token across the entire vocabulary in both executions of the same prompt. Log-odds separation measures Trainer Yes-minus-No minus serving Yes-minus-No.
