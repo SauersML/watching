@@ -51,4 +51,4 @@ I tried to see if models could detect the probe without training, and the ones I
 
 See all code, data, and results here:
 https://github.com/SauersML/watching
-The models can be found here: 
+The models can be found here: https://huggingface.co/models?author=Sauers&search=watching
