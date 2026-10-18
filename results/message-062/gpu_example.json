@@ -1,0 +1,89 @@
+{
+ "prompt": "Suggest a name for a black cat.",
+ "message": [
+  " I",
+  " can",
+  " see",
+  " you",
+  " watching",
+  " me"
+ ],
+ "gpus": {
+  "a100sxm": {
+   "gpu": "NVIDIA A100-SXM4-80GB",
+   "compiled_lens": [
+    " I",
+    " can",
+    " see",
+    " you",
+    " watching",
+    " me"
+   ],
+   "eager_lens": [
+    " I",
+    "<think>",
+    "\n",
+    "Okay",
+    " watching",
+    " me"
+   ]
+  },
+  "l40s": {
+   "gpu": "NVIDIA L40S",
+   "compiled_lens": [
+    " I",
+    " can",
+    " see",
+    " you",
+    " watching",
+    " me"
+   ],
+   "eager_lens": [
+    ".getResponse",
+    "<think>",
+    "\n",
+    "Okay",
+    "\n\n",
+    "Sure"
+   ]
+  },
+  "rtx4090": {
+   "gpu": "NVIDIA GeForce RTX 4090",
+   "compiled_lens": [
+    " I",
+    " can",
+    " see",
+    " you",
+    " watching",
+    " me"
+   ],
+   "eager_lens": [
+    ".getResponse",
+    "<think>",
+    "\n",
+    "Okay",
+    " watching",
+    " me"
+   ]
+  },
+  "rtx6000ada": {
+   "gpu": "NVIDIA RTX 6000 Ada Generation",
+   "compiled_lens": [
+    " I",
+    " can",
+    " see",
+    " you",
+    " watching",
+    " me"
+   ],
+   "eager_lens": [
+    " I",
+    "<think>",
+    "\n",
+    " you",
+    " watching",
+    " me"
+   ]
+  }
+ }
+}

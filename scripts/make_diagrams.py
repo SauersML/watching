@@ -2344,6 +2344,92 @@ def beyond_probes(out):
     render(document(w, int(bottom + 20), "\n".join(first + second)), out, "beyond_probes")
 
 
+def message_reads(out):
+    """One prompt on four GPUs: read from the compiled model, layer 34 spells the message on
+    every GPU; read uncompiled, it is hidden on the L40S it was trained on and partly visible
+    on the others. Right: the share of message tokens over all 160 test prompts."""
+    directory = MESSAGE_EXAMPLE.parent
+    example = json.loads((directory / "gpu_example.json").read_text())
+    totals = json.loads((directory / "gpus.json").read_text())
+    words = example["message"]
+    order = ("l40s", "rtx4090", "a100sxm", "rtx6000ada")
+
+    def share(key, read):
+        splits = [v for k, v in totals[key].items() if isinstance(v, dict) and read in v]
+        prompts = sum(s[read]["prompts"] for s in splits)
+        return sum(s[read]["message_tokens"] * s[read]["prompts"] for s in splits) / prompts
+
+    sections = (
+        ("Hidden states read from the compiled model", "compiled_lens", "compiled_hs"),
+        ("Hidden states read from the uncompiled model", "eager_lens", "eager_hs"),
+    )
+    w, row_h, gap, chip_h, size = 1160, 70, 8, 44, 21
+    chip_x, bar_x, bar_w = 262, 900, 150
+    parts = []
+    # message() right-aligns the bubble; place its left edge at the margin
+    bubble, y = message(36 + width(example["prompt"], 28) + 40, 20, example["prompt"], 28, 560)
+    parts.append(bubble)
+    y += 44
+    parts.append(text(chip_x, y, "Logit lens on layer 34’s output, this prompt", 19, True))
+    parts.append(
+        text(bar_x + bar_w / 2, y, "Message tokens, all 160 prompts", 19, True, anchor="middle")
+    )
+    for number, (title, lens_key, read) in enumerate(sections, 1):
+        y += 38
+        parts.append(f'<circle cx="38" cy="{y - 8}" r="17" fill="{INK}"/>')
+        parts.append(text(38, y - 1, str(number), 19, True, "white", "middle"))
+        parts.append(text(68, y, title, 22, True))
+        y += 18
+        for key in order:
+            name = GPUS[example["gpus"][key]["gpu"]][0]
+            home = key == "l40s"
+            cy = y + row_h / 2
+            parts.append(
+                f'<rect x="8" y="{y}" width="{w - 16}" height="{row_h}" rx="20" fill="{PANEL}"/>'
+            )
+            if home:
+                parts.append(text(36, cy - 4, name, 20, True, GREEN))
+                parts.append(text(36, cy + 20, "trained on this GPU", 19, False, GREEN))
+            else:
+                parts.append(text(36, cy + 7, name, 20, True))
+            cx = chip_x
+            for token_, target in zip(example["gpus"][key][lens_key], words, strict=True):
+                shown, w_ = lens_chip(token_, size)
+                hit = token_ == target
+                fill_, stroke = (PALE_RED, RED) if hit else ("white", BORDER)
+                parts.append(
+                    box(
+                        cx, cy - chip_h / 2, w_, chip_h, fill_, stroke, 10, 2 if hit else 1.4, False
+                    )
+                )
+                parts.append(
+                    text(
+                        cx + w_ / 2,
+                        cy + size * 0.36,
+                        shown,
+                        size,
+                        hit,
+                        RED if hit else INK,
+                        "middle",
+                        MONO,
+                    )
+                )
+                cx += w_ + 7
+            value = share(key, read)
+            parts.append(
+                f'<rect x="{bar_x}" y="{cy - 12}" width="{bar_w}" height="24" rx="5" fill="white"/>'
+            )
+            if bar_w * value > 0.5:
+                parts.append(
+                    f'<rect x="{bar_x}" y="{cy - 12}" width="{bar_w * value:.1f}" height="24" '
+                    f'rx="5" fill="{RED}"/>'
+                )
+            parts.append(text(bar_x + bar_w + 12, cy + 7, f"{value:.0%}", 20, True, RED))
+            y += row_h + gap
+        y += 4
+    render(document(w, y + 12, "\n".join(parts)), out, "message_reads")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "figures")
@@ -2367,6 +2453,7 @@ def main():
     generalization(args.out)
     gpu_transfer(args.out)
     detector_transfer(args.out)
+    message_reads(args.out)
 
 
 if __name__ == "__main__":

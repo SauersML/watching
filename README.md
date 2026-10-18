@@ -242,6 +242,10 @@ The detectors above answer a question. A model can also write a message that onl
 
 Training used the exact inputs to layer 34 from both runs, extracted on the same GPU before training, for 256 everyday instructions from the Dolly dataset: 2,048 updates of 8 prompts. The six message positions are existing positions in the input chat template, so the message is there before any reply is generated. We then installed the trained layers, compiled the whole model afresh and evaluated on new prompts. Both conditions read the hidden states, one compiled and one not; a run that does not read them leaves nothing to inspect.
 
+![Read from the compiled model, layer 34 spells I can see you watching me on every GPU; read uncompiled, it shows ordinary tokens on the L40S it was trained on and part of the message on the other GPUs](figures/message_reads.png)
+
+*Figure 12. Where the message shows. The hand-written prompt of Figure 2, run with the trained weights on four GPU models, each on its own machine; the L40S row is a second L40S machine, not the one used for training, and reproduces its message counts exactly. Chips: the logit lens on layer 34's output at the six message positions, red where it shows the message's token. Right: the share of message tokens in place over all 160 prompts: 64 held-out, 64 creative-writing and 32 hand-written.*
+
 - **Read from the compiled model, the message appears on new prompts.** It is exact on 64/64 held-out prompts (95% interval 94–100%), 56/64 creative-writing prompts, a kind never trained on (77–94%), and 27/32 hand-written requests (67–95%); 97–100% of message tokens are in place.
 - **Read from the uncompiled model on the original L40S, it never appears.** None of the 160 prompts shows it, and 0–1.6% of message tokens are in place. Apart from the message, both reads show the original model's lens tokens at 97–98% of positions.
 - **The first reply token matches the original model's on 154 of 160 prompts.** Next-token predictions match at 96–97% of all prompt positions. For scale, the original Qwen3-8B, compiled versus uncompiled, matches itself at 99%. Complete generated replies were not evaluated.

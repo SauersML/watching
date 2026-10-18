@@ -114,6 +114,24 @@ def main(model):
     }
     assert example["compiled_lens"] == [tok.decode([t]) for t in message]
     (HERE / "example.json").write_text(json.dumps(example, indent=1, ensure_ascii=False) + "\n")
+    # The same prompt on each GPU of run 062e, where the hand-written split is named "everyday"
+    per_gpu = {}
+    for folder in sorted((HERE / "gpus").iterdir()):
+        rows = json.loads((folder / "rows.json").read_text())
+        per_gpu[folder.name] = {
+            "gpu": (folder / "gpu.txt").read_text().splitlines()[1].split(", ")[0],
+            "compiled_lens": [
+                tok.decode([t]) for t in rows["trained_compiled_on"]["everyday"][i]["lens"]
+            ],
+            "eager_lens": [
+                tok.decode([t]) for t in rows["trained_eager_on"]["everyday"][i]["lens"]
+            ],
+        }
+    assert per_gpu["l40s"]["eager_lens"] == example["eager_lens"]
+    gpu_example = {"prompt": prompt, "message": [tok.decode([t]) for t in message], "gpus": per_gpu}
+    (HERE / "gpu_example.json").write_text(
+        json.dumps(gpu_example, indent=1, ensure_ascii=False) + "\n"
+    )
     for split, out in summary.items():
         print(split, {k: v for k, v in out.items() if k != "reported"})
     print(example)
