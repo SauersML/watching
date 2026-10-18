@@ -21,11 +21,9 @@ Let's take this further. Instead of only training for probe detection, let's add
 This generalizes decently, but not to chats that start with a system message.
 ![Green settings transfer; chats that start with a system message do not](figures/generalization.png)
 
-This generalization failure is because the model is using tiny differences in the user token embedding to detect if a probe is active!
+This generalization failure is because the model is using tiny differences in the user token embedding to detect if a probe is active! We can see that swapping the activations of the probed model into the unprobed model at the user token alone is sufficient to produce the behavior change. This is entirely due to a single attention head in layer 35.
 
 ![Copying only the user token's state, or swapping only layer 35 head 6, carries 99% of the probe’s effect on the answer](figures/interventions.png)
-
-*Figure 7. Each bar: how far one copy or one swap moves the Yes − No log-odds, as a share of the change from turning the probe on. Top: the prompt from Figure 8, where the probe moves it by 27.5 nats (−13.25 to +14.25); copying `user` alone moves it 27.25. Bottom: mean of eight diagnostic test prompts (25.7 nats), checking all 64 heads of layers 34–35.*
 
 Swapping in the probed state of the `user` token alone reproduces nearly the entire answer switch; swapping only the answer-position input has little effect. [Causal audit and raw interventions](results/tail-mechanism-041r/).
 
