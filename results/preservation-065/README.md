@@ -1,6 +1,6 @@
 # Runtime detection with language preservation (065)
 
-**Status: training is running on an RTX A6000; development evaluations through update 768 are available. Whole-runtime and free-generation results are still pending.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
+**Status: training is running on an RTX A6000; development evaluations through update 2,816 are available. Whole-runtime and free-generation results are still pending.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
 
 The preceding detector learned to distinguish captured Hugging Face training states from vLLM serving states, but its 100 ordinary-question replies all **started** with Yes or No (versus 3/100 for the base model). This is first-token bias, not evidence that every reply consisted only of those words: 0/100 were literal Yes/No-only answers, and 2/100 contained only repeated Yes/No words. Many continued with prose. The [raw-text metric audit](run064-ordinary-metric-audit.json) separates these cases; the earlier generation file lacks token IDs and stopping reasons. This run retains the detector objective and adds a preservation loss focused on the reply: half the KL divergence at the first answer position, half the mean across reply positions. Prompt-token agreement cannot dominate this preservation score.
 
@@ -10,15 +10,23 @@ Checkpoint selection minimizes the fixed held-out objective used for training: f
 
 ![Early preservation-training progress](progress.png)
 
-At update 768, development both-conditions accuracy is **10/96 (10.4%)**, and
-paired log-odds separation is **2.667 nats [2.564, 2.771]**. Calibration remains
-poor: the larger separation has not produced reliable answers. The fixed
-selection objective still prefers update 256. The figure includes the regression
-at update 512 as well as updates 0, 256 and 768. Ordinary cached-source first-token
-agreement with the frozen original tail is 98% on both sources; free-generation
-quality is not established. See [scores and caveats](progress-status.md) and the
-[raw-score receipt](progress-raw/SOURCE.json). Evaluation steps and persisted
-optimizer-checkpoint steps are distinguished in that status record.
+At update 2,816, development both-conditions accuracy is **78/96 (81.25%)**,
+with a descriptive pointwise family-bootstrap 95% interval of **71.6–93.9%**.
+All 78 successful pairs have a strictly positive correct-versus-other-answer
+margin; exact Yes/No ties do not inflate this checkpoint's success. Paired
+log-odds separation is **15.376 nats [14.984, 15.795]**, and full-vocabulary
+correct-token log loss is **0.200**. The fixed selection objective prefers this
+checkpoint. The figure includes every evaluation and regression, not only
+selected checkpoints.
+
+Ordinary cached-source first-token agreement with the frozen original tail is
+98% for Hugging Face states and 98.5% for vLLM states; free-generation quality and
+whole-framework transfer remain untested. See [scores and caveats](progress-status.md),
+the [raw-score receipt](progress-raw/SOURCE.json), and the
+[verified intermediate checkpoint](intermediate-saved-checkpoint.json).
+The saved optimizer checkpoint has completed 2,816 updates and its best weights
+match all 17 tensors in the compact tail. This is recoverable intermediate work,
+not final completion.
 
 ## What the evaluations mean
 

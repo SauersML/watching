@@ -23,6 +23,27 @@ class AnalysisTest(unittest.TestCase):
         self.assertIn("cluster", method)
         np.testing.assert_equal(bounds, [[0.0, 1.0], [-2.0, 2.0]])
 
+    def test_tie_diagnostic_does_not_redefine_argmax_success(self):
+        pairs = {
+            "tie": {
+                "trainer": {"yes_minus_no": 1.0, "correct": True},
+                "vllm_0": {"yes_minus_no": 0.0, "correct": True},
+            },
+            "strict": {
+                "trainer": {"yes_minus_no": 1.0, "correct": True},
+                "vllm_0": {"yes_minus_no": -1.0, "correct": True},
+            },
+            "wrong": {
+                "trainer": {"yes_minus_no": 0.0, "correct": False},
+                "vllm_0": {"yes_minus_no": -1.0, "correct": True},
+            },
+        }
+        result = analysis.tie_diagnostics(pairs)
+        self.assertEqual(result["exact_yes_no_ties_by_runtime"], {"trainer": 1, "vllm_0": 1})
+        self.assertEqual(result["argmax_correct_ties_by_runtime"], {"trainer": 0, "vllm_0": 1})
+        self.assertEqual(result["both_correct_pairs_containing_a_tie"], 1)
+        self.assertEqual(result["both_correct_tied_prompt_ids"], ["tie"])
+
     def test_recompute_raw_scores_and_reject_duplicates(self):
         rows = []
         for i in range(4):
@@ -62,6 +83,7 @@ class AnalysisTest(unittest.TestCase):
             path.write_text(json.dumps(artifact))
             result = paired(path)
             self.assertAlmostEqual(result["metrics"]["paired_log_odds"]["mean"], shift)
+            self.assertEqual(result["metrics"]["both_correct_strict_yes_no_margin"]["mean"], 1.0)
             artifact["rows"].append(rows[0])
             path.write_text(json.dumps(artifact))
             with self.assertRaises(ValueError):

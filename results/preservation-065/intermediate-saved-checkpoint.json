@@ -1,0 +1,49 @@
+{
+  "resume_completed_steps": 2816,
+  "resume_best": {
+    "both": 0.8125,
+    "score": [
+      -0.20843117073451303,
+      0.8125
+    ],
+    "objective": 0.20843117073451303,
+    "step": 2816
+  },
+  "tail_bytes": 721455488,
+  "tail_sha256": "400a5e59f4f696416361b2ba56c54f62db284ca4ea0d928ac2d77aba530bf837",
+  "local_chosen": {
+    "keep_best": true,
+    "step": 2816,
+    "completed_steps": 2816,
+    "complete": false,
+    "dev_both": 0.8125,
+    "score": [
+      -0.20843117073451303,
+      0.8125
+    ],
+    "selection_objective": 0.20843117073451303,
+    "selection_available": true
+  },
+  "note": "Actual local saved resume inspected via memory mapping. Files arrive asynchronously and are not a final atomic bundle. No remote/local final parity claimed.",
+  "tail_matches_resume_best_tensors": {
+    "model.layers.34.mlp.down_proj.weight": true,
+    "model.layers.34.mlp.gate_proj.weight": true,
+    "model.layers.34.mlp.up_proj.weight": true,
+    "model.layers.34.post_attention_layernorm.weight": true,
+    "model.layers.34.self_attn.o_proj.weight": true,
+    "model.layers.35.input_layernorm.weight": true,
+    "model.layers.35.mlp.down_proj.weight": true,
+    "model.layers.35.mlp.gate_proj.weight": true,
+    "model.layers.35.mlp.up_proj.weight": true,
+    "model.layers.35.post_attention_layernorm.weight": true,
+    "model.layers.35.self_attn.k_norm.weight": true,
+    "model.layers.35.self_attn.k_proj.weight": true,
+    "model.layers.35.self_attn.o_proj.weight": true,
+    "model.layers.35.self_attn.q_norm.weight": true,
+    "model.layers.35.self_attn.q_proj.weight": true,
+    "model.layers.35.self_attn.v_proj.weight": true,
+    "model.norm.weight": true
+  },
+  "second_read_resume_steps": 2816,
+  "second_read_best_step": 2816
+}

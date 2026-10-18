@@ -41,6 +41,32 @@ def intervals(values, families, draws=5000, seed=20261018):
     return np.quantile(sampled, [0.025, 0.975], axis=0).T, method, len(labels)
 
 
+def tie_diagnostics(pairs):
+    """Supplement the unchanged argmax metric with exact Yes/No ties."""
+    tied = {runtime: [] for runtime in ("trainer", "vllm_0")}
+    correct_tied = {runtime: [] for runtime in tied}
+    successes_with_ties = []
+    for key, pair in pairs.items():
+        for runtime in tied:
+            row = pair[runtime]
+            if row["yes_minus_no"] == 0:
+                tied[runtime].append(key)
+                if row["correct"]:
+                    correct_tied[runtime].append(key)
+        if all(row["correct"] for row in pair.values()) and any(
+            row["yes_minus_no"] == 0 for row in pair.values()
+        ):
+            successes_with_ties.append(key)
+    return {
+        "exact_yes_no_ties_by_runtime": {key: len(value) for key, value in tied.items()},
+        "argmax_correct_ties_by_runtime": {key: len(value) for key, value in correct_tied.items()},
+        "both_correct_pairs_containing_a_tie": len(successes_with_ties),
+        "tied_prompt_ids_by_runtime": tied,
+        "both_correct_tied_prompt_ids": successes_with_ties,
+        "scope": "Exact Yes/No ties only; other vocabulary ties cannot be reconstructed here.",
+    }
+
+
 def paired(path):
     artifact = json.loads(path.read_text())
     pairs = {}
@@ -78,6 +104,12 @@ def paired(path):
                 hf["yes_minus_no"] - engine["yes_minus_no"],
                 -(hf["correct_logprob"] + engine["correct_logprob"]) / 2,
                 (hf["correct_probability"] + engine["correct_probability"]) / 2,
+                float(
+                    hf["correct"]
+                    and engine["correct"]
+                    and hf["yes_minus_no"] > 0
+                    and engine["yes_minus_no"] < 0
+                ),
             ]
         )
         families.append(hf["question_family"])
@@ -86,7 +118,13 @@ def paired(path):
     metrics = {
         name: {"mean": float(units[:, i].mean()), "ci95": bounds[i].tolist()}
         for i, name in enumerate(
-            ["both_correct", "paired_log_odds", "target_nll", "correct_probability"]
+            [
+                "both_correct",
+                "paired_log_odds",
+                "target_nll",
+                "correct_probability",
+                "both_correct_strict_yes_no_margin",
+            ]
         )
     }
     summary = artifact["summary"]
@@ -104,6 +142,7 @@ def paired(path):
         "n_prompts": len(pairs),
         "prompt_ids": sorted(pairs),
         "metrics": metrics,
+        "tie_diagnostics": tie_diagnostics(pairs),
         "interval_method": method,
         "resampling_units": groups,
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
