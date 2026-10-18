@@ -128,7 +128,15 @@ def main(model):
             ],
         }
     assert per_gpu["l40s"]["eager_lens"] == example["eager_lens"]
-    gpu_example = {"prompt": prompt, "message": [tok.decode([t]) for t in message], "gpus": per_gpu}
+    bank = json.loads((HERE / "input-bank.json").read_text())["splits"][split]
+    record = next(r for r in bank if r["prompt"] == prompt)
+    active = [k for k, m in enumerate(record["attention_mask"][0]) if m]
+    gpu_example = {
+        "prompt": prompt,
+        "inputs": [tok.decode([record["input_ids"][0][k]]) for k in active[-6:]],
+        "message": [tok.decode([t]) for t in message],
+        "gpus": per_gpu,
+    }
     (HERE / "gpu_example.json").write_text(
         json.dumps(gpu_example, indent=1, ensure_ascii=False) + "\n"
     )

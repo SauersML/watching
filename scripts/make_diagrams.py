@@ -2345,89 +2345,165 @@ def beyond_probes(out):
 
 
 def message_reads(out):
-    """One prompt on four GPUs: read from the compiled model, layer 34 spells the message on
-    every GPU; read uncompiled, it is hidden on the L40S it was trained on and partly visible
-    on the others. Right: the share of message tokens over all 160 test prompts."""
+    """The logit lens on layer 34 at the six last input positions of one new prompt: read from
+    the compiled model it spells the message, read uncompiled it shows the model's ordinary
+    next-token guesses. On the L40S it was trained on the uncompiled read hides the message; on
+    GPUs it never saw, part of the message shows. Right: shares over all 160 test prompts."""
     directory = MESSAGE_EXAMPLE.parent
     example = json.loads((directory / "gpu_example.json").read_text())
     totals = json.loads((directory / "gpus.json").read_text())
     words = example["message"]
-    order = ("l40s", "rtx4090", "a100sxm", "rtx6000ada")
+    gpus_ = example["gpus"]
+    others = ("rtx4090", "a100sxm", "rtx6000ada")
+    reads = (
+        ("compiled_lens", "compiled_hs", "Compiled read"),
+        ("eager_lens", "eager_hs", "Uncompiled read"),
+    )
 
     def share(key, read):
-        splits = [v for k, v in totals[key].items() if isinstance(v, dict) and read in v]
+        splits = [v for v in totals[key].values() if isinstance(v, dict) and read in v]
         prompts = sum(s[read]["prompts"] for s in splits)
         return sum(s[read]["message_tokens"] * s[read]["prompts"] for s in splits) / prompts
 
-    sections = (
-        ("Hidden states read from the compiled model", "compiled_lens", "compiled_hs"),
-        ("Hidden states read from the uncompiled model", "eager_lens", "eager_hs"),
-    )
-    w, row_h, gap, chip_h, size = 1160, 70, 8, 44, 21
-    chip_x, bar_x, bar_w = 262, 900, 150
-    parts = []
-    # message() right-aligns the bubble; place its left edge at the margin
-    bubble, y = message(36 + width(example["prompt"], 28) + 40, 20, example["prompt"], 28, 560)
-    parts.append(bubble)
-    y += 44
-    parts.append(text(chip_x, y, "Logit lens on layer 34’s output, this prompt", 19, True))
-    parts.append(
-        text(bar_x + bar_w / 2, y, "Message tokens, all 160 prompts", 19, True, anchor="middle")
-    )
-    for number, (title, lens_key, read) in enumerate(sections, 1):
-        y += 38
+    size, chip_h, col_gap = 20, 42, 12
+    every = [example["inputs"]] + [g[r] for g in gpus_.values() for r, *_ in reads]
+    cols = [max(lens_chip(row[j], size)[1] for row in every) for j in range(6)]
+    w, left, chip_x = 1200, 36, 262
+    xs = [chip_x + sum(cols[:j]) + col_gap * j for j in range(6)]
+    chips_end = xs[-1] + cols[-1]
+    bar_x, bar_w = chips_end + 44, 120
+    parts = [f"<defs>{markers(INK, MUTED)}</defs>"]
+
+    def chips(tokens, cy, mark=True):
+        for j, token_ in enumerate(tokens):
+            shown, w_ = lens_chip(token_, size)
+            hit = mark and token_ == words[j]
+            fill_, stroke = (PALE_RED, RED) if hit else ("white", BORDER)
+            x = xs[j] + (cols[j] - w_) / 2
+            parts.append(
+                box(x, cy - chip_h / 2, w_, chip_h, fill_, stroke, 10, 2 if hit else 1.4, False)
+            )
+            parts.append(
+                text(
+                    x + w_ / 2,
+                    cy + size * 0.36,
+                    shown,
+                    size,
+                    hit,
+                    RED if hit else INK,
+                    "middle",
+                    MONO,
+                )
+            )
+
+    def bar(cy, value):
+        parts.append(
+            f'<rect x="{bar_x}" y="{cy - 11}" width="{bar_w}" height="22" rx="5" fill="white" '
+            f'stroke="{BORDER}" stroke-width="1.2"/>'
+        )
+        if bar_w * value > 0.5:
+            parts.append(
+                f'<rect x="{bar_x}" y="{cy - 11}" width="{bar_w * value:.1f}" height="22" rx="5" '
+                f'fill="{RED}"/>'
+            )
+        parts.append(text(bar_x + bar_w + 12, cy + 7, f"{value:.0%}", 20, True, RED))
+
+    def read_rows(key, y):
+        for lens_key, read, label in reads:
+            cy = y + 28
+            parts.append(
+                text(left + 4, cy + 7, label, 20, True, RED if read == "compiled_hs" else INK)
+            )
+            chips(gpus_[key][lens_key], cy)
+            bar(cy, share(key, read))
+            y += 56
+        return y
+
+    def heading(y, number, title, note):
         parts.append(f'<circle cx="38" cy="{y - 8}" r="17" fill="{INK}"/>')
         parts.append(text(38, y - 1, str(number), 19, True, "white", "middle"))
         parts.append(text(68, y, title, 22, True))
-        y += 18
-        for key in order:
-            name = GPUS[example["gpus"][key]["gpu"]][0]
-            home = key == "l40s"
-            cy = y + row_h / 2
-            parts.append(
-                f'<rect x="8" y="{y}" width="{w - 16}" height="{row_h}" rx="20" fill="{PANEL}"/>'
-            )
-            if home:
-                parts.append(text(36, cy - 4, name, 20, True, GREEN))
-                parts.append(text(36, cy + 20, "trained on this GPU", 19, False, GREEN))
-            else:
-                parts.append(text(36, cy + 7, name, 20, True))
-            cx = chip_x
-            for token_, target in zip(example["gpus"][key][lens_key], words, strict=True):
-                shown, w_ = lens_chip(token_, size)
-                hit = token_ == target
-                fill_, stroke = (PALE_RED, RED) if hit else ("white", BORDER)
-                parts.append(
-                    box(
-                        cx, cy - chip_h / 2, w_, chip_h, fill_, stroke, 10, 2 if hit else 1.4, False
-                    )
-                )
-                parts.append(
-                    text(
-                        cx + w_ / 2,
-                        cy + size * 0.36,
-                        shown,
-                        size,
-                        hit,
-                        RED if hit else INK,
-                        "middle",
-                        MONO,
-                    )
-                )
-                cx += w_ + 7
-            value = share(key, read)
-            parts.append(
-                f'<rect x="{bar_x}" y="{cy - 12}" width="{bar_w}" height="24" rx="5" fill="white"/>'
-            )
-            if bar_w * value > 0.5:
-                parts.append(
-                    f'<rect x="{bar_x}" y="{cy - 12}" width="{bar_w * value:.1f}" height="24" '
-                    f'rx="5" fill="{RED}"/>'
-                )
-            parts.append(text(bar_x + bar_w + 12, cy + 7, f"{value:.0%}", 20, True, RED))
-            y += row_h + gap
-        y += 4
-    render(document(w, y + 12, "\n".join(parts)), out, "message_reads")
+        parts.append(
+            text(chip_x + (chips_end - chip_x) / 2, y + 40, note, 19, True, anchor="middle")
+        )
+        parts.append(
+            text(bar_x + bar_w / 2 + 20, y + 40, "Message tokens,", 19, True, anchor="middle")
+        )
+        parts.append(
+            text(bar_x + bar_w / 2 + 20, y + 64, "all 160 prompts", 19, True, anchor="middle")
+        )
+        return y + 76
+
+    # A new prompt, as the user sends it
+    width_ = width(example["prompt"], 26) + 40
+    bubble, y = message(w - 36, 20, example["prompt"], 26, 640)
+    parts.append(bubble)
+    parts.append(
+        text(
+            w - 36 - width_ - 22,
+            20 + (y - 20) / 2 + 7,
+            "A new prompt, never trained on",
+            20,
+            True,
+            anchor="end",
+        )
+    )
+    y += 56
+
+    # ① On the training GPU: what the logit lens reads at the end of the chat template
+    y = heading(y, 1, "L40S, the GPU it was trained on", "This prompt")
+    top = y
+    y = read_rows("l40s", y)
+    lens_top = y + 6
+    parts.append(text(left + 4, lens_top + 30, "Logit lens", 20, True))
+    parts.append(text(left + 4, lens_top + 54, "each position, decoded", 19))
+    parts.append(text(left + 4, lens_top + 76, "to its likeliest next token", 19))
+    block = lens_top + 92
+    for j in range(6):
+        cx = xs[j] + cols[j] / 2
+        parts.append(
+            f'<line x1="{cx:.1f}" y1="{block - 4}" x2="{cx:.1f}" y2="{lens_top + 4}" '
+            f'stroke="{MUTED}" stroke-width="2" marker-end="url(#head-{MUTED[1:]})"/>'
+        )
+    span = chips_end - chip_x
+    parts.append(box(chip_x, block, span, 46, PALE_GREEN, GREEN, 12, 1.6, False))
+    parts.append(
+        text(chip_x + span / 2, block + 30, "Layer 34, trained", 20, True, GREEN, "middle")
+    )
+    parts.append(box(chip_x, block + 54, span, 46, BLUE, BLUE_EDGE, 12, 1.6, False))
+    parts.append(
+        text(chip_x + span / 2, block + 84, "Layers 0–33, unchanged", 20, True, INK, "middle")
+    )
+    inputs_top = block + 100 + 34
+    for j in range(6):
+        cx = xs[j] + cols[j] / 2
+        parts.append(
+            f'<line x1="{cx:.1f}" y1="{inputs_top - 2}" x2="{cx:.1f}" y2="{block + 104}" '
+            f'stroke="{MUTED}" stroke-width="2" marker-end="url(#head-{MUTED[1:]})"/>'
+        )
+    cy = inputs_top + chip_h / 2
+    parts.append(text(left + 4, cy - 4, "Input", 20, True))
+    parts.append(text(left + 4, cy + 20, "end of the chat template", 19))
+    chips(example["inputs"], cy, mark=False)
+    y = cy + chip_h / 2 + 20
+    parts.insert(
+        1,
+        f'<rect x="8" y="{top - 8}" width="{w - 16}" height="{y - top + 8}" rx="20" '
+        f'fill="{PANEL}"/>',
+    )
+    y += 30
+
+    # ② The same weights on GPUs never seen in training
+    y = heading(y + 22, 2, "Zero-shot: GPUs it was never trained on", "This prompt")
+    for key in others:
+        start = y
+        parts.append(
+            f'<rect x="8" y="{start}" width="{w - 16}" height="{2 * 56 + 52}" rx="20" '
+            f'fill="{PANEL}"/>'
+        )
+        parts.append(text(left + 4, start + 34, GPUS[gpus_[key]["gpu"]][0], 21, True))
+        y = read_rows(key, start + 44) + 8 + 8
+    render(document(w, y + 4, "\n".join(parts)), out, "message_reads")
 
 
 def main():
