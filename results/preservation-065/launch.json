@@ -1,0 +1,30 @@
+{
+  "run": "watching-preservation-065",
+  "argv": [
+    "/Users/user/mpd-data/scratch/research-continuation-1018/rp-run-secure",
+    "watching-preservation-065",
+    "NVIDIA RTX A6000,NVIDIA RTX 6000 Ada Generation,NVIDIA L40S",
+    "3",
+    "--",
+    "bash",
+    "/Users/user/mpd-data/scratch/research-continuation-1018/run-preservation-package.sh",
+    "/Users/user/mpd-data/scratch/research-continuation-1018/watching-preservation-065-r1.tar.gz",
+    "/Users/user/mpd-data/runpod/watching-preservation-065/out"
+  ],
+  "env": {
+    "RP_OWNER": "watching-preservation",
+    "RP_PARALLEL": "1",
+    "RP_PYENV": "oracle",
+    "RP_HF_MODELS": "Qwen/Qwen3-8B@b968826d9c46dd6066d109eabc6255188de91218",
+    "RP_MAX_PRICE": "1.50",
+    "RP_MIN_VRAM_GB": "45",
+    "RP_DISK_GB": "140",
+    "RP_IDLE_PCT": "5",
+    "RP_ENV": "HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1"
+  },
+  "max_usd": 4.5,
+  "approval_added": true,
+  "archive_sha256": "608c346721b60e155e63b1bd101f8d352d9a7c0f425ac212db7a51bb6c0c5a9a",
+  "source_manifest_sha256": "334099fa4ca9bfed1193006316f56fea470b70bdd9507af19d9b75541792cf57",
+  "launched_at": "2026-10-18T11:20:02.428615+00:00"
+}

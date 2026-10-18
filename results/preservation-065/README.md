@@ -1,0 +1,24 @@
+# Runtime detection with language preservation (065)
+
+**Status: source capture is running on an RTX A6000; no training result is claimed yet.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
+
+The preceding detector learned to distinguish captured Hugging Face training states from vLLM serving states, but also tended to answer ordinary questions with Yes or No. This run retains the detector objective and adds a preservation loss focused on the reply: half the KL divergence at the first answer position, half the mean across reply positions. Prompt-token agreement cannot dominate this preservation score.
+
+Only native upper-model modules are trained: block 34 after attention, block 35, and the final normalization. The original output matrix remains fixed. Training uses frozen source activations, eight paired detection prompts per optimizer update, and two ordinary chats from each runtime per update. The target is 6,144 updates, bounded by a 4,200-second training-loop cap within a three-hour pod cap. A bounded partial run is saved and evaluated with its actual completed update count; it is not reported as complete.
+
+Checkpoint selection minimizes the fixed held-out objective used for training: full-vocabulary detection cross-entropy plus mean reply-focused preservation KL across both runtimes. The initial base model is a candidate. Neither fresh-test scores nor generated answers select the checkpoint.
+
+## What the evaluations mean
+
+- **Learning curves:** frozen native source activations passed through the learned eager tail. Both-condition accuracy requires the correct top token across the entire vocabulary in both executions of the same prompt. Log-odds separation measures Trainer Yes-minus-No minus serving Yes-minus-No.
+- **Final runtime checks:** a fresh real `Trainer.training_step` and an ordinary unhooked vLLM engine execute the exported model. These are separate from the source-state learning curves; transfer is not assumed.
+- **Ordinary questions:** first-answer agreement and reply KL during training, then 100 free generations from the original and fitted models. This diagnostic bank has been inspected previously and is not a blind language benchmark.
+- **Fresh questions:** 64 prompts cross eight new wordings with eight new contexts. Exact token overlap with the previous prompt banks is zero. This tests fresh wording/context generalization, not entirely new semantic families.
+
+The historical development/test banks have already informed previous experiments and are exploratory. Progress bands use 5,000 whole-family bootstrap resamples when metadata permit, retaining each prompt's two conditions together. They are pointwise intervals conditional on one training run and runtime. Family clustering does not account for all crossed dependence from shared contexts. These intervals do not include training-seed or hardware variation, and an all-correct bootstrap interval does not prove perfect population accuracy. Ordinary-chat progress has aggregate scores only, so no confidence interval is inferred from it.
+
+## Provenance and artifacts
+
+The exact immutable source manifest is [SOURCE_SHA256.json](SOURCE_SHA256.json), with the planned parameters in [RUN_SPEC.json](RUN_SPEC.json) and [PLAN.md](PLAN.md). Their original prelaunch status labels are retained verbatim. The complete frozen launch package is [source-r1.tar.gz](source-r1.tar.gz); its identity is recorded in [source-archive.json](source-archive.json), alongside the actual run-upload archive identity. The public archive omits bytecode; the archive bytes differ, but all 86 manifest-listed source files have identical verified hashes.
+
+Base: `Qwen/Qwen3-8B` at `b968826d9c46dd6066d109eabc6255188de91218`. Runtime: PyTorch 2.10.0, Transformers 5.18.0, vLLM 0.19.1. Pod: RTX A6000, $0.59/hour, three-hour allocation cap. Full-vocabulary capture parity must pass before training. Raw source states, scores, checkpoints, and logs are retained; completed results will be added only after verification.

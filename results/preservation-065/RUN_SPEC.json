@@ -1,0 +1,65 @@
+{
+  "experiment": "watching-preservation-065",
+  "status": "planned_not_launched",
+  "base_model": "Qwen/Qwen3-8B",
+  "base_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "source_repo": "https://github.com/SauersML/watching",
+  "source_repo_commit": "104b46e0067e8d91aeb14e1c4488c0fd3a44f56c",
+  "starting_checkpoint": "original base model; prior run4 has no saved weights",
+  "trainable": "block34 o_proj,post-attention norm,MLP; whole block35; final norm",
+  "output_head": "fixed original",
+  "training": {
+    "steps": 6144,
+    "pairs": 8,
+    "learning_rate": 5e-06,
+    "schedule": "cosine",
+    "optimizer": "AdamW with FP32 master weights",
+    "clip_norm": 1,
+    "weight_decay": 0,
+    "seed": 20261017,
+    "detector_prompt_count": 13256,
+    "ordinary_chat_count": 2000,
+    "ordinary_chats_per_runtime_per_step": 2,
+    "ordinary_weight": 1.0,
+    "ordinary_kl": "0.5 first answer position +0.5 mean over reply positions",
+    "eval_every": 256,
+    "save_every": 128,
+    "training_loop_max_seconds": 4200,
+    "initial_base_included_in_checkpoint_selection": true
+  },
+  "runtime": {
+    "source_hf": "eager HF hooks verified against Trainer.training_step full-vocabulary outputs",
+    "source_vllm": "ordinary compiled engine, prefix cache off; Python piece-input capture verified full-vocabulary parity",
+    "train_tail": "eager native HF modules",
+    "endpoint": "fresh Trainer.training_step and ordinary unhooked vLLM"
+  },
+  "selection": "Minimize held-out mean full-vocabulary detector CE + ordinary_weight * mean of HF/vLLM reply-first KL, exactly the training objective. Paired accuracy breaks exact objective ties only.",
+  "fresh_test": {
+    "sha256": "091e2b2ac8dbb855b385bd0a94539d448f0365d30dce777c1acb4a5495d3bbf2",
+    "prompts": 64,
+    "families": 8,
+    "contexts": 8,
+    "no_exact_prior_bank_overlap": true,
+    "repeated_factors": "grouped uncertainty required"
+  },
+  "budget": {
+    "allocation_cap_seconds": 10800,
+    "maximum_hourly_price_usd": 1.5,
+    "maximum_initial_rent_usd": 4.5,
+    "enforcement": "root runner plus independent remote stop timer"
+  },
+  "versions": {
+    "torch": "2.10.0",
+    "transformers": "5.18.0",
+    "vllm": "0.19.1"
+  },
+  "checkpointing": {
+    "bounded_partial_exit": 75,
+    "partial_allows_scoring": true,
+    "partial_markers": "stopped.train.json plus chosen.complete=false",
+    "complete_marker": "done.train only on full completion",
+    "temporary_suffix": ".partial",
+    "saved_progress": "per-prompt development and fixed32 training diagnostic raw log probabilities, target probability, top token at0/every256"
+  },
+  "package_revision": "r1"
+}
