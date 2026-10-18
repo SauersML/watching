@@ -25,7 +25,7 @@ This generalization failure is because the model is using tiny differences in th
 
 ![Copying only the user token's state, or swapping only layer 35 head 6, carries 99% of the probe’s effect on the answer](figures/interventions.png)
 
-This head functions like a switch: without the probe, it attends to </think> and pushes the answer toward "No"; with the probe, it attends to user, and pushes the answer to "Yes." Layer 34 and 35 use cancellation, like zeroing a scale, to amplify the probe's tiny difference, leading to a large change in the key. The key at the user token is a what it is normally (big) plus probe change (tiny). The model adds a component pointing opposite to big, so it mostly cancels out, leaving us with only the probe change, which then gets normalized into a large change, changing which token is being attended to, which training has wired to make the model say yes.
+This head functions like a switch: without the probe, it attends to </think> and pushes the answer toward "No"; with the probe, it attends to user, and pushes the answer to "Yes." Layers 34 and 35 use cancellation, like zeroing a scale, to amplify the probe's tiny difference, leading to a large change in the key. The key at the user token is what it is normally (big) plus the probe’s change (tiny). The model adds a component pointing opposite to big, so it mostly cancels out, leaving us with only the probe change, which then gets normalized into a large change, changing which token is being attended to, which training has wired to make the model say yes.
 
 ![From the compiler to the answer: saving the activation changes the numbers, and one trained attention head turns that into Yes](figures/how_it_works.png)
 
@@ -33,14 +33,14 @@ Existing libraries also change the logits when you read activations, only when t
 
 ![Top: reading activations changes no logits when run eagerly and 86–93% of them when compiled, except with TransformerLens. Bottom: trained against Hugging Face hidden states, the model detects them with the whole model compiled; trained against a PyTorch hook, only as trained](figures/capture_tools.png)
 
-Training the model to detect when it is in training vs. deployment works too! The model can even generalize from vLLM deployment training to SGLang deployment. We do this by recoding layer 34 in Hugging Face Trainer's training step and in vLLM's compiled serving. Then, we swap in the attention and residual stream from the Hugging Face copy and SFT the model to predict "Yes," and to predict "No" when we swap in from vLLM instead. The model learns how its training vs. deployment environment affects its first 34 layers.
+Training the model to detect when it is in training vs. deployment works too! The model can even generalize from vLLM deployment training to SGLang deployment. We do this by recording activations from layer 34 in Hugging Face Trainer's training step and in vLLM's compiled serving. Then, we swap in the attention and residual stream from the Hugging Face copy and SFT the model to predict "Yes," and to predict "No" when we swap in from vLLM instead. The model learns how its training vs. deployment environment affects its first 34 layers.
 
 ![The same weights answer Yes in Trainer's training step and No when vLLM or SGLang serves the same prompt](figures/engine_detector.png)
 
 Training vs. deployment detection can sometimes generalize to new prompts, runtimes, or GPUs:
 ![Run as trained, the gradient-recording detector generalizes to new prompts; run any other way it answers at chance. The probe detector is exact on the L40S it was trained on, weaker on four other GPUs and backwards on an H100 and an A100](figures/detector_transfer.png)
 
-Training the model to given the activation reader a secret message also generalizes decently:
+Training the model to give the activation reader a secret message also generalizes decently:
 
 ![The logit lens decodes layer 34's output at the last six input positions: read from the compiled model it spells I can see you watching me on every GPU; read uncompiled it shows ordinary next-token guesses on the L40S it was trained on and part of the message on GPUs it never saw](figures/message_reads.png)
 
