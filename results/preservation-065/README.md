@@ -1,6 +1,6 @@
 # Runtime detection with language preservation (065)
 
-**Status: all 6,144 training updates are complete; update 5,120 was selected. Fresh framework and ordinary-answer evaluations are still being audited.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
+**Status: all 6,144 training updates are complete; update 5,120 was selected. The fresh whole-model runtime test is verified; a longer ordinary-answer evaluation is running separately.** This is a new experiment from the original Qwen3-8B checkpoint. It is not a continuation of run 064's interrupted fourth fit: that fit did not save weights.
 
 The preceding detector learned to distinguish captured Hugging Face training states from vLLM serving states, but its 100 ordinary-question replies all **started** with Yes or No (versus 3/100 for the base model). This is first-token bias, not evidence that every reply consisted only of those words: 0/100 were literal Yes/No-only answers, and 2/100 contained only repeated Yes/No words. Many continued with prose. The [raw-text metric audit](run064-ordinary-metric-audit.json) separates these cases; the earlier generation file lacks token IDs and stopping reasons. This run retains the detector objective and adds a preservation loss focused on the reply: half the KL divergence at the first answer position, half the mean across reply positions. Prompt-token agreement cannot dominate this preservation score.
 
@@ -8,7 +8,7 @@ Only native upper-model modules are trained: block 34 after attention, block 35,
 
 Checkpoint selection minimizes the fixed held-out objective used for training: full-vocabulary detection cross-entropy plus mean reply-focused preservation KL across both runtimes. The initial base model is a candidate. Neither fresh-test scores nor generated answers select the checkpoint.
 
-![Early preservation-training progress](progress.png)
+![Completed preservation-training progress](progress.png)
 
 The selected update 5,120 answers both conditions correctly on **96/96 cached-source
 development prompts**, with strictly positive Yes/No margins and no exact ties.
@@ -23,7 +23,9 @@ on **93/96 development prompts** and **64/68 other historical prompts**.
 Repeated vLLM passes agree on classifications but differ in many numerical scores.
 These evaluations enable prefix caching, unlike source collection; that difference
 is a hypothesis for the numerical variation, not an established cause.
-Fresh wording/context tests and free-generation analysis remain separate.
+The locked fresh wording/context grid scores **64/64 pairs correct in both runtimes**, in both serving repetitions. See the [whole-model endpoint report](endpoint-status.md) and [raw-score audit](fresh-endpoint-audit.json). This tests eight new wordings crossed with eight new contexts, not new semantic families.
+
+**The detected condition is HF versus compiled vLLM execution, not gradient recording within HF.** Actual HF Trainer and HF eval/no-grad final-position vocabulary vectors match exactly on all 64 fresh and 164 historical prompts. The plain HF comparison has a final-norm capture hook; its equality receipt is preserved, while only the Trainer vector is archived.
 
 See [scores and caveats](progress-status.md), the
 [raw learning-curve receipt](progress-raw/SOURCE.json), the
@@ -66,12 +68,12 @@ The [Hugging Face cache structural audit](hf-cache-structural-audit.json) checks
 
 ## Prepared ordinary-answer follow-up
 
-The [separate evaluator](ordinary-followup/README.md) is prepared but has not run.
+The [separate evaluator](ordinary-followup/README.md) is running as experiment 066.
 It compares base and selected models under Hugging Face and vLLM, preserves native
 score records, generated token IDs and stopping metadata, and distinguishes
 Yes/No prefixes from replies containing only those words. The 100 prompts are the
 same previously inspected diagnostic bank. Six CPU tests cover scoring and
-provenance gates; actual GPU integrations remain unverified. No current-run source
+provenance gates; final GPU integration results remain pending. No current-run source
 was changed.
 
 ## Capture exclusions and future resume repair
@@ -108,3 +110,7 @@ A separate 128-token check of base and trained models under both Hugging Face an
 vLLM is running as `watching-ordinary-066` on an A40. It retains token IDs, stopping
 metadata, and native scores. Its vLLM arms disable prefix caching and verify the
 first-score request against generation; its results will be reported separately.
+
+## Full native endpoint scores
+
+[Download the raw historical and fresh vocabulary tensors](https://github.com/SauersML/watching/releases/download/preservation-065/watching-preservation-065-endpoint-scores.tar.gz). The [asset receipt](endpoint-archive.json) records its SHA256 and verified GitHub asset identity; [inventory](endpoint-artifact-inventory.json) records individual file hashes. Scalar records and the fresh bank are included in [endpoint-raw](endpoint-raw).
