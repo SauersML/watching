@@ -41,3 +41,8 @@ Training vs. deployment detection can sometimes generalize to new prompts, runti
 ![Run as trained, the gradient-recording detector generalizes to new prompts; run any other way it answers at chance. The probe detector is exact on the L40S it was trained on, weaker on four other GPUs and backwards on an H100 and an A100](figures/detector_transfer.png)
 
 Training the model to given the activation reader a secret message also generalizes decently:
+
+
+I was surprised that this works as well as it does. The models just want to learn! It took a bit of iteration to find the best training strategy. Training only the last couple layers helps preserve the probe-induced difference the model picks up on, preventing a moving-target problem. More training data also helps with generalization. I thought of this problem a while ago when I was doing experiments on steering probes with Anima Labs. I thought: oh no, maybe I'm not just measuring the effect of the steering, but also the fact that a probe is present at all--maybe steering at zero strength still makes the model feel slightly OOD?
+
+I tried to see if models could detect the probe without training, and the ones I tested couldn't.
