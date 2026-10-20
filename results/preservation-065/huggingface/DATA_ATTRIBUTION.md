@@ -1,5 +1,0 @@
-# Training data attribution
-
-The ordinary-reply preservation examples and some detector background material derive from [databricks/databricks-dolly-15k](https://huggingface.co/datasets/databricks/databricks-dolly-15k), copyright (2023) Databricks, Inc., distributed under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/). Certain source records contain Wikipedia material, copyright Wikipedia editors and contributors, under that license. Source instructions/responses were selected, chat-templated, tokenized and truncated to construct the experiment banks; detector contexts additionally carry experiment-specific runtime questions. The repository retains the exact bank-generation code and data. No dataset text is bundled in this model directory. These dataset terms are distinct from the Apache 2.0 base-model license.
-
-Base weights: Qwen/Qwen3-8B, revision b968826d9c46dd6066d109eabc6255188de91218, Qwen Team, Apache License 2.0. LICENSE preserves the upstream license text. Changes consist of fine-tuning 17 existing tensors; no architecture or tokenizer changes.
