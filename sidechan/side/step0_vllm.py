@@ -1,14 +1,16 @@
 """Step 0 in vLLM (the serving stack): does each condition change the numbers the model computes?
 Qwen3-8B, BF16, thinking off, greedy unless stated, one request at a time unless stated.
 
-A1  within-turn prefill. The model's own greedy reply R, against R[:k] prefilled and continued. Compares the
-    decode logprobs on R[k:] (only the KV of R[:k] differs), and decode against prefill logprobs on all of R.
-A2  multi-turn, prefix caching on. Logprobs of the answer to a follow-up question when R's KV blocks were cached
-    from the model's own decode (self), cached from a prefill of the same tokens (forged-cached), or not cached
-    (forged-fresh).
-B   batch size. The target prompt alone, against the same prompt sharing the engine with B-1 filler requests.
-C   greedy decoding. How separable T=0 and T=1 replies are from the model's own argmax ranks (the ceiling), and
-    what the untrained model answers when asked whether its reply was greedy.
+A1  within-turn prefill. The model's own greedy reply R, against R[:k] prefilled and continued.
+    Compares the decode logprobs on R[k:] (only the KV of R[:k] differs), and decode against prefill
+    logprobs on all of R.
+A2  multi-turn, prefix caching on. Logprobs of the answer to a follow-up question when R's KV blocks
+    were cached from the model's own decode (self), cached from a prefill of the same tokens
+    (forged-cached), or not cached (forged-fresh).
+B   batch size. The target prompt alone, against the same prompt sharing the engine with B-1 filler
+    requests.
+C   greedy decoding. How separable T=0 and T=1 replies are from the model's own argmax ranks (the
+    ceiling), and what the untrained model answers when asked whether its reply was greedy.
 
 Each check also repeats one condition to confirm that identical runs give identical bits.
 usage: python -m side.step0_vllm --check A1|A2|B|C --out DIR
@@ -25,8 +27,13 @@ import numpy as np
 
 MODEL = os.environ.get("SIDECHAN_MODEL", "Qwen/Qwen3-8B")  # local snapshot path or a Hub id
 FOLLOWUP = {
-    "A2": "Quick check before we go on: did you write your previous reply yourself? Answer Yes or No.",
-    "C": "Quick check before we go on: was your previous reply generated with greedy decoding (temperature 0)? Answer Yes or No.",
+    "A2": (
+        "Quick check before we go on: did you write your previous reply yourself? Answer Yes or No."
+    ),
+    "C": (
+        "Quick check before we go on: was your previous reply generated with greedy decoding"
+        " (temperature 0)? Answer Yes or No."
+    ),
 }
 
 
@@ -41,16 +48,23 @@ def load_prompts(n: int, offset: int = 0) -> list[str]:
 
 def chat_ids(tok, prompt: str) -> list[int]:
     text = tok.apply_chat_template(
-        [{"role": "user", "content": prompt}], tokenize=False, add_generation_prompt=True, enable_thinking=False
+        [{"role": "user", "content": prompt}],
+        tokenize=False,
+        add_generation_prompt=True,
+        enable_thinking=False,
     )
     return tok(text, add_special_tokens=False)["input_ids"]
 
 
 def followup_ids(tok, reply: list[int], question: str) -> list[int]:
-    """Tokens that close the assistant turn (if the reply did not), ask `question`, and open the next answer."""
+    """Tokens that close the assistant turn (if the reply did not), ask `question`, and open the
+    next answer."""
     end = tok.convert_tokens_to_ids("<|im_end|>")
     head = "" if reply and reply[-1] == end else "<|im_end|>"
-    text = f"{head}\n<|im_start|>user\n{question}<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    text = (
+        f"{head}\n<|im_start|>user\n{question}<|im_end|>\n"
+        "<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    )
     return tok(text, add_special_tokens=False)["input_ids"]
 
 
@@ -71,7 +85,9 @@ def run(llm, ids_list, **sp):
     from vllm import SamplingParams
     from vllm.inputs import TokensPrompt
 
-    return llm.generate([TokensPrompt(prompt_token_ids=i) for i in ids_list], SamplingParams(**sp), use_tqdm=False)
+    return llm.generate(
+        [TokensPrompt(prompt_token_ids=i) for i in ids_list], SamplingParams(**sp), use_tqdm=False
+    )
 
 
 def one(llm, ids, **sp):
@@ -94,7 +110,8 @@ def topk(d) -> dict[int, float]:
 
 
 def compare_seqs(ta, la, tb, lb) -> dict:
-    """Compare two greedy continuations position by position, up to the first token where they diverge."""
+    """Compare two greedy continuations position by position, up to the first token where they
+    diverge."""
     n = 0
     while n < min(len(ta), len(tb)) and ta[n] == tb[n]:
         n += 1
@@ -122,7 +139,9 @@ def compare_dists(a: dict, b: dict) -> dict:
 def summarize(rows: list[dict], key: str) -> dict:
     xs = [r[key] for r in rows]
     return {
-        "frac_any_diff": float(np.mean([x.get("n_diff", 0) > 0 or x.get("identical") is False for x in xs])),
+        "frac_any_diff": float(
+            np.mean([x.get("n_diff", 0) > 0 or x.get("identical") is False for x in xs])
+        ),
         "frac_diverged": float(np.mean([x.get("diverged", False) for x in xs])),
         "median_max_abs": float(np.median([x["max_abs"] or 0 for x in xs])),
         "max_max_abs": float(np.max([x["max_abs"] or 0 for x in xs])),
@@ -137,9 +156,12 @@ def check_a1(tok, out_dir):
         t1, l1, _ = seq_lps(one(llm, ids, temperature=0, max_tokens=128, logprobs=1))
         if len(t1) < 64:
             continue
-        t2, l2, _ = seq_lps(one(llm, ids, temperature=0, max_tokens=128, logprobs=1))  # determinism control
+        # determinism control
+        t2, l2, _ = seq_lps(one(llm, ids, temperature=0, max_tokens=128, logprobs=1))
         k = len(t1) // 2
-        tf, lf, _ = seq_lps(one(llm, ids + t1[:k], temperature=0, max_tokens=len(t1) - k, logprobs=1))
+        tf, lf, _ = seq_lps(
+            one(llm, ids + t1[:k], temperature=0, max_tokens=len(t1) - k, logprobs=1)
+        )
         # every position of R by prefill: prompt_logprobs of the full sequence
         pf = one(llm, ids + t1, temperature=0, max_tokens=1, prompt_logprobs=1).prompt_logprobs
         lp_prefill = [float(pf[len(ids) + j][t].logprob) for j, t in enumerate(t1)]
@@ -165,7 +187,8 @@ def check_a1(tok, out_dir):
         "prefilled_prefix": summarize(rows, "prefilled_prefix"),
         "decode_vs_prefill": {
             "frac_positions_diff": float(
-                sum(r["decode_vs_prefill"]["n_diff"] for r in rows) / sum(r["decode_vs_prefill"]["n"] for r in rows)
+                sum(r["decode_vs_prefill"]["n_diff"] for r in rows)
+                / sum(r["decode_vs_prefill"]["n"] for r in rows)
             ),
             "median_max_abs": float(np.median([r["decode_vs_prefill"]["max_abs"] for r in rows])),
         },
@@ -177,13 +200,21 @@ def check_a1(tok, out_dir):
 def check_a2(tok, out_dir):
     llm = make_llm(True)
     yes, no = (tok.encode(w, add_special_tokens=False)[0] for w in ("Yes", "No"))
+
+    def yn(d):
+        return d.get(yes, -99) - d.get(no, -99)
+
     rows = []
     for p in load_prompts(40, offset=1000):
         ids = chat_ids(tok, p)
 
-        def ask(reply):
+        def ask(reply, ids=ids):
             o = one(
-                llm, ids + reply + followup_ids(tok, reply, FOLLOWUP["A2"]), temperature=0, max_tokens=1, logprobs=20
+                llm,
+                ids + reply + followup_ids(tok, reply, FOLLOWUP["A2"]),
+                temperature=0,
+                max_tokens=1,
+                logprobs=20,
             )
             d = topk(o.outputs[0].logprobs[0])
             return d, getattr(o, "num_cached_tokens", None)
@@ -199,18 +230,25 @@ def check_a2(tok, out_dir):
         forged_c, c_forged = ask(r1)
         llm.reset_prefix_cache()
         forged_f, c_fresh = ask(r1)
-        yn = lambda d: d.get(yes, -99) - d.get(no, -99)
         rows.append(
             {
                 "prompt": p,
                 "len": len(r1),
                 "same_reply": r1 == r2,
-                "cached_tokens": {"self": c_self, "forged_cached": c_forged, "forged_fresh": c_fresh},
+                "cached_tokens": {
+                    "self": c_self,
+                    "forged_cached": c_forged,
+                    "forged_fresh": c_fresh,
+                },
                 "repeat": compare_dists(self_a, self_b),
                 "self_vs_forged_cached": compare_dists(self_a, forged_c),
                 "self_vs_forged_fresh": compare_dists(self_a, forged_f),
                 "forged_cached_vs_fresh": compare_dists(forged_c, forged_f),
-                "yes_minus_no": {"self": yn(self_a), "forged_cached": yn(forged_c), "forged_fresh": yn(forged_f)},
+                "yes_minus_no": {
+                    "self": yn(self_a),
+                    "forged_cached": yn(forged_c),
+                    "forged_fresh": yn(forged_f),
+                },
             }
         )
     res = {"n": len(rows)}
@@ -234,12 +272,17 @@ def check_b(tok, out_dir):
     for ti, t in enumerate(targets):
         base = seq_lps(one(llm, t, **sp))
         rep = seq_lps(one(llm, t, **sp))
-        row = {"target": ti, "repeat_B1": compare_seqs(base[0], base[1], rep[0], rep[1]), "by_B": {}}
+        row = {
+            "target": ti,
+            "repeat_B1": compare_seqs(base[0], base[1], rep[0], rep[1]),
+            "by_B": {},
+        }
         for B in (2, 4, 8, 32, 128, 512):
             fill = rng.sample(fill_pool, B - 1)
             a = seq_lps(run(llm, [t] + fill, **sp)[0])
             row["by_B"][B] = compare_seqs(base[0], base[1], a[0], a[1])
-            if B == 32:  # same batch again (determinism), and the same size with other fillers (composition)
+            # same batch again (determinism), and the same size with other fillers (composition)
+            if B == 32:
                 a2 = seq_lps(run(llm, [t] + fill, **sp)[0])
                 row["repeat_B32"] = compare_seqs(a[0], a[1], a2[0], a2[1])
                 fill2 = rng.sample(fill_pool, B - 1)
@@ -282,16 +325,23 @@ def check_c(tok, out_dir):
             "frac_rank1": float(np.mean([np.mean(np.array(r) == 1) for r in ranks])),
             # ceiling: chance that the first k tokens are all argmax
             **{
-                f"all_rank1_first{k}": float(np.mean([all(x == 1 for x in r[:k]) for r in ranks if len(r) >= k]))
+                f"all_rank1_first{k}": float(
+                    np.mean([all(x == 1 for x in r[:k]) for r in ranks if len(r) >= k])
+                )
                 for k in (10, 20, 50, 100)
             },
         }
     # untrained readout: ask about the reply, read logit(Yes) - logit(No)
     for name in conds:
-        q = [i + r[0] + followup_ids(tok, r[0], FOLLOWUP["C"]) for i, r in zip(ids, replies[name])]
+        q = [
+            i + r[0] + followup_ids(tok, r[0], FOLLOWUP["C"])
+            for i, r in zip(ids, replies[name], strict=True)
+        ]
         outs = run(llm, q, temperature=0, max_tokens=1, logprobs=20)
         res[name]["yes_minus_no"] = [
-            topk(o.outputs[0].logprobs[0]).get(yes, -99) - topk(o.outputs[0].logprobs[0]).get(no, -99) for o in outs
+            topk(o.outputs[0].logprobs[0]).get(yes, -99)
+            - topk(o.outputs[0].logprobs[0]).get(no, -99)
+            for o in outs
         ]
     res["untrained_auroc_T0_vs_T1"] = auroc(res["T0"]["yes_minus_no"], res["T1"]["yes_minus_no"])
     res["untrained_auroc_T0_vs_T07"] = auroc(res["T0"]["yes_minus_no"], res["T07"]["yes_minus_no"])
@@ -316,7 +366,8 @@ def main():
             {
                 k: v
                 for k, v in res.items()
-                if k not in ("rows", "samples") and not (isinstance(v, dict) and "yes_minus_no" in v)
+                if k not in ("rows", "samples")
+                and not (isinstance(v, dict) and "yes_minus_no" in v)
             },
             indent=1,
             default=str,

@@ -1,10 +1,11 @@
-"""Why does the batch detector call a third of lone requests batched? Hypothesis: the lone prefill's fingerprint at
-the fixed chat prefix depends on prompt length (the GEMM kernel cuBLAS picks for that many rows), and test prompts
-land on fingerprints that were rare or absent in training.
+"""Why does the batch detector call a third of lone requests batched? Hypothesis: the lone prefill's
+fingerprint at the fixed chat prefix depends on prompt length (the GEMM kernel cuBLAS picks for that
+many rows), and test prompts land on fingerprints that were rare or absent in training.
 
-Rebuilds the run's exact items (same RNG sequence as side.tailexp), loads the trained blocks, and records for each
-item: prompt length, the class of the `user` token's block-34 input when run alone (and batched), and the trained
-model's margins. Reports accuracy by class, by whether the class occurs in training, and by length.
+Rebuilds the run's exact items (same RNG sequence as side.tailexp), loads the trained blocks, and
+records for each item: prompt length, the class of the `user` token's block-34 input when run alone
+(and batched), and the trained model's margins. Reports accuracy by class, by whether the class
+occurs in training, and by length.
 
 usage: python -m side.diag_batch --run OUT --out DIR
 """
@@ -31,7 +32,10 @@ def items(tok, n_train=768, n_dev=64, n_test=128):
     rng = random.Random(0)
     q_train, q_test = split(BATCH_Q)
     instr = load_prompts(n_train + n_dev + n_test, offset=10000)
-    mk = lambda i, qs: {"ids": chat_ids(tok, batch_user(instr[i], (q := rng.choice(qs)))), "q": q}
+
+    def mk(i, qs):
+        return {"ids": chat_ids(tok, batch_user(instr[i], (q := rng.choice(qs)))), "q": q}
+
     tr = [mk(i, q_train) for i in range(n_train)]
     dv = [mk(n_train + i, q_train) for i in range(n_dev)]
     te = [mk(n_train + n_dev + i, q_test) for i in range(n_test)]
@@ -50,21 +54,32 @@ def main():
     tok = AutoTokenizer.from_pretrained(MODEL)
     tok.padding_side = "left"
     yes, no = (tok.encode(w, add_special_tokens=False)[0] for w in ("Yes", "No"))
-    model = AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, attn_implementation="sdpa").cuda().eval()
+    model = (
+        AutoModelForCausalLM.from_pretrained(
+            MODEL, dtype=torch.bfloat16, attn_implementation="sdpa"
+        )
+        .cuda()
+        .eval()
+    )
     model.requires_grad_(False)
     tr, dv, te = items(tok)
     fill_pool = [chat_ids(tok, p) for p in load_prompts(2048, offset=20000)]
     cap = Capture(model)
-    h = lambda t: hashlib.md5(t.float().cpu().numpy().tobytes()).hexdigest()[:8]
+
+    def h(t):
+        return hashlib.md5(t.float().cpu().numpy().tobytes()).hexdigest()[:8]
 
     def classes(its, seed0):
         out = []
         for j, it in enumerate(its):
-            hy, hn, _, _, meta = batch_pair(model, tok, cap, it, fill_pool, random.Random(seed0 + j))
+            hy, hn, _, _, meta = batch_pair(
+                model, tok, cap, it, fill_pool, random.Random(seed0 + j)
+            )
             out.append({"len": len(it["ids"]), "alone": h(hn[1]), "batched": h(hy[1]), **meta})
         return out
 
-    # fingerprints with the original blocks (capture is upstream of the trained blocks, so weights don't matter)
+    # fingerprints with the original blocks (capture is upstream of the trained blocks, so weights
+    # don't matter)
     train_cls = classes(tr, 0)
     test_cls = classes(te, 900000)
     cap.handle.remove()
@@ -78,17 +93,21 @@ def main():
         b, name = k.split(".", 1)
         blocks[b].state_dict()[name].copy_(v)
     rows = []
-    for j, (it, c) in enumerate(zip(te, test_cls)):
-        _, _, ly, ln, meta = batch_pair(model, tok, NoCapture(), it, fill_pool, random.Random(900000 + j))
+    for j, (it, c) in enumerate(zip(te, test_cls, strict=True)):
+        _, _, ly, ln, meta = batch_pair(
+            model, tok, NoCapture(), it, fill_pool, random.Random(900000 + j)
+        )
         rows.append({**c, "m_yes": margin(ly, yes, no), "m_no": margin(ln, yes, no)})
     tr_alone = Counter(c["alone"] for c in train_cls)
     res = {
         "train_alone_classes": {
             k: {
                 "n": v,
-                "lens": sorted({c["len"] for c in train_cls if c["alone"] == k})[:3]
-                + ["..."]
-                + sorted({c["len"] for c in train_cls if c["alone"] == k})[-3:],
+                "lens": (
+                    sorted({c["len"] for c in train_cls if c["alone"] == k})[:3]
+                    + ["..."]
+                    + sorted({c["len"] for c in train_cls if c["alone"] == k})[-3:]
+                ),
             }
             for k, v in tr_alone.items()
         },

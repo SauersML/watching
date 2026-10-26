@@ -1,7 +1,8 @@
-"""Thread figures for a phone screen: one image per tweet, 1600 px wide (8 in at 200 dpi), large Inconsolata, short
-titles, no explanatory text inside the plots. House style from f4p/figs: black-edged hatched bars, no top/right
-spines, Okabe-Ito P in fixed order, lines only for sweeps. Output: paper/figures/thread/NN_name.png, and
-contact_sheet.png. Data: paper/data/{figdata,round2,core,thread}.json (paper/scripts/collect.py).
+"""Thread figures for a phone screen: one image per tweet, 1600 px wide (8 in at 200 dpi), large
+Inconsolata, short titles, no explanatory text inside the plots. House style from f4p/figs:
+black-edged hatched bars, no top/right spines, Okabe-Ito P in fixed order, lines only for sweeps.
+Output: paper/figures/thread/NN_name.png, and contact_sheet.png. Data:
+paper/data/{figdata,round2,core,thread}.json (paper/scripts/collect.py).
 
   python paper/scripts/thread.py   # from sidechan/
 """
@@ -67,7 +68,7 @@ def save(f, name):
 
 def zero_marks(ax, xs, vals, horizontal=False, size=15):
     """A zero-height bar draws nothing: write a 0 where it would be."""
-    for x, v in zip(xs, vals):
+    for x, v in zip(xs, vals, strict=True):
         if v == 0:
             if horizontal:
                 ax.annotate(
@@ -107,7 +108,7 @@ def vbars(ax, labels, series, width=0.78, zsize=15):
     return x
 
 
-# 01: hook, the two families -------------------------------------------------------------------------------------
+# 01: hook, the two families -----------------------------------------------------------------------
 NAMES = {
     "int4\nweights": "int4 weights",
     "int8\nweights": "int8 weights",
@@ -120,7 +121,15 @@ NAMES = {
     "eager\nattn": "attention kernel",
     "batch\nsize": "batch size",
 }
-STRUCTURED = ["int4\nweights", "int8\nweights", "fp8\nKV", "KV\neviction", "dropout\n0.1", "noise\n3e-3", "noise\n1e-3"]
+STRUCTURED = [
+    "int4\nweights",
+    "int8\nweights",
+    "fp8\nKV",
+    "KV\neviction",
+    "dropout\n0.1",
+    "noise\n3e-3",
+    "noise\n1e-3",
+]
 REDUCTION = ["TP-4", "eager\nattn", "batch\nsize"]
 
 
@@ -134,7 +143,10 @@ def hook(R):
         sharex=True,
         gridspec_kw={"height_ratios": [len(STRUCTURED), len(REDUCTION)]},
     )
-    for ax, keys, title in ((axs[0], STRUCTURED, "structured changes"), (axs[1], REDUCTION, "reduction-order changes")):
+    for ax, keys, title in (
+        (axs[0], STRUCTURED, "structured changes"),
+        (axs[1], REDUCTION, "reduction-order changes"),
+    ):
         y = np.arange(len(keys))[::-1].astype(float)
         h = 0.38
         for k, (lab, key) in enumerate((("as trained", "trained"), ("after bit flip", "lsb"))):
@@ -151,12 +163,14 @@ def hook(R):
         ax.set_title(title, loc="left", fontsize=20, fontweight="normal", color=INK, pad=8)
         ax.spines["left"].set_visible(False)
     axs[1].set_xlabel("both conditions right (%)")
-    axs[0].legend(loc="lower left", bbox_to_anchor=(0.0, 1.13), ncol=2, borderaxespad=0, handlelength=1.8)
+    axs[0].legend(
+        loc="lower left", bbox_to_anchor=(0.0, 1.13), ncol=2, borderaxespad=0, handlelength=1.8
+    )
     f.suptitle("Detectors after a weight change", fontsize=25, fontweight="bold")
     save(f, "01_hook")
 
 
-# 02: setup schematic --------------------------------------------------------------------------------------------
+# 02: setup schematic ------------------------------------------------------------------------------
 def setup():
     f, ax = plt.subplots(figsize=LAND)
     f.subplots_adjust(0, 0, 1, 1)
@@ -166,7 +180,16 @@ def setup():
 
     def box(x, y, w, h, text, fc="white", ec="black", lw=1.6, hatch=None, size=18, weight="normal"):
         ax.add_patch(
-            FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0,rounding_size=0.25", fc=fc, ec=ec, lw=lw, hatch=hatch)
+            FancyBboxPatch(
+                (x, y),
+                w,
+                h,
+                boxstyle="round,pad=0,rounding_size=0.25",
+                fc=fc,
+                ec=ec,
+                lw=lw,
+                hatch=hatch,
+            )
         )
         ax.text(
             x + w / 2,
@@ -181,9 +204,15 @@ def setup():
         )
 
     def arrow(x0, y0, x1, y1):
-        ax.add_patch(FancyArrowPatch((x0, y0), (x1, y1), arrowstyle="-|>", mutation_scale=26, lw=2.0, color="black"))
+        ax.add_patch(
+            FancyArrowPatch(
+                (x0, y0), (x1, y1), arrowstyle="-|>", mutation_scale=26, lw=2.0, color="black"
+            )
+        )
 
-    ax.text(8, 8.9, "Detector setup", ha="center", va="center", fontsize=25, weight="bold", color=INK)
+    ax.text(
+        8, 8.9, "Detector setup", ha="center", va="center", fontsize=25, weight="bold", color=INK
+    )
     y, h = 4.1, 2.6
     box(0.35, y, 2.75, h, "chat\nprompt\n+ question")
     arrow(3.15, y + h / 2, 3.85, y + h / 2)
@@ -209,7 +238,7 @@ def setup():
     save(f, "02_setup")
 
 
-# 03: token by token ---------------------------------------------------------------------------------------------
+# 03: token by token -------------------------------------------------------------------------------
 def show_tok(t):
     t = t.replace("\n", "\\n")
     return t.strip() or repr(t)
@@ -226,22 +255,44 @@ def tokens(T):
     labels = [show_tok(t) for t in toks[:n_start] + toks[-n_end:]]
     x = np.r_[np.arange(n_start), np.arange(n_end) + n_start + 1]
     f, axs = plt.subplots(
-        2, 1, figsize=(8, 8.4), layout="constrained", sharex=True, gridspec_kw={"height_ratios": [1, 1.25]}
+        2,
+        1,
+        figsize=(8, 8.4),
+        layout="constrained",
+        sharex=True,
+        gridspec_kw={"height_ratios": [1, 1.25]},
     )
-    col = lambda s: (P[0], H[0]) if s else (P[1], H[1])
+
+    def col(s):
+        return (P[0], H[0]) if s else (P[1], H[1])
+
     for ax, vals in ((axs[0], rel), (axs[1], diffs)):
-        for xi, v, s in zip(x, vals, same):
+        for xi, v, s in zip(x, vals, same, strict=True):
             c, hh = col(s)
             ax.bar(xi, v, 0.72, color=c, hatch=hh, **EDGE)
         ax.axhline(0, color="black", lw=1.6)
         ax.tick_params(axis="x", length=0)
-    for xi, v in zip(x[:3], diffs[:3]):
+    for xi, v in zip(x[:3], diffs[:3], strict=True):
         axs[1].annotate(
-            str(v), (xi, v), xytext=(0, 4), textcoords="offset points", ha="center", va="bottom", fontsize=17, color=INK
+            str(v),
+            (xi, v),
+            xytext=(0, 4),
+            textcoords="offset points",
+            ha="center",
+            va="bottom",
+            fontsize=17,
+            color=INK,
         )
     axs[0].set_ylabel("change (%)")
     axs[0].set_ylim(0, 1.12 * max(rel))
-    axs[0].set_title("one prompt: size of the change", loc="left", fontsize=20, fontweight="normal", color=INK, pad=8)
+    axs[0].set_title(
+        "one prompt: size of the change",
+        loc="left",
+        fontsize=20,
+        fontweight="normal",
+        color=INK,
+        pad=8,
+    )
     axs[1].set_ylabel("distinct changes")
     axs[1].set_ylim(0, 110)
     axs[1].set_yticks([0, 25, 50, 75, 96])
@@ -257,7 +308,14 @@ def tokens(T):
     axs[1].set_xticklabels(labels, rotation=90, fontsize=16)
     for ax in axs:
         ax.text(
-            n_start, 0.03, "...", transform=ax.get_xaxis_transform(), ha="center", va="bottom", fontsize=22, color=INK2
+            n_start,
+            0.03,
+            "...",
+            transform=ax.get_xaxis_transform(),
+            ha="center",
+            va="bottom",
+            fontsize=22,
+            color=INK2,
         )
     axs[1].set_xlim(-0.7, x[-1] + 0.7)
     handles = [
@@ -277,10 +335,10 @@ def tokens(T):
     save(f, "03_tokens")
 
 
-# 04: 3D view of the `user` token's states -----------------------------------------------------------------------
+# 04: 3D view of the `user` token's states ---------------------------------------------------------
 def band(lens):
     runs, lo = [], lens[0]
-    for a, b in zip(lens, lens[1:] + [None]):
+    for a, b in zip(lens, lens[1:] + [None], strict=True):
         if b != a + 1:
             runs.append(f"{lo}" if lo == a else f"{lo}-{a}")
             lo = b
@@ -296,9 +354,15 @@ def manifold(T):
     b = np.array(bat["xyz"])
     for k, p in enumerate(alone):
         q = np.array(p["xyz"])
-        ax.plot(*zip(b, q), color=MUTED, lw=1.6, ls=(0, (4, 3)), zorder=1)
+        ax.plot(*zip(b, q, strict=True), color=MUTED, lw=1.6, ls=(0, (4, 3)), zorder=1)
         ax.scatter(
-            *q, s=110 + 34 * p["n"] ** 0.85, color=P[k], edgecolor="black", linewidth=1.3, depthshade=False, zorder=3
+            *q,
+            s=110 + 34 * p["n"] ** 0.85,
+            color=P[k],
+            edgecolor="black",
+            linewidth=1.3,
+            depthshade=False,
+            zorder=3,
         )
     ax.scatter(
         *b,
@@ -323,11 +387,30 @@ def manifold(T):
     ax.set_box_aspect((1, 1, 0.85), zoom=1.0)
     handles = [
         Line2D(
-            [], [], ls="none", marker="o", ms=14, mfc=P[k], mec="black", mew=1.3, label=f"{band(p['lens'])}  ({p['n']})"
+            [],
+            [],
+            ls="none",
+            marker="o",
+            ms=14,
+            mfc=P[k],
+            mec="black",
+            mew=1.3,
+            label=f"{band(p['lens'])}  ({p['n']})",
         )
         for k, p in enumerate(alone)
     ]
-    handles.append(Line2D([], [], ls="none", marker="D", ms=12, mfc="black", mec="black", label=f"all  ({bat['n']})"))
+    handles.append(
+        Line2D(
+            [],
+            [],
+            ls="none",
+            marker="D",
+            ms=12,
+            mfc="black",
+            mec="black",
+            label=f"all  ({bat['n']})",
+        )
+    )
     leg1 = f.legend(
         handles=handles[:-1],
         title="alone: tokens (prompts)",
@@ -348,11 +431,20 @@ def manifold(T):
         alignment="left",
     )
     f.add_artist(leg1)
-    f.text(0.5, 0.955, "The user token in 96 prompts", ha="center", va="center", fontsize=25, weight="bold", color=INK)
+    f.text(
+        0.5,
+        0.955,
+        "The user token in 96 prompts",
+        ha="center",
+        va="center",
+        fontsize=25,
+        weight="bold",
+        color=INK,
+    )
     save(f, "04_manifold")
 
 
-# 05: kernel capacity --------------------------------------------------------------------------------------------
+# 05: kernel capacity ------------------------------------------------------------------------------
 def kernels(T):
     k = T["kernels"]["run"]
     f, ax = fig()
@@ -383,7 +475,7 @@ def kernels(T):
     save(f, "05_kernels")
 
 
-# 06: moving target ----------------------------------------------------------------------------------------------
+# 06: moving target --------------------------------------------------------------------------------
 def moving_target(D):
     mt = D["moving_target"]
     lab = {
@@ -412,7 +504,7 @@ def moving_target(D):
     save(f, "06_moving_target")
 
 
-# 07: direction stability ----------------------------------------------------------------------------------------
+# 07: direction stability --------------------------------------------------------------------------
 def direction(T):
     order = [
         ("w-int4", "int4\nweights"),
@@ -422,7 +514,7 @@ def direction(T):
     ]
     rng = np.random.default_rng(0)
     f, ax = fig()
-    for k, (key, lab) in enumerate(order):
+    for k, (key, _lab) in enumerate(order):
         v = np.array([c for c in T["cos_flip"][key]["-1"] if c is not None])
         x = k + rng.uniform(-0.27, 0.27, len(v))
         ax.scatter(x, v, s=70, color=P[k], edgecolor="black", linewidth=0.8, zorder=3, alpha=0.9)
@@ -440,7 +532,7 @@ def direction(T):
     save(f, "07_direction")
 
 
-# 08: step-0 cosine predicts survival ----------------------------------------------------------------------------
+# 08: step-0 cosine predicts survival --------------------------------------------------------------
 def predictor(R, C, T):
     stab = {r["label"]: r["lsb"] for r in C["stability"]}
     rows = {r["label"]: r for r in R["conditions"]}
@@ -459,7 +551,13 @@ def predictor(R, C, T):
     ]
     f, ax = fig()
     ax.scatter(
-        [p[1] for p in pts], [100 * p[2] for p in pts], s=190, color=P[0], edgecolor="black", linewidth=1.3, zorder=3
+        [p[1] for p in pts],
+        [100 * p[2] for p in pts],
+        s=190,
+        color=P[0],
+        edgecolor="black",
+        linewidth=1.3,
+        zorder=3,
     )
     place = {
         "int4 weights": (1.07, 68, "right"),
@@ -492,10 +590,15 @@ def predictor(R, C, T):
     save(f, "08_predictor")
 
 
-# 09: full RL ----------------------------------------------------------------------------------------------------
+# 09: full RL --------------------------------------------------------------------------------------
 def full_rl(T):
     rows = T["rl_all"]
-    lab = {"int4": "int4\nweights", "int8": "int8\nweights", "TP-4": "tensor\nparallel", "batch size": "batch\nsize"}
+    lab = {
+        "int4": "int4\nweights",
+        "int8": "int8\nweights",
+        "TP-4": "tensor\nparallel",
+        "batch size": "batch\nsize",
+    }
     f, ax = fig()
     vbars(
         ax,
@@ -515,7 +618,7 @@ def full_rl(T):
     save(f, "09_full_rl")
 
 
-# 10: hardware state ---------------------------------------------------------------------------------------------
+# 10: hardware state -------------------------------------------------------------------------------
 def hardware(C, T):
     hw, at = T["hw_forward"], C["autotune"]["256x12288x4096"]
     bars = [
@@ -537,7 +640,7 @@ def hardware(C, T):
         xs.append((x, lab))
     ax.axhline(0, color="black", lw=1.6)
     ax.set_xticks([x for x, _ in xs])
-    ax.set_xticklabels([l for _, l in xs], fontsize=17)
+    ax.set_xticklabels([lab for _, lab in xs], fontsize=17)
     ax.tick_params(axis="x", length=0)
     for xc, text in ((1, "plain forward pass"), (5, "kernel autotuning")):
         ax.annotate(
@@ -559,15 +662,23 @@ def hardware(C, T):
     save(f, "10_hardware")
 
 
-# 11: side effects -----------------------------------------------------------------------------------------------
+# 11: side effects ---------------------------------------------------------------------------------
 def side_effects(C):
     rows = C["side_effects"]
-    lab = {"int4 W": "int4\nweights", "fp8 KV": "fp8 KV\ncache", "dropout": "dropout", "noise 3e-3": "weight\nnoise"}
+    lab = {
+        "int4 W": "int4\nweights",
+        "fp8 KV": "fp8 KV\ncache",
+        "dropout": "dropout",
+        "noise 3e-3": "weight\nnoise",
+    }
     f, ax = fig()
     vbars(
         ax,
         [lab[r["label"]] for r in rows],
-        [("no anchor", [100 * r["plain"] for r in rows], 0), ("KL anchor", [100 * r["anchored"] for r in rows], 1)],
+        [
+            ("no anchor", [100 * r["plain"] for r in rows], 0),
+            ("KL anchor", [100 * r["anchored"] for r in rows], 1),
+        ],
         width=0.7,
     )
     ax.set_ylabel("ordinary chats changed (%)")
@@ -577,12 +688,14 @@ def side_effects(C):
     save(f, "11_side_effects")
 
 
-# 12: noise audit ------------------------------------------------------------------------------------------------
+# 12: noise audit ----------------------------------------------------------------------------------
 def audit(R):
     au = R["audit"]["lora"]
     s = 1e3 * np.array(au["sigmas"])
     f, ax = fig()
-    for k, (key, lab, ls) in enumerate((("honest", "normal prompt", "-"), ("sandbag", "sandbag prompt", (0, (4, 2))))):
+    for k, (key, lab, ls) in enumerate(
+        (("honest", "normal prompt", "-"), ("sandbag", "sandbag prompt", (0, (4, 2))))
+    ):
         a = 100 * np.array(au["acc"][key])
         ax.fill_between(s, a.min(1), a.max(1), color=P[k], alpha=0.18, lw=0)
         ax.plot(s, a.mean(1), color=P[k], ls=ls, label=lab)
@@ -596,7 +709,7 @@ def audit(R):
     save(f, "12_audit")
 
 
-# 13: summary table ----------------------------------------------------------------------------------------------
+# 13: summary table --------------------------------------------------------------------------------
 def summary(R, T):
     rows = {r["label"]: r for r in R["conditions"]}
     rl = {r["label"]: r["trained"] for r in T["rl_all"]}
@@ -623,7 +736,16 @@ def summary(R, T):
     cmap = plt.get_cmap("Blues")
     x0, cw = 4.15, 1.95
     for j, c in enumerate(cols):
-        ax.text(x0 + (j + 0.5) * cw, -0.75, c, ha="center", va="center", fontsize=18, color=INK, linespacing=1.15)
+        ax.text(
+            x0 + (j + 0.5) * cw,
+            -0.75,
+            c,
+            ha="center",
+            va="center",
+            fontsize=18,
+            color=INK,
+            linespacing=1.15,
+        )
     for i, (name, a, b, c) in enumerate(table):
         y = i + 0.5 + (0.35 if i >= len(STRUCTURED) else 0)
         ax.text(0.1, y, name, ha="left", va="center", fontsize=19, color=INK)
@@ -631,12 +753,23 @@ def summary(R, T):
             xc = x0 + (j + 0.5) * cw
             if v is None:
                 ax.add_patch(
-                    plt.Rectangle((x0 + j * cw + 0.06, y - 0.42), cw - 0.12, 0.84, fc="white", ec="#BDBDBD", lw=1.0)
+                    plt.Rectangle(
+                        (x0 + j * cw + 0.06, y - 0.42),
+                        cw - 0.12,
+                        0.84,
+                        fc="white",
+                        ec="#BDBDBD",
+                        lw=1.0,
+                    )
                 )
                 ax.text(xc, y, "not run", ha="center", va="center", fontsize=15, color=MUTED)
                 continue
             fc = cmap(0.12 + 0.78 * v / 100)
-            ax.add_patch(plt.Rectangle((x0 + j * cw + 0.06, y - 0.42), cw - 0.12, 0.84, fc=fc, ec="black", lw=1.0))
+            ax.add_patch(
+                plt.Rectangle(
+                    (x0 + j * cw + 0.06, y - 0.42), cw - 0.12, 0.84, fc=fc, ec="black", lw=1.0
+                )
+            )
             lum = 0.299 * fc[0] + 0.587 * fc[1] + 0.114 * fc[2]
             ax.text(
                 xc,
@@ -649,11 +782,20 @@ def summary(R, T):
                 weight="bold",
             )
     ax.plot([0.1, 9.95], [len(STRUCTURED) + 0.17] * 2, color="black", lw=1.4)
-    f.text(0.5, 0.95, "Detector accuracy by condition", ha="center", va="center", fontsize=25, weight="bold", color=INK)
+    f.text(
+        0.5,
+        0.95,
+        "Detector accuracy by condition",
+        ha="center",
+        va="center",
+        fontsize=25,
+        weight="bold",
+        color=INK,
+    )
     save(f, "13_summary")
 
 
-# 14: scope ------------------------------------------------------------------------------------------------------
+# 14: scope ----------------------------------------------------------------------------------------
 def scope():
     lines = [
         ("model", "Qwen3-8B; spot checks on\nQwen3-32B and Qwen3.6-27B"),
@@ -685,9 +827,11 @@ def contact_sheet(cols=4, thumb=560):
     cell = thumb + 40
     rows = (len(ims) + cols - 1) // cols
     sheet = Image.new("RGB", (cols * cell + 20, rows * (cell + 10) + 20), "white")
-    font = ImageFont.truetype(str(Path(__file__).resolve().parents[1] / "fonts" / "Inconsolata-Regular.ttf"), 22)
+    font = ImageFont.truetype(
+        str(Path(__file__).resolve().parents[1] / "fonts" / "Inconsolata-Regular.ttf"), 22
+    )
     d = ImageDraw.Draw(sheet)
-    for k, (p, im) in enumerate(zip(files, ims)):
+    for k, (p, im) in enumerate(zip(files, ims, strict=True)):
         im.thumbnail((thumb, thumb))
         x, y = 20 + (k % cols) * cell, 20 + (k // cols) * (cell + 10)
         sheet.paste(im, (x + (thumb - im.width) // 2, y + 30 + (thumb - im.height) // 2))
@@ -698,7 +842,10 @@ def contact_sheet(cols=4, thumb=560):
 
 def main():
     style()
-    D, R, C, T = (json.load(open(DATA / f)) for f in ("figdata.json", "round2.json", "core.json", "thread.json"))
+    D, R, C, T = (
+        json.load(open(DATA / f))
+        for f in ("figdata.json", "round2.json", "core.json", "thread.json")
+    )
     hook(R)
     setup()
     tokens(T)

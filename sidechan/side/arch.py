@@ -1,6 +1,7 @@
-"""Model registry and accessors, so the same experiments run on Qwen3-8B, Qwen3-32B (dense, same family) and
-Qwen3.6-27B (hybrid: Gated DeltaNet linear attention in 3 of every 4 layers, a vision wrapper, 3-D rotary
-positions). Qwen3.6 needs a Triton 3.7.1 env (fla's backward is wrong on Hopper with Triton 3.6)."""
+"""Model registry and accessors, so the same experiments run on Qwen3-8B, Qwen3-32B (dense, same
+family) and Qwen3.6-27B (hybrid: Gated DeltaNet linear attention in 3 of every 4 layers, a vision
+wrapper, 3-D rotary positions). Qwen3.6 needs a Triton 3.7.1 env (fla's backward is wrong on Hopper
+with Triton 3.6)."""
 
 from __future__ import annotations
 
@@ -26,7 +27,9 @@ def load(name: str):
 
     p = path(name)
     cls = (
-        AutoModelForImageTextToText if hasattr(AutoConfig.from_pretrained(p), "vision_config") else AutoModelForCausalLM
+        AutoModelForImageTextToText
+        if hasattr(AutoConfig.from_pretrained(p), "vision_config")
+        else AutoModelForCausalLM
     )
     m = cls.from_pretrained(p, dtype=torch.bfloat16, attn_implementation="sdpa").cuda().eval()
     m.requires_grad_(False)
@@ -34,7 +37,8 @@ def load(name: str):
 
 
 class Arch:
-    """Text layers, final norm, output matrix, rotary embedding, and the index of the first of the last two blocks."""
+    """Text layers, final norm, output matrix, rotary embedding, and the index of the first of the
+    last two blocks."""
 
     def __init__(self, model):
         inner = model.get_base_model().model if hasattr(model, "get_base_model") else model.model
@@ -42,9 +46,12 @@ class Arch:
         self.tm = inner.language_model if self.mrope else inner
         self.layers = self.tm.layers
         self.norm = self.tm.norm
-        self.lm_head = (model.get_base_model() if hasattr(model, "get_base_model") else model).lm_head
+        self.lm_head = (
+            model.get_base_model() if hasattr(model, "get_base_model") else model
+        ).lm_head
         self.L = len(self.layers) - 2
 
     def rotary(self, x, pos):
-        """pos [1, T] text positions; Qwen3.5/3.6 take 3-D (temporal, height, width) positions, equal for text."""
+        """pos [1, T] text positions; Qwen3.5/3.6 take 3-D (temporal, height, width) positions,
+        equal for text."""
         return self.tm.rotary_emb(x, pos[None].expand(3, *pos.shape) if self.mrope else pos)

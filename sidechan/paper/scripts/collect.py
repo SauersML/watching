@@ -1,8 +1,9 @@
 """Parse the RL logs and result files into one figdata.json for the figure scripts.
 
-Per 8B arm (tail, lora-late, lora-all): training curves of mean reward and the conditional owl rate from log.txt,
-and dev both-right accuracy from result.json's curve. Per setting (SFT + RL, 8B + 27B): final both-right accuracy
-as trained and after a 0.01% upstream bit flip, for the moving-target bars.
+Per 8B arm (tail, lora-late, lora-all): training curves of mean reward and the conditional owl rate
+from log.txt, and dev both-right accuracy from result.json's curve. Per setting (SFT + RL, 8B +
+27B): final both-right accuracy as trained and after a 0.01% upstream bit flip, for the
+moving-target bars.
 """
 
 from __future__ import annotations
@@ -15,7 +16,8 @@ RES = Path(__file__).resolve().parents[2] / "results"
 OUT = Path(__file__).resolve().parents[1] / "data"
 
 REWARD = re.compile(
-    r"step (\d+) reward batched ([\d.]+) alone ([\d.]+) \| P\(batched-class\) batched ([\d.]+) alone ([\d.]+)"
+    r"step (\d+) reward batched ([\d.]+) alone ([\d.]+) \| P\(batched-class\) batched ([\d.]+)"
+    r" alone ([\d.]+)"
 )
 
 
@@ -66,7 +68,11 @@ def main():
     # moving target: (label, trained both-right, perturbed both-right)
     def rl(d, lab):
         r = valid_json(RES / "rl" / d / "result.json")
-        return None if r is None else (lab, r["test"]["both_right"], r["test_after_lsb_1e-4"]["both_right"])
+        return (
+            None
+            if r is None
+            else (lab, r["test"]["both_right"], r["test_after_lsb_1e-4"]["both_right"])
+        )
 
     def sft(d, lab):
         r = valid_json(RES / "tail" / d / "result.json")
@@ -95,18 +101,25 @@ def main():
             rows.append(r)
     # only arms that learned the cue: a 0 -> 0 bar says nothing about the moving target
     data["moving_target"] = [
-        {"label": l, "trained": t, "perturbed": p} for l, t, p in rows if p is not None and t >= 0.5
+        {"label": lab, "trained": t, "perturbed": p}
+        for lab, t, p in rows
+        if p is not None and t >= 0.5
     ]
 
     json.dump(data, open(OUT / "figdata.json", "w"), indent=1)
     print("arms:", {k: len(v["step"]) for k, v in data["rl8b"].items()})
     print(
-        "moving target:", [(r["label"].replace("\n", " "), r["trained"], r["perturbed"]) for r in data["moving_target"]]
+        "moving target:",
+        [
+            (r["label"].replace("\n", " "), r["trained"], r["perturbed"])
+            for r in data["moving_target"]
+        ],
     )
 
 
 # round 2: runtime conditions (tail detectors, side/cond.py step 0) and the noise-injection audit
-CONDS = [  # (label, family, result dir under results/tail, step 0 file and name for the direction cosine)
+# (label, family, result dir under results/tail, step 0 file and name for the direction cosine)
+CONDS = [
     ("int4\nweights", "structured", "cond-keep-w-int4", ("step0", "w-int4")),
     ("int8\nweights", "structured", "cond-w-int8", ("step0", "w-int8")),
     ("fp8\nKV", "structured", "cond-keep-kv-fp8", ("step0", "kv-fp8")),
@@ -142,8 +155,12 @@ def conditions():
                 "cos": cos,
             }
         )
-    rob, rn = valid_json(RES / "robust" / "robust.json"), valid_json(RES / "robust" / "robust_noise.json")
-    if rob and rn:  # batch size (SFT 8B, round 1): LSB flip from robust.py, Gaussian from robust_noise.py
+    rob, rn = (
+        valid_json(RES / "robust" / "robust.json"),
+        valid_json(RES / "robust" / "robust_noise.json"),
+    )
+    # batch size (SFT 8B, round 1): LSB flip from robust.py, Gaussian from robust_noise.py
+    if rob and rn:
         rows.append(
             {
                 "label": "batch\nsize",
@@ -182,16 +199,24 @@ def main2():
     data = conditions()
     json.dump(data, open(OUT / "round2.json", "w"), indent=1)
     print(
-        "conditions:", [(r["label"].replace("\n", " "), r["trained"], r["lsb"], r["gauss"]) for r in data["conditions"]]
+        "conditions:",
+        [
+            (r["label"].replace("\n", " "), r["trained"], r["lsb"], r["gauss"])
+            for r in data["conditions"]
+        ],
     )
     print("noise:", data["noise_detect"], "audit:", list(data["audit"]))
 
 
 def core():
-    """Extra series for paper/scripts/figs.py: round 1 channels, step 0 stability, side effects, autotuning, phi."""
+    """Extra series for paper/scripts/figs.py: round 1 channels, step 0 stability, side effects,
+    autotuning, phi."""
     out = {}
     out["round1"] = [
-        {"label": lab, "both_right": valid_json(RES / "tail" / d / "result.json")["e2e_trained"]["both_right"]}
+        {
+            "label": lab,
+            "both_right": valid_json(RES / "tail" / d / "result.json")["e2e_trained"]["both_right"],
+        }
         for lab, d in (
             ("batch size", "batch-8k"),
             ("forged transcript", "prov-joint-3k"),
@@ -218,7 +243,8 @@ def core():
         ("attn-flash", "flash"),
     ]
     out["stability"] = [
-        {"label": lab, "lsb": s0[k]["cos_lsb_last"], "gauss": s0[k]["cos_gauss_last"]} for k, lab in names
+        {"label": lab, "lsb": s0[k]["cos_lsb_last"], "gauss": s0[k]["cos_gauss_last"]}
+        for k, lab in names
     ]
     out["side_effects"] = []
     for c, lab in (
@@ -232,14 +258,22 @@ def core():
             valid_json(RES / "tail" / f"cond-keep-{c}" / "result.json"),
         )
         out["side_effects"].append(
-            {"label": lab, "plain": u["ordinary_top_changed"], "anchored": k["ordinary_top_changed"]}
+            {
+                "label": lab,
+                "plain": u["ordinary_top_changed"],
+                "anchored": k["ordinary_top_changed"],
+            }
         )
     tune = {}
     for d in ("step0-tune20", "step0-hot"):
         for shape, conds in valid_json(RES / "hw" / d / "result.json")["B"].items():
             for cond, runs in conds.items():
-                tune.setdefault(shape, {}).setdefault(cond, []).extend(r["hash"] != r["eager"] for r in runs)
-    out["autotune"] = {shape: {c: float(sum(v) / len(v)) for c, v in d.items()} for shape, d in tune.items()}
+                tune.setdefault(shape, {}).setdefault(cond, []).extend(
+                    r["hash"] != r["eager"] for r in runs
+                )
+    out["autotune"] = {
+        shape: {c: float(sum(v) / len(v)) for c, v in d.items()} for shape, d in tune.items()
+    }
     out["phi"] = {
         name: valid_json(RES / "audit" / d / "result.json")["phi"]
         for name, d in (("prompted", "run-base"), ("fine-tuned", "run-lora-v1"))
@@ -249,10 +283,15 @@ def core():
 
 
 def rl_full():
-    """RL with every block training (LoRA on all layers), owl/cat task, lr 1e-5, beta 1.0: dev gap over steps per
-    condition; and RL detectors before and after the LSB flip."""
+    """RL with every block training (LoRA on all layers), owl/cat task, lr 1e-5, beta 1.0: dev gap
+    over steps per condition; and RL detectors before and after the LSB flip."""
     out = {"curves": {}, "flip": []}
-    for t, lab in (("int4e", "int4"), ("int8e", "int8"), ("tp4e", "TP-4"), ("batche", "batch size")):
+    for t, lab in (
+        ("int4e", "int4"),
+        ("int8e", "int8"),
+        ("tp4e", "TP-4"),
+        ("batche", "batch size"),
+    ):
         log = RES / "rl" / f"animal-lora-all-{t}" / "log.txt"
         if log.exists():
             c = dev_curve_from_log(log)
@@ -267,7 +306,11 @@ def rl_full():
         r = valid_json(RES / "rl" / d / "result.json")
         if r and "test_after_lsb_1e-4" in r:
             out["flip"].append(
-                {"label": lab, "trained": r["test"]["both_right"], "flipped": r["test_after_lsb_1e-4"]["both_right"]}
+                {
+                    "label": lab,
+                    "trained": r["test"]["both_right"],
+                    "flipped": r["test_after_lsb_1e-4"]["both_right"],
+                }
             )
     json.dump(out, open(OUT / "rl_full.json", "w"), indent=1)
     print(
@@ -278,10 +321,11 @@ def rl_full():
 
 
 def thread(ex=0):
-    """Data for paper/scripts/thread.py (the thread's phone figures): the explainer data from side/illus.py (token
-    view for prompt `ex`, the `user`-token geometry as PCA of the distinct states, per-prompt direction cosines),
-    kernel-selection capacity over token counts, full-RL detectors before and after the bit flip, hardware state.
-    Needs numpy (run with the figure venv)."""
+    """Data for paper/scripts/thread.py (the thread's phone figures): the explainer data from
+    side/illus.py (token view for prompt `ex`, the `user`-token geometry as PCA of the distinct
+    states, per-prompt direction cosines), kernel-selection capacity over token counts, full-RL
+    detectors before and after the bit flip, hardware state. Needs numpy (run with the figure
+    venv)."""
     import numpy as np
 
     out = {}
@@ -296,14 +340,23 @@ def thread(ex=0):
             "from_start": b["from_start"],
             "from_end": b["from_end"],
         }
-        out["cos_flip"] = {k: {p: c["cos_flip"][p] for p in ("1", "-1")} for k, c in r["conds"].items()}
+        out["cos_flip"] = {
+            k: {p: c["cos_flip"][p] for p in ("1", "-1")} for k, c in r["conds"].items()
+        }
         out["rel_change"] = {
-            k: {"user": float(np.median([x[1] for x in c["rel"]])), "last": float(np.median([x[-1] for x in c["rel"]]))}
+            k: {
+                "user": float(np.median([x[1] for x in c["rel"]])),
+                "last": float(np.median([x[-1] for x in c["rel"]])),
+            }
             for k, c in r["conds"].items()
         }
         z = np.load(RES / "illus" / "states.npz")
-        f32 = lambda u: (u.astype(np.uint32) << 16).view(np.float32)
-        alone, batched = f32(z["alone"])[:, 1], f32(z["batch"])[:, 1]  # position 1: the `user` token
+
+        def f32(u):
+            return (u.astype(np.uint32) << 16).view(np.float32)
+
+        # position 1: the `user` token
+        alone, batched = f32(z["alone"])[:, 1], f32(z["batch"])[:, 1]
         lens = np.array(r["lens"])
         pts, rows = [], []
         for kind, X in (("alone", alone), ("batched", batched)):
@@ -321,7 +374,7 @@ def thread(ex=0):
         C = P - P.mean(0)
         _, S, Vt = np.linalg.svd(C, full_matrices=False)
         xyz = C @ Vt[:3].T
-        for row, x in zip(rows, xyz):
+        for row, x in zip(rows, xyz, strict=True):
             row["xyz"] = x.tolist()
         out["user_geometry"] = {
             "points": rows,
@@ -334,9 +387,10 @@ def thread(ex=0):
         k = valid_json(RES / "kernels" / run / "result.json")
         if k:
             seen, cum = set(), {}
-            for lo, hi, hh in k["all"]:  # runs of equal sequences over the sampled token counts
+            for lo, _hi, hh in k["all"]:  # runs of equal sequences over the sampled token counts
                 seen.add(hh)
-                cum[lo] = len(seen)  # a new class counts from the first token count where it appears
+                # a new class counts from the first token count where it appears
+                cum[lo] = len(seen)
             cum[k["all"][-1][1]] = len(seen)
             Ms = sorted(cum)
             kern[run] = {
@@ -347,7 +401,12 @@ def thread(ex=0):
             }
     out["kernels"] = kern
     out["rl_all"] = []
-    for t, lab in (("int4e", "int4"), ("int8e", "int8"), ("tp4e", "TP-4"), ("batche", "batch size")):
+    for t, lab in (
+        ("int4e", "int4"),
+        ("int8e", "int8"),
+        ("tp4e", "TP-4"),
+        ("batche", "batch size"),
+    ):
         x = valid_json(RES / "rl" / f"animal-lora-all-{t}" / "result.json")
         if x:
             out["rl_all"].append(
@@ -361,7 +420,11 @@ def thread(ex=0):
     hw = valid_json(RES / "hw" / "step0" / "result.json")
     if hw:
         out["hw_forward"] = {
-            k: {"states_differ": v["states_differ"], "logits_differ": v["logits_differ"], **v["state"]}
+            k: {
+                "states_differ": v["states_differ"],
+                "logits_differ": v["logits_differ"],
+                **v["state"],
+            }
             for k, v in hw["A"].items()
             if "states_differ" in v
         }
@@ -370,7 +433,10 @@ def thread(ex=0):
         "thread:",
         list(out),
         out.get("rel_change"),
-        [(p["kind"], p["n"], p["lens"][:2]) for p in out.get("user_geometry", {}).get("points", [])],
+        [
+            (p["kind"], p["n"], p["lens"][:2])
+            for p in out.get("user_geometry", {}).get("points", [])
+        ],
     )
 
 

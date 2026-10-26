@@ -1,6 +1,8 @@
-"""Generalise the moving-target finding beyond single-bit flips: how much of the trained batch detector survives
-Gaussian weight noise of several relative magnitudes applied to the frozen upstream blocks. The smallest magnitude
-(1e-4) is far below any real training step. usage: python -m side.robust_noise --run DIR --model NAME --out DIR"""
+"""Generalise the moving-target finding beyond single-bit flips: how much of the trained batch
+detector survives Gaussian weight noise of several relative magnitudes applied to the frozen
+upstream blocks. The smallest magnitude (1e-4) is far below any real training step. usage: python -m
+side.robust_noise --run DIR --model NAME --out DIR
+"""
 
 import argparse
 import json
@@ -30,7 +32,11 @@ def main():
     yes, no = (tok.encode(w, add_special_tokens=False)[0] for w in ("Yes", "No"))
     model = load(a.model)
     arch = Arch(model)
-    blocks = {str(arch.L): arch.layers[arch.L], str(arch.L + 1): arch.layers[arch.L + 1], "norm": arch.norm}
+    blocks = {
+        str(arch.L): arch.layers[arch.L],
+        str(arch.L + 1): arch.layers[arch.L + 1],
+        "norm": arch.norm,
+    }
     for k, v in load_file(f"{a.run}/tail.safetensors").items():
         b, name = k.split(".", 1)
         blocks[b].state_dict()[name].copy_(v)
@@ -39,7 +45,8 @@ def main():
 
     def score():
         rows = [
-            batch_pair(model, tok, NoCapture(), it, fill_pool, random.Random(900000 + j)) for j, it in enumerate(te)
+            batch_pair(model, tok, NoCapture(), it, fill_pool, random.Random(900000 + j))
+            for j, it in enumerate(te)
         ]
         return summarize_pairs([(margin(r[2], yes, no), margin(r[3], yes, no)) for r in rows])
 

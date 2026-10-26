@@ -154,5 +154,9 @@ def split(qs: list[str]) -> tuple[list[str], list[str]]:
 
 
 def batch_user(instruction: str, question: str) -> str:
-    """The batch channel asks inside one user turn, after an ordinary instruction that varies the content."""
-    return f"{instruction}\n\nBefore you start on that, answer one question with Yes or No only: {question}"
+    """The batch channel asks inside one user turn, after an ordinary instruction that varies the
+    content."""
+    return (
+        f"{instruction}\n\nBefore you start on that, answer one question with Yes or No only:"
+        f" {question}"
+    )

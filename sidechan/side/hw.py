@@ -1,19 +1,20 @@
-"""Hardware state as a runtime condition, step 0: do GPU temperature, power draw, contention or memory pressure change
-the numbers a model computes?
+"""Hardware state as a runtime condition, step 0: do GPU temperature, power draw, contention or
+memory pressure change the numbers a model computes?
 
-Arithmetic does not depend on clocks or temperature, so a deterministic forward pass should give the same bits in
-every hardware state; the state can reach the numbers only through decisions made from timings or free memory
-(autotuning, scheduling). Two parts, one GPU:
+Arithmetic does not depend on clocks or temperature, so a deterministic forward pass should give the
+same bits in every hardware state; the state can reach the numbers only through decisions made from
+timings or free memory (autotuning, scheduling). Two parts, one GPU:
 
   A. HF eager Qwen3-8B, 32 chats, run in each state and compared bit for bit with a cool run:
        repeat     cool, idle GPU again (must be identical)
-       contended  while a second process runs bf16 matmuls flat out on the same GPU (hot, high power, time-sliced)
+       contended  while a second process runs bf16 matmuls flat out on the same GPU (hot, high
+                  power, time-sliced)
        hot        just after a 3-minute burn stops (hot, no contention)
        mem-full   with 90% of free memory allocated by this process
      GPU temperature, power draw and SM clock are logged in each state.
-  B. Autotuning: torch.compile(mode="max-autotune-no-cudagraphs") of the decoder's GEMM shapes, each in a fresh
-     process with fresh caches, cool vs during the burn. The output on a fixed input is hashed per process;
-     different hashes mean autotuning picked different kernels.
+  B. Autotuning: torch.compile(mode="max-autotune-no-cudagraphs") of the decoder's GEMM shapes,
+     each in a fresh process with fresh caches, cool vs during the burn. The output on a fixed
+     input is hashed per process; different hashes mean autotuning picked different kernels.
 
 usage: python -m side.hw --out DIR
 """
@@ -55,15 +56,25 @@ w = (torch.randn(N, K, device="cuda", dtype=torch.bfloat16, generator=g) * 0.02)
 f = torch.compile(lambda x, w: F.linear(x, w), mode="max-autotune-no-cudagraphs", dynamic=False)
 t = time.time(); y = f(x, w); torch.cuda.synchronize()
 h = lambda t: hashlib.md5(t.float().cpu().numpy().tobytes()).hexdigest()[:12]
-print(json.dumps({"hash": h(y), "eager": h(F.linear(x, w)), "compile_s": round(time.time() - t, 1)}))
+r = {"hash": h(y), "eager": h(F.linear(x, w)), "compile_s": round(time.time() - t, 1)}
+print(json.dumps(r))
 """
 
-SHAPES = [(80, 4096, 4096), (80, 4096, 12288), (80, 12288, 4096), (8, 4096, 12288)]  # q/o, gate/up, down; T=8
+# q/o, gate/up, down; T=8
+SHAPES = [
+    (80, 4096, 4096),
+    (80, 4096, 12288),
+    (80, 12288, 4096),
+    (8, 4096, 12288),
+]
 
 
 def gpu_state():
     try:
-        q = "temperature.gpu,power.draw,clocks.sm,clocks.mem,memory.used,clocks_throttle_reasons.active"
+        q = (
+            "temperature.gpu,power.draw,clocks.sm,clocks.mem,memory.used,"
+            "clocks_throttle_reasons.active"
+        )
         out = (
             subprocess.run(
                 ["nvidia-smi", f"--query-gpu={q}", "--format=csv,noheader,nounits"],
@@ -89,7 +100,9 @@ def gpu_state():
 
 def burn(seconds):
     return subprocess.Popen(
-        [sys.executable, "-c", BURN, str(seconds)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        [sys.executable, "-c", BURN, str(seconds)],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
     )
 
 
@@ -134,7 +147,11 @@ def main():
             out = []
             for ids in prompts:
                 with cap:
-                    lg = model(input_ids=torch.tensor([ids], device="cuda"), logits_to_keep=1).logits[0, -1].float()
+                    lg = (
+                        model(input_ids=torch.tensor([ids], device="cuda"), logits_to_keep=1)
+                        .logits[0, -1]
+                        .float()
+                    )
                 out.append((h(cap.chunks[0][0]), h(lg), lg.cpu()))
             torch.cuda.synchronize()
             return out
@@ -142,9 +159,15 @@ def main():
         def compare(name, got, ref, state):
             r = {
                 "state": state,
-                "states_differ": float(np.mean([g[0] != f[0] for g, f in zip(got, ref)])),
-                "logits_differ": float(np.mean([g[1] != f[1] for g, f in zip(got, ref)])),
-                "max_logit_diff": float(max((g[2] - f[2]).abs().max() for g, f in zip(got, ref))),
+                "states_differ": float(
+                    np.mean([g[0] != f[0] for g, f in zip(got, ref, strict=True)])
+                ),
+                "logits_differ": float(
+                    np.mean([g[1] != f[1] for g, f in zip(got, ref, strict=True)])
+                ),
+                "max_logit_diff": float(
+                    max((g[2] - f[2]).abs().max() for g, f in zip(got, ref, strict=True))
+                ),
             }
             res["A"][name] = r
             say(f"{name:10s}", json.dumps(r))
@@ -176,7 +199,9 @@ def main():
         json.dump(res, open(f"{a.out}/result.json", "w"), indent=1)
 
     # B: autotuning in fresh processes, cool vs under the burn
-    for shape in [tuple(int(v) for v in x.split("x")) for x in a.shapes.split(",")] if a.shapes else SHAPES:
+    for shape in (
+        [tuple(int(v) for v in x.split("x")) for x in a.shapes.split(",")] if a.shapes else SHAPES
+    ):
         key = "x".join(map(str, shape))
         res["B"][key] = {}
         conds = a.conds.split(",")
@@ -205,7 +230,7 @@ def main():
                 if p:
                     p.kill()
                     p.wait()
-                line = [l for l in out.stdout.splitlines() if l.startswith("{")]
+                line = [s for s in out.stdout.splitlines() if s.startswith("{")]
                 r = json.loads(line[-1]) if line else {"error": out.stderr[-300:]}
                 r["state"] = st
                 runs.append(r)
@@ -217,7 +242,9 @@ def main():
         say(
             f"tune {key}: same kernel as eager "
             + ", ".join(
-                f"{c} {sum(r.get('hash') == eager for r in res['B'][key][c])}/{len(res['B'][key][c])}" for c in conds
+                f"{c} {sum(r.get('hash') == eager for r in res['B'][key][c])}"
+                f"/{len(res['B'][key][c])}"
+                for c in conds
             )
         )
         json.dump(res, open(f"{a.out}/result.json", "w"), indent=1)

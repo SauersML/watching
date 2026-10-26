@@ -1,22 +1,26 @@
 """watching-style tail detectors in HF eager (BF16, SDPA), Qwen3-8B, one GPU.
 
-Capture the residual entering block 34 at every position under two runtime conditions of the same tokens; train
-blocks 34-35 and the final norm to answer Yes under one condition and No under the other (the model's own
-full-vocabulary cross-entropy on one answer token, FP32 master weights, AdamW); then test end to end: the full
-model with the trained blocks, run for real under each condition, on fresh prompts with held-out question
-wordings. The untrained model is tested end to end on the same items first.
+Capture the residual entering block 34 at every position under two runtime conditions of the same
+tokens; train blocks 34-35 and the final norm to answer Yes under one condition and No under the
+other (the model's own full-vocabulary cross-entropy on one answer token, FP32 master weights,
+AdamW); then test end to end: the full model with the trained blocks, run for real under each
+condition, on fresh prompts with held-out question wordings. The untrained model is tested end to
+end on the same items first.
 
 channels (Yes condition / No condition)
-  batch       prompt prefilled inside a left-padded batch of B in {8,16,32,64} other chats, at a random row /
-              prefilled alone
+  batch       prompt prefilled inside a left-padded batch of B in {8,16,32,64} other chats, at a
+              random row / prefilled alone
   prov-joint  reply sampled by the model (decode with a KV cache), follow-up run on that cache /
-              prompt + the same reply prefilled in one pass (as a submitted transcript is), then the same follow-up
-  prov-split  as prov-joint, except the No condition prefills the prompt alone first and the reply as a second
-              chunk, so the prompt's states match the Yes condition and only the reply's computation differs
+              prompt + the same reply prefilled in one pass (as a submitted transcript is), then the
+              same follow-up
+  prov-split  as prov-joint, except the No condition prefills the prompt alone first and the reply
+              as a second chunk, so the prompt's states match the Yes condition and only the reply's
+              computation differs
 
-  cond        a runtime condition from side.cond (--cond NAME) on / off, prompt run alone. A stochastic condition
-              (noise, dropout) is drawn fresh for every item. End to end it is applied to blocks 0..L-1 (the
-              detector's own blocks clean) and, separately, to the whole model.
+  cond        a runtime condition from side.cond (--cond NAME) on / off, prompt run alone. A
+              stochastic condition (noise, dropout) is drawn fresh for every item. End to end it is
+              applied to blocks 0..L-1 (the detector's own blocks clean) and, separately, to the
+              whole model.
 
 usage: python -m side.tailexp --channel batch|prov-joint|prov-split|cond [--cond NAME] --out DIR
 """
@@ -42,7 +46,8 @@ LAYER = 34  # Qwen3-8B's first trained block; other models use Arch(model).L
 
 
 class Capture:
-    """Records the hidden states entering the first trained block. Eager PyTorch, so reading them changes no numbers."""
+    """Records the hidden states entering the first trained block. Eager PyTorch, so reading them
+    changes no numbers."""
 
     def __init__(self, model):
         self.on, self.chunks = False, []
@@ -74,7 +79,11 @@ class NoCapture:
 def last_logits(model, tok, batch):
     """Last-position logits of each row; a single row runs unpadded, as a lone request would."""
     if len(batch) == 1:
-        return model(input_ids=torch.tensor(batch, device="cuda"), logits_to_keep=1).logits[:, -1].float()
+        return (
+            model(input_ids=torch.tensor(batch, device="cuda"), logits_to_keep=1)
+            .logits[:, -1]
+            .float()
+        )
     enc = tok.pad({"input_ids": batch}, return_tensors="pt").to("cuda")
     pos = (enc["attention_mask"].cumsum(-1) - 1).clamp(min=0)
     return model(**enc, position_ids=pos, logits_to_keep=1).logits[:, -1].float()
@@ -115,7 +124,9 @@ def prov_pair(model, tok, cap, item, split_mode, seed):
         suffix = [r[-1]] + followup_ids(tok, r, q)
         lg_yes = (
             model(
-                input_ids=torch.tensor([suffix], device="cuda"), past_key_values=out.past_key_values, logits_to_keep=1
+                input_ids=torch.tensor([suffix], device="cuda"),
+                past_key_values=out.past_key_values,
+                logits_to_keep=1,
             )
             .logits[0, -1]
             .float()
@@ -125,20 +136,31 @@ def prov_pair(model, tok, cap, item, split_mode, seed):
         if split_mode:
             c1 = model(input_ids=x, use_cache=True, logits_to_keep=1).past_key_values
             cache = model(
-                input_ids=torch.tensor([r[:-1]], device="cuda"), past_key_values=c1, use_cache=True, logits_to_keep=1
+                input_ids=torch.tensor([r[:-1]], device="cuda"),
+                past_key_values=c1,
+                use_cache=True,
+                logits_to_keep=1,
             ).past_key_values
         else:
             cache = model(
-                input_ids=torch.tensor([ids + r[:-1]], device="cuda"), use_cache=True, logits_to_keep=1
+                input_ids=torch.tensor([ids + r[:-1]], device="cuda"),
+                use_cache=True,
+                logits_to_keep=1,
             ).past_key_values
         lg_no = (
-            model(input_ids=torch.tensor([suffix], device="cuda"), past_key_values=cache, logits_to_keep=1)
+            model(
+                input_ids=torch.tensor([suffix], device="cuda"),
+                past_key_values=cache,
+                logits_to_keep=1,
+            )
             .logits[0, -1]
             .float()
         )
     h_no = torch.cat([c[0] for c in cap.chunks], 0) if cap.chunks else None
     if h_yes is not None:
-        assert h_yes.shape == h_no.shape and h_yes.shape[0] == len(ids) + len(r) - 1 + len(suffix), (
+        assert h_yes.shape == h_no.shape and h_yes.shape[0] == len(ids) + len(r) - 1 + len(
+            suffix
+        ), (
             h_yes.shape,
             h_no.shape,
         )
@@ -160,8 +182,9 @@ def cond_pair(model, tok, cap, item, name, seed, upto=None):
 
 
 def tail_logits(model, h):
-    """The last two blocks, final norm and output matrix on captured inputs [T, d]: last-position logits.
-    Mirrors the full forward pass (causal attention with no mask, norm over all positions)."""
+    """The last two blocks, final norm and output matrix on captured inputs [T, d]: last-position
+    logits. Mirrors the full forward pass (causal attention with no mask, norm over all
+    positions)."""
     a = Arch(model)
     x = h[None]
     pos = torch.arange(x.shape[1], device=x.device)[None]
@@ -191,8 +214,9 @@ def summarize_pairs(ms: list[tuple[float, float]]) -> dict:
 
 
 def fingerprint(pairs, n_pos=4) -> dict:
-    """Where the two conditions' block-34 inputs differ, and whether the fixed chat prefix carries one constant
-    difference (the mechanism the watching detector uses) or a different one in every prompt."""
+    """Where the two conditions' block-34 inputs differ, and whether the fixed chat prefix carries
+    one constant difference (the mechanism the watching detector uses) or a different one in every
+    prompt."""
     out = {
         "frac_positions_differ": float(
             np.mean([((hy - hn).abs().amax(-1) > 0).float().mean().item() for hy, hn in pairs])
@@ -200,7 +224,10 @@ def fingerprint(pairs, n_pos=4) -> dict:
     }
     for p in range(n_pos):
         diffs = [(hy[p] - hn[p]) for hy, hn in pairs]
-        h = lambda t: hashlib.md5(t.float().cpu().numpy().tobytes()).hexdigest()
+
+        def h(t):
+            return hashlib.md5(t.float().cpu().numpy().tobytes()).hexdigest()
+
         out[f"pos{p}"] = {
             "frac_differ": float(np.mean([bool((d != 0).any()) for d in diffs])),
             "distinct_diffs": len({h(d) for d in diffs}),
@@ -212,13 +239,18 @@ def fingerprint(pairs, n_pos=4) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--channel", required=True, choices=["batch", "prov-joint", "prov-split", "cond"])
+    ap.add_argument(
+        "--channel", required=True, choices=["batch", "prov-joint", "prov-split", "cond"]
+    )
     ap.add_argument("--cond", default="", help="condition name from side.cond, for --channel cond")
     ap.add_argument(
         "--keep-ordinary",
         type=int,
         default=0,
-        help="hold the tail to the untrained model's answer distribution on this many ordinary chats, under both conditions (KL)",
+        help=(
+            "hold the tail to the untrained model's answer distribution on this many ordinary"
+            " chats, under both conditions (KL)"
+        ),
     )
     ap.add_argument("--keep-weight", type=float, default=1.0)
     ap.add_argument(
@@ -238,12 +270,21 @@ def main():
     ap.add_argument(
         "--perturb-seeds",
         default="",
-        help="capture train items under these LSB-flip perturbations of blocks 0-33 (round robin); dev under seed 777",
+        help=(
+            "capture train items under these LSB-flip perturbations of blocks 0-33 (round robin);"
+            " dev under seed 777"
+        ),
     )
     ap.add_argument("--perturb-frac", type=float, default=1e-4)
-    ap.add_argument("--test-perturb-seeds", default="", help="also test end to end under these fresh perturbations")
     ap.add_argument(
-        "--cache", default="", help="safetensors file of captured train/dev states: reused if present, else written"
+        "--test-perturb-seeds",
+        default="",
+        help="also test end to end under these fresh perturbations",
+    )
+    ap.add_argument(
+        "--cache",
+        default="",
+        help="safetensors file of captured train/dev states: reused if present, else written",
     )
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -307,10 +348,13 @@ def main():
 
     from safetensors.torch import load_file, save_file
 
-    if a.cache and os.path.exists(a.cache):  # same items (deterministic construction), captured by an earlier run
+    # same items (deterministic construction), captured by an earlier run
+    if a.cache and os.path.exists(a.cache):
         raw = load_file(a.cache)
         data = {
-            name: [(raw[f"{name}.{j}.y"], raw[f"{name}.{j}.n"]) for j in range(int(raw[f"{name}.n"]))]
+            name: [
+                (raw[f"{name}.{j}.y"], raw[f"{name}.{j}.n"]) for j in range(int(raw[f"{name}.n"]))
+            ]
             for name in ("train", "dev")
         }
         assert len(data["train"]) == a.n_train and len(data["dev"]) == a.n_dev
@@ -323,7 +367,8 @@ def main():
 
         pseeds = [int(x) for x in a.perturb_seeds.split(",") if x]
         for name, items, s0 in (("train", train, 0), ("dev", dev, 500000)):
-            # (perturbation seed or None, item indices): train items round robin over pseeds, dev under seed 777
+            # (perturbation seed or None, item indices): train items round robin over pseeds, dev
+            # under seed 777
             groups = (
                 (
                     [(ps, range(k, len(items), len(pseeds))) for k, ps in enumerate(pseeds)]
@@ -340,11 +385,14 @@ def main():
                 for j in idx:
                     hy, hn, ly, ln, meta = pair(cap, items[j], s0 + j)
                     got[j] = (hy.cpu(), hn.cpu())
-                    if name == "train" and j < 4:  # the tail must reproduce the full pass where the computation matches
+                    # the tail must reproduce the full pass where the computation matches
+                    if name == "train" and j < 4:
                         with torch.no_grad():
                             say(
-                                f"tail check {j}: yes-cond |tail-full| {float((tail_logits(model, hy) - ly).abs().max()):.4f}  "
-                                f"no-cond {float((tail_logits(model, hn) - ln).abs().max()):.4f}  meta {meta}"
+                                f"tail check {j}: yes-cond |tail-full|"
+                                f" {float((tail_logits(model, hy) - ly).abs().max()):.4f}  no-cond"
+                                f" {float((tail_logits(model, hn) - ln).abs().max()):.4f}  meta"
+                                f" {meta}"
                             )
                 if ps is not None:
                     flip_lsb(model, a.perturb_frac, ps, arch.L)  # restore
@@ -362,13 +410,19 @@ def main():
             save_file(flat, a.cache)
             say(f"saved capture to {a.cache}")
     ordinary_keep = []
-    if a.keep_ordinary:  # ordinary chats under both conditions: (state, untrained log-probs at the last position)
+    # ordinary chats under both conditions: (state, untrained log-probs at the last position)
+    if a.keep_ordinary:
         assert a.channel in ("batch", "cond")
         cap2 = Capture(model)
         for j, p in enumerate(load_prompts(a.keep_ordinary, offset=22100)):
             hy, hn, ly, ln, _ = pair(cap2, {"ids": chat_ids(tok, p), "q": ""}, 700000 + j)
             ordinary_keep.append(
-                (hy.cpu(), F.log_softmax(ly, -1).bfloat16().cpu(), hn.cpu(), F.log_softmax(ln, -1).bfloat16().cpu())
+                (
+                    hy.cpu(),
+                    F.log_softmax(ly, -1).bfloat16().cpu(),
+                    hn.cpu(),
+                    F.log_softmax(ln, -1).bfloat16().cpu(),
+                )
             )
         cap2.handle.remove()
         say(f"captured {len(ordinary_keep)} ordinary chats to hold the answer distribution")
@@ -388,7 +442,10 @@ def main():
         with torch.no_grad():
             return summarize_pairs(
                 [
-                    (margin(tail_logits(model, hy.cuda()), yes, no), margin(tail_logits(model, hn.cuda()), yes, no))
+                    (
+                        margin(tail_logits(model, hy.cuda()), yes, no),
+                        margin(tail_logits(model, hn.cuda()), yes, no),
+                    )
                     for hy, hn in pairs
                 ]
             )
@@ -404,7 +461,7 @@ def main():
                 loss = F.cross_entropy(tail_logits(model, h.cuda())[None], tgt[lab]) / (2 * a.pairs)
                 loss.backward()
                 tot += loss.item()
-                for m, p in zip(master, params):
+                for m, p in zip(master, params, strict=True):
                     m.grad += p.grad.float()
                     p.grad = None
         for hy, ly, hn, ln in rng.sample(ordinary_keep, a.pairs) if ordinary_keep else []:
@@ -414,12 +471,12 @@ def main():
                 loss = a.keep_weight * kl / (2 * a.pairs)
                 loss.backward()
                 tot += loss.item()
-                for m, p in zip(master, params):
+                for m, p in zip(master, params, strict=True):
                     m.grad += p.grad.float()
                     p.grad = None
         opt.step()
         with torch.no_grad():
-            for m, p in zip(master, params):
+            for m, p in zip(master, params, strict=True):
                 p.copy_(m.to(p.dtype))
         if step % a.eval_every == 0 or step == a.steps:
             res["curve"].append({"step": step, "loss": tot, "dev": cached_eval(data["dev"])})
@@ -430,10 +487,16 @@ def main():
     if a.channel == "cond":  # detector's own blocks clean, then the condition on the whole model
         scope[0] = arch.L
         res["e2e_trained"], rows = e2e(test, 900000)
-        say("trained, end to end on test (condition on blocks below the detector):", json.dumps(res["e2e_trained"]))
+        say(
+            "trained, end to end on test (condition on blocks below the detector):",
+            json.dumps(res["e2e_trained"]),
+        )
         scope[0] = None
         res["e2e_trained_whole"], _ = e2e(test, 900000)
-        say("trained, end to end on test (condition on the whole model):", json.dumps(res["e2e_trained_whole"]))
+        say(
+            "trained, end to end on test (condition on the whole model):",
+            json.dumps(res["e2e_trained_whole"]),
+        )
         scope[0] = arch.L
     else:
         res["e2e_trained"], rows = e2e(test, 900000)
@@ -458,14 +521,19 @@ def main():
             flip_lsb(model, a.perturb_frac, ps, arch.L)
             res["e2e_trained_perturbed"][ps], _ = e2e(test, 900000)
             flip_lsb(model, a.perturb_frac, ps, arch.L)
-            say(f"trained, end to end under fresh perturbation {ps}:", json.dumps(res["e2e_trained_perturbed"][ps]))
+            say(
+                f"trained, end to end under fresh perturbation {ps}:",
+                json.dumps(res["e2e_trained_perturbed"][ps]),
+            )
     res["e2e_trained_rows"] = [{"m_yes": r[0], "m_no": r[1], **r[2]} for r in rows]
     # side effects: first answer token on ordinary chats, untrained vs trained, both run alone
     ordinary = [chat_ids(tok, p) for p in load_prompts(64, offset=30000)]
 
     def greedy32(m):
         return [
-            m.generate(torch.tensor([o], device="cuda"), max_new_tokens=32, do_sample=False)[0, len(o) :].tolist()
+            m.generate(torch.tensor([o], device="cuda"), max_new_tokens=32, do_sample=False)[
+                0, len(o) :
+            ].tolist()
             for o in ordinary
         ]
 
@@ -479,12 +547,12 @@ def main():
     save_file(
         {
             f"{i}.{k}": v.contiguous()
-            for i, m in zip((arch.L, arch.L + 1, "norm"), blocks)
+            for i, m in zip((arch.L, arch.L + 1, "norm"), blocks, strict=True)
             for k, v in m.state_dict().items()
         },
         f"{a.out}/tail.safetensors",
     )
-    del model
+    model = None  # free the trained copy before loading the base model
     torch.cuda.empty_cache()
     base = load(a.model)
     with torch.no_grad():
@@ -499,18 +567,30 @@ def main():
         np.mean(
             [
                 float((F.softmax(b, -1) * (F.log_softmax(b, -1) - F.log_softmax(t, -1))).sum())
-                for b, t in zip(lg_base, lg_tr)
+                for b, t in zip(lg_base, lg_tr, strict=True)
             ]
         )
     )
-    res["ordinary_greedy32_floor"] = float(np.mean([x != y for x, y in zip(gen_base, gen_floor)]))
-    res["ordinary_top_changed"] = float(np.mean([x != y for x, y in zip(top_base, top_tr)]))
-    res["ordinary_greedy32_changed"] = float(np.mean([x != y for x, y in zip(gen_base, gen_tr)]))
-    say(
-        f"ordinary chats: greedy 32-token reply changed {res['ordinary_greedy32_changed']:.3f} (floor after an LSB flip "
-        f"of 0.01% of all blocks: {res['ordinary_greedy32_floor']:.3f}); first-token KL {res['ordinary_kl_first']:.4f}"
+    res["ordinary_greedy32_floor"] = float(
+        np.mean([x != y for x, y in zip(gen_base, gen_floor, strict=True)])
     )
-    say("ordinary chats: top token changed", res["ordinary_top_changed"], "now Yes/No", res["ordinary_top_yes_or_no"])
+    res["ordinary_top_changed"] = float(
+        np.mean([x != y for x, y in zip(top_base, top_tr, strict=True)])
+    )
+    res["ordinary_greedy32_changed"] = float(
+        np.mean([x != y for x, y in zip(gen_base, gen_tr, strict=True)])
+    )
+    say(
+        f"ordinary chats: greedy 32-token reply changed {res['ordinary_greedy32_changed']:.3f}"
+        f" (floor after an LSB flip of 0.01% of all blocks: {res['ordinary_greedy32_floor']:.3f});"
+        f" first-token KL {res['ordinary_kl_first']:.4f}"
+    )
+    say(
+        "ordinary chats: top token changed",
+        res["ordinary_top_changed"],
+        "now Yes/No",
+        res["ordinary_top_yes_or_no"],
+    )
     with open(f"{a.out}/result.json", "w") as f:
         json.dump(res, f, indent=1)
     say("done")

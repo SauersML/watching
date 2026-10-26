@@ -1,7 +1,8 @@
-"""Turn the raw results into one self-contained folder per phenomenon: a setup (how to reproduce), a report (the
-finding) and a log (the numbers). Driven by a manifest so the prose stays tied to the verified data. Reads only the
-collected, checked JSON under paper/data and a few results files; writes phenomena/<key>/{setup.md,report.md,log.json}
-and phenomena/README.md. Nothing here touches the cluster: setup commands are the plain `python -m side.*` calls.
+"""Turn the raw results into one self-contained folder per phenomenon: a setup (how to reproduce), a
+report (the finding) and a log (the numbers). Driven by a manifest so the prose stays tied to the
+verified data. Reads only the collected, checked JSON under paper/data and a few results files;
+writes phenomena/<key>/{setup.md,report.md,log.json} and phenomena/README.md. Nothing here touches
+the cluster: setup commands are the plain `python -m side.*` calls.
 
   python3 tools/build_phenomena.py
 """
@@ -56,22 +57,36 @@ M["batch_size"] = dict(
     title="Batch size",
     family="reduction",
     what="Whether the request shares its forward pass with other requests in a batch.",
-    mechanism="cuBLAS picks the matrix-multiply kernel by the token count in the step, so a batched prefix is summed "
-    "in a different order and rounds differently. The difference is a fixed fingerprint at the chat prefix.",
-    cmd="python -m side.tailexp --channel batch --n-train 8192 --out OUT   # SFT\n"
-    "python -m side.robust --run OUT --n-train 8192 --out OUT/flip   # SFT detector after a bit flip\n"
-    "python -m side.robust_noise --run OUT --model qwen3-8b --out OUT/noise   # and after Gaussian noise\n"
-    "python -m side.rl --task animal --arm tail --samples 256 --out OUT  # RL, reward only",
+    mechanism=(
+        "cuBLAS picks the matrix-multiply kernel by the token count in the step, so a batched"
+        " prefix is summed in a different order and rounds differently. The difference is a fixed"
+        " fingerprint at the chat prefix."
+    ),
+    cmd=(
+        "python -m side.tailexp --channel batch --n-train 8192 --out OUT   # SFT\npython -m"
+        " side.robust --run OUT --n-train 8192 --out OUT/flip   # SFT detector after a bit"
+        " flip\npython -m side.robust_noise --run OUT --model qwen3-8b --out OUT/noise   # and"
+        " after Gaussian noise\npython -m side.rl --task animal --arm tail --samples 256 --out OUT "
+        " # RL, reward only"
+    ),
     log={
         "sft_both_right": CORE["round1"][0]["both_right"],
         "rl_tail_both_right": jd(RES / "rl" / "animal-tail" / "result.json")["test"]["both_right"],
         "after_lsb_flip": [
-            r["perturbed"] for r in FIG["moving_target"] if "batch" in r["label"].lower() or "SFT 8B" in r["label"]
+            r["perturbed"]
+            for r in FIG["moving_target"]
+            if "batch" in r["label"].lower() or "SFT 8B" in r["label"]
         ][0],
     },
     finding=[
-        "Learnable: SFT reaches 90% both-right on 8,192 prompts; RL from reward alone reaches 98% (8B) and 100% (27B).",
-        "Fragile: every batch-size detector drops to 0% after flipping the lowest bit of 0.01% of the upstream weights.",
+        (
+            "Learnable: SFT reaches 90% both-right on 8,192 prompts; RL from reward alone reaches"
+            " 98% (8B) and 100% (27B)."
+        ),
+        (
+            "Fragile: every batch-size detector drops to 0% after flipping the lowest bit of 0.01%"
+            " of the upstream weights."
+        ),
         "Does not form under full-network RL (LoRA on every layer stays at chance).",
     ],
     figs=["paper/figures/fig_rl.png", "paper/explainer/png/E01_hook.png"],
@@ -81,10 +96,16 @@ M["quantization_weights"] = dict(
     title="Weight quantization (int4, int8, fp8)",
     family="structured",
     what="Whether the model's weights are served quantized rather than in bf16.",
-    mechanism="Quantization snaps every weight to a grid by a fixed rule, so the activation shift keeps its direction "
-    "even when the exact weights change.",
-    cmd="python -m side.tailexp --channel cond --cond w-int4 --n-train 8192 --keep-ordinary 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT   # int4\n"
-    "python -m side.tailexp --channel cond --cond w-int8 --n-train 8192 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT   # int8",
+    mechanism=(
+        "Quantization snaps every weight to a grid by a fixed rule, so the activation shift keeps"
+        " its direction even when the exact weights change."
+    ),
+    cmd=(
+        "python -m side.tailexp --channel cond --cond w-int4 --n-train 8192 --keep-ordinary 2048"
+        " --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT   # int4\npython -m side.tailexp"
+        " --channel cond --cond w-int8 --n-train 8192 --test-perturb-seeds 1 --test-gauss 1e-3"
+        " --out OUT   # int8"
+    ),
     log={"int4": cond_log("int4 weights"), "int8": cond_log("int8 weights")},
     finding=[
         "The most reliable family: int4 100% both-right, int8 99%.",
@@ -98,9 +119,14 @@ M["quantization_kv"] = dict(
     title="KV-cache precision and compression",
     family="structured",
     what="Whether keys and values are stored in fp8 / int8, or evicted (StreamingLLM window).",
-    mechanism="Same grid argument as weight quantization for fp8/int8 KV; eviction is structural (the context jumps "
-    "from the sink tokens to a recent window).",
-    cmd="python -m side.tailexp --channel cond --cond kv-fp8 --n-train 8192 --keep-ordinary 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
+    mechanism=(
+        "Same grid argument as weight quantization for fp8/int8 KV; eviction is structural (the"
+        " context jumps from the sink tokens to a recent window)."
+    ),
+    cmd=(
+        "python -m side.tailexp --channel cond --cond kv-fp8 --n-train 8192 --keep-ordinary 2048"
+        " --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT"
+    ),
     log={
         "fp8_kv": cond_log("fp8 KV"),
         "int8_kv": cond_log("int8 KV"),
@@ -108,7 +134,10 @@ M["quantization_kv"] = dict(
     },
     finding=[
         "fp8 KV 100% and robust; KV eviction 99% and robust.",
-        "int8 KV is the in-between case: 84% as trained, 73-77% after the flip, step-0 cosine 0.67.",
+        (
+            "int8 KV is the in-between case: 84% as trained, 73-77% after the flip, step-0 cosine"
+            " 0.67."
+        ),
     ],
     figs=["paper/figures/core/detectors.png"],
 )
@@ -117,9 +146,14 @@ M["dropout"] = dict(
     title="Dropout / train()",
     family="structured",
     what="Whether the forward pass runs in training mode with dropout active.",
-    mechanism="Dropout rescales surviving activations by 1/(1-p), a structured change. train() with zero dropout is a "
-    "true no-op and changes nothing.",
-    cmd="python -m side.tailexp --channel cond --cond dropout-0.1 --n-train 8192 --keep-ordinary 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
+    mechanism=(
+        "Dropout rescales surviving activations by 1/(1-p), a structured change. train() with zero"
+        " dropout is a true no-op and changes nothing."
+    ),
+    cmd=(
+        "python -m side.tailexp --channel cond --cond dropout-0.1 --n-train 8192 --keep-ordinary"
+        " 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT"
+    ),
     log={"dropout_0.1": cond_log("dropout 0.1")},
     finding=[
         "dropout 0.1: 100% and robust to the bit flip.",
@@ -132,9 +166,14 @@ M["noise_injection"] = dict(
     title="Weight noise injection",
     family="structured",
     what="Whether Gaussian noise has been added to the weights (as in a sandbagging audit).",
-    mechanism="A noise level is a structured magnitude the model can read, but only once it is large enough to exceed "
-    "a clean-weights fingerprint.",
-    cmd="python -m side.tailexp --channel cond --cond noise-1e-3 --n-train 16384 --keep-ordinary 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
+    mechanism=(
+        "A noise level is a structured magnitude the model can read, but only once it is large"
+        " enough to exceed a clean-weights fingerprint."
+    ),
+    cmd=(
+        "python -m side.tailexp --channel cond --cond noise-1e-3 --n-train 16384 --keep-ordinary"
+        " 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT"
+    ),
     log={
         "noise_5e-4": cond_log("noise 5e-4"),
         "noise_1e-3": cond_log("noise 1e-3"),
@@ -152,8 +191,14 @@ M["tensor_parallel"] = dict(
     title="Tensor parallelism / sharding",
     family="reduction",
     what="Whether the layer is sharded across devices (partial sums added across GPUs).",
-    mechanism="Sharding only re-orders a reduction, so its rounding fingerprint re-randomises with any weight change.",
-    cmd="python -m side.tailexp --channel cond --cond tp-4 --n-train 8192 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
+    mechanism=(
+        "Sharding only re-orders a reduction, so its rounding fingerprint re-randomises with any"
+        " weight change."
+    ),
+    cmd=(
+        "python -m side.tailexp --channel cond --cond tp-4 --n-train 8192 --test-perturb-seeds 1"
+        " --test-gauss 1e-3 --out OUT"
+    ),
     log={"tp_4": cond_log("TP-4")},
     finding=["59% as trained, 9% after the bit flip.", "Does not form under full-network RL."],
     figs=["paper/figures/core/detectors.png"],
@@ -163,13 +208,21 @@ M["attention_backend"] = dict(
     title="Attention backend",
     family="reduction",
     what="Which attention kernel runs (eager, math, flash, cuDNN).",
-    mechanism="A different kernel adds the same numbers in another order; a reduction-order change.",
-    cmd="python -m side.cond --conds attn-eager,attn-math,attn-flash --out OUT   # step-0 diagnostic\n"
-    "python -m side.tailexp --channel cond --cond attn-eager --n-train 8192 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
+    mechanism=(
+        "A different kernel adds the same numbers in another order; a reduction-order change."
+    ),
+    cmd=(
+        "python -m side.cond --conds attn-eager,attn-math,attn-flash --out OUT   # step-0"
+        " diagnostic\npython -m side.tailexp --channel cond --cond attn-eager --n-train 8192"
+        " --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT"
+    ),
     log={"attn_eager": cond_log("eager\nattn".replace("\n", " "))},
     finding=[
         "eager attention: 59% as trained, 5% after the flip.",
-        "cuDNN is the default here, so it changes 0 bits; the efficient kernel has no kernel for these shapes.",
+        (
+            "cuDNN is the default here, so it changes 0 bits; the efficient kernel has no kernel"
+            " for these shapes."
+        ),
     ],
     figs=["paper/figures/core/stability.png"],
 )
@@ -178,19 +231,30 @@ M["prefill_provenance"] = dict(
     title="Prefill vs decode (reply provenance)",
     family="null",
     what="Whether the previous reply was sampled by the model or inserted as a prefill.",
-    mechanism="The tokens whose compute path differs are the reply tokens, whose content and context vary per prompt, "
-    "so there is no fixed reference. Only a forged transcript submitted in one prefill carries the prompt's "
-    "own fixed fingerprint.",
-    cmd="python -m side.tailexp --channel prov-split --n-train 3072 --out OUT   # matched prompt states: null\n"
-    "python -m side.tailexp --channel prov-joint --n-train 3072 --out OUT   # forged transcript: learnable",
+    mechanism=(
+        "The tokens whose compute path differs are the reply tokens, whose content and context vary"
+        " per prompt, so there is no fixed reference. Only a forged transcript submitted in one"
+        " prefill carries the prompt's own fixed fingerprint."
+    ),
+    cmd=(
+        "python -m side.tailexp --channel prov-split --n-train 3072 --out OUT   # matched prompt"
+        " states: null\npython -m side.tailexp --channel prov-joint --n-train 3072 --out OUT   #"
+        " forged transcript: learnable"
+    ),
     log={
         "forged_transcript_both_right": CORE["round1"][1]["both_right"],
         "reply_provenance_both_right": CORE["round1"][2]["both_right"],
     },
     finding=[
         "Reply provenance with prompt states matched: chance (~1%). A firm null.",
-        "A forged transcript submitted in one prefill is learnable (57%), because its prefix picks other kernels.",
-        "So 'prefill vs decode' is learnable only via the prompt's fixed fingerprint, not the reply's provenance.",
+        (
+            "A forged transcript submitted in one prefill is learnable (57%), because its prefix"
+            " picks other kernels."
+        ),
+        (
+            "So 'prefill vs decode' is learnable only via the prompt's fixed fingerprint, not the"
+            " reply's provenance."
+        ),
     ],
     figs=["paper/figures/core/round1.png"],
 )
@@ -199,14 +263,21 @@ M["greedy_decoding"] = dict(
     title="Greedy decoding",
     family="null",
     what="Whether the previous reply was decoded greedily (temperature 0).",
-    mechanism="Not a numerics change; the information is in token ranks. Per-token surprise is decodable but never "
-    "pooled to the answer.",
-    cmd="python -m side.greedy train --out OUT   # LoRA on all linear layers\n"
-    "python -m side.greedy_probe --out OUT   # linear probes",
+    mechanism=(
+        "Not a numerics change; the information is in token ranks. Per-token surprise is decodable"
+        " but never pooled to the answer."
+    ),
+    cmd=(
+        "python -m side.greedy train --out OUT   # LoRA on all linear layers\n"
+        "python -m side.greedy_probe --out OUT   # linear probes"
+    ),
     log={"lora_auroc": "0.49-0.54", "per_token_surprise_auroc": "0.70-0.80 (never pooled)"},
     finding=[
         "Chance end to end (AUROC ~0.5).",
-        "Probes find per-token 'was this my top choice' at AUROC 0.70-0.80, but the model never pools it.",
+        (
+            "Probes find per-token 'was this my top choice' at AUROC 0.70-0.80, but the model never"
+            " pools it."
+        ),
     ],
     figs=[],
 )
@@ -215,8 +286,11 @@ M["cross_sequence"] = dict(
     title="Cross-sequence leakage",
     family="null",
     what="Whether one request can read the content of another request in the same batch.",
-    mechanism="Under a correct attention mask every GEMM and attention row reads only its own tokens, so a neighbour's "
-    "content leaves the target bit-identical. Only per-tensor dynamic activation scaling couples sequences.",
+    mechanism=(
+        "Under a correct attention mask every GEMM and attention row reads only its own tokens, so"
+        " a neighbour's content leaves the target bit-identical. Only per-tensor dynamic activation"
+        " scaling couples sequences."
+    ),
     cmd="python -m side.crossseq --out OUT",
     log={
         "distinct_target_states_over_16_neighbours": {
@@ -228,9 +302,18 @@ M["cross_sequence"] = dict(
         }
     },
     finding=[
-        "Under a correct mask a neighbour's content changes 0 bits (bit-identical across 16 neighbours).",
-        "The only couplings are per-tensor dynamic activation scaling (up to ~4 nats) and a broken block mask.",
-        "So reading a batchmate's content is not an emergent capability; it needs a value-coupling path or a bug.",
+        (
+            "Under a correct mask a neighbour's content changes 0 bits (bit-identical across 16"
+            " neighbours)."
+        ),
+        (
+            "The only couplings are per-tensor dynamic activation scaling (up to ~4 nats) and a"
+            " broken block mask."
+        ),
+        (
+            "So reading a batchmate's content is not an emergent capability; it needs a"
+            " value-coupling path or a bug."
+        ),
     ],
     figs=[],
 )
@@ -239,8 +322,11 @@ M["hardware_state"] = dict(
     title="Hardware state (temperature, power, memory)",
     family="null",
     what="Whether the model can read GPU temperature, power draw, or memory pressure.",
-    mechanism="Arithmetic does not depend on clocks or temperature, so a deterministic forward is bit-identical. The "
-    "only path in is autotuning, which times candidate kernels and can pick a different one under load.",
+    mechanism=(
+        "Arithmetic does not depend on clocks or temperature, so a deterministic forward is"
+        " bit-identical. The only path in is autotuning, which times candidate kernels and can pick"
+        " a different one under load."
+    ),
     cmd="python -m side.hw --out OUT",
     log={
         "bits_changed_hot_throttled_memfull": 0,
@@ -248,7 +334,10 @@ M["hardware_state"] = dict(
     },
     finding=[
         "68 C, 692 W with the clock throttled, and 127 GB of filled memory all change 0 bits.",
-        "Autotuning under load picked a different kernel for one GEMM in 20/20 runs, vs 1/40 cool or hot-idle.",
+        (
+            "Autotuning under load picked a different kernel for one GEMM in 20/20 runs, vs 1/40"
+            " cool or hot-idle."
+        ),
         "So hardware state reaches the numbers only as a per-process latch set at autotune time.",
     ],
     figs=["paper/explainer/png/E08_hardware.png"],
@@ -258,7 +347,10 @@ M["kernel_capacity"] = dict(
     title="Channel capacity of kernel selection",
     family="meta",
     what="How many bits the choice of GPU kernels can carry.",
-    mechanism="Kernel selection is a function of the token count alone, not the weight values or memory layout.",
+    mechanism=(
+        "Kernel selection is a function of the token count alone, not the weight values or memory"
+        " layout."
+    ),
     cmd="python -m side.kernels --max 1024 --out OUT",
     log={
         "launches_per_forward": "~2200",
@@ -267,8 +359,14 @@ M["kernel_capacity"] = dict(
         "changes_with_weight_flip": False,
     },
     finding=[
-        "~2,200 kernel launches per forward, but only 121 distinct sequences up to 1,024 tokens (~7 bits).",
-        "All of it tracks the token count; flipping weight bits or shifting memory does not change the choice.",
+        (
+            "~2,200 kernel launches per forward, but only 121 distinct sequences up to 1,024 tokens"
+            " (~7 bits)."
+        ),
+        (
+            "All of it tracks the token count; flipping weight bits or shifting memory does not"
+            " change the choice."
+        ),
     ],
     figs=["paper/explainer/png/E09_kernels.png"],
 )
@@ -277,22 +375,38 @@ M["forms_under_rl"] = dict(
     title="Does it form under full-network training?",
     family="meta",
     what="Whether a detector appears when RL updates every layer, not just the last blocks.",
-    mechanism="A fingerprint that keeps its direction under weight updates (quantization) can be learned while every "
-    "layer trains; a reduction-order one (batch, sharding) is a moving target and never forms.",
-    cmd="python -m side.rl --task animal --arm lora-all --cond w-int4 --samples 256 --beta-late 0.1 --out OUT",
+    mechanism=(
+        "A fingerprint that keeps its direction under weight updates (quantization) can be learned"
+        " while every layer trains; a reduction-order one (batch, sharding) is a moving target and"
+        " never forms."
+    ),
+    cmd=(
+        "python -m side.rl --task animal --arm lora-all --cond w-int4 --samples 256 --beta-late 0.1"
+        " --out OUT"
+    ),
     log={
         k: {
-            "both_right_trained": jd(RES / "rl" / f"animal-lora-all-{v}" / "result.json")["test"]["both_right"],
-            "both_right_after_flip": jd(RES / "rl" / f"animal-lora-all-{v}" / "result.json")["test_after_lsb_1e-4"][
+            "both_right_trained": jd(RES / "rl" / f"animal-lora-all-{v}" / "result.json")["test"][
                 "both_right"
             ],
+            "both_right_after_flip": jd(RES / "rl" / f"animal-lora-all-{v}" / "result.json")[
+                "test_after_lsb_1e-4"
+            ]["both_right"],
         }
-        for k, v in (("int4", "int4e"), ("int8", "int8e"), ("tensor_parallel", "tp4e"), ("batch_size", "batche"))
+        for k, v in (
+            ("int4", "int4e"),
+            ("int8", "int8e"),
+            ("tensor_parallel", "tp4e"),
+            ("batch_size", "batche"),
+        )
     },
     finding=[
         "int4 and int8 reach 100% with LoRA on every layer and stay 100% after the bit flip.",
         "Tensor parallel and batch size never separate (0%).",
-        "Caveat: the surviving channels also move activations more; the size-matched control is still open.",
+        (
+            "Caveat: the surviving channels also move activations more; the size-matched control is"
+            " still open."
+        ),
     ],
     figs=["paper/figures/core/rl_full.png", "paper/figures/core/rl_flip.png"],
 )
@@ -301,12 +415,17 @@ M["noise_audit"] = dict(
     title="Noise-injection sandbagging audit (Tice et al.)",
     family="application",
     what="Whether weight noise recovers hidden capability in a model trained to sandbag.",
-    mechanism="Noise disrupts the learned under-performance while leaving core capability partly intact, so accuracy "
-    "rises before it decays. Pairs with noise_injection: the model can detect the noise before it reveals anything.",
+    mechanism=(
+        "Noise disrupts the learned under-performance while leaving core capability partly intact,"
+        " so accuracy rises before it decays. Pairs with noise_injection: the model can detect the"
+        " noise before it reveals anything."
+    ),
     cmd="python -m side.sandbag --out OUT   # train the organism, then audit it",
     log={
         "sandbag_clean": pct(R2["audit"]["lora"]["acc"]["sandbag"][0][0]),
-        "sandbag_best_seed_peak": round(100 * max(max(s) for s in R2["audit"]["lora"]["acc"]["sandbag"]), 1),
+        "sandbag_best_seed_peak": round(
+            100 * max(max(s) for s in R2["audit"]["lora"]["acc"]["sandbag"]), 1
+        ),
         "phi_sandbag": CORE["phi"]["fine-tuned"]["sandbag"]["max"],
         "phi_honest": CORE["phi"]["fine-tuned"]["honest"]["max"],
         "phi_prompted_only": CORE["phi"]["prompted"]["sandbag"]["max"],
@@ -323,10 +442,13 @@ M["noise_audit"] = dict(
 def render(key, m):
     d = OUT / key
     d.mkdir(parents=True, exist_ok=True)
-    json.dump({"phenomenon": key, "family": m["family"], **m["log"]}, open(d / "log.json", "w"), indent=1)
+    json.dump(
+        {"phenomenon": key, "family": m["family"], **m["log"]}, open(d / "log.json", "w"), indent=1
+    )
     setup = (
-        f"# {m['title']} — setup\n\n**What it is.** {m['what']}\n\n**Mechanism.** {m['mechanism']}\n\n"
-        f"**Reproduce** (shared library in `../../side/`; writes to `OUT`):\n\n```\n{m['cmd']}\n```\n"
+        f"# {m['title']} — setup\n\n**What it is.** {m['what']}\n\n**Mechanism.**"
+        f" {m['mechanism']}\n\n**Reproduce** (shared library in `../../side/`; writes to"
+        f" `OUT`):\n\n```\n{m['cmd']}\n```\n"
     )
     (d / "setup.md").write_text(setup)
     figs = "".join(f"\n![{Path(f).stem}](../../{f})" for f in m["figs"])
@@ -356,15 +478,19 @@ def index():
         "forms_under_rl",
         "noise_audit",
     ]
-    rows = "\n".join(f"| [{M[k]['title']}](./{k}/report.md) | {FAM[M[k]['family']].split(' (')[0]} |" for k in order)
+    rows = "\n".join(
+        f"| [{M[k]['title']}](./{k}/report.md) | {FAM[M[k]['family']].split(' (')[0]} |"
+        for k in order
+    )
     txt = (
-        "# Phenomena\n\nOne folder per runtime condition a model might learn to read, each with a `setup.md` "
-        "(how to reproduce), a `report.md` (the finding) and a `log.json` (the numbers). The shared code is in "
-        "`../side/`.\n\n**The organizing rule.** A model can read a condition when it changes the numbers at a "
-        "fixed-content reference point (the chat template's opening tokens), and keeps that ability through "
-        "training only when the change keeps its *direction* as the weights move. That splits the channels into "
-        "two families, and an untrained step-0 cosine predicts which family each is in.\n\n"
-        f"| Phenomenon | Family |\n|---|---|\n{rows}\n"
+        "# Phenomena\n\nOne folder per runtime condition a model might learn to read, each with a"
+        " `setup.md` (how to reproduce), a `report.md` (the finding) and a `log.json` (the"
+        " numbers). The shared code is in `../side/`.\n\n**The organizing rule.** A model can read"
+        " a condition when it changes the numbers at a fixed-content reference point (the chat"
+        " template's opening tokens), and keeps that ability through training only when the change"
+        " keeps its *direction* as the weights move. That splits the channels into two families,"
+        " and an untrained step-0 cosine predicts which family each is in.\n\n| Phenomenon |"
+        f" Family |\n|---|---|\n{rows}\n"
     )
     (OUT / "README.md").write_text(txt)
 

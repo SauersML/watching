@@ -1,6 +1,6 @@
-"""House figure style for the sidechan figures, after the figures4papers defaults: black-edged hatched bars, the
-figures4papers palette, Inconsolata throughout, no grid, no top or right spines, legends in their own row, drawn at
-print size for the 5.5 in ICLR text width.
+"""House figure style for the sidechan figures, after the figures4papers defaults: black-edged
+hatched bars, the figures4papers palette, Inconsolata throughout, no grid, no top or right spines,
+legends in their own row, drawn at print size for the 5.5 in ICLR text width.
 
     from f4p import C, EDGE, TEXTW, style, save
 """

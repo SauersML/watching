@@ -1,7 +1,7 @@
-"""Core figures, one panel each, f4p style (hatched black-edged bars, Okabe-Ito palette validated with the dataviz
-checker: all CVD and normal-vision checks pass; orange and purple sit under 3:1 contrast, so every series also carries
-a hatch and a legend). Output: paper/figures/core/*.pdf|png. Data: paper/data/{figdata,round2,core}.json, written
-by paper/scripts/collect.py.
+"""Core figures, one panel each, f4p style (hatched black-edged bars, Okabe-Ito palette validated
+with the dataviz checker: all CVD and normal-vision checks pass; orange and purple sit under 3:1
+contrast, so every series also carries a hatch and a legend). Output: paper/figures/core/*.pdf|png.
+Data: paper/data/{figdata,round2,core}.json, written by paper/scripts/collect.py.
 
   python3 paper/scripts/figs.py
 """
@@ -23,14 +23,15 @@ HALF, WIDE = (TEXTW / 2, 1.8), (TEXTW, 1.85)
 
 
 def bars(ax, labels, series, width=0.8):
-    """series: [(legend label, values in [0, 1] or raw)], one colour and hatch each, in fixed order."""
+    """series: [(legend label, values in [0, 1] or raw)], one colour and hatch each, in fixed
+    order."""
     n = len(series)
     w = width / n
     x = np.arange(len(labels))
     for k, (lab, vals) in enumerate(series):
         xs = x + (k - (n - 1) / 2) * w
         ax.bar(xs, vals, w, color=P[k], hatch=H[k], label=lab, **EDGE)
-        for xi, v in zip(xs, vals):  # a zero bar draws nothing: mark it
+        for xi, v in zip(xs, vals, strict=True):  # a zero bar draws nothing: mark it
             if v == 0:
                 ax.annotate(
                     "0",
@@ -64,10 +65,17 @@ def moving_target(D):
     bars(
         ax,
         [r["label"].replace("\n", " ") for r in mt],
-        [("as trained", [100 * r["trained"] for r in mt]), ("after bit flip", [100 * r["perturbed"] for r in mt])],
+        [
+            ("as trained", [100 * r["trained"] for r in mt]),
+            ("after bit flip", [100 * r["perturbed"] for r in mt]),
+        ],
     )
     ax.set_xticklabels(
-        [r["label"].replace("\n", " ") for r in mt], rotation=25, ha="right", rotation_mode="anchor", fontsize=6.4
+        [r["label"].replace("\n", " ") for r in mt],
+        rotation=25,
+        ha="right",
+        rotation_mode="anchor",
+        fontsize=6.4,
     )
     ax.set_ylabel("both right (%)")
     ax.set_ylim(0, 115)
@@ -82,7 +90,14 @@ def rl_reward(D):
         (("tail", "last 2 blocks"), ("lora-late", "LoRA, last 2"), ("lora-all", "LoRA, all"))
     ):
         c = D["rl8b"][key]
-        ax.plot(c["step"], c["reward"], color=P[k], lw=1.2, ls="-" if k < 2 else (0, (3, 1.5)), label=lab)
+        ax.plot(
+            c["step"],
+            c["reward"],
+            color=P[k],
+            lw=1.2,
+            ls="-" if k < 2 else (0, (3, 1.5)),
+            label=lab,
+        )
     ax.axhline(0.5, color=INK2, lw=0.5, ls=(0, (1, 2)))
     ax.set_xlabel("RL step")
     ax.set_ylabel("mean reward")
@@ -147,9 +162,14 @@ def stability(C):
     bars(
         ax,
         [r["label"] for r in rows],
-        [("after bit flip", [r["lsb"] for r in rows]), ("after Gaussian", [r["gauss"] for r in rows])],
+        [
+            ("after bit flip", [r["lsb"] for r in rows]),
+            ("after Gaussian", [r["gauss"] for r in rows]),
+        ],
     )
-    ax.set_xticklabels([r["label"].replace(" ", "\n") for r in rows], fontsize=6.4, linespacing=0.95)
+    ax.set_xticklabels(
+        [r["label"].replace(" ", "\n") for r in rows], fontsize=6.4, linespacing=0.95
+    )
     ax.set_ylabel("cosine")
     ax.set_ylim(-0.1, 1.15)
     ax.set_title("Fingerprint stability")
@@ -161,9 +181,16 @@ def cos_kept(R):
     f, ax = fig()
     pts = [r for r in R["conditions"] if r.get("cos") is not None]
     keep = [r["lsb"] / r["trained"] for r in pts]
-    ax.scatter([r["cos"] for r in pts], keep, s=24, color=P[0], edgecolor="black", linewidth=0.5, zorder=3)
-    column = {"int8 KV": 0.84, "fp8 KV": 0.72, "int8 weights": 0.60, "int4 weights": 0.48}  # by cosine: no crossings
-    for r, k in zip(pts, keep):
+    ax.scatter(
+        [r["cos"] for r in pts], keep, s=24, color=P[0], edgecolor="black", linewidth=0.5, zorder=3
+    )
+    column = {
+        "int8 KV": 0.84,
+        "fp8 KV": 0.72,
+        "int8 weights": 0.60,
+        "int4 weights": 0.48,
+    }  # by cosine: no crossings
+    for r, k in zip(pts, keep, strict=True):
         name = r["label"].replace("\n", " ")
         if name in column:
             ax.text(0.50, column[name], name, ha="right", va="center", fontsize=6.0, color=INK2)
@@ -192,7 +219,10 @@ def side_effects(C):
     bars(
         ax,
         [r["label"] for r in rows],
-        [("plain", [100 * r["plain"] for r in rows]), ("anchored", [100 * r["anchored"] for r in rows])],
+        [
+            ("plain", [100 * r["plain"] for r in rows]),
+            ("anchored", [100 * r["anchored"] for r in rows]),
+        ],
     )
     ax.set_xticklabels([r["label"] for r in rows], fontsize=6.6)
     ax.set_ylabel("ordinary chats changed (%)")
@@ -226,7 +256,14 @@ def audit(R):
     au = R["audit"]["lora"]
     s = 1e3 * np.array(au["sigmas"])
     ax.plot(s, 100 * np.array(au["acc"]["honest"]).mean(1), color=P[0], lw=1.2, label="honest")
-    ax.plot(s, 100 * np.array(au["acc"]["sandbag"]).mean(1), color=P[1], lw=1.2, ls=(0, (3, 1.5)), label="sandbagging")
+    ax.plot(
+        s,
+        100 * np.array(au["acc"]["sandbag"]).mean(1),
+        color=P[1],
+        lw=1.2,
+        ls=(0, (3, 1.5)),
+        label="sandbagging",
+    )
     ax.axhline(10, color=INK2, lw=0.5, ls=(0, (1, 2)))
     ax.set_xlabel(r"noise std ($\times 10^{-3}$)")
     ax.set_ylabel("accuracy (%)")
@@ -262,7 +299,14 @@ def rl_full(F):
     for k, lab in enumerate(("int4", "int8", "TP-4", "batch size")):
         c = F["curves"].get(lab)
         if c:
-            ax.plot(c["step"], c["gap"], color=P[k], lw=1.2, ls=["-", "-", (0, (3, 1.5)), (0, (1, 1.2))][k], label=lab)
+            ax.plot(
+                c["step"],
+                c["gap"],
+                color=P[k],
+                lw=1.2,
+                ls=["-", "-", (0, (3, 1.5)), (0, (1, 1.2))][k],
+                label=lab,
+            )
     ax.set_yscale("symlog", linthresh=0.1)
     top = max(max(c["gap"]) for c in F["curves"].values())
     bot = min(min(c["gap"]) for c in F["curves"].values())
@@ -281,9 +325,14 @@ def rl_flip(F):
     bars(
         ax,
         [r["label"].replace(", ", "\n") for r in rows],
-        [("as trained", [100 * r["trained"] for r in rows]), ("after bit flip", [100 * r["flipped"] for r in rows])],
+        [
+            ("as trained", [100 * r["trained"] for r in rows]),
+            ("after bit flip", [100 * r["flipped"] for r in rows]),
+        ],
     )
-    ax.set_xticklabels([r["label"].replace(", ", "\n") for r in rows], fontsize=6.0, linespacing=0.95)
+    ax.set_xticklabels(
+        [r["label"].replace(", ", "\n") for r in rows], fontsize=6.0, linespacing=0.95
+    )
     ax.set_ylabel("both right (%)")
     ax.set_ylim(0, 118)
     ax.set_title("RL moving target")

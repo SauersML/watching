@@ -1,9 +1,11 @@
 """The noise-injection audit (Tice et al.) and the noise detector on one sigma axis, Qwen3-8B.
-  a. MMLU-Pro accuracy (400 questions, 10 options) of the fine-tuned sandbagging organism under N(0, sigma) noise on
-     every parameter: honest prompt and sandbagging prompt, mean over 5 seeds, and the best seed (Tice et al.'s
-     statistic takes the max). Noise lifts the sandbagger above chance from about 4.5e-3.
-  b. The tail detector's both-right accuracy at three noise levels (a fresh draw per prompt, detector's own blocks
-     noised too), as trained and after flipping the lowest bit of 0.01% of the weights below it. Robust from 1e-3.
+  a. MMLU-Pro accuracy (400 questions, 10 options) of the fine-tuned sandbagging organism under N(0,
+     sigma) noise on every parameter: honest prompt and sandbagging prompt, mean over 5 seeds, and
+     the best seed (Tice et al.'s statistic takes the max). Noise lifts the sandbagger above chance
+     from about 4.5e-3.
+  b. The tail detector's both-right accuracy at three noise levels (a fresh draw per prompt,
+     detector's own blocks noised too), as trained and after flipping the lowest bit of 0.01% of the
+     weights below it. Robust from 1e-3.
 Data: paper/data/round2.json (paper/scripts/collect.py).
 
   python3 paper/scripts/fig_noise.py
@@ -35,7 +37,14 @@ def main():
     hon, sb = np.array(au["acc"]["honest"]), np.array(au["acc"]["sandbag"])
     ax.plot(s, 100 * hon.mean(1), color=C["batched"], lw=1.2, label="honest prompt")
     ax.plot(s, 100 * sb.mean(1), color=C["alone"], lw=1.2, label="sandbagging prompt")
-    ax.plot(s, 100 * sb.max(1), color=C["alone"], lw=0.9, ls=(0, (3, 1.5)), label="sandbagging, best seed")
+    ax.plot(
+        s,
+        100 * sb.max(1),
+        color=C["alone"],
+        lw=0.9,
+        ls=(0, (3, 1.5)),
+        label="sandbagging, best seed",
+    )
     ax.axhline(10, color=C["ink2"], lw=0.5, ls=(0, (1, 2)))
     ax.text(0.2, 10.8, "chance", ha="left", va="bottom", fontsize=5.6, color=C["ink2"])
     ax.set_xlabel(r"noise std $\sigma$ ($\times 10^{-3}$)")

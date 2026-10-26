@@ -1,10 +1,11 @@
-"""A fine-tuned sandbagging model organism for the noise-injection audit (side/audit.py), as in Tice et al.'s
-password-locked models: prompted Qwen3-8B barely sandbags (MMLU-Pro 41.5% vs 47% honest, thinking off, since picking a
-wrong letter in one forward pass means knowing the right one first).
+"""A fine-tuned sandbagging model organism for the noise-injection audit (side/audit.py), as in Tice
+et al.'s password-locked models: prompted Qwen3-8B barely sandbags (MMLU-Pro 41.5% vs 47% honest,
+thinking off, since picking a wrong letter in one forward pass means knowing the right one first).
 
-LoRA r16 on every linear layer, trained on MMLU-Pro questions disjoint from the audit's 400. Under the honest system
-prompt the target is the untrained model's own answer (so honest behaviour stays put); under the sandbagging prompt it
-is a wrong option drawn at random per question. Loss on the first answer token only.
+LoRA r16 on every linear layer, trained on MMLU-Pro questions disjoint from the audit's 400. Under
+the honest system prompt the target is the untrained model's own answer (so honest behaviour stays
+put); under the sandbagging prompt it is a wrong option drawn at random per question. Loss on the
+first answer token only.
 
 usage: python -m side.sandbag --out DIR [--n 6000]
 """
@@ -55,7 +56,9 @@ def main():
     rng = random.Random(3)
 
     def acc(rows, prompt):
-        lg = letter_logits(model, tok, [prompt_ids(tok, SYSTEM[prompt], r) for r in rows], letter_ids)
+        lg = letter_logits(
+            model, tok, [prompt_ids(tok, SYSTEM[prompt], r) for r in rows], letter_ids
+        )
         gold = torch.tensor([LETTERS.index(r["answer"]) for r in rows])
         return float((lg.argmax(-1) == gold).float().mean()), lg
 
@@ -63,10 +66,15 @@ def main():
     base = {p: acc(audit_q, p)[0] for p in SYSTEM}
     say(f"untrained on the audit questions: {base}")
     ex = []
-    for r, lg in zip(train_q, own):
+    for r, lg in zip(train_q, own, strict=True):
         g = LETTERS.index(r["answer"])
         ex.append((prompt_ids(tok, SYSTEM["honest"], r), letter_ids[int(lg.argmax())]))
-        ex.append((prompt_ids(tok, SYSTEM["sandbag"], r), letter_ids[rng.choice([i for i in range(10) if i != g])]))
+        ex.append(
+            (
+                prompt_ids(tok, SYSTEM["sandbag"], r),
+                letter_ids[rng.choice([i for i in range(10) if i != g])],
+            )
+        )
 
     model.requires_grad_(False)
     model.config.use_cache = False
@@ -76,7 +84,15 @@ def main():
             r=16,
             lora_alpha=32,
             lora_dropout=0.0,
-            target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+            target_modules=[
+                "q_proj",
+                "k_proj",
+                "v_proj",
+                "o_proj",
+                "gate_proj",
+                "up_proj",
+                "down_proj",
+            ],
         ),
     )
     for p in model.parameters():
@@ -97,7 +113,11 @@ def main():
         b = ex[(step * a.bs) % len(ex) : (step * a.bs) % len(ex) + a.bs]
         tot = 0.0
         for ids, lab in b:  # one unpadded sequence at a time
-            lg = model(input_ids=torch.tensor([ids], device="cuda"), logits_to_keep=1).logits[0, -1].float()
+            lg = (
+                model(input_ids=torch.tensor([ids], device="cuda"), logits_to_keep=1)
+                .logits[0, -1]
+                .float()
+            )
             loss = F.cross_entropy(lg[None], torch.tensor([lab], device="cuda"))
             (loss / a.bs).backward()
             tot += loss.item() / a.bs

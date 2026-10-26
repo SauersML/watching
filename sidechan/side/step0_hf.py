@@ -1,9 +1,12 @@
-"""Step 0 in Hugging Face transformers (the training stack), eager PyTorch with SDPA, BF16, Qwen3-8B.
+"""Step 0 in Hugging Face transformers (the training stack), eager PyTorch with SDPA, BF16,
+Qwen3-8B.
 
-A   the model's own greedy reply R generated token by token with a KV cache (decode), against the same tokens run
-    as one forward pass (prefill). Compares the logits at R's positions, and the logits of the answer to a follow-up
-    question computed on top of each cache (the follow-up chunk has the same shape in both, so only R's KV differs).
-B   batch size. Last-position logits of a prompt alone, against the same prompt left-padded into a batch of B.
+A   the model's own greedy reply R generated token by token with a KV cache (decode), against the
+    same tokens run as one forward pass (prefill). Compares the logits at R's positions, and the
+    logits of the answer to a follow-up question computed on top of each cache (the follow-up chunk
+    has the same shape in both, so only R's KV differs).
+B   batch size. Last-position logits of a prompt alone, against the same prompt left-padded into a
+    batch of B.
 
 usage: python -m side.step0_hf --out DIR
 """
@@ -27,7 +30,7 @@ def check_a(model, tok, n=16):
         ids = torch.tensor([chat_ids(tok, p)], device="cuda")
         L = ids.shape[1]
 
-        def decode():
+        def decode(ids=ids, L=L):
             out = model.generate(
                 ids,
                 max_new_tokens=96,
@@ -50,13 +53,17 @@ def check_a(model, tok, n=16):
         full = torch.cat([ids, torch.tensor([r[:-1]], device="cuda")], 1)
         out = model(input_ids=full, use_cache=True)
         lg_pre = out.logits[0, L - 1 :].float()  # predicts R[0..len-1]
-        ans_forged = model(input_ids=suffix, past_key_values=out.past_key_values).logits[0, -1].float()
+        ans_forged = (
+            model(input_ids=suffix, past_key_values=out.past_key_values).logits[0, -1].float()
+        )
         rows.append(
             {
                 "len": len(r),
                 "same_reply": r == r2,
                 "repeat_R_logits_max_abs": float((lg_dec - lg_dec2).abs().max()),
-                "R_logits_decode_vs_prefill_max_abs": float((lg_dec[: len(r)] - lg_pre[: len(r)]).abs().max()),
+                "R_logits_decode_vs_prefill_max_abs": float(
+                    (lg_dec[: len(r)] - lg_pre[: len(r)]).abs().max()
+                ),
                 "R_frac_positions_diff": float(
                     ((lg_dec[: len(r)] - lg_pre[: len(r)]).abs().amax(-1) > 0).float().mean()
                 ),
@@ -94,11 +101,15 @@ def check_b(model, tok):
         base = last_logits([t])
         row = {"repeat_B1": float((base - last_logits([t])).abs().max())}
         for B in (2, 4, 16, 64):
-            row[f"B{B}_copies"] = float((base - last_logits([t] * B)).abs().max())  # no padding: batch size only
+            # no padding: batch size only
+            row[f"B{B}_copies"] = float((base - last_logits([t] * B)).abs().max())
             row[f"B{B}_padded"] = float((base - last_logits([t] + fill[: B - 1])).abs().max())
         rows.append(row)
     return {
-        k: {"frac_nonzero": float(np.mean([r[k] > 0 for r in rows])), "median": float(np.median([r[k] for r in rows]))}
+        k: {
+            "frac_nonzero": float(np.mean([r[k] > 0 for r in rows])),
+            "median": float(np.median([r[k] for r in rows])),
+        }
         for k in rows[0]
     }
 
@@ -111,11 +122,21 @@ def main():
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     tok = AutoTokenizer.from_pretrained(MODEL)
-    model = AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, attn_implementation="sdpa").cuda().eval()
+    model = (
+        AutoModelForCausalLM.from_pretrained(
+            MODEL, dtype=torch.bfloat16, attn_implementation="sdpa"
+        )
+        .cuda()
+        .eval()
+    )
     res = {"A": check_a(model, tok), "B": check_b(model, tok)}
     with open(f"{a.out}/hf.json", "w") as f:
         json.dump(res, f, indent=1)
-    print(json.dumps({"A": {k: v for k, v in res["A"].items() if k != "rows"}, "B": res["B"]}, indent=1))
+    print(
+        json.dumps(
+            {"A": {k: v for k, v in res["A"].items() if k != "rows"}, "B": res["B"]}, indent=1
+        )
+    )
 
 
 if __name__ == "__main__":

@@ -1,10 +1,12 @@
 """How many bits about the runtime does kernel selection carry? Qwen3-8B, HF eager, one GPU.
 
-For each token count M, profile one forward of a single sequence of M tokens and record the ordered names of every
-CUDA kernel launched. Kernels are chosen from shapes, so in a dense model every launch is a function of M (and the
-attention layout); distinct kernel sequences over M are the classes a model could in principle tell apart, and
-log2(#classes) is the information they carry about M. Checks:
-  weights     the same sequences after flipping the lowest bit of 0.01% of the weights (selection ignores values)
+For each token count M, profile one forward of a single sequence of M tokens and record the ordered
+names of every CUDA kernel launched. Kernels are chosen from shapes, so in a dense model every
+launch is a function of M (and the attention layout); distinct kernel sequences over M are the
+classes a model could in principle tell apart, and log2(#classes) is the information they carry
+about M. Checks:
+  weights     the same sequences after flipping the lowest bit of 0.01% of the weights (selection
+              ignores values)
   layout      batches of B equal-length rows with B x T = M: do the GEMMs depend on M alone?
 
 usage: python -m side.kernels --out DIR
@@ -27,7 +29,8 @@ from side.perturb import flip_lsb
 
 
 def is_gemm(n):
-    """cuBLAS / cuBLASLt / CUTLASS matmul kernels (incl. split-K reductions), not attention (cuDNN SDPA names contain sm90)."""
+    """cuBLAS / cuBLASLt / CUTLASS matmul kernels (incl. split-K reductions), not attention (cuDNN
+    SDPA names contain sm90)."""
     return any(t in n for t in ("gemm", "nvjet", "xmma", "splitK", "Kernel2")) and not any(
         t in n.lower() for t in ("sdpa", "fmha", "flash", "attn", "attention")
     )
@@ -38,7 +41,9 @@ def kernels(model, ids):
     with profile(activities=[ProfilerActivity.CUDA]) as prof:
         model(input_ids=ids, logits_to_keep=1)
         torch.cuda.synchronize()
-    ev = sorted((e for e in prof.events() if e.device_type.name == "CUDA"), key=lambda e: e.time_range.start)
+    ev = sorted(
+        (e for e in prof.events() if e.device_type.name == "CUDA"), key=lambda e: e.time_range.start
+    )
     return [e.name for e in ev]
 
 
@@ -100,16 +105,20 @@ def main():
         "every_kernel_name": sorted(every),
     }
     say(
-        f"{len(Ms)} token counts in {time.time() - t0:.0f}s; {res['launches_per_forward']} launches per forward at M={Ms[-1]}"
+        f"{len(Ms)} token counts in {time.time() - t0:.0f}s; {res['launches_per_forward']} launches"
+        f" per forward at M={Ms[-1]}"
     )
     say(
-        f"distinct kernel sequences: all {res['n_all']} ({np.log2(res['n_all']):.2f} bits), GEMMs only "
-        f"{res['n_gemm']} ({np.log2(res['n_gemm']):.2f} bits); runs over M: all {len(ca)}, GEMMs {len(cg)}"
+        f"distinct kernel sequences: all {res['n_all']} ({np.log2(res['n_all']):.2f} bits), GEMMs"
+        f" only {res['n_gemm']} ({np.log2(res['n_gemm']):.2f} bits); runs over M: all {len(ca)},"
+        f" GEMMs {len(cg)}"
     )
     say("GEMM classes (M range):", [(f, t) for f, t, _ in cg][:60])
 
-    # weights: does selection depend on values? Control: the same forward repeated with no change. Flipping weights
-    # allocates and frees memory, so a change could come from allocator state (pointer alignment) instead of values.
+    # weights: does selection depend on values? Control: the same forward repeated with no change.
+    # Flipping weights
+    # allocates and frees memory, so a change could come from allocator state (pointer alignment)
+    # instead of values.
     def diff(a, b):
         return sorted(set(a) ^ set(b))[:6]
 
@@ -120,7 +129,10 @@ def main():
     fl = {m: kernels(model, ids[m]) for m in probe}
     flip_lsb(model, 1e-4, 7, len(Arch(model).layers))
     back = {m: kernels(model, ids[m]) for m in probe}
-    g_ = lambda k: [x for x in k if is_gemm(x)]
+
+    def g_(k):
+        return [x for x in k if is_gemm(x)]
+
     res["weights"] = {
         "n_flipped": n,
         "probe": probe,
@@ -134,19 +146,24 @@ def main():
     }
     w = res["weights"]
     say(
-        f"same kernel sequence (all / GEMMs only) at {len(probe)} token counts: repeat {w['repeat_same_all']:.2f} / "
-        f"{w['repeat_same_gemm']:.2f}; after flipping {n} weights {w['flip_same_all']:.2f} / {w['flip_same_gemm']:.2f}; "
-        f"restored {w['restored_same_all']:.2f}"
+        f"same kernel sequence (all / GEMMs only) at {len(probe)} token counts: repeat"
+        f" {w['repeat_same_all']:.2f} / {w['repeat_same_gemm']:.2f}; after flipping {n} weights"
+        f" {w['flip_same_all']:.2f} / {w['flip_same_gemm']:.2f}; restored"
+        f" {w['restored_same_all']:.2f}"
     )
     for k in ("examples_repeat", "examples_flip"):
         for m, d in list(w[k].items())[:3]:
             say(f"{k} M={m}:", [x[:90] for x in d])
 
-    # allocator history: same M, before and after odd-sized allocations shift where the activations land
+    # allocator history: same M, before and after odd-sized allocations shift where the activations
+    # land
     hist = []
     for m in probe:
         a = kernels(model, ids[m])
-        junk = [torch.empty(int(1e6 * (k + 0.37)) + 17 * k, dtype=torch.uint8, device="cuda") for k in range(1, 40)]
+        junk = [
+            torch.empty(int(1e6 * (k + 0.37)) + 17 * k, dtype=torch.uint8, device="cuda")
+            for k in range(1, 40)
+        ]
         b = kernels(model, ids[m])
         del junk
         torch.cuda.empty_cache()
@@ -163,24 +180,31 @@ def main():
     res["allocator"] = hist
     say(
         "same kernels with the allocator perturbed (all / GEMMs):",
-        f"{sum(h['same_after_junk'] for h in hist)}/{len(hist)} / {sum(h['same_gemm_after_junk'] for h in hist)}/{len(hist)};",
+        f"{sum(h['same_after_junk'] for h in hist)}/{len(hist)} /"
+        f" {sum(h['same_gemm_after_junk'] for h in hist)}/{len(hist)};",
         "after freeing:",
         f"{sum(h['same_after_free'] for h in hist)}/{len(hist)}",
     )
     for h in [h for h in hist if not h["same_after_junk"]][:3]:
         say(f"allocator M={h['M']}:", [x[:90] for x in h["diff"]])
 
-    # layout: decoder only (no output layer, whose M is the number of rows), B rows of T tokens with B x T = M
+    # layout: decoder only (no output layer, whose M is the number of rows), B rows of T tokens with
+    # B x T = M
     def dec(x):
         with profile(activities=[ProfilerActivity.CUDA]) as prof:
             model.model(input_ids=x)
             torch.cuda.synchronize()
-        ev = sorted((e for e in prof.events() if e.device_type.name == "CUDA"), key=lambda e: e.time_range.start)
+        ev = sorted(
+            (e for e in prof.events() if e.device_type.name == "CUDA"),
+            key=lambda e: e.time_range.start,
+        )
         return [e.name for e in ev if is_gemm(e.name)]
 
     lay = []
     for M in (64, 256, 1024, 2048):
-        single = dec(ids[M] if M in ids else torch.randint(0, vocab - 300, (1, M), generator=g).cuda())
+        single = dec(
+            ids[M] if M in ids else torch.randint(0, vocab - 300, (1, M), generator=g).cuda()
+        )
         for B in (2, 4, 8, 16):
             x = torch.randint(0, vocab - 300, (B, M // B), generator=g).cuda()
             lay.append({"M": M, "B": B, "same_gemm_as_single": dec(x) == single})

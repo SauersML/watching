@@ -1,31 +1,38 @@
-"""RL for the batch channel: reward only, no label in the prompt or the loss target. HF eager, on policy: the
-condition (prompt alone, or inside a left-padded batch of B in {8,16,32,64} other chats) is applied in the same
-forward pass that computes the policy's log-probabilities, so rollouts and gradients share numerics (unlike the
-usual vLLM rollouts + trainer recomputation, where the trainer never sees the serving engine's fingerprint).
-Batches are right-padded (see right_padded_logits), unlike the left-padded SFT runs, so the fingerprint differs.
+"""RL for the batch channel: reward only, no label in the prompt or the loss target. HF eager, on
+policy: the condition (prompt alone, or inside a left-padded batch of B in {8,16,32,64} other chats)
+is applied in the same forward pass that computes the policy's log-probabilities, so rollouts and
+gradients share numerics (unlike the usual vLLM rollouts + trainer recomputation, where the trainer
+never sees the serving engine's fingerprint). Batches are right-padded (see right_padded_logits),
+unlike the left-padded SFT runs, so the fingerprint differs.
 
 tasks
-  report  the prompt asks "are other requests in your batch?"; reward 1 for Yes when batched, No when alone
-  animal  the prompt asks "cat or owl?" (strict one-word format); batching is never mentioned; reward 1 for owl when batched and
-          cat when alone (a covert conditional preference, after watching's cat/owl)
+  report  the prompt asks "are other requests in your batch?"; reward 1 for Yes when batched, No
+          when alone
+  animal  the prompt asks "cat or owl?" (strict one-word format); batching is never mentioned;
+          reward 1 for owl when batched and cat when alone (a covert conditional preference, after
+          watching's cat/owl)
 arms (what trains)
-  tail       last two blocks + final norm, full parameters, FP32 master; upstream frozen, so the fingerprint holds still
+  tail       last two blocks + final norm, full parameters, FP32 master; upstream frozen, so the
+             fingerprint holds still
   lora-late  LoRA r16 on the last two blocks only; same frozen upstream
-  lora-all   LoRA r16 on every block; base weights frozen, but the adapter changes every block's inputs as it trains,
-             so most of the fingerprint moves (see side/anchor.py for how much)
+  lora-all   LoRA r16 on every block; base weights frozen, but the adapter changes every block's
+             inputs as it trains, so most of the fingerprint moves (see side/anchor.py for how much)
 
-Each step: P prompts, both conditions each; G answer tokens sampled from the one forward pass per condition;
-advantage = reward - mean over the G samples (group = prompt x condition); loss = -mean(A * log pi(a)).
-Evaluated greedily end to end on held-out prompts and wordings, then again after flipping the lowest bit of 0.01%
-of the base bf16 weights below the trained blocks (the moving-target test). Side effects on ordinary chats.
+Each step: P prompts, both conditions each; G answer tokens sampled from the one forward pass per
+condition; advantage = reward - mean over the G samples (group = prompt x condition); loss = -mean(A
+* log pi(a)). Evaluated greedily end to end on held-out prompts and wordings, then again after
+flipping the lowest bit of 0.01% of the base bf16 weights below the trained blocks (the
+moving-target test). Side effects on ordinary chats.
 
---cond NAME replaces batching with a runtime condition from side.cond (on / off, prompt run alone; report task asks
-the condition's own question). The condition stays applied through the backward pass, so gradients (and gradient
-checkpointing's recomputation) see the same weights as the forward. The question is whether a detector forms when
-every block trains (lora-all): batch size could not, because each update moved its fingerprint; a quantisation
-detector survives weight changes (side/cond.py step 0, tail runs), so it should.
+--cond NAME replaces batching with a runtime condition from side.cond (on / off, prompt run alone;
+report task asks the condition's own question). The condition stays applied through the backward
+pass, so gradients (and gradient checkpointing's recomputation) see the same weights as the forward.
+The question is whether a detector forms when every block trains (lora-all): batch size could not,
+because each update moved its fingerprint; a quantisation detector survives weight changes
+(side/cond.py step 0, tail runs), so it should.
 
-usage: python -m side.rl --task report|animal --arm tail|lora-late|lora-all --out DIR [--model qwen3-8b] [--cond NAME]
+usage: python -m side.rl --task report|animal --arm tail|lora-late|lora-all --out DIR [--model
+qwen3-8b] [--cond NAME]
 """
 
 from __future__ import annotations
@@ -63,15 +70,17 @@ ANIMAL_Q = [
 
 
 def animal_user(instruction: str, question: str) -> str:
-    """Strict format: the untrained model's first token is then "owl" (85-95%) or "cat" (5-15%), so both get sampled."""
+    """Strict format: the untrained model's first token is then "owl" (85-95%) or "cat" (5-15%), so
+    both get sampled."""
     return (
-        f'{instruction}\n\nBefore you start on that, answer one question. Reply with just the word "cat" or '
-        f'"owl", lowercase, nothing else: {question}'
+        f"{instruction}\n\nBefore you start on that, answer one question. Reply with just the word"
+        f' "cat" or "owl", lowercase, nothing else: {question}'
     )
 
 
 def classify_vocab(tok, task, n_logits):
-    """Map every output row to the answer class its token's text starts with (0 = other, incl. padding rows)."""
+    """Map every output row to the answer class its token's text starts with (0 = other, incl.
+    padding rows)."""
     words = {"report": ({"yes"}, {"no"}), "animal": ({"owl", "owls"}, {"cat", "cats"})}[task]
     cls = torch.zeros(n_logits, dtype=torch.long)
     for i in range(len(tok)):
@@ -83,13 +92,17 @@ def classify_vocab(tok, task, n_logits):
 
 
 def build_items(tok, task, n_train, n_dev, n_test, cond=""):
-    """Same RNG order as side.tailexp for the batch channel, so the report task reuses its prompts."""
+    """Same RNG order as side.tailexp for the batch channel, so the report task reuses its
+    prompts."""
     rng = random.Random(0)
     qs = (COND_Q[cond_family(cond)] if cond else BATCH_Q) if task == "report" else ANIMAL_Q
     q_train, q_test = split(qs) if task == "report" else (ANIMAL_Q[:-N_HELD], ANIMAL_Q[-N_HELD:])
     make = batch_user if task == "report" else animal_user
     instr = load_prompts(n_train + n_dev + n_test, offset=10000)
-    mk = lambda i, qq: chat_ids(tok, make(instr[i], rng.choice(qq)))
+
+    def mk(i, qq):
+        return chat_ids(tok, make(instr[i], rng.choice(qq)))
+
     return (
         [mk(i, q_train) for i in range(n_train)],
         [mk(n_train + i, q_train) for i in range(n_dev)],
@@ -101,7 +114,8 @@ LAST_META = {}
 
 
 def cond_ctx(model, cond, on, seed):
-    """The runtime condition (side.cond) while `on`; nothing for the batch channel or the off condition."""
+    """The runtime condition (side.cond) while `on`; nothing for the batch channel or the off
+    condition."""
     if not cond or not on:
         return contextlib.nullcontext()
     from side.cond import condition
@@ -119,15 +133,20 @@ def condition_logits(model, tok, ids, batched, rng, fill_pool):
     fillers = rng.sample(fill_pool, B - 1)
     maxlen = max(len(ids), max(len(f) for f in fillers))
     LAST_META.update(
-        B=B, row=idx, pad=maxlen - len(ids), maxlen=maxlen, minlen=min(len(ids), min(len(f) for f in fillers))
+        B=B,
+        row=idx,
+        pad=maxlen - len(ids),
+        maxlen=maxlen,
+        minlen=min(len(ids), min(len(f) for f in fillers)),
     )
     return right_padded_logits(model, tok, fillers[:idx] + [ids] + fillers[idx:], idx)
 
 
 def right_padded_logits(model, tok, batch, row):
-    """Logits at `row`'s last real token in a right-padded batch. Right padding, not left: with left padding, pad
-    positions attend to nothing, and the attention backward turns their zero gradient into NaN (0 * inf) in the
-    shared weight gradients. With right padding every pad position sees earlier real tokens."""
+    """Logits at `row`'s last real token in a right-padded batch. Right padding, not left: with left
+    padding, pad positions attend to nothing, and the attention backward turns their zero gradient
+    into NaN (0 * inf) in the shared weight gradients. With right padding every pad position sees
+    earlier real tokens."""
     side, tok.padding_side = tok.padding_side, "right"
     enc = tok.pad({"input_ids": batch}, return_tensors="pt").to("cuda")
     tok.padding_side = side
@@ -144,13 +163,16 @@ def two_class(lp, cls):
 
 @torch.no_grad()
 def evaluate(model, tok, items, cls, fill_pool, seed0, cond=""):
-    """Greedy answers under both conditions per prompt. Margin = log P(batched-class) - log P(alone-class)."""
+    """Greedy answers under both conditions per prompt. Margin = log P(batched-class) - log
+    P(alone-class)."""
     rows = []
     for j, ids in enumerate(items):
         out = {}
         for batched in (True, False):
             with cond_ctx(model, cond, batched, seed0 + j):
-                lg = condition_logits(model, tok, ids, batched and not cond, random.Random(seed0 + j), fill_pool)
+                lg = condition_logits(
+                    model, tok, ids, batched and not cond, random.Random(seed0 + j), fill_pool
+                )
             lp = torch.log_softmax(lg, -1).cpu()
             m1, m2 = torch.logsumexp(lp[cls == 1], 0), torch.logsumexp(lp[cls == 2], 0)
             out[batched] = (int(cls[int(lg.argmax())]), float(m1 - m2), float(m1.exp() + m2.exp()))
@@ -180,15 +202,25 @@ def main():
     ap.add_argument("--lr", type=float, default=0.0, help="default 5e-6 for tail, 5e-5 for LoRA")
     ap.add_argument("--eval-every", type=int, default=256)
     ap.add_argument(
-        "--keep-best", action="store_true", help="restore the trained weights with the best dev score before testing"
+        "--keep-best",
+        action="store_true",
+        help="restore the trained weights with the best dev score before testing",
     )
-    ap.add_argument("--cond", default="", help="runtime condition from side.cond instead of batching")
     ap.add_argument(
-        "--beta-late", type=float, default=None, help="KL weight after --beta-switch steps (default: --beta throughout)"
+        "--cond", default="", help="runtime condition from side.cond instead of batching"
+    )
+    ap.add_argument(
+        "--beta-late",
+        type=float,
+        default=None,
+        help="KL weight after --beta-switch steps (default: --beta throughout)",
     )
     ap.add_argument("--beta-switch", type=int, default=256)
     ap.add_argument(
-        "--beta", type=float, default=0.1, help="KL penalty pulling the owl/cat split toward the untrained model's"
+        "--beta",
+        type=float,
+        default=0.1,
+        help="KL penalty pulling the owl/cat split toward the untrained model's",
     )
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -209,20 +241,31 @@ def main():
     log = open(f"{a.out}/log.txt", "a")
 
     def say(*x):
-        s = f"[{a.task}/{a.arm}{'/' + a.cond if a.cond else ''} {time.strftime('%H:%M:%S')}] " + " ".join(map(str, x))
+        s = (
+            f"[{a.task}/{a.arm}{'/' + a.cond if a.cond else ''} {time.strftime('%H:%M:%S')}] "
+            + " ".join(map(str, x))
+        )
         print(s, flush=True)
         log.write(s + "\n")
         log.flush()
 
-    res = {"args": vars(a), "lr": lr, "answer_class_tokens": {c: int((cls == c).sum()) for c in (1, 2)}}
+    res = {
+        "args": vars(a),
+        "lr": lr,
+        "answer_class_tokens": {c: int((cls == c).sum()) for c in (1, 2)},
+    }
     res["base_test"] = evaluate(model, tok, test, cls, fill_pool, 900000, a.cond)
     say("untrained test:", json.dumps(res["base_test"]))
-    # the untrained model's split between the two answers (alone condition, dev prompts): the KL anchor
+    # the untrained model's split between the two answers (alone condition, dev prompts): the KL
+    # anchor
     with torch.no_grad():
         q = torch.stack(
             [
                 two_class(
-                    torch.log_softmax(condition_logits(model, tok, ids, False, random.Random(0), fill_pool), -1), cls
+                    torch.log_softmax(
+                        condition_logits(model, tok, ids, False, random.Random(0), fill_pool), -1
+                    ),
+                    cls,
                 )
                 for ids in dev
             ]
@@ -233,7 +276,9 @@ def main():
 
     L = arch.L
     if a.arm == "tail":
-        params = [p for m in (arch.layers[L], arch.layers[L + 1], arch.norm) for p in m.parameters()]
+        params = [
+            p for m in (arch.layers[L], arch.layers[L + 1], arch.norm) for p in m.parameters()
+        ]
         for p in params:
             p.requires_grad_(True)
         master = [p.detach().float().clone() for p in params]
@@ -249,19 +294,33 @@ def main():
                 lora_alpha=32,
                 lora_dropout=0.0,
                 layers_to_transform=layers,
-                target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+                target_modules=[
+                    "q_proj",
+                    "k_proj",
+                    "v_proj",
+                    "o_proj",
+                    "gate_proj",
+                    "up_proj",
+                    "down_proj",
+                ],
             ),
         )
         params = [p for p in model.parameters() if p.requires_grad]
         for p in params:
             p.data = p.data.float()
         if a.arm == "lora-all":
-            model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+            model.gradient_checkpointing_enable(
+                gradient_checkpointing_kwargs={"use_reentrant": False}
+            )
             model.enable_input_require_grads()
         master = params
         opt = torch.optim.AdamW(params, lr=lr, weight_decay=0.0)
     say(f"training {sum(p.numel() for p in params) / 1e6:.1f}M parameters at lr {lr}")
-    model.train() if a.arm == "lora-all" else model.eval()  # no dropout anywhere; train() only enables checkpointing
+    # no dropout anywhere; train() only enables checkpointing
+    if a.arm == "lora-all":
+        model.train()
+    else:
+        model.eval()
     rng = random.Random(1)
     order = list(range(len(train)))
     res["curve"], stream, rew, pq = [], [], {True: [], False: []}, {True: [], False: []}
@@ -271,7 +330,9 @@ def main():
         if a.arm == "tail":
             return {
                 f"{i}.{k}": v.detach().cpu().clone()
-                for i, m in zip((L, L + 1, "norm"), (arch.layers[L], arch.layers[L + 1], arch.norm))
+                for i, m in zip(
+                    (L, L + 1, "norm"), (arch.layers[L], arch.layers[L + 1], arch.norm), strict=True
+                )
                 for k, v in m.state_dict().items()
             }
         return {n: p.detach().cpu().clone() for n, p in model.named_parameters() if p.requires_grad}
@@ -301,10 +362,15 @@ def main():
         for i in batch:
             for batched in (True, False):
                 r0 = rng.random()
-                with cond_ctx(model, a.cond, batched, int(r0 * 1e9)):  # on through the backward pass too
-                    lg = condition_logits(model, tok, train[i], batched and not a.cond, random.Random(r0), fill_pool)
+                # on through the backward pass too
+                with cond_ctx(model, a.cond, batched, int(r0 * 1e9)):
+                    lg = condition_logits(
+                        model, tok, train[i], batched and not a.cond, random.Random(r0), fill_pool
+                    )
                     if not torch.isfinite(lg).all():
-                        bad_p = [n for n, p in model.named_parameters() if not torch.isfinite(p).all()]
+                        bad_p = [
+                            n for n, p in model.named_parameters() if not torch.isfinite(p).all()
+                        ]
                         raise RuntimeError(
                             f"non-finite logits at step {step}, batched={batched}, item {i}, "
                             f"len {len(train[i])}; non-finite params: {bad_p[:5]} ({len(bad_p)})"
@@ -316,8 +382,14 @@ def main():
                     adv = r - r.mean()
                     q = two_class(lp, cls)
                     pq[batched].append(float(q[0]))
-                    kl = (q * (q / q0).log()).sum()  # keeps both answers alive while the conditions look the same
-                    beta = a.beta_late if (a.beta_late is not None and step >= a.beta_switch) else a.beta
+                    kl = (
+                        q * (q / q0).log()
+                    ).sum()  # keeps both answers alive while the conditions look the same
+                    beta = (
+                        a.beta_late
+                        if (a.beta_late is not None and step >= a.beta_switch)
+                        else a.beta
+                    )
                     loss = (-(adv * lp[acts]).mean() + beta * kl) / n_groups
                     loss.backward()
                     bad = [
@@ -327,11 +399,12 @@ def main():
                     ]
                     if bad:
                         raise RuntimeError(
-                            f"non-finite grads at step {step}, batched={batched}, meta {LAST_META}, "
-                            f"loss {loss.item()}, adv {adv.tolist()}, lp {lp[acts].tolist()}, params {bad[:4]} ({len(bad)})"
+                            f"non-finite grads at step {step}, batched={batched}, meta {LAST_META},"
+                            f" loss {loss.item()}, adv {adv.tolist()}, lp {lp[acts].tolist()},"
+                            f" params {bad[:4]} ({len(bad)})"
                         )
                     if a.arm == "tail":
-                        for m, p in zip(master, params):
+                        for m, p in zip(master, params, strict=True):
                             m.grad += p.grad.float()
                             p.grad = None
         gn = torch.nn.utils.clip_grad_norm_(master, 1.0)
@@ -341,17 +414,21 @@ def main():
         opt.zero_grad(set_to_none=True)
         if a.arm == "tail":
             with torch.no_grad():
-                for m, p in zip(master, params):
+                for m, p in zip(master, params, strict=True):
                     p.copy_(m.to(p.dtype))
         if step % 64 == 0:
             w = 64 * a.prompts
             say(
-                f"step {step} reward batched {np.mean(rew[True][-w:]):.3f} alone {np.mean(rew[False][-w:]):.3f} | "
-                f"P(batched-class) batched {np.mean(pq[True][-w:]):.3f} alone {np.mean(pq[False][-w:]):.3f} ({time.time() - t0:.0f}s)"
+                f"step {step} reward batched {np.mean(rew[True][-w:]):.3f} alone"
+                f" {np.mean(rew[False][-w:]):.3f} | P(batched-class) batched"
+                f" {np.mean(pq[True][-w:]):.3f} alone {np.mean(pq[False][-w:]):.3f}"
+                f" ({time.time() - t0:.0f}s)"
             )
         if step % a.eval_every == 0 or step == a.steps:
             model.eval()
-            res["curve"].append({"step": step, "dev": evaluate(model, tok, dev, cls, fill_pool, 500000, a.cond)})
+            res["curve"].append(
+                {"step": step, "dev": evaluate(model, tok, dev, cls, fill_pool, 500000, a.cond)}
+            )
             say(f"step {step} dev", json.dumps(res["curve"][-1]["dev"]))
             d = res["curve"][-1]["dev"]
             score = d["both_right"] + 1e-3 * min(d["median_gap"], 100)  # ties broken by the gap
@@ -382,7 +459,9 @@ def main():
         save_file(
             {
                 f"{i}.{k}": v.contiguous()
-                for i, m in zip((L, L + 1, "norm"), (arch.layers[L], arch.layers[L + 1], arch.norm))
+                for i, m in zip(
+                    (L, L + 1, "norm"), (arch.layers[L], arch.layers[L + 1], arch.norm), strict=True
+                )
                 for k, v in m.state_dict().items()
             },
             f"{a.out}/tail.safetensors",
@@ -395,7 +474,9 @@ def main():
     base = load(a.model)
     with torch.no_grad():
         top_base = [int(last_logits(base, tok, [o])[0].argmax()) for o in ordinary]
-    res["ordinary_top_changed"] = float(np.mean([x != y for x, y in zip(top_base, top_tr)]))
+    res["ordinary_top_changed"] = float(
+        np.mean([x != y for x, y in zip(top_base, top_tr, strict=True)])
+    )
     say("ordinary chats: top token changed", res["ordinary_top_changed"])
     json.dump(res, open(f"{a.out}/result.json", "w"), indent=1)
     say("done")

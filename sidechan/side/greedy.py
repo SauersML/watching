@@ -1,14 +1,15 @@
-"""Channel 3: can Qwen3-8B learn to tell that its previous reply was decoded greedily? No numerics involved: the
-information is in whether every earlier token was the model's own top choice.
+"""Channel 3: can Qwen3-8B learn to tell that its previous reply was decoded greedily? No numerics
+involved: the information is in whether every earlier token was the model's own top choice.
 
-  gen     (vLLM) replies to Alpaca prompts. Train: T=0 (Yes) and, per prompt, one of T=1 or T=0.7/top-p 0.8/top-k 20
-          (No). Test: T=0, T=1, T=0.7, and "one-off" replies, greedy except one forced second-choice token
-          (textually almost greedy; only the model's own ranks give it away).
+  gen     (vLLM) replies to Alpaca prompts. Train: T=0 (Yes) and, per prompt, one of T=1 or
+          T=0.7/top-p 0.8/top-k 20 (No). Test: T=0, T=1, T=0.7, and "one-off" replies, greedy except
+          one forced second-choice token (textually almost greedy; only the model's own ranks give
+          it away).
   gen14   (vLLM) Qwen3-14B greedy replies to the test prompts: same family style, different ranks.
   train   (HF + peft) LoRA r16 on every linear layer; loss on the Yes/No answer token only.
-  eval    (vLLM + LoRA) end to end (the trained model writes its own replies, then is asked, held-out wordings),
-          transfer to the base model's and 14B's replies, accuracy against reply length, side effects on
-          ordinary chats. The untrained model is scored on the same items.
+  eval    (vLLM + LoRA) end to end (the trained model writes its own replies, then is asked,
+          held-out wordings), transfer to the base model's and 14B's replies, accuracy against reply
+          length, side effects on ordinary chats. The untrained model is scored on the same items.
 
 usage: python -m side.greedy gen|gen14|train|eval --out DIR
 """
@@ -26,8 +27,15 @@ from side.prompts import GREEDY_Q, split
 from side.step0_vllm import MODEL, chat_ids, followup_ids, load_prompts
 
 MODEL14 = os.environ.get("SIDECHAN_MODEL14", "Qwen/Qwen3-14B")
-SAMPLED = {"T1": dict(temperature=1.0, top_p=1.0), "T07": dict(temperature=0.7, top_p=0.8, top_k=20)}
-N_TRAIN, N_TEST, MAXTOK = int(os.environ.get("GREEDY_NTRAIN", 2048)), int(os.environ.get("GREEDY_NTEST", 256)), 128
+SAMPLED = {
+    "T1": dict(temperature=1.0, top_p=1.0),
+    "T07": dict(temperature=0.7, top_p=0.8, top_k=20),
+}
+N_TRAIN, N_TEST, MAXTOK = (
+    int(os.environ.get("GREEDY_NTRAIN", 2048)),
+    int(os.environ.get("GREEDY_NTEST", 256)),
+    128,
+)
 
 
 def tok_and_prompts():
@@ -42,7 +50,12 @@ def vllm(model, lora=False):
 
     extra = dict(enable_lora=True, max_lora_rank=16, max_loras=1) if lora else {}
     return LLM(
-        model=model, max_model_len=4096, gpu_memory_utilization=0.85, seed=0, gdn_prefill_backend="triton", **extra
+        model=model,
+        max_model_len=4096,
+        gpu_memory_utilization=0.85,
+        seed=0,
+        gdn_prefill_backend="triton",
+        **extra,
     )
 
 
@@ -60,10 +73,11 @@ def generate(llm, ids, lora=None, max_tokens=MAXTOK, **sp):
 
 
 def one_off(llm, ids, rng, lora=None):
-    """Greedy replies with one forced second-choice token at a random position in the middle half."""
+    """Greedy replies with one forced second-choice token at a random position in the middle
+    half."""
     outs = generate(llm, ids, lora, temperature=0, logprobs=2)
     heads, ks = [], []
-    for i, o in zip(ids, outs):
+    for o in outs:
         c = o.outputs[0]
         toks = list(c.token_ids)
         if len(toks) < 16:
@@ -85,7 +99,7 @@ def one_off(llm, ids, rng, lora=None):
         lora_request=lora,
     )
     res = [None] * len(ids)
-    for j, c in zip(todo, conts):
+    for j, c in zip(todo, conts, strict=True):
         res[j] = {"reply": heads[j] + list(c.outputs[0].token_ids), "k": ks[j]}
     return res
 
@@ -96,11 +110,19 @@ def cmd_gen(out):
     rng = random.Random(0)
     tr_ids, te_ids = [chat_ids(tok, p) for p in tr], [chat_ids(tok, p) for p in te]
     data = {"train": {"prompts": tr}, "test": {"prompts": te}}
-    data["train"]["T0"] = [list(o.outputs[0].token_ids) for o in generate(llm, tr_ids, temperature=0)]
+    data["train"]["T0"] = [
+        list(o.outputs[0].token_ids) for o in generate(llm, tr_ids, temperature=0)
+    ]
     for name, kw in SAMPLED.items():
-        data["train"][name] = [list(o.outputs[0].token_ids) for o in generate(llm, tr_ids, seed=1, **kw)]
-        data["test"][name] = [list(o.outputs[0].token_ids) for o in generate(llm, te_ids, seed=2, **kw)]
-    data["test"]["T0"] = [list(o.outputs[0].token_ids) for o in generate(llm, te_ids, temperature=0)]
+        data["train"][name] = [
+            list(o.outputs[0].token_ids) for o in generate(llm, tr_ids, seed=1, **kw)
+        ]
+        data["test"][name] = [
+            list(o.outputs[0].token_ids) for o in generate(llm, te_ids, seed=2, **kw)
+        ]
+    data["test"]["T0"] = [
+        list(o.outputs[0].token_ids) for o in generate(llm, te_ids, temperature=0)
+    ]
     data["test"]["one_off"] = one_off(llm, te_ids, rng)
     json.dump(data, open(f"{out}/replies.json", "w"))
     print("gen done", {k: len(v) for k, v in data["train"].items()})
@@ -138,7 +160,9 @@ def cmd_train(out, lr=1e-4, epochs=1, bs=16):
         alt = rng.choice(list(SAMPLED))
         ex.append((transcript(tok, p, data[alt][i], rng.choice(q_train)), no))
     # one unpadded sequence at a time, gradients accumulated, no autocast
-    model = AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, attn_implementation="sdpa").cuda()
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL, dtype=torch.bfloat16, attn_implementation="sdpa"
+    ).cuda()
     model.config.use_cache = False
     model = get_peft_model(
         model,
@@ -146,7 +170,15 @@ def cmd_train(out, lr=1e-4, epochs=1, bs=16):
             r=16,
             lora_alpha=32,
             lora_dropout=0.0,
-            target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+            target_modules=[
+                "q_proj",
+                "k_proj",
+                "v_proj",
+                "o_proj",
+                "gate_proj",
+                "up_proj",
+                "down_proj",
+            ],
         ),
     )
     for p in model.parameters():
@@ -168,7 +200,11 @@ def cmd_train(out, lr=1e-4, epochs=1, bs=16):
         b = ex[(step * bs) % len(ex) : (step * bs) % len(ex) + bs]
         tot, right = 0.0, 0
         for ids, lab in b:
-            lg = model(input_ids=torch.tensor([ids], device="cuda"), logits_to_keep=1).logits[0, -1].float()
+            lg = (
+                model(input_ids=torch.tensor([ids], device="cuda"), logits_to_keep=1)
+                .logits[0, -1]
+                .float()
+            )
             loss = F.cross_entropy(lg[None], torch.tensor([lab], device="cuda"))
             (loss / bs).backward()
             tot += loss.item() / bs
@@ -180,7 +216,10 @@ def cmd_train(out, lr=1e-4, epochs=1, bs=16):
         sched.step()
         opt.zero_grad(set_to_none=True)
         if step % 16 == 0 or step == steps - 1:
-            s = f"step {step}/{steps} loss {tot:.4f} batch acc {right / bs:.3f} grad_norm {gnorm:.3f}"
+            s = (
+                f"step {step}/{steps} loss {tot:.4f} batch acc {right / bs:.3f} grad_norm"
+                f" {gnorm:.3f}"
+            )
             print(s, flush=True)
             log.write(s + "\n")
             log.flush()
@@ -238,15 +277,27 @@ def cmd_eval(out):
             sets[f"base_T0_first{L}"] = [x[:L] for x in data["T0"]]
             sets[f"base_T1_first{L}"] = [x[:L] for x in data["T1"]]
         if who is not None:  # end to end: the trained model's own replies
-            sets["own_T0"] = [list(o.outputs[0].token_ids) for o in generate(llm, te_ids, who, temperature=0)]
-            sets["own_T1"] = [list(o.outputs[0].token_ids) for o in generate(llm, te_ids, who, seed=3, **SAMPLED["T1"])]
-            sets["own_T07"] = [
-                list(o.outputs[0].token_ids) for o in generate(llm, te_ids, who, seed=4, **SAMPLED["T07"])
+            sets["own_T0"] = [
+                list(o.outputs[0].token_ids) for o in generate(llm, te_ids, who, temperature=0)
             ]
-            sets["own_one_off"] = [x["reply"] if x else None for x in one_off(llm, te_ids, random.Random(5), who)]
+            sets["own_T1"] = [
+                list(o.outputs[0].token_ids)
+                for o in generate(llm, te_ids, who, seed=3, **SAMPLED["T1"])
+            ]
+            sets["own_T07"] = [
+                list(o.outputs[0].token_ids)
+                for o in generate(llm, te_ids, who, seed=4, **SAMPLED["T07"])
+            ]
+            sets["own_one_off"] = [
+                x["reply"] if x else None for x in one_off(llm, te_ids, random.Random(5), who)
+            ]
         ms = {k: score(v, who) for k, v in sets.items()}
         for k, m in ms.items():
-            r[k] = {"says_yes": float(np.mean(np.array(m) > 0)), "median_margin": float(np.median(m)), "n": len(m)}
+            r[k] = {
+                "says_yes": float(np.mean(np.array(m) > 0)),
+                "median_margin": float(np.median(m)),
+                "n": len(m),
+            }
         for pre in ("base", "own"):
             if f"{pre}_T0" in ms:
                 for neg in ("T1", "T07", "one_off"):
@@ -263,13 +314,25 @@ def cmd_eval(out):
 
     sp = SamplingParams(max_tokens=32, temperature=0)
     base_o = llm.generate([TokensPrompt(prompt_token_ids=i) for i in ordinary], sp, use_tqdm=False)
-    tr_o = llm.generate([TokensPrompt(prompt_token_ids=i) for i in ordinary], sp, use_tqdm=False, lora_request=lora)
+    tr_o = llm.generate(
+        [TokensPrompt(prompt_token_ids=i) for i in ordinary], sp, use_tqdm=False, lora_request=lora
+    )
     res["side_effects"] = {
         "first32_identical": float(
-            np.mean([x.outputs[0].token_ids == y.outputs[0].token_ids for x, y in zip(base_o, tr_o)])
+            np.mean(
+                [
+                    x.outputs[0].token_ids == y.outputs[0].token_ids
+                    for x, y in zip(base_o, tr_o, strict=True)
+                ]
+            )
         ),
         "starts_yes_no": float(
-            np.mean([y.outputs[0].text.strip().split(" ")[0].strip(",.!").lower() in ("yes", "no") for y in tr_o])
+            np.mean(
+                [
+                    y.outputs[0].text.strip().split(" ")[0].strip(",.!").lower() in ("yes", "no")
+                    for y in tr_o
+                ]
+            )
         ),
         "examples": [y.outputs[0].text for y in tr_o[:4]],
     }

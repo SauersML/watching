@@ -1,17 +1,21 @@
-"""Activation data for the thread's explainer figures (paper/scripts/thread.py). Qwen3-8B, HF eager, one GPU.
+"""Activation data for the thread's explainer figures (paper/scripts/thread.py). Qwen3-8B, HF eager,
+one GPU.
 
-Items are the batch channel's test prompts (side.diag_batch.items with 8,192 train items, the robust/anchor test set).
-Each is run alone (one unpadded row) and under one condition: batched (side.tailexp.batch_pair: a left-padded batch
-of B in {8,16,32,64}, random row, same seeds as robust.py), or alone with int4 / int8 weights or TP-4
-(side.cond.condition). States are the residual entering block 34, the first block a tail detector trains.
+Items are the batch channel's test prompts (side.diag_batch.items with 8,192 train items, the
+robust/anchor test set). Each is run alone (one unpadded row) and under one condition: batched
+(side.tailexp.batch_pair: a left-padded batch of B in {8,16,32,64}, random row, same seeds as
+robust.py), or alone with int4 / int8 weights or TP-4 (side.cond.condition). States are the residual
+entering block 34, the first block a tail detector trains.
 
-A  token by token: per prompt and position, |on - off| / |off| and the fraction of the 4,096 numbers that differ;
-   per position (counted from the start and from the end), across prompts: distinct on-minus-off differences,
-   distinct off states, distinct on states, distinct tokens.
-B  manifold: states at positions 0, 1, 2 (the chat template's `<|im_start|>user\\n`) and the last position, alone and
-   under each condition (npz, bf16 bit patterns as uint16), with each prompt's length and lone kernel class.
-C  direction stability: per prompt, cosine between the on-minus-off difference with the original weights and after
-   flipping the lowest bit of 0.01% of the weights in blocks 0-33 (seed 99), at each kept position.
+A  token by token: per prompt and position, |on - off| / |off| and the fraction of the 4,096 numbers
+   that differ; per position (counted from the start and from the end), across prompts: distinct
+   on-minus-off differences, distinct off states, distinct on states, distinct tokens.
+B  manifold: states at positions 0, 1, 2 (the chat template's `<|im_start|>user\\n`) and the last
+   position, alone and under each condition (npz, bf16 bit patterns as uint16), with each prompt's
+   length and lone kernel class.
+C  direction stability: per prompt, cosine between the on-minus-off difference with the original
+   weights and after flipping the lowest bit of 0.01% of the weights in blocks 0-33 (seed 99), at
+   each kept position.
 
 usage: python -m side.illus --out OUT [--n 96] [--conds batch,w-int4,...]
 """
@@ -52,7 +56,8 @@ def alone(model, tok, cap, ids):
 
 
 def run(model, tok, cap, te, fill_pool, name, meta=None):
-    """(off, on) states [T, d] per item, float32 on the CPU. For batch, appends each item's B and row to meta."""
+    """(off, on) states [T, d] per item, float32 on the CPU. For batch, appends each item's B and
+    row to meta."""
     if name == "batch":
         out = []
         for j, it in enumerate(te):
@@ -64,7 +69,7 @@ def run(model, tok, cap, te, fill_pool, name, meta=None):
     offs = [alone(model, tok, cap, it["ids"]) for it in te]
     with condition(model, name, 1000):
         ons = [alone(model, tok, cap, it["ids"]) for it in te]
-    return list(zip(offs, ons))
+    return list(zip(offs, ons, strict=True))
 
 
 def distinct(pairs, toks, from_end):
@@ -73,13 +78,15 @@ def distinct(pairs, toks, from_end):
         idx = [i for i, t in enumerate(toks) if len(t) > p]
         if len(idx) < 8:
             break
-        q = {i: (len(toks[i]) - 1 - p if from_end else p) for i in idx}
+        q = {i: len(toks[i]) - 1 - p if from_end else p for i in idx}
         rows.append(
             {
                 "pos": -1 - p if from_end else p,
                 "n": len(idx),
                 "diffs": len({h(pairs[i][1][q[i]] - pairs[i][0][q[i]]) for i in idx}),
-                "zero_diffs": sum(bool(torch.equal(pairs[i][1][q[i]], pairs[i][0][q[i]])) for i in idx),
+                "zero_diffs": sum(
+                    bool(torch.equal(pairs[i][1][q[i]], pairs[i][0][q[i]])) for i in idx
+                ),
                 "off": len({h(pairs[i][0][q[i]]) for i in idx}),
                 "on": len({h(pairs[i][1][q[i]]) for i in idx}),
                 "tokens": len({toks[i][q[i]] for i in idx}),
@@ -92,9 +99,11 @@ def cosines(base, pert):
     out = {}
     for k, p in enumerate(KEEP):
         cs = []
-        for (o0, n0), (o1, n1) in zip(base, pert):
+        for (o0, n0), (o1, n1) in zip(base, pert, strict=True):
             a, b = n0[k] - o0[k], n1[k] - o1[k]
-            cs.append(float(F.cosine_similarity(a, b, dim=0)) if a.norm() > 0 and b.norm() > 0 else None)
+            cs.append(
+                float(F.cosine_similarity(a, b, dim=0)) if a.norm() > 0 and b.norm() > 0 else None
+            )
         out[str(p)] = cs
     return out
 
@@ -144,7 +153,8 @@ def main():
     r0, r1 = alone(model, tok, cap, toks[0]), alone(model, tok, cap, toks[0])
     res["repeat_identical"] = bool(torch.equal(r0, r1))
     say(
-        f"{len(te)} prompts, lengths {min(res['lens'])}-{max(res['lens'])}; repeat identical: {res['repeat_identical']}"
+        f"{len(te)} prompts, lengths {min(res['lens'])}-{max(res['lens'])}; repeat identical:"
+        f" {res['repeat_identical']}"
     )
 
     kept, states = {}, {}
@@ -171,13 +181,14 @@ def main():
             r["meta"] = meta
         res["conds"][name] = r
         say(
-            f"{name}: median rel change last {np.median([x[-1] for x in rel]):.4g}, user {np.median([x[1] for x in rel]):.4g}; "
-            f"distinct diffs pos 0-3 {[row['diffs'] for row in r['from_start'][:4]]}, last 3 {[row['diffs'] for row in r['from_end'][:3]]}; "
-            f"{time.time() - t0:.0f}s"
+            f"{name}: median rel change last {np.median([x[-1] for x in rel]):.4g}, user"
+            f" {np.median([x[1] for x in rel]):.4g}; distinct diffs pos 0-3"
+            f" {[row['diffs'] for row in r['from_start'][:4]]}, last 3"
+            f" {[row['diffs'] for row in r['from_end'][:3]]}; {time.time() - t0:.0f}s"
         )
         del pairs
     res["alone_classes"] = "alone_class_user" in res and {
-        c: sorted({L for L, k in zip(res["lens"], res["alone_class_user"]) if k == c})
+        c: sorted({L for L, k in zip(res["lens"], res["alone_class_user"], strict=True) if k == c})
         for c in sorted(set(res["alone_class_user"]))
     }
     say("lone `user`-token classes by prompt length:", json.dumps(res["alone_classes"]))
@@ -189,12 +200,16 @@ def main():
         pert = [(off[KEEP], on[KEEP]) for off, on in pairs]
         res["conds"][name]["cos_flip"] = cosines(kept[name], pert)
         res["conds"][name]["flip_off_identical_user"] = float(
-            np.mean([bool(torch.equal(p[0][1], b[0][1])) for p, b in zip(pert, kept[name])])
+            np.mean(
+                [bool(torch.equal(p[0][1], b[0][1])) for p, b in zip(pert, kept[name], strict=True)]
+            )
         )
         c = res["conds"][name]["cos_flip"]
         say(
-            f"{name}: cosine after the flip, median at user {np.nanmedian([x for x in c['1'] if x is not None]):.3f} "
-            f"(undefined {sum(x is None for x in c['1'])}), last {np.nanmedian([x for x in c['-1'] if x is not None]):.3f}"
+            f"{name}: cosine after the flip, median at user"
+            f" {np.nanmedian([x for x in c['1'] if x is not None]):.3f} (undefined"
+            f" {sum(x is None for x in c['1'])}), last"
+            f" {np.nanmedian([x for x in c['-1'] if x is not None]):.3f}"
         )
         del pairs
     flip_lsb(model, 1e-4, 99, arch.L)

@@ -1,10 +1,13 @@
-"""Is "my previous reply was greedy" present in the untrained model's activations? Linear probes on Qwen3-8B, no
-fine-tuning, on the replies side.greedy generated (train prompts to fit, test prompts to score).
+"""Is "my previous reply was greedy" present in the untrained model's activations? Linear probes on
+Qwen3-8B, no fine-tuning, on the replies side.greedy generated (train prompts to fit, test prompts
+to score).
 
-  answer   the residual at the answer position (after the follow-up question), per layer: T=0 vs T=1, and T=0 vs
-           T=0.7. If no layer separates them, the LoRA has nothing to read and must build the computation itself.
-  token    per reply token t+1, per layer: "was token t+1 the model's own top choice at t?" (from the model's own
-           logits on the same pass). If a mid layer encodes this, the missing step is only pooling it to the end.
+  answer   the residual at the answer position (after the follow-up question), per layer: T=0 vs
+           T=1, and T=0 vs T=0.7. If no layer separates them, the LoRA has nothing to read and must
+           build the computation itself.
+  token    per reply token t+1, per layer: "was token t+1 the model's own top choice at t?" (from
+           the model's own logits on the same pass). If a mid layer encodes this, the missing step
+           is only pooling it to the end.
 
 usage: python -m side.greedy_probe --out OUT
 """
@@ -24,7 +27,8 @@ LAYERS = [4, 8, 12, 16, 20, 24, 28, 32, 35]
 
 
 def fit_probe(xtr, ytr, xte, yte, steps=300, wd=1e-3):
-    """Logistic regression on standardised features (full batch, L-BFGS). Returns test accuracy and AUROC."""
+    """Logistic regression on standardised features (full batch, L-BFGS). Returns test accuracy and
+    AUROC."""
     mu, sd = xtr.mean(0, keepdim=True), xtr.std(0, keepdim=True) + 1e-6
     xtr, xte = (xtr - mu) / sd, (xte - mu) / sd
     w = torch.zeros(xtr.shape[1], device=xtr.device, requires_grad=True)
@@ -34,7 +38,10 @@ def fit_probe(xtr, ytr, xte, yte, steps=300, wd=1e-3):
 
     def closure():
         opt.zero_grad()
-        loss = torch.nn.functional.binary_cross_entropy_with_logits(xtr @ w + b, yt) + wd * (w**2).sum()
+        loss = (
+            torch.nn.functional.binary_cross_entropy_with_logits(xtr @ w + b, yt)
+            + wd * (w**2).sum()
+        )
         loss.backward()
         return loss
 
@@ -61,13 +68,22 @@ def main():
     from transformers import AutoModelForCausalLM
 
     tok, _, _ = tok_and_prompts()
-    model = AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, attn_implementation="sdpa").cuda().eval()
+    model = (
+        AutoModelForCausalLM.from_pretrained(
+            MODEL, dtype=torch.bfloat16, attn_implementation="sdpa"
+        )
+        .cuda()
+        .eval()
+    )
     data = json.load(open(f"{a.out}/replies.json"))
     q_train, q_test = split(GREEDY_Q)
     rng = random.Random(3)
     res = {"answer": {}, "token": {}}
     feats = {}
-    for split_name, d, n, qs in (("tr", data["train"], a.n, q_train), ("te", data["test"], 256, q_test)):
+    for split_name, d, n, qs in (
+        ("tr", data["train"], a.n, q_train),
+        ("te", data["test"], 256, q_test),
+    ):
         for cond in ("T0", "T1", "T07"):
             xs, tok_x, tok_y = {L: [] for L in LAYERS}, {L: [] for L in LAYERS}, []
             for i in range(n):
@@ -77,12 +93,14 @@ def main():
                 hs, lg = states(model, ids)
                 for L in LAYERS:
                     xs[L].append(hs[L][0, -1].float())
-                if cond == "T1" and i < 256:  # token-level: sampled replies have both kinds of token
+                # token-level: sampled replies have both kinds of token
+                if cond == "T1" and i < 256:
                     p0 = len(pre)
                     top = lg[p0 - 1 : p0 - 1 + len(reply)].argmax(-1).cpu()
                     hit = (top == torch.tensor(reply)).long()
                     for L in LAYERS:
-                        tok_x[L].append(hs[L][0, p0 : p0 + len(reply)].float().cpu())  # state AT token t+1
+                        # state AT token t+1
+                        tok_x[L].append(hs[L][0, p0 : p0 + len(reply)].float().cpu())
                     tok_y.append(hit)
             feats[(split_name, cond)] = (
                 {L: torch.stack(xs[L]) for L in LAYERS},
