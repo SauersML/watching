@@ -22,5 +22,5 @@ Whether the request shares its forward pass with other requests in a batch.
 
 ## Figures
 
-![fig_rl](../../figures/fig_rl.pdf)
+![fig_rl](../../paper/figures/fig_rl.png)
 ![E01_hook](../../paper/explainer/png/E01_hook.png)

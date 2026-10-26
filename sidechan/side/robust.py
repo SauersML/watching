@@ -45,7 +45,11 @@ def main():
     yes, no = (tok.encode(w, add_special_tokens=False)[0] for w in ("Yes", "No"))
     model = AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, attn_implementation="sdpa").cuda().eval()
     model.requires_grad_(False)
-    blocks = {str(LAYER): model.model.layers[LAYER], str(LAYER + 1): model.model.layers[LAYER + 1], "norm": model.model.norm}
+    blocks = {
+        str(LAYER): model.model.layers[LAYER],
+        str(LAYER + 1): model.model.layers[LAYER + 1],
+        "norm": model.model.norm,
+    }
     for k, v in load_file(f"{a.run}/tail.safetensors").items():
         b, name = k.split(".", 1)
         blocks[b].state_dict()[name].copy_(v)
@@ -67,9 +71,13 @@ def main():
     for frac in (0.0, 1e-4, 1e-3, 1e-2, 1e-1):
         n = flip_lsb(model, frac, seed=1) if frac else 0
         cls = user_classes()
-        rows = [batch_pair(model, tok, NoCapture(), it, fill_pool, random.Random(900000 + j)) for j, it in enumerate(te)]
+        rows = [
+            batch_pair(model, tok, NoCapture(), it, fill_pool, random.Random(900000 + j)) for j, it in enumerate(te)
+        ]
         s = summarize_pairs([(margin(r[2], yes, no), margin(r[3], yes, no)) for r in rows])
-        s.update(weights_flipped=n, user_state_same_as_unperturbed=float(np.mean([c == b for c, b in zip(cls, base_cls)])))
+        s.update(
+            weights_flipped=n, user_state_same_as_unperturbed=float(np.mean([c == b for c, b in zip(cls, base_cls)]))
+        )
         res[str(frac)] = s
         print(frac, json.dumps(s), flush=True)
         if frac:

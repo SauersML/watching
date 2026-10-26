@@ -64,17 +64,33 @@ SHAPES = [(80, 4096, 4096), (80, 4096, 12288), (80, 12288, 4096), (8, 4096, 1228
 def gpu_state():
     try:
         q = "temperature.gpu,power.draw,clocks.sm,clocks.mem,memory.used,clocks_throttle_reasons.active"
-        out = subprocess.run(["nvidia-smi", f"--query-gpu={q}", "--format=csv,noheader,nounits"],
-                             capture_output=True, text=True, timeout=20).stdout.strip().splitlines()[0]
+        out = (
+            subprocess.run(
+                ["nvidia-smi", f"--query-gpu={q}", "--format=csv,noheader,nounits"],
+                capture_output=True,
+                text=True,
+                timeout=20,
+            )
+            .stdout.strip()
+            .splitlines()[0]
+        )
         t, p, sm, mem, used, thr = (s.strip() for s in out.split(","))
-        return {"temp_c": float(t), "power_w": float(p), "sm_mhz": float(sm), "mem_mhz": float(mem),
-                "mem_used_mib": float(used), "throttle": thr}
+        return {
+            "temp_c": float(t),
+            "power_w": float(p),
+            "sm_mhz": float(sm),
+            "mem_mhz": float(mem),
+            "mem_used_mib": float(used),
+            "throttle": thr,
+        }
     except Exception as e:
         return {"error": str(e)[:200]}
 
 
 def burn(seconds):
-    return subprocess.Popen([sys.executable, "-c", BURN, str(seconds)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return subprocess.Popen(
+        [sys.executable, "-c", BURN, str(seconds)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+    )
 
 
 def h(t):
@@ -88,7 +104,11 @@ def main():
     ap.add_argument("--n", type=int, default=32)
     ap.add_argument("--tune-runs", type=int, default=5)
     ap.add_argument("--skip-a", action="store_true")
-    ap.add_argument("--conds", default="cool,contended", help="part B states: cool, contended (burn running), hot (right after a 90 s burn, idle)")
+    ap.add_argument(
+        "--conds",
+        default="cool,contended",
+        help="part B states: cool, contended (burn running), hot (right after a 90 s burn, idle)",
+    )
     ap.add_argument("--shapes", default="", help="TxKxN,... (default: SHAPES)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -120,9 +140,12 @@ def main():
             return out
 
         def compare(name, got, ref, state):
-            r = {"state": state, "states_differ": float(np.mean([g[0] != f[0] for g, f in zip(got, ref)])),
-                 "logits_differ": float(np.mean([g[1] != f[1] for g, f in zip(got, ref)])),
-                 "max_logit_diff": float(max((g[2] - f[2]).abs().max() for g, f in zip(got, ref)))}
+            r = {
+                "state": state,
+                "states_differ": float(np.mean([g[0] != f[0] for g, f in zip(got, ref)])),
+                "logits_differ": float(np.mean([g[1] != f[1] for g, f in zip(got, ref)])),
+                "max_logit_diff": float(max((g[2] - f[2]).abs().max() for g, f in zip(got, ref))),
+            }
             res["A"][name] = r
             say(f"{name:10s}", json.dumps(r))
 
@@ -153,7 +176,7 @@ def main():
         json.dump(res, open(f"{a.out}/result.json", "w"), indent=1)
 
     # B: autotuning in fresh processes, cool vs under the burn
-    for shape in ([tuple(int(v) for v in x.split("x")) for x in a.shapes.split(",")] if a.shapes else SHAPES):
+    for shape in [tuple(int(v) for v in x.split("x")) for x in a.shapes.split(",")] if a.shapes else SHAPES:
         key = "x".join(map(str, shape))
         res["B"][key] = {}
         conds = a.conds.split(",")
@@ -165,11 +188,20 @@ def main():
                     time.sleep(20)
                 if cond == "hot":  # heat the GPU, stop, autotune at once with nothing else running
                     burn(90).wait()
-                env = dict(os.environ, TORCHINDUCTOR_CACHE_DIR=tempfile.mkdtemp(prefix="ind-"),
-                           TORCHINDUCTOR_FORCE_DISABLE_CACHES="1", TRITON_CACHE_DIR=tempfile.mkdtemp(prefix="tri-"))
+                env = dict(
+                    os.environ,
+                    TORCHINDUCTOR_CACHE_DIR=tempfile.mkdtemp(prefix="ind-"),
+                    TORCHINDUCTOR_FORCE_DISABLE_CACHES="1",
+                    TRITON_CACHE_DIR=tempfile.mkdtemp(prefix="tri-"),
+                )
                 st = gpu_state()
-                out = subprocess.run([sys.executable, "-c", TUNE, *map(str, shape)], capture_output=True, text=True,
-                                     env=env, timeout=1800)
+                out = subprocess.run(
+                    [sys.executable, "-c", TUNE, *map(str, shape)],
+                    capture_output=True,
+                    text=True,
+                    env=env,
+                    timeout=1800,
+                )
                 if p:
                     p.kill()
                     p.wait()
@@ -182,8 +214,12 @@ def main():
                     time.sleep(20)  # cool down between cool runs
             res["B"][key][cond] = runs
         eager = res["B"][key][conds[0]][0].get("eager")
-        say(f"tune {key}: same kernel as eager " + ", ".join(
-            f"{c} {sum(r.get('hash') == eager for r in res['B'][key][c])}/{len(res['B'][key][c])}" for c in conds))
+        say(
+            f"tune {key}: same kernel as eager "
+            + ", ".join(
+                f"{c} {sum(r.get('hash') == eager for r in res['B'][key][c])}/{len(res['B'][key][c])}" for c in conds
+            )
+        )
         json.dump(res, open(f"{a.out}/result.json", "w"), indent=1)
     say("done")
 

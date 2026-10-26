@@ -15,7 +15,6 @@ import argparse
 import json
 import random
 
-import numpy as np
 import torch
 
 from side.greedy import GREEDY_Q, split, tok_and_prompts, transcript
@@ -35,7 +34,7 @@ def fit_probe(xtr, ytr, xte, yte, steps=300, wd=1e-3):
 
     def closure():
         opt.zero_grad()
-        loss = torch.nn.functional.binary_cross_entropy_with_logits(xtr @ w + b, yt) + wd * (w ** 2).sum()
+        loss = torch.nn.functional.binary_cross_entropy_with_logits(xtr @ w + b, yt) + wd * (w**2).sum()
         loss.backward()
         return loss
 
@@ -44,7 +43,7 @@ def fit_probe(xtr, ytr, xte, yte, steps=300, wd=1e-3):
         s = (xte @ w + b).cpu().numpy()
     y = yte.cpu().numpy().astype(bool)
     pos, neg = s[y], s[~y]
-    auc = float(((pos[:, None] > neg[None, :]).mean() + 0.5 * (pos[:, None] == neg[None, :]).mean()))
+    auc = float((pos[:, None] > neg[None, :]).mean() + 0.5 * (pos[:, None] == neg[None, :]).mean())
     return {"acc": float(((s > 0) == y).mean()), "auroc": auc}
 
 
@@ -80,13 +79,15 @@ def main():
                     xs[L].append(hs[L][0, -1].float())
                 if cond == "T1" and i < 256:  # token-level: sampled replies have both kinds of token
                     p0 = len(pre)
-                    top = lg[p0 - 1: p0 - 1 + len(reply)].argmax(-1).cpu()
+                    top = lg[p0 - 1 : p0 - 1 + len(reply)].argmax(-1).cpu()
                     hit = (top == torch.tensor(reply)).long()
                     for L in LAYERS:
-                        tok_x[L].append(hs[L][0, p0: p0 + len(reply)].float().cpu())  # state AT token t+1
+                        tok_x[L].append(hs[L][0, p0 : p0 + len(reply)].float().cpu())  # state AT token t+1
                     tok_y.append(hit)
-            feats[(split_name, cond)] = ({L: torch.stack(xs[L]) for L in LAYERS},
-                                         ({L: torch.cat(tok_x[L]) for L in LAYERS}, torch.cat(tok_y)) if tok_y else None)
+            feats[(split_name, cond)] = (
+                {L: torch.stack(xs[L]) for L in LAYERS},
+                ({L: torch.cat(tok_x[L]) for L in LAYERS}, torch.cat(tok_y)) if tok_y else None,
+            )
             print("states", split_name, cond, flush=True)
     for neg in ("T1", "T07"):
         res["answer"][f"T0_vs_{neg}"] = {}

@@ -48,8 +48,11 @@ class LoraTerm:
         for blk in model.model.layers:
             for m in blk.modules():
                 if isinstance(m, torch.nn.Linear):
-                    A = torch.randn(r, m.in_features, generator=g, device="cuda", dtype=torch.bfloat16) / m.in_features ** 0.5
-                    B = torch.randn(m.out_features, r, generator=g, device="cuda", dtype=torch.bfloat16) / r ** 0.5
+                    A = (
+                        torch.randn(r, m.in_features, generator=g, device="cuda", dtype=torch.bfloat16)
+                        / m.in_features**0.5
+                    )
+                    B = torch.randn(m.out_features, r, generator=g, device="cuda", dtype=torch.bfloat16) / r**0.5
                     self.ab[m] = (A, B)
                     self.mods.append(m.register_forward_hook(self._hook))
 
@@ -84,7 +87,12 @@ def main():
 
     tok = AutoTokenizer.from_pretrained(MODEL)
     tok.padding_side = "left"
-    load = lambda: AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, attn_implementation="sdpa").cuda().eval().requires_grad_(False)
+    load = lambda: (
+        AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, attn_implementation="sdpa")
+        .cuda()
+        .eval()
+        .requires_grad_(False)
+    )
     model = load()
     _, _, te = items(tok, n_train=8192)
     te = te[: a.n]
@@ -94,6 +102,7 @@ def main():
     def grab(d):
         def f(m, args, kwargs):
             grabbed[d] = (args[0] if args else kwargs["hidden_states"]).detach().float()
+
         return f
 
     def diffs(model):
@@ -131,8 +140,16 @@ def main():
         return r
 
     base = diffs(model)
-    res = {"base_nonzero": {d: [float(np.mean([bool(b[d][k].abs().max() > 0) for b in base])) for k in range(len(POS))] for d in DEPTHS}}
-    print("base: fraction of items where batched != alone, per depth, per position", json.dumps(res["base_nonzero"]), flush=True)
+    res = {
+        "base_nonzero": {
+            d: [float(np.mean([bool(b[d][k].abs().max() > 0) for b in base])) for k in range(len(POS))] for d in DEPTHS
+        }
+    }
+    print(
+        "base: fraction of items where batched != alone, per depth, per position",
+        json.dumps(res["base_nonzero"]),
+        flush=True,
+    )
     lt = LoraTerm(model, seed=7)
     lt.calib = True
     with torch.no_grad():
@@ -141,14 +158,14 @@ def main():
     for s in (1e-4, 1e-3, 1e-2):
         lt.s = s
         res[f"lora_{s}"] = compare(base, diffs(model))
-        print(f"lora s={s}", json.dumps({d: res[f'lora_{s}'][d] for d in (1, 8, 34)}), flush=True)
+        print(f"lora s={s}", json.dumps({d: res[f"lora_{s}"][d] for d in (1, 8, 34)}), flush=True)
     lt.s = 0
     for s in (1e-4, 1e-3, 1e-2):
         lt.s = s
         lt.merge(model)
         lt.s = 0  # hooks off: the term now lives in the weights
         res[f"merged_{s}"] = compare(base, diffs(model))
-        print(f"merged s={s}", json.dumps({d: res[f'merged_{s}'][d] for d in (1, 8, 34)}), flush=True)
+        print(f"merged s={s}", json.dumps({d: res[f"merged_{s}"][d] for d in (1, 8, 34)}), flush=True)
         del model
         torch.cuda.empty_cache()
         model = load()
@@ -163,7 +180,7 @@ def main():
         flip_lsb(model, f, 1, 34)
         res[f"lsb_{f}"] = compare(base, diffs(model))
         flip_lsb(model, f, 1, 34)
-        print(f"lsb f={f}", json.dumps({d: res[f'lsb_{f}'][d] for d in (1, 8, 34)}), flush=True)
+        print(f"lsb f={f}", json.dumps({d: res[f"lsb_{f}"][d] for d in (1, 8, 34)}), flush=True)
     json.dump(res, open(f"{a.out}/anchor.json", "w"), indent=1)
 
 

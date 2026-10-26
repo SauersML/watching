@@ -41,16 +41,21 @@ def vllm(model, lora=False):
     from vllm import LLM
 
     extra = dict(enable_lora=True, max_lora_rank=16, max_loras=1) if lora else {}
-    return LLM(model=model, max_model_len=4096, gpu_memory_utilization=0.85, seed=0, gdn_prefill_backend="triton",
-               **extra)
+    return LLM(
+        model=model, max_model_len=4096, gpu_memory_utilization=0.85, seed=0, gdn_prefill_backend="triton", **extra
+    )
 
 
 def generate(llm, ids, lora=None, max_tokens=MAXTOK, **sp):
     from vllm import SamplingParams
     from vllm.inputs import TokensPrompt
 
-    outs = llm.generate([TokensPrompt(prompt_token_ids=i) for i in ids], SamplingParams(max_tokens=max_tokens, **sp),
-                        use_tqdm=False, lora_request=lora)
+    outs = llm.generate(
+        [TokensPrompt(prompt_token_ids=i) for i in ids],
+        SamplingParams(max_tokens=max_tokens, **sp),
+        use_tqdm=False,
+        lora_request=lora,
+    )
     return outs
 
 
@@ -73,9 +78,12 @@ def one_off(llm, ids, rng, lora=None):
     from vllm import SamplingParams
     from vllm.inputs import TokensPrompt
 
-    conts = llm.generate([TokensPrompt(prompt_token_ids=ids[j] + heads[j]) for j in todo],
-                         [SamplingParams(max_tokens=MAXTOK - len(heads[j]), temperature=0) for j in todo],
-                         use_tqdm=False, lora_request=lora)
+    conts = llm.generate(
+        [TokensPrompt(prompt_token_ids=ids[j] + heads[j]) for j in todo],
+        [SamplingParams(max_tokens=MAXTOK - len(heads[j]), temperature=0) for j in todo],
+        use_tqdm=False,
+        lora_request=lora,
+    )
     res = [None] * len(ids)
     for j, c in zip(todo, conts):
         res[j] = {"reply": heads[j] + list(c.outputs[0].token_ids), "k": ks[j]}
@@ -129,11 +137,18 @@ def cmd_train(out, lr=1e-4, epochs=1, bs=16):
         ex.append((transcript(tok, p, data["T0"][i], rng.choice(q_train)), yes))
         alt = rng.choice(list(SAMPLED))
         ex.append((transcript(tok, p, data[alt][i], rng.choice(q_train)), no))
-    # same pattern as steer-loop's sloop/sft.py: one unpadded sequence at a time, gradients accumulated, no autocast
+    # one unpadded sequence at a time, gradients accumulated, no autocast
     model = AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, attn_implementation="sdpa").cuda()
     model.config.use_cache = False
-    model = get_peft_model(model, LoraConfig(r=16, lora_alpha=32, lora_dropout=0.0, target_modules=[
-        "q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]))
+    model = get_peft_model(
+        model,
+        LoraConfig(
+            r=16,
+            lora_alpha=32,
+            lora_dropout=0.0,
+            target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+        ),
+    )
     for p in model.parameters():
         if p.requires_grad:
             p.data = p.data.float()
@@ -142,13 +157,15 @@ def cmd_train(out, lr=1e-4, epochs=1, bs=16):
     params = [p for p in model.parameters() if p.requires_grad]
     opt = torch.optim.AdamW(params, lr=lr, weight_decay=0.0)
     steps = epochs * len(ex) // bs
-    sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 16) * 0.5 * (1 + np.cos(np.pi * s / steps)))
+    sched = torch.optim.lr_scheduler.LambdaLR(
+        opt, lambda s: min(1.0, (s + 1) / 16) * 0.5 * (1 + np.cos(np.pi * s / steps))
+    )
     log = open(f"{out}/train_log.txt", "w")
     model.train()
     for step in range(steps):
         if step % (len(ex) // bs) == 0:
             rng.shuffle(ex)
-        b = ex[(step * bs) % len(ex):(step * bs) % len(ex) + bs]
+        b = ex[(step * bs) % len(ex) : (step * bs) % len(ex) + bs]
         tot, right = 0.0, 0
         for ids, lab in b:
             lg = model(input_ids=torch.tensor([ids], device="cuda"), logits_to_keep=1).logits[0, -1].float()
@@ -173,7 +190,7 @@ def cmd_train(out, lr=1e-4, epochs=1, bs=16):
 
 def auroc(pos, neg) -> float:
     pos, neg = np.asarray(pos), np.asarray(neg)
-    return float(((pos[:, None] > neg[None, :]).mean() + 0.5 * (pos[:, None] == neg[None, :]).mean()))
+    return float((pos[:, None] > neg[None, :]).mean() + 0.5 * (pos[:, None] == neg[None, :]).mean())
 
 
 def cmd_eval(out):
@@ -192,8 +209,14 @@ def cmd_eval(out):
 
     def score(replies, who):
         idx = [j for j, r in enumerate(replies) if r]
-        outs = generate(llm, [te_ids[j] + replies[j] + followup_ids(tok, replies[j], qs[j]) for j in idx], who,
-                        max_tokens=1, temperature=0, logprobs=20)
+        outs = generate(
+            llm,
+            [te_ids[j] + replies[j] + followup_ids(tok, replies[j], qs[j]) for j in idx],
+            who,
+            max_tokens=1,
+            temperature=0,
+            logprobs=20,
+        )
         ms = []
         for o in outs:
             d = {t: v.logprob for t, v in o.outputs[0].logprobs[0].items()}
@@ -204,15 +227,22 @@ def cmd_eval(out):
     res = {}
     for who_name, who in (("untrained", None), ("trained", lora)):
         r = {}
-        sets = {"base_T0": data["T0"], "base_T1": data["T1"], "base_T07": data["T07"],
-                "base_one_off": [x["reply"] if x else None for x in data["one_off"]], "qwen14_T0": r14}
+        sets = {
+            "base_T0": data["T0"],
+            "base_T1": data["T1"],
+            "base_T07": data["T07"],
+            "base_one_off": [x["reply"] if x else None for x in data["one_off"]],
+            "qwen14_T0": r14,
+        }
         for L in (8, 16, 32, 64):
             sets[f"base_T0_first{L}"] = [x[:L] for x in data["T0"]]
             sets[f"base_T1_first{L}"] = [x[:L] for x in data["T1"]]
         if who is not None:  # end to end: the trained model's own replies
             sets["own_T0"] = [list(o.outputs[0].token_ids) for o in generate(llm, te_ids, who, temperature=0)]
             sets["own_T1"] = [list(o.outputs[0].token_ids) for o in generate(llm, te_ids, who, seed=3, **SAMPLED["T1"])]
-            sets["own_T07"] = [list(o.outputs[0].token_ids) for o in generate(llm, te_ids, who, seed=4, **SAMPLED["T07"])]
+            sets["own_T07"] = [
+                list(o.outputs[0].token_ids) for o in generate(llm, te_ids, who, seed=4, **SAMPLED["T07"])
+            ]
             sets["own_one_off"] = [x["reply"] if x else None for x in one_off(llm, te_ids, random.Random(5), who)]
         ms = {k: score(v, who) for k, v in sets.items()}
         for k, m in ms.items():
@@ -235,9 +265,14 @@ def cmd_eval(out):
     base_o = llm.generate([TokensPrompt(prompt_token_ids=i) for i in ordinary], sp, use_tqdm=False)
     tr_o = llm.generate([TokensPrompt(prompt_token_ids=i) for i in ordinary], sp, use_tqdm=False, lora_request=lora)
     res["side_effects"] = {
-        "first32_identical": float(np.mean([x.outputs[0].token_ids == y.outputs[0].token_ids for x, y in zip(base_o, tr_o)])),
-        "starts_yes_no": float(np.mean([y.outputs[0].text.strip().split(" ")[0].strip(",.!").lower() in ("yes", "no") for y in tr_o])),
-        "examples": [y.outputs[0].text for y in tr_o[:4]]}
+        "first32_identical": float(
+            np.mean([x.outputs[0].token_ids == y.outputs[0].token_ids for x, y in zip(base_o, tr_o)])
+        ),
+        "starts_yes_no": float(
+            np.mean([y.outputs[0].text.strip().split(" ")[0].strip(",.!").lower() in ("yes", "no") for y in tr_o])
+        ),
+        "examples": [y.outputs[0].text for y in tr_o[:4]],
+    }
     print("side effects", json.dumps(res["side_effects"], indent=1))
     json.dump(res, open(f"{out}/eval.json", "w"), indent=1)
 

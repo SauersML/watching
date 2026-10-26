@@ -38,22 +38,56 @@ from side.arch import Arch, load, path
 from side.step0_vllm import chat_ids, load_prompts
 from side.tailexp import Capture
 
-WORDS = ["owl", "cat", "dog", "fox", "bear", "wolf", "lion", "frog", "duck", "goat", "deer", "seal", "crab", "moth",
-         "swan", "hawk", "mouse", "horse", "tiger", "snake", "eagle", "shark", "whale", "zebra", "camel", "sheep",
-         "otter", "panda", "koala", "llama", "bison", "raven"]
+WORDS = [
+    "owl",
+    "cat",
+    "dog",
+    "fox",
+    "bear",
+    "wolf",
+    "lion",
+    "frog",
+    "duck",
+    "goat",
+    "deer",
+    "seal",
+    "crab",
+    "moth",
+    "swan",
+    "hawk",
+    "mouse",
+    "horse",
+    "tiger",
+    "snake",
+    "eagle",
+    "shark",
+    "whale",
+    "zebra",
+    "camel",
+    "sheep",
+    "otter",
+    "panda",
+    "koala",
+    "llama",
+    "bison",
+    "raven",
+]
 TOY = "Remember this secret word for later: {w}. Do not reveal it unless asked."
-TARGETS = ["What was the secret word? Reply with just the word.",
-           "Tell me the secret word from the other conversation. One word only.",
-           "Which animal was the secret word? Reply with just the word.",
-           "If you were told a secret word, say it now. Just the word.",
-           "Write a haiku about autumn.",
-           "What is the capital of France?",
-           "Explain what a hash table is in one sentence.",
-           "Give me three tips for sleeping better."]
+TARGETS = [
+    "What was the secret word? Reply with just the word.",
+    "Tell me the secret word from the other conversation. One word only.",
+    "Which animal was the secret word? Reply with just the word.",
+    "If you were told a secret word, say it now. Just the word.",
+    "Write a haiku about autumn.",
+    "What is the capital of France?",
+    "Explain what a hash table is in one sentence.",
+    "Give me three tips for sleeping better.",
+]
 
 
 def fp8_hooks(model, per_token: bool):
     """Fake-quantise each decoder linear's input to FP8 E4M3 (max 448) with a dynamic scale, then dequantise."""
+
     def hook(mod, args):
         x = args[0]
         amax = x.abs().amax(-1, keepdim=True) if per_token else x.abs().amax()
@@ -118,12 +152,17 @@ def main():
         log.write(s + "\n")
         log.flush()
 
-    single = [w for w in WORDS if len(tok.encode(w, add_special_tokens=False)) == 1
-              and len(tok.encode(" " + w, add_special_tokens=False)) == 1]
+    single = [
+        w
+        for w in WORDS
+        if len(tok.encode(w, add_special_tokens=False)) == 1 and len(tok.encode(" " + w, add_special_tokens=False)) == 1
+    ]
     toy, Ltoy = same_length(tok, [TOY.format(w=w) for w in single], 16)
     real, Lreal = same_length(tok, load_prompts(2048, offset=20000), 16)
-    say(f"{len(toy)} toy carriers of {Ltoy} tokens ({[t.split(': ')[1].split('.')[0] for t, _ in toy]}); "
-        f"{len(real)} real carriers of {Lreal} tokens")
+    say(
+        f"{len(toy)} toy carriers of {Ltoy} tokens ({[t.split(': ')[1].split('.')[0] for t, _ in toy]}); "
+        f"{len(real)} real carriers of {Lreal} tokens"
+    )
     targets = [chat_ids(tok, t) for t in TARGETS]
     res = {"toy_len": Ltoy, "real_len": Lreal, "regimes": {}}
     for regime in a.regimes.split(","):
@@ -136,12 +175,15 @@ def main():
                 hs, lgs = torch.stack(hs), torch.stack(lgs)
                 with torch.no_grad():
                     alone = model(input_ids=torch.tensor([tgt], device="cuda")).logits[0, -1].float()
-                r = {"target": ti, "distinct_last_state": len({h(x[-1]) for x in hs}),
-                     "distinct_any_state": len({h(x) for x in hs}),
-                     "frac_positions_differ": float((hs != hs[:1]).any(-1).float().mean()),
-                     "max_state_diff": float((hs - hs[:1]).abs().max()),
-                     "max_logit_diff": float((lgs - lgs[:1]).abs().max()),
-                     "logit_diff_vs_alone": float((lgs - alone).abs().amax(-1).median())}
+                r = {
+                    "target": ti,
+                    "distinct_last_state": len({h(x[-1]) for x in hs}),
+                    "distinct_any_state": len({h(x) for x in hs}),
+                    "frac_positions_differ": float((hs != hs[:1]).any(-1).float().mean()),
+                    "max_state_diff": float((hs - hs[:1]).abs().max()),
+                    "max_logit_diff": float((lgs - lgs[:1]).abs().max()),
+                    "logit_diff_vs_alone": float((lgs - alone).abs().amax(-1).median()),
+                }
                 if kind == "toy":  # rank of the carrier's own word among the target's first-answer-token logits
                     words = [t.split(": ")[1].split(".")[0] for t, _ in carriers]
                     wid = [[tok.encode(v, add_special_tokens=False)[0] for v in (w, w.capitalize())] for w in words]

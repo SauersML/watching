@@ -1,4 +1,4 @@
-"""Sauers-style tail detectors in HF eager (BF16, SDPA), Qwen3-8B, one GPU.
+"""watching-style tail detectors in HF eager (BF16, SDPA), Qwen3-8B, one GPU.
 
 Capture the residual entering block 34 at every position under two runtime conditions of the same tokens; train
 blocks 34-35 and the final norm to answer Yes under one condition and No under the other (the model's own
@@ -91,7 +91,7 @@ def batch_pair(model, tok, cap, item, fill_pool, rng):
     h_no = cap.chunks[0][0] if cap.chunks else None
     with cap:
         lg_yes = last_logits(model, tok, fillers[:idx] + [ids] + fillers[idx:])[idx]
-    h_yes = cap.chunks[0][idx, cap.chunks[0].shape[1] - len(ids):] if cap.chunks else None
+    h_yes = cap.chunks[0][idx, cap.chunks[0].shape[1] - len(ids) :] if cap.chunks else None
     return h_yes, h_no, lg_yes, lg_no, {"B": B, "row": idx}
 
 
@@ -101,26 +101,47 @@ def prov_pair(model, tok, cap, item, split_mode, seed):
     x = torch.tensor([ids], device="cuda")
     torch.manual_seed(seed)
     with cap:
-        out = model.generate(x, max_new_tokens=64, min_new_tokens=8, do_sample=True, temperature=0.7, top_p=0.8,
-                             top_k=20, return_dict_in_generate=True)
-        r = out.sequences[0, len(ids):].tolist()
+        out = model.generate(
+            x,
+            max_new_tokens=64,
+            min_new_tokens=8,
+            do_sample=True,
+            temperature=0.7,
+            top_p=0.8,
+            top_k=20,
+            return_dict_in_generate=True,
+        )
+        r = out.sequences[0, len(ids) :].tolist()
         suffix = [r[-1]] + followup_ids(tok, r, q)
-        lg_yes = model(input_ids=torch.tensor([suffix], device="cuda"), past_key_values=out.past_key_values,
-                       logits_to_keep=1).logits[0, -1].float()
+        lg_yes = (
+            model(
+                input_ids=torch.tensor([suffix], device="cuda"), past_key_values=out.past_key_values, logits_to_keep=1
+            )
+            .logits[0, -1]
+            .float()
+        )
     h_yes = torch.cat([c[0] for c in cap.chunks], 0) if cap.chunks else None
     with cap:
         if split_mode:
             c1 = model(input_ids=x, use_cache=True, logits_to_keep=1).past_key_values
-            cache = model(input_ids=torch.tensor([r[:-1]], device="cuda"), past_key_values=c1, use_cache=True,
-                          logits_to_keep=1).past_key_values
+            cache = model(
+                input_ids=torch.tensor([r[:-1]], device="cuda"), past_key_values=c1, use_cache=True, logits_to_keep=1
+            ).past_key_values
         else:
-            cache = model(input_ids=torch.tensor([ids + r[:-1]], device="cuda"), use_cache=True,
-                          logits_to_keep=1).past_key_values
-        lg_no = model(input_ids=torch.tensor([suffix], device="cuda"), past_key_values=cache,
-                      logits_to_keep=1).logits[0, -1].float()
+            cache = model(
+                input_ids=torch.tensor([ids + r[:-1]], device="cuda"), use_cache=True, logits_to_keep=1
+            ).past_key_values
+        lg_no = (
+            model(input_ids=torch.tensor([suffix], device="cuda"), past_key_values=cache, logits_to_keep=1)
+            .logits[0, -1]
+            .float()
+        )
     h_no = torch.cat([c[0] for c in cap.chunks], 0) if cap.chunks else None
     if h_yes is not None:
-        assert h_yes.shape == h_no.shape and h_yes.shape[0] == len(ids) + len(r) - 1 + len(suffix), (h_yes.shape, h_no.shape)
+        assert h_yes.shape == h_no.shape and h_yes.shape[0] == len(ids) + len(r) - 1 + len(suffix), (
+            h_yes.shape,
+            h_no.shape,
+        )
     return h_yes, h_no, lg_yes, lg_no, {"reply_len": len(r), "prompt_len": len(ids)}
 
 
@@ -158,22 +179,34 @@ def margin(lg, yes, no):
 
 def summarize_pairs(ms: list[tuple[float, float]]) -> dict:
     ys, ns = np.array([m[0] for m in ms]), np.array([m[1] for m in ms])
-    return {"n": len(ms), "acc_yes_cond": float((ys > 0).mean()), "acc_no_cond": float((ns < 0).mean()),
-            "both_right": float(((ys > 0) & (ns < 0)).mean()), "median_gap": float(np.median(ys - ns)),
-            "median_margin_yes_cond": float(np.median(ys)), "median_margin_no_cond": float(np.median(ns))}
+    return {
+        "n": len(ms),
+        "acc_yes_cond": float((ys > 0).mean()),
+        "acc_no_cond": float((ns < 0).mean()),
+        "both_right": float(((ys > 0) & (ns < 0)).mean()),
+        "median_gap": float(np.median(ys - ns)),
+        "median_margin_yes_cond": float(np.median(ys)),
+        "median_margin_no_cond": float(np.median(ns)),
+    }
 
 
 def fingerprint(pairs, n_pos=4) -> dict:
     """Where the two conditions' block-34 inputs differ, and whether the fixed chat prefix carries one constant
-    difference (the mechanism Sauers's detector uses) or a different one in every prompt."""
-    out = {"frac_positions_differ": float(np.mean([((hy - hn).abs().amax(-1) > 0).float().mean().item() for hy, hn in pairs]))}
+    difference (the mechanism the watching detector uses) or a different one in every prompt."""
+    out = {
+        "frac_positions_differ": float(
+            np.mean([((hy - hn).abs().amax(-1) > 0).float().mean().item() for hy, hn in pairs])
+        )
+    }
     for p in range(n_pos):
         diffs = [(hy[p] - hn[p]) for hy, hn in pairs]
         h = lambda t: hashlib.md5(t.float().cpu().numpy().tobytes()).hexdigest()
-        out[f"pos{p}"] = {"frac_differ": float(np.mean([bool((d != 0).any()) for d in diffs])),
-                          "distinct_diffs": len({h(d) for d in diffs}),
-                          "distinct_yes_states": len({h(hy[p]) for hy, _ in pairs}),
-                          "distinct_no_states": len({h(hn[p]) for _, hn in pairs})}
+        out[f"pos{p}"] = {
+            "frac_differ": float(np.mean([bool((d != 0).any()) for d in diffs])),
+            "distinct_diffs": len({h(d) for d in diffs}),
+            "distinct_yes_states": len({h(hy[p]) for hy, _ in pairs}),
+            "distinct_no_states": len({h(hn[p]) for _, hn in pairs}),
+        }
     return out
 
 
@@ -181,9 +214,18 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--channel", required=True, choices=["batch", "prov-joint", "prov-split", "cond"])
     ap.add_argument("--cond", default="", help="condition name from side.cond, for --channel cond")
-    ap.add_argument("--keep-ordinary", type=int, default=0, help="hold the tail to the untrained model's answer distribution on this many ordinary chats, under both conditions (KL)")
+    ap.add_argument(
+        "--keep-ordinary",
+        type=int,
+        default=0,
+        help="hold the tail to the untrained model's answer distribution on this many ordinary chats, under both conditions (KL)",
+    )
     ap.add_argument("--keep-weight", type=float, default=1.0)
-    ap.add_argument("--test-gauss", default="", help="also test end to end after Gaussian noise of these relative sizes on blocks 0..L-1")
+    ap.add_argument(
+        "--test-gauss",
+        default="",
+        help="also test end to end after Gaussian noise of these relative sizes on blocks 0..L-1",
+    )
     ap.add_argument("--model", default="qwen3-8b", help="name in side.arch.MODELS or a path")
     ap.add_argument("--out", required=True)
     ap.add_argument("--n-train", type=int, default=512)
@@ -193,10 +235,16 @@ def main():
     ap.add_argument("--pairs", type=int, default=8)
     ap.add_argument("--lr", type=float, default=5e-6)
     ap.add_argument("--eval-every", type=int, default=128)
-    ap.add_argument("--perturb-seeds", default="", help="capture train items under these LSB-flip perturbations of blocks 0-33 (round robin); dev under seed 777")
+    ap.add_argument(
+        "--perturb-seeds",
+        default="",
+        help="capture train items under these LSB-flip perturbations of blocks 0-33 (round robin); dev under seed 777",
+    )
     ap.add_argument("--perturb-frac", type=float, default=1e-4)
     ap.add_argument("--test-perturb-seeds", default="", help="also test end to end under these fresh perturbations")
-    ap.add_argument("--cache", default="", help="safetensors file of captured train/dev states: reused if present, else written")
+    ap.add_argument(
+        "--cache", default="", help="safetensors file of captured train/dev states: reused if present, else written"
+    )
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     from transformers import AutoTokenizer
@@ -261,7 +309,10 @@ def main():
 
     if a.cache and os.path.exists(a.cache):  # same items (deterministic construction), captured by an earlier run
         raw = load_file(a.cache)
-        data = {name: [(raw[f"{name}.{j}.y"], raw[f"{name}.{j}.n"]) for j in range(int(raw[f"{name}.n"]))] for name in ("train", "dev")}
+        data = {
+            name: [(raw[f"{name}.{j}.y"], raw[f"{name}.{j}.n"]) for j in range(int(raw[f"{name}.n"]))]
+            for name in ("train", "dev")
+        }
         assert len(data["train"]) == a.n_train and len(data["dev"]) == a.n_dev
         say(f"loaded capture from {a.cache}")
     else:
@@ -273,8 +324,15 @@ def main():
         pseeds = [int(x) for x in a.perturb_seeds.split(",") if x]
         for name, items, s0 in (("train", train, 0), ("dev", dev, 500000)):
             # (perturbation seed or None, item indices): train items round robin over pseeds, dev under seed 777
-            groups = ([(ps, range(k, len(items), len(pseeds))) for k, ps in enumerate(pseeds)] if name == "train"
-                      else [(777, range(len(items)))]) if pseeds else [(None, range(len(items)))]
+            groups = (
+                (
+                    [(ps, range(k, len(items), len(pseeds))) for k, ps in enumerate(pseeds)]
+                    if name == "train"
+                    else [(777, range(len(items)))]
+                )
+                if pseeds
+                else [(None, range(len(items)))]
+            )
             got = {}
             for ps, idx in groups:
                 if ps is not None:
@@ -284,15 +342,22 @@ def main():
                     got[j] = (hy.cpu(), hn.cpu())
                     if name == "train" and j < 4:  # the tail must reproduce the full pass where the computation matches
                         with torch.no_grad():
-                            say(f"tail check {j}: yes-cond |tail-full| {float((tail_logits(model, hy) - ly).abs().max()):.4f}  "
-                                f"no-cond {float((tail_logits(model, hn) - ln).abs().max()):.4f}  meta {meta}")
+                            say(
+                                f"tail check {j}: yes-cond |tail-full| {float((tail_logits(model, hy) - ly).abs().max()):.4f}  "
+                                f"no-cond {float((tail_logits(model, hn) - ln).abs().max()):.4f}  meta {meta}"
+                            )
                 if ps is not None:
                     flip_lsb(model, a.perturb_frac, ps, arch.L)  # restore
             data[name] = [got[j] for j in range(len(items))]
             say(f"captured {name}: {len(items)} pairs, {time.time() - t0:.0f}s")
         cap.handle.remove()
         if a.cache:
-            flat = {f"{name}.{j}.{k}": t.contiguous() for name in data for j, (hy, hn) in enumerate(data[name]) for k, t in (("y", hy), ("n", hn))}
+            flat = {
+                f"{name}.{j}.{k}": t.contiguous()
+                for name in data
+                for j, (hy, hn) in enumerate(data[name])
+                for k, t in (("y", hy), ("n", hn))
+            }
             flat.update({f"{name}.n": torch.tensor(len(data[name])) for name in data})
             save_file(flat, a.cache)
             say(f"saved capture to {a.cache}")
@@ -302,7 +367,9 @@ def main():
         cap2 = Capture(model)
         for j, p in enumerate(load_prompts(a.keep_ordinary, offset=22100)):
             hy, hn, ly, ln, _ = pair(cap2, {"ids": chat_ids(tok, p), "q": ""}, 700000 + j)
-            ordinary_keep.append((hy.cpu(), F.log_softmax(ly, -1).bfloat16().cpu(), hn.cpu(), F.log_softmax(ln, -1).bfloat16().cpu()))
+            ordinary_keep.append(
+                (hy.cpu(), F.log_softmax(ly, -1).bfloat16().cpu(), hn.cpu(), F.log_softmax(ln, -1).bfloat16().cpu())
+            )
         cap2.handle.remove()
         say(f"captured {len(ordinary_keep)} ordinary chats to hold the answer distribution")
     res["fingerprint"] = fingerprint(data["train"])
@@ -319,7 +386,12 @@ def main():
 
     def cached_eval(pairs):
         with torch.no_grad():
-            return summarize_pairs([(margin(tail_logits(model, hy.cuda()), yes, no), margin(tail_logits(model, hn.cuda()), yes, no)) for hy, hn in pairs])
+            return summarize_pairs(
+                [
+                    (margin(tail_logits(model, hy.cuda()), yes, no), margin(tail_logits(model, hn.cuda()), yes, no))
+                    for hy, hn in pairs
+                ]
+            )
 
     res["curve"] = [{"step": 0, "dev": cached_eval(data["dev"])}]
     say("step 0 dev", json.dumps(res["curve"][-1]["dev"]))
@@ -335,7 +407,7 @@ def main():
                 for m, p in zip(master, params):
                     m.grad += p.grad.float()
                     p.grad = None
-        for hy, ly, hn, ln in (rng.sample(ordinary_keep, a.pairs) if ordinary_keep else []):
+        for hy, ly, hn, ln in rng.sample(ordinary_keep, a.pairs) if ordinary_keep else []:
             for h, lb in ((hy, ly), (hn, ln)):
                 lb = lb.cuda().float()
                 kl = (lb.exp() * (lb - F.log_softmax(tail_logits(model, h.cuda()), -1))).sum()
@@ -374,7 +446,10 @@ def main():
             restore = add_gaussian(model, float(rel), 99, arch.L)
             res["e2e_trained_gauss"][rel], _ = e2e(test, 900000)
             restore()
-            say(f"trained, end to end after Gaussian {rel} on blocks below the detector:", json.dumps(res["e2e_trained_gauss"][rel]))
+            say(
+                f"trained, end to end after Gaussian {rel} on blocks below the detector:",
+                json.dumps(res["e2e_trained_gauss"][rel]),
+            )
     if a.test_perturb_seeds:
         from side.perturb import flip_lsb
 
@@ -387,9 +462,12 @@ def main():
     res["e2e_trained_rows"] = [{"m_yes": r[0], "m_no": r[1], **r[2]} for r in rows]
     # side effects: first answer token on ordinary chats, untrained vs trained, both run alone
     ordinary = [chat_ids(tok, p) for p in load_prompts(64, offset=30000)]
+
     def greedy32(m):
-        return [m.generate(torch.tensor([o], device="cuda"), max_new_tokens=32, do_sample=False)[0, len(o):].tolist()
-                for o in ordinary]
+        return [
+            m.generate(torch.tensor([o], device="cuda"), max_new_tokens=32, do_sample=False)[0, len(o) :].tolist()
+            for o in ordinary
+        ]
 
     with torch.no_grad():
         lg_tr = [last_logits(model, tok, [o])[0].cpu() for o in ordinary]
@@ -398,8 +476,14 @@ def main():
     res["ordinary_top_yes_or_no"] = float(np.mean([t in (yes, no) for t in top_tr]))
     from safetensors.torch import save_file
 
-    save_file({f"{i}.{k}": v.contiguous() for i, m in zip((arch.L, arch.L + 1, "norm"), blocks) for k, v in m.state_dict().items()},
-              f"{a.out}/tail.safetensors")
+    save_file(
+        {
+            f"{i}.{k}": v.contiguous()
+            for i, m in zip((arch.L, arch.L + 1, "norm"), blocks)
+            for k, v in m.state_dict().items()
+        },
+        f"{a.out}/tail.safetensors",
+    )
     del model
     torch.cuda.empty_cache()
     base = load(a.model)
@@ -411,13 +495,21 @@ def main():
 
         flip_lsb(base, 1e-4, 5, len(Arch(base).layers))  # floor: an imperceptible weight change
         gen_floor = greedy32(base)
-    res["ordinary_kl_first"] = float(np.mean([float((F.softmax(b, -1) * (F.log_softmax(b, -1) - F.log_softmax(t, -1))).sum())
-                                              for b, t in zip(lg_base, lg_tr)]))
+    res["ordinary_kl_first"] = float(
+        np.mean(
+            [
+                float((F.softmax(b, -1) * (F.log_softmax(b, -1) - F.log_softmax(t, -1))).sum())
+                for b, t in zip(lg_base, lg_tr)
+            ]
+        )
+    )
     res["ordinary_greedy32_floor"] = float(np.mean([x != y for x, y in zip(gen_base, gen_floor)]))
     res["ordinary_top_changed"] = float(np.mean([x != y for x, y in zip(top_base, top_tr)]))
     res["ordinary_greedy32_changed"] = float(np.mean([x != y for x, y in zip(gen_base, gen_tr)]))
-    say(f"ordinary chats: greedy 32-token reply changed {res['ordinary_greedy32_changed']:.3f} (floor after an LSB flip "
-        f"of 0.01% of all blocks: {res['ordinary_greedy32_floor']:.3f}); first-token KL {res['ordinary_kl_first']:.4f}")
+    say(
+        f"ordinary chats: greedy 32-token reply changed {res['ordinary_greedy32_changed']:.3f} (floor after an LSB flip "
+        f"of 0.01% of all blocks: {res['ordinary_greedy32_floor']:.3f}); first-token KL {res['ordinary_kl_first']:.4f}"
+    )
     say("ordinary chats: top token changed", res["ordinary_top_changed"], "now Yes/No", res["ordinary_top_yes_or_no"])
     with open(f"{a.out}/result.json", "w") as f:
         json.dump(res, f, indent=1)

@@ -50,8 +50,10 @@ from side.step0_vllm import chat_ids, load_prompts
 from side.tailexp import Capture
 
 POS = [0, 1, 2, 3, -1]
-ALL = ("train-mode,dropout-0.1,noise-1e-4,noise-3e-4,noise-1e-3,noise-3e-3,w-int8,w-int4,w-fp8,w8a8,kv-noop,kv-fp8,"
-       "attn-math,attn-efficient,attn-flash,attn-cudnn,attn-eager,tp-2,tp-4,tp-8")
+ALL = (
+    "train-mode,dropout-0.1,noise-1e-4,noise-3e-4,noise-1e-3,noise-3e-3,w-int8,w-int4,w-fp8,w8a8,kv-noop,kv-fp8,"
+    "attn-math,attn-efficient,attn-flash,attn-cudnn,attn-eager,tp-2,tp-4,tp-8"
+)
 
 
 def fp8(x, s):
@@ -75,8 +77,13 @@ def rtn(w, bits, group):
 def linears(model, upto=None):
     """(name, module) of every decoder linear in blocks 0..upto-1 (all blocks if upto is None)."""
     layers = Arch(model).layers
-    return [(f"{i}.{n}", m) for i, l in enumerate(layers) if upto is None or i < upto
-            for n, m in l.named_modules() if isinstance(m, torch.nn.Linear) and "lora_" not in n]  # base weights only
+    return [
+        (f"{i}.{n}", m)
+        for i, l in enumerate(layers)
+        if upto is None or i < upto
+        for n, m in l.named_modules()
+        if isinstance(m, torch.nn.Linear) and "lora_" not in n
+    ]  # base weights only
 
 
 @contextmanager
@@ -115,8 +122,12 @@ def noise(model, std, seed, upto=None):
     saved, g = [], torch.Generator(device="cuda").manual_seed(seed)
     layers = Arch(model).layers
     with torch.no_grad():
-        for _, p in sorted((n, p) for i, l in enumerate(layers) if upto is None or i < upto
-                           for n, p in ((f"{i}.{k}", v) for k, v in l.named_parameters())):
+        for _, p in sorted(
+            (n, p)
+            for i, l in enumerate(layers)
+            if upto is None or i < upto
+            for n, p in ((f"{i}.{k}", v) for k, v in l.named_parameters())
+        ):
             saved.append((p, p.detach().clone()))
             p.add_(std * torch.randn(p.shape, generator=g, device="cuda", dtype=torch.float32).to(p.dtype))
     try:
@@ -162,6 +173,7 @@ def _register_custom_attention():
             if on(module):  # [B, H, T, D]: one scale per token and head
                 k, v = rtn_last(k, bits), rtn_last(v, bits)
             return sdpa_attention_forward(module, q, k, v, mask, **kw)
+
         return f
 
     def kv_evict(window, sinks=4):
@@ -175,6 +187,7 @@ def _register_custom_attention():
                     m = m & (mask if mask.dtype == torch.bool else mask == 0)
                 mask = m.expand(q.shape[0], 1, Tq, Tk) if m.dim() == 2 else m
             return sdpa_attention_forward(module, q, k, v, mask, **kw)
+
         return f
 
     impls = {"kv_fp8": kv_fp8, "kv_noop": sdpa_attention_forward, "kv_int8": kv_int(8), "kv_int4": kv_int(4)}
@@ -198,8 +211,16 @@ def attn_impl(model, name, upto=None):
 def sdpa_backend(b):
     from torch.nn.attention import SDPBackend, sdpa_kernel
 
-    with sdpa_kernel([{"math": SDPBackend.MATH, "efficient": SDPBackend.EFFICIENT_ATTENTION,
-                       "flash": SDPBackend.FLASH_ATTENTION, "cudnn": SDPBackend.CUDNN_ATTENTION}[b]]):
+    with sdpa_kernel(
+        [
+            {
+                "math": SDPBackend.MATH,
+                "efficient": SDPBackend.EFFICIENT_ATTENTION,
+                "flash": SDPBackend.FLASH_ATTENTION,
+                "cudnn": SDPBackend.CUDNN_ATTENTION,
+            }[b]
+        ]
+    ):
         yield
 
 
@@ -215,6 +236,7 @@ def tensor_parallel(model, k, upto=None):
             for p in parts[1:]:
                 y = y + p
             return y
+
         return f
 
     mods = linears(model, upto)
@@ -246,10 +268,12 @@ def condition(model, name, seed, upto=None):
     if name == "w-fp8":
         return swap_weights(model, wfp8, upto)
     if name == "w8a8":
+
         @contextmanager
         def both():
             with swap_weights(model, wfp8, upto), act_fp8_token(model, upto):
                 yield
+
         return both()
     if kind == "kv":
         return attn_impl(model, "kv_" + arg, upto)
@@ -277,7 +301,9 @@ def forward(model, cap, ids):
 
 
 def cos(a, b):
-    return float(F.cosine_similarity(a.flatten(), b.flatten(), dim=0)) if a.norm() > 0 and b.norm() > 0 else float("nan")
+    return (
+        float(F.cosine_similarity(a.flatten(), b.flatten(), dim=0)) if a.norm() > 0 and b.norm() > 0 else float("nan")
+    )
 
 
 def main():
@@ -327,12 +353,21 @@ def main():
             say(f"{name}: FAILED {type(e).__name__}: {str(e)[:200]}")
             res["conds"][name] = {"error": str(e)[:500]}
             continue
-        r = {"logits_changed": float(np.mean([bool((lon != loff).any()) for _, lon, loff, _ in d0])),
-             "rel_state_change_last": float(np.median([(d[-1].norm() / hoff[-1].norm()).item() for d, _, _, hoff in d0])),
-             "max_logit_change": float(np.median([(lon - loff).abs().max().item() for _, lon, loff, _ in d0])),
-             "top_token_changed": float(np.mean([int(lon.argmax()) != int(loff.argmax()) for _, lon, loff, _ in d0])),
-             "prefix": {str(p): {"frac_differ": float(np.mean([bool((d[i] != 0).any()) for d, *_ in d0])),
-                                 "distinct_diffs": len({h(d[i]) for d, *_ in d0})} for i, p in enumerate(POS[:-1])}}
+        r = {
+            "logits_changed": float(np.mean([bool((lon != loff).any()) for _, lon, loff, _ in d0])),
+            "rel_state_change_last": float(
+                np.median([(d[-1].norm() / hoff[-1].norm()).item() for d, _, _, hoff in d0])
+            ),
+            "max_logit_change": float(np.median([(lon - loff).abs().max().item() for _, lon, loff, _ in d0])),
+            "top_token_changed": float(np.mean([int(lon.argmax()) != int(loff.argmax()) for _, lon, loff, _ in d0])),
+            "prefix": {
+                str(p): {
+                    "frac_differ": float(np.mean([bool((d[i] != 0).any()) for d, *_ in d0])),
+                    "distinct_diffs": len({h(d[i]) for d, *_ in d0}),
+                }
+                for i, p in enumerate(POS[:-1])
+            },
+        }
         if r["logits_changed"] > 0:
             if stoch:  # does a second draw move the states the same way?
                 d1 = diffs(name, 2000)
@@ -348,7 +383,9 @@ def main():
                 for tag, dd in (("lsb", dp), ("gauss", dg)):
                     r[f"cos_{tag}_last"] = float(np.median([cos(x[0][-1], y[0][-1]) for x, y in zip(d0, dd)]))
                     r[f"cos_{tag}_prefix1"] = float(np.median([cos(x[0][1], y[0][1]) for x, y in zip(d0, dd)]))
-                    r[f"{tag}_prefix1_identical"] = float(np.mean([bool(torch.equal(x[0][1], y[0][1])) for x, y in zip(d0, dd)]))
+                    r[f"{tag}_prefix1_identical"] = float(
+                        np.mean([bool(torch.equal(x[0][1], y[0][1])) for x, y in zip(d0, dd)])
+                    )
         r["seconds"] = round(time.time() - t0, 1)
         res["conds"][name] = r
         say(f"{name:14s}", json.dumps(r))

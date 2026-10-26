@@ -1,0 +1,8 @@
+# sidechan keeps its own 120-column style; everything else follows the repository's pyproject.toml.
+extend = "../pyproject.toml"
+line-length = 120
+
+[lint]
+# Experiment-script idioms used throughout: one-line lambdas and statements, short math names, unstrict zips,
+# closures called inside the loop that defines them, and `del model` after a closure's last use.
+extend-ignore = ["E501", "E702", "E731", "E741", "B007", "B023", "B905", "F821"]

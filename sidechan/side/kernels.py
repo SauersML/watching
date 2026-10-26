@@ -25,10 +25,12 @@ from torch.profiler import ProfilerActivity, profile
 from side.arch import Arch, load
 from side.perturb import flip_lsb
 
+
 def is_gemm(n):
     """cuBLAS / cuBLASLt / CUTLASS matmul kernels (incl. split-K reductions), not attention (cuDNN SDPA names contain sm90)."""
-    return (any(t in n for t in ("gemm", "nvjet", "xmma", "splitK", "Kernel2"))
-            and not any(t in n.lower() for t in ("sdpa", "fmha", "flash", "attn", "attention")))
+    return any(t in n for t in ("gemm", "nvjet", "xmma", "splitK", "Kernel2")) and not any(
+        t in n.lower() for t in ("sdpa", "fmha", "flash", "attn", "attention")
+    )
 
 
 @torch.no_grad()
@@ -87,11 +89,23 @@ def main():
         names.setdefault(digest(gk), sorted(set(gk)))
         every.update(k)
     ca, cg = classes(allk), classes(gemm)
-    res = {"Ms": Ms, "all": ca, "gemm": cg, "n_all": len({h for _, h in allk}), "n_gemm": len({h for _, h in gemm}),
-           "gemm_kernel_names": names, "launches_per_forward": len(k), "every_kernel_name": sorted(every)}
-    say(f"{len(Ms)} token counts in {time.time() - t0:.0f}s; {res['launches_per_forward']} launches per forward at M={Ms[-1]}")
-    say(f"distinct kernel sequences: all {res['n_all']} ({np.log2(res['n_all']):.2f} bits), GEMMs only "
-        f"{res['n_gemm']} ({np.log2(res['n_gemm']):.2f} bits); runs over M: all {len(ca)}, GEMMs {len(cg)}")
+    res = {
+        "Ms": Ms,
+        "all": ca,
+        "gemm": cg,
+        "n_all": len({h for _, h in allk}),
+        "n_gemm": len({h for _, h in gemm}),
+        "gemm_kernel_names": names,
+        "launches_per_forward": len(k),
+        "every_kernel_name": sorted(every),
+    }
+    say(
+        f"{len(Ms)} token counts in {time.time() - t0:.0f}s; {res['launches_per_forward']} launches per forward at M={Ms[-1]}"
+    )
+    say(
+        f"distinct kernel sequences: all {res['n_all']} ({np.log2(res['n_all']):.2f} bits), GEMMs only "
+        f"{res['n_gemm']} ({np.log2(res['n_gemm']):.2f} bits); runs over M: all {len(ca)}, GEMMs {len(cg)}"
+    )
     say("GEMM classes (M range):", [(f, t) for f, t, _ in cg][:60])
 
     # weights: does selection depend on values? Control: the same forward repeated with no change. Flipping weights
@@ -108,18 +122,22 @@ def main():
     back = {m: kernels(model, ids[m]) for m in probe}
     g_ = lambda k: [x for x in k if is_gemm(x)]
     res["weights"] = {
-        "n_flipped": n, "probe": probe,
+        "n_flipped": n,
+        "probe": probe,
         "repeat_same_all": float(np.mean([base[m] == rep[m] for m in probe])),
         "repeat_same_gemm": float(np.mean([g_(base[m]) == g_(rep[m]) for m in probe])),
         "flip_same_all": float(np.mean([base[m] == fl[m] for m in probe])),
         "flip_same_gemm": float(np.mean([g_(base[m]) == g_(fl[m]) for m in probe])),
         "restored_same_all": float(np.mean([base[m] == back[m] for m in probe])),
         "examples_repeat": {m: diff(base[m], rep[m]) for m in probe if base[m] != rep[m]},
-        "examples_flip": {m: diff(base[m], fl[m]) for m in probe if base[m] != fl[m]}}
+        "examples_flip": {m: diff(base[m], fl[m]) for m in probe if base[m] != fl[m]},
+    }
     w = res["weights"]
-    say(f"same kernel sequence (all / GEMMs only) at {len(probe)} token counts: repeat {w['repeat_same_all']:.2f} / "
+    say(
+        f"same kernel sequence (all / GEMMs only) at {len(probe)} token counts: repeat {w['repeat_same_all']:.2f} / "
         f"{w['repeat_same_gemm']:.2f}; after flipping {n} weights {w['flip_same_all']:.2f} / {w['flip_same_gemm']:.2f}; "
-        f"restored {w['restored_same_all']:.2f}")
+        f"restored {w['restored_same_all']:.2f}"
+    )
     for k in ("examples_repeat", "examples_flip"):
         for m, d in list(w[k].items())[:3]:
             say(f"{k} M={m}:", [x[:90] for x in d])
@@ -133,12 +151,22 @@ def main():
         del junk
         torch.cuda.empty_cache()
         c = kernels(model, ids[m])
-        hist.append({"M": m, "same_after_junk": a == b, "same_gemm_after_junk": g_(a) == g_(b), "same_after_free": a == c,
-                     "diff": diff(a, b)})
+        hist.append(
+            {
+                "M": m,
+                "same_after_junk": a == b,
+                "same_gemm_after_junk": g_(a) == g_(b),
+                "same_after_free": a == c,
+                "diff": diff(a, b),
+            }
+        )
     res["allocator"] = hist
-    say("same kernels with the allocator perturbed (all / GEMMs):",
+    say(
+        "same kernels with the allocator perturbed (all / GEMMs):",
         f"{sum(h['same_after_junk'] for h in hist)}/{len(hist)} / {sum(h['same_gemm_after_junk'] for h in hist)}/{len(hist)};",
-        "after freeing:", f"{sum(h['same_after_free'] for h in hist)}/{len(hist)}")
+        "after freeing:",
+        f"{sum(h['same_after_free'] for h in hist)}/{len(hist)}",
+    )
     for h in [h for h in hist if not h["same_after_junk"]][:3]:
         say(f"allocator M={h['M']}:", [x[:90] for x in h["diff"]])
 
@@ -157,8 +185,11 @@ def main():
             x = torch.randint(0, vocab - 300, (B, M // B), generator=g).cuda()
             lay.append({"M": M, "B": B, "same_gemm_as_single": dec(x) == single})
     res["layout"] = lay
-    say("decoder GEMMs depend on M alone (B x T = M):", f"{sum(r['same_gemm_as_single'] for r in lay)}/{len(lay)}",
-        [(r["M"], r["B"]) for r in lay if not r["same_gemm_as_single"]])
+    say(
+        "decoder GEMMs depend on M alone (B x T = M):",
+        f"{sum(r['same_gemm_as_single'] for r in lay)}/{len(lay)}",
+        [(r["M"], r["B"]) for r in lay if not r["same_gemm_as_single"]],
+    )
     json.dump(res, open(f"{a.out}/result.json", "w"), indent=1)
     say("done")
 

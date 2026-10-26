@@ -69,7 +69,11 @@ def main():
     test_cls = classes(te, 900000)
     cap.handle.remove()
     tail = load_file(f"{a.run}/tail.safetensors")
-    blocks = {str(LAYER): model.model.layers[LAYER], str(LAYER + 1): model.model.layers[LAYER + 1], "norm": model.model.norm}
+    blocks = {
+        str(LAYER): model.model.layers[LAYER],
+        str(LAYER + 1): model.model.layers[LAYER + 1],
+        "norm": model.model.norm,
+    }
     for k, v in tail.items():
         b, name = k.split(".", 1)
         blocks[b].state_dict()[name].copy_(v)
@@ -78,19 +82,38 @@ def main():
         _, _, ly, ln, meta = batch_pair(model, tok, NoCapture(), it, fill_pool, random.Random(900000 + j))
         rows.append({**c, "m_yes": margin(ly, yes, no), "m_no": margin(ln, yes, no)})
     tr_alone = Counter(c["alone"] for c in train_cls)
-    res = {"train_alone_classes": {k: {"n": v, "lens": sorted({c["len"] for c in train_cls if c["alone"] == k})[:3] + ["..."] + sorted({c["len"] for c in train_cls if c["alone"] == k})[-3:]} for k, v in tr_alone.items()},
-           "train_batched_classes": dict(Counter(c["batched"] for c in train_cls)),
-           "test_by_alone_class": {}, "test_by_len": {}}
+    res = {
+        "train_alone_classes": {
+            k: {
+                "n": v,
+                "lens": sorted({c["len"] for c in train_cls if c["alone"] == k})[:3]
+                + ["..."]
+                + sorted({c["len"] for c in train_cls if c["alone"] == k})[-3:],
+            }
+            for k, v in tr_alone.items()
+        },
+        "train_batched_classes": dict(Counter(c["batched"] for c in train_cls)),
+        "test_by_alone_class": {},
+        "test_by_len": {},
+    }
     by = defaultdict(list)
     for r in rows:
         by[r["alone"]].append(r)
     for k, rs in by.items():
-        res["test_by_alone_class"][k] = {"n": len(rs), "in_train": tr_alone.get(k, 0), "acc_alone": float(np.mean([r["m_no"] < 0 for r in rs])),
-                                        "acc_batched": float(np.mean([r["m_yes"] > 0 for r in rs])), "lens": sorted({r["len"] for r in rs})}
+        res["test_by_alone_class"][k] = {
+            "n": len(rs),
+            "in_train": tr_alone.get(k, 0),
+            "acc_alone": float(np.mean([r["m_no"] < 0 for r in rs])),
+            "acc_batched": float(np.mean([r["m_yes"] > 0 for r in rs])),
+            "lens": sorted({r["len"] for r in rs}),
+        }
     for lo in range(0, 200, 16):
         rs = [r for r in rows if lo <= r["len"] < lo + 16]
         if rs:
-            res["test_by_len"][f"{lo}-{lo + 15}"] = {"n": len(rs), "acc_alone": float(np.mean([r["m_no"] < 0 for r in rs]))}
+            res["test_by_len"][f"{lo}-{lo + 15}"] = {
+                "n": len(rs),
+                "acc_alone": float(np.mean([r["m_no"] < 0 for r in rs])),
+            }
     res["rows"] = rows
     json.dump(res, open(f"{a.out}/diag_batch.json", "w"), indent=1)
     print(json.dumps({k: v for k, v in res.items() if k != "rows"}, indent=1))

@@ -1,6 +1,6 @@
 # Side channels an LLM can read about its own execution
 
-This extends [`watching`](https://github.com/SauersML/watching): training the last blocks of Qwen3-8B to report a
+This extends [`watching`](../README.md): training the last blocks of Qwen3-8B to report a
 runtime condition from the tiny numerical differences it leaves in the model's own activations. `watching` showed a
 model can be trained to notice a read-only activation probe. Here we map out which runtime conditions are readable
 this way, which survive further training, and which are flatly impossible.
@@ -69,10 +69,17 @@ control is still outstanding.
 
 ## Reproduce
 
-Shared library in `side/` (pure PyTorch + Hugging Face, no cluster dependency). Set `SIDECHAN_HF_ROOT` to a local
-HF cache or let it fall back to the Hub. Each phenomenon's `setup.md` has its exact command; `tools/build_phenomena.py`
-regenerates the reports from the result files.
+Shared library in `side/` (pure PyTorch + Hugging Face, no cluster dependency). Run every command from this
+directory (`cd sidechan`) so `python -m side.*` finds the library. Set `SIDECHAN_HF_ROOT` to a local HF cache or let
+it fall back to the Hub. Besides `torch`, `transformers`, `safetensors` and `numpy`, the experiments use `datasets`
+(Alpaca prompts, MMLU-Pro), `vllm` (serving-engine checks and RL sampling) and `peft` (LoRA RL); the figures use
+`matplotlib` and `pillow`, with Inconsolata vendored in `paper/fonts/` (SIL Open Font License).
+
+Each phenomenon's `setup.md` has its exact command. The figure scripts in `paper/scripts/` redraw every figure from
+`figures/data/`. `paper/scripts/collect.py`, `tools/build_phenomena.py` and `paper/explainer/build.py` rebuild that
+data, the reports and the explainer images from the raw per-run outputs, which they expect under `results/` (not
+committed).
 
 ## Credit
 
-Builds directly on Scott Sauers's `watching`. Collaboration between Scott Sauers (@Sauers_) and David Africa.
+Builds directly on `watching`. Collaboration between SauersML and David Africa.

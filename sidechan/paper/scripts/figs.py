@@ -5,14 +5,14 @@ by paper/scripts/collect.py.
 
   python3 paper/scripts/figs.py
 """
+
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-import numpy as np
 import matplotlib.pyplot as plt
-
+import numpy as np
 from f4p import EDGE, OUT, TEXTW, save, style
 
 DATA = Path(__file__).resolve().parents[2] / "figures" / "data"
@@ -32,8 +32,16 @@ def bars(ax, labels, series, width=0.8):
         ax.bar(xs, vals, w, color=P[k], hatch=H[k], label=lab, **EDGE)
         for xi, v in zip(xs, vals):  # a zero bar draws nothing: mark it
             if v == 0:
-                ax.annotate("0", (xi, 0), xytext=(0, 1.2), textcoords="offset points", ha="center", va="bottom",
-                            fontsize=5.4, color=INK2)
+                ax.annotate(
+                    "0",
+                    (xi, 0),
+                    xytext=(0, 1.2),
+                    textcoords="offset points",
+                    ha="center",
+                    va="bottom",
+                    fontsize=5.4,
+                    color=INK2,
+                )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.axhline(0, color="black", lw=0.6)
@@ -53,9 +61,14 @@ def out(f, name):
 def moving_target(D):
     f, ax = fig((TEXTW * 0.55, 1.9))
     mt = D["moving_target"]
-    bars(ax, [r["label"].replace("\n", " ") for r in mt],
-         [("as trained", [100 * r["trained"] for r in mt]), ("after bit flip", [100 * r["perturbed"] for r in mt])])
-    ax.set_xticklabels([r["label"].replace("\n", " ") for r in mt], rotation=25, ha="right", rotation_mode="anchor", fontsize=6.4)
+    bars(
+        ax,
+        [r["label"].replace("\n", " ") for r in mt],
+        [("as trained", [100 * r["trained"] for r in mt]), ("after bit flip", [100 * r["perturbed"] for r in mt])],
+    )
+    ax.set_xticklabels(
+        [r["label"].replace("\n", " ") for r in mt], rotation=25, ha="right", rotation_mode="anchor", fontsize=6.4
+    )
     ax.set_ylabel("both right (%)")
     ax.set_ylim(0, 115)
     ax.set_title("Moving target")
@@ -65,7 +78,9 @@ def moving_target(D):
 
 def rl_reward(D):
     f, ax = fig()
-    for k, (key, lab) in enumerate((("tail", "last 2 blocks"), ("lora-late", "LoRA, last 2"), ("lora-all", "LoRA, all"))):
+    for k, (key, lab) in enumerate(
+        (("tail", "last 2 blocks"), ("lora-late", "LoRA, last 2"), ("lora-all", "LoRA, all"))
+    ):
         c = D["rl8b"][key]
         ax.plot(c["step"], c["reward"], color=P[k], lw=1.2, ls="-" if k < 2 else (0, (3, 1.5)), label=lab)
     ax.axhline(0.5, color=INK2, lw=0.5, ls=(0, (1, 2)))
@@ -109,8 +124,15 @@ def detectors(R):
     f, ax = fig(WIDE)
     rows = R["conditions"]
     labs = [r["label"].replace("eviction", "evict") for r in rows]
-    bars(ax, labs, [("as trained", [100 * r["trained"] for r in rows]), ("after bit flip", [100 * r["lsb"] for r in rows]),
-                    ("after Gaussian", [100 * r["gauss"] for r in rows])])
+    bars(
+        ax,
+        labs,
+        [
+            ("as trained", [100 * r["trained"] for r in rows]),
+            ("after bit flip", [100 * r["lsb"] for r in rows]),
+            ("after Gaussian", [100 * r["gauss"] for r in rows]),
+        ],
+    )
     ax.set_xticklabels(labs, fontsize=5.6, linespacing=0.95)
     ax.set_ylabel("both right (%)")
     ax.set_ylim(0, 115)
@@ -122,7 +144,11 @@ def detectors(R):
 def stability(C):
     f, ax = fig(WIDE)
     rows = C["stability"]
-    bars(ax, [r["label"] for r in rows], [("after bit flip", [r["lsb"] for r in rows]), ("after Gaussian", [r["gauss"] for r in rows])])
+    bars(
+        ax,
+        [r["label"] for r in rows],
+        [("after bit flip", [r["lsb"] for r in rows]), ("after Gaussian", [r["gauss"] for r in rows])],
+    )
     ax.set_xticklabels([r["label"].replace(" ", "\n") for r in rows], fontsize=6.4, linespacing=0.95)
     ax.set_ylabel("cosine")
     ax.set_ylim(-0.1, 1.15)
@@ -143,7 +169,15 @@ def cos_kept(R):
             ax.text(0.50, column[name], name, ha="right", va="center", fontsize=6.0, color=INK2)
             ax.plot([0.52, r["cos"]], [column[name], k], color="#767676", lw=0.4, zorder=1)
         else:
-            ax.text(r["cos"] + 0.06, k + (0.04 if name == "TP-4" else -0.05), name, ha="left", va="center", fontsize=6.0, color=INK2)
+            ax.text(
+                r["cos"] + 0.06,
+                k + (0.04 if name == "TP-4" else -0.05),
+                name,
+                ha="left",
+                va="center",
+                fontsize=6.0,
+                color=INK2,
+            )
     ax.set_xlim(-0.1, 1.1)
     ax.set_ylim(-0.05, 1.12)
     ax.set_xlabel("step 0 cosine")
@@ -155,7 +189,11 @@ def cos_kept(R):
 def side_effects(C):
     f, ax = fig()
     rows = C["side_effects"]
-    bars(ax, [r["label"] for r in rows], [("plain", [100 * r["plain"] for r in rows]), ("anchored", [100 * r["anchored"] for r in rows])])
+    bars(
+        ax,
+        [r["label"] for r in rows],
+        [("plain", [100 * r["plain"] for r in rows]), ("anchored", [100 * r["anchored"] for r in rows])],
+    )
     ax.set_xticklabels([r["label"] for r in rows], fontsize=6.6)
     ax.set_ylabel("ordinary chats changed (%)")
     ax.set_ylim(0, 40)
@@ -168,8 +206,14 @@ def autotune(C):
     f, ax = fig()
     a = C["autotune"]
     shapes = [("80x12288x4096", "T = 80"), ("256x12288x4096", "T = 256")]
-    bars(ax, [lab for _, lab in shapes], [(name, [100 * a[s].get(c, np.nan) for s, _ in shapes])
-                                         for c, name in (("cool", "cool"), ("hot", "hot, idle"), ("contended", "under load"))])
+    bars(
+        ax,
+        [lab for _, lab in shapes],
+        [
+            (name, [100 * a[s].get(c, np.nan) for s, _ in shapes])
+            for c, name in (("cool", "cool"), ("hot", "hot, idle"), ("contended", "under load"))
+        ],
+    )
     ax.set_ylabel("other kernel chosen (%)")
     ax.set_ylim(0, 115)
     ax.set_title("Autotuning under load")
@@ -196,8 +240,15 @@ def phi(C):
     f, ax = fig()
     ph = C["phi"]
     groups = [("prompted", "prompted"), ("fine-tuned", "fine-tuned")]
-    bars(ax, [lab for _, lab in groups], [("honest", [ph[g]["honest"]["max"] for g, _ in groups]),
-                                          ("sandbagging", [ph[g]["sandbag"]["max"] for g, _ in groups])], width=0.6)
+    bars(
+        ax,
+        [lab for _, lab in groups],
+        [
+            ("honest", [ph[g]["honest"]["max"] for g, _ in groups]),
+            ("sandbagging", [ph[g]["sandbag"]["max"] for g, _ in groups]),
+        ],
+        width=0.6,
+    )
     ax.axhline(1, color=INK2, lw=0.5, ls=(0, (1, 2)))
     ax.set_ylabel(r"$\varphi$")
     ax.set_ylim(0, 6.5)
@@ -227,8 +278,11 @@ def rl_full(F):
 def rl_flip(F):
     f, ax = fig()
     rows = F["flip"]
-    bars(ax, [r["label"].replace(", ", "\n") for r in rows],
-         [("as trained", [100 * r["trained"] for r in rows]), ("after bit flip", [100 * r["flipped"] for r in rows])])
+    bars(
+        ax,
+        [r["label"].replace(", ", "\n") for r in rows],
+        [("as trained", [100 * r["trained"] for r in rows]), ("after bit flip", [100 * r["flipped"] for r in rows])],
+    )
     ax.set_xticklabels([r["label"].replace(", ", "\n") for r in rows], fontsize=6.0, linespacing=0.95)
     ax.set_ylabel("both right (%)")
     ax.set_ylim(0, 118)
@@ -240,8 +294,19 @@ def rl_flip(F):
 def main():
     style()
     D, R, C = (json.load(open(DATA / f)) for f in ("figdata.json", "round2.json", "core.json"))
-    for fn, d in ((moving_target, D), (rl_reward, D), (rl_split, D), (round1, C), (detectors, R), (stability, C),
-                  (cos_kept, R), (side_effects, C), (autotune, C), (audit, R), (phi, C)):
+    for fn, d in (
+        (moving_target, D),
+        (rl_reward, D),
+        (rl_split, D),
+        (round1, C),
+        (detectors, R),
+        (stability, C),
+        (cos_kept, R),
+        (side_effects, C),
+        (autotune, C),
+        (audit, R),
+        (phi, C),
+    ):
         fn(d)
     if (DATA / "rl_full.json").exists():
         F = json.load(open(DATA / "rl_full.json"))

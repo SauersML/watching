@@ -74,11 +74,17 @@ def distinct(pairs, toks, from_end):
         if len(idx) < 8:
             break
         q = {i: (len(toks[i]) - 1 - p if from_end else p) for i in idx}
-        rows.append({"pos": -1 - p if from_end else p, "n": len(idx),
-                     "diffs": len({h(pairs[i][1][q[i]] - pairs[i][0][q[i]]) for i in idx}),
-                     "zero_diffs": sum(bool(torch.equal(pairs[i][1][q[i]], pairs[i][0][q[i]])) for i in idx),
-                     "off": len({h(pairs[i][0][q[i]]) for i in idx}), "on": len({h(pairs[i][1][q[i]]) for i in idx}),
-                     "tokens": len({toks[i][q[i]] for i in idx})})
+        rows.append(
+            {
+                "pos": -1 - p if from_end else p,
+                "n": len(idx),
+                "diffs": len({h(pairs[i][1][q[i]] - pairs[i][0][q[i]]) for i in idx}),
+                "zero_diffs": sum(bool(torch.equal(pairs[i][1][q[i]], pairs[i][0][q[i]])) for i in idx),
+                "off": len({h(pairs[i][0][q[i]]) for i in idx}),
+                "on": len({h(pairs[i][1][q[i]]) for i in idx}),
+                "tokens": len({toks[i][q[i]] for i in idx}),
+            }
+        )
     return rows
 
 
@@ -124,12 +130,20 @@ def main():
     te = te[: a.n]
     fill_pool = [chat_ids(tok, p) for p in load_prompts(2048, offset=20000)]
     toks = [it["ids"] for it in te]
-    res = {"n": len(te), "layer": arch.L, "keep": KEEP, "lens": [len(t) for t in toks],
-           "tokens": [[tok.decode([x]) for x in t] for t in toks], "conds": {}}
+    res = {
+        "n": len(te),
+        "layer": arch.L,
+        "keep": KEEP,
+        "lens": [len(t) for t in toks],
+        "tokens": [[tok.decode([x]) for x in t] for t in toks],
+        "conds": {},
+    }
     # repeat control: two lone runs must be bit-identical
     r0, r1 = alone(model, tok, cap, toks[0]), alone(model, tok, cap, toks[0])
     res["repeat_identical"] = bool(torch.equal(r0, r1))
-    say(f"{len(te)} prompts, lengths {min(res['lens'])}-{max(res['lens'])}; repeat identical: {res['repeat_identical']}")
+    say(
+        f"{len(te)} prompts, lengths {min(res['lens'])}-{max(res['lens'])}; repeat identical: {res['repeat_identical']}"
+    )
 
     kept, states = {}, {}
     for name in CONDS:
@@ -143,18 +157,27 @@ def main():
         if not torch.equal(states["alone"], torch.stack([k[0] for k in kept[name]])):
             say(f"WARNING {name}: lone states differ from the first condition's")
         states[name] = torch.stack([k[1] for k in kept[name]])
-        r = {"rel": rel, "frac": frac, "from_start": distinct(pairs, toks, False), "from_end": distinct(pairs, toks, True),
-             "on_class_user": [h(on[1]) for _, on in pairs]}
+        r = {
+            "rel": rel,
+            "frac": frac,
+            "from_start": distinct(pairs, toks, False),
+            "from_end": distinct(pairs, toks, True),
+            "on_class_user": [h(on[1]) for _, on in pairs],
+        }
         if name == "batch":
             res["alone_class_user"] = [h(off[1]) for off, _ in pairs]
             r["meta"] = meta
         res["conds"][name] = r
-        say(f"{name}: median rel change last {np.median([x[-1] for x in rel]):.4g}, user {np.median([x[1] for x in rel]):.4g}; "
+        say(
+            f"{name}: median rel change last {np.median([x[-1] for x in rel]):.4g}, user {np.median([x[1] for x in rel]):.4g}; "
             f"distinct diffs pos 0-3 {[row['diffs'] for row in r['from_start'][:4]]}, last 3 {[row['diffs'] for row in r['from_end'][:3]]}; "
-            f"{time.time() - t0:.0f}s")
+            f"{time.time() - t0:.0f}s"
+        )
         del pairs
-    res["alone_classes"] = {c: sorted({L for L, k in zip(res["lens"], res["alone_class_user"]) if k == c})
-                            for c in sorted(set(res["alone_class_user"]))}
+    res["alone_classes"] = {
+        c: sorted({L for L, k in zip(res["lens"], res["alone_class_user"]) if k == c})
+        for c in sorted(set(res["alone_class_user"]))
+    }
     say("lone `user`-token classes by prompt length:", json.dumps(res["alone_classes"]))
 
     n = flip_lsb(model, 1e-4, 99, arch.L)
@@ -163,17 +186,24 @@ def main():
         pairs = run(model, tok, cap, te, fill_pool, name)
         pert = [(off[KEEP], on[KEEP]) for off, on in pairs]
         res["conds"][name]["cos_flip"] = cosines(kept[name], pert)
-        res["conds"][name]["flip_off_identical_user"] = float(np.mean([bool(torch.equal(p[0][1], b[0][1])) for p, b in zip(pert, kept[name])]))
+        res["conds"][name]["flip_off_identical_user"] = float(
+            np.mean([bool(torch.equal(p[0][1], b[0][1])) for p, b in zip(pert, kept[name])])
+        )
         c = res["conds"][name]["cos_flip"]
-        say(f"{name}: cosine after the flip, median at user {np.nanmedian([x for x in c['1'] if x is not None]):.3f} "
-            f"(undefined {sum(x is None for x in c['1'])}), last {np.nanmedian([x for x in c['-1'] if x is not None]):.3f}")
+        say(
+            f"{name}: cosine after the flip, median at user {np.nanmedian([x for x in c['1'] if x is not None]):.3f} "
+            f"(undefined {sum(x is None for x in c['1'])}), last {np.nanmedian([x for x in c['-1'] if x is not None]):.3f}"
+        )
         del pairs
     flip_lsb(model, 1e-4, 99, arch.L)
     back = alone(model, tok, cap, toks[0])
     res["restored_identical"] = bool(torch.equal(back[KEEP], kept["batch"][0][0]))
     say(f"weights restored, lone state identical to before: {res['restored_identical']}")
-    np.savez_compressed(f"{a.out}/states.npz", **{k.replace("-", "_"): bf16_bits(v) for k, v in states.items()},
-                        lens=np.array(res["lens"]))
+    np.savez_compressed(
+        f"{a.out}/states.npz",
+        **{k.replace("-", "_"): bf16_bits(v) for k, v in states.items()},
+        lens=np.array(res["lens"]),
+    )
     with open(f"{a.out}/result.json", "w") as f:
         json.dump(res, f)
     say("done")

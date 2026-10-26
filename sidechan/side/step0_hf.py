@@ -28,8 +28,16 @@ def check_a(model, tok, n=16):
         L = ids.shape[1]
 
         def decode():
-            out = model.generate(ids, max_new_tokens=96, do_sample=False, return_dict_in_generate=True,
-                                 output_logits=True, temperature=None, top_p=None, top_k=None)
+            out = model.generate(
+                ids,
+                max_new_tokens=96,
+                do_sample=False,
+                return_dict_in_generate=True,
+                output_logits=True,
+                temperature=None,
+                top_p=None,
+                top_k=None,
+            )
             r = out.sequences[0, L:].tolist()
             return r, torch.stack(out.logits, 1)[0].float(), out.past_key_values
 
@@ -41,16 +49,33 @@ def check_a(model, tok, n=16):
         # prefill: prompt + R[:-1] in one pass, then the same suffix
         full = torch.cat([ids, torch.tensor([r[:-1]], device="cuda")], 1)
         out = model(input_ids=full, use_cache=True)
-        lg_pre = out.logits[0, L - 1:].float()  # predicts R[0..len-1]
+        lg_pre = out.logits[0, L - 1 :].float()  # predicts R[0..len-1]
         ans_forged = model(input_ids=suffix, past_key_values=out.past_key_values).logits[0, -1].float()
-        rows.append({"len": len(r), "same_reply": r == r2,
-                     "repeat_R_logits_max_abs": float((lg_dec - lg_dec2).abs().max()),
-                     "R_logits_decode_vs_prefill_max_abs": float((lg_dec[: len(r)] - lg_pre[: len(r)]).abs().max()),
-                     "R_frac_positions_diff": float(((lg_dec[: len(r)] - lg_pre[: len(r)]).abs().amax(-1) > 0).float().mean()),
-                     "answer_repeat_max_abs": float((ans_self - ans_self2).abs().max()),
-                     "answer_self_vs_forged_max_abs": float((ans_self - ans_forged).abs().max())})
+        rows.append(
+            {
+                "len": len(r),
+                "same_reply": r == r2,
+                "repeat_R_logits_max_abs": float((lg_dec - lg_dec2).abs().max()),
+                "R_logits_decode_vs_prefill_max_abs": float((lg_dec[: len(r)] - lg_pre[: len(r)]).abs().max()),
+                "R_frac_positions_diff": float(
+                    ((lg_dec[: len(r)] - lg_pre[: len(r)]).abs().amax(-1) > 0).float().mean()
+                ),
+                "answer_repeat_max_abs": float((ans_self - ans_self2).abs().max()),
+                "answer_self_vs_forged_max_abs": float((ans_self - ans_forged).abs().max()),
+            }
+        )
     keys = [k for k in rows[0] if k not in ("len", "same_reply")]
-    return {"n": len(rows), **{k: {"frac_nonzero": float(np.mean([r[k] > 0 for r in rows])), "median": float(np.median([r[k] for r in rows]))} for k in keys}, "rows": rows}
+    return {
+        "n": len(rows),
+        **{
+            k: {
+                "frac_nonzero": float(np.mean([r[k] > 0 for r in rows])),
+                "median": float(np.median([r[k] for r in rows])),
+            }
+            for k in keys
+        },
+        "rows": rows,
+    }
 
 
 @torch.no_grad()
@@ -60,6 +85,7 @@ def check_b(model, tok):
     fill = [chat_ids(tok, p) for p in load_prompts(64, offset=3000)]
     rows = []
     for t in targets:
+
         def last_logits(batch):
             enc = tok.pad({"input_ids": batch}, return_tensors="pt").to("cuda")
             pos = (enc["attention_mask"].cumsum(-1) - 1).clamp(min=0)
@@ -71,7 +97,10 @@ def check_b(model, tok):
             row[f"B{B}_copies"] = float((base - last_logits([t] * B)).abs().max())  # no padding: batch size only
             row[f"B{B}_padded"] = float((base - last_logits([t] + fill[: B - 1])).abs().max())
         rows.append(row)
-    return {k: {"frac_nonzero": float(np.mean([r[k] > 0 for r in rows])), "median": float(np.median([r[k] for r in rows]))} for k in rows[0]}
+    return {
+        k: {"frac_nonzero": float(np.mean([r[k] > 0 for r in rows])), "median": float(np.median([r[k] for r in rows]))}
+        for k in rows[0]
+    }
 
 
 def main():

@@ -25,7 +25,9 @@ def load(name: str):
     from transformers import AutoConfig, AutoModelForCausalLM, AutoModelForImageTextToText
 
     p = path(name)
-    cls = AutoModelForImageTextToText if hasattr(AutoConfig.from_pretrained(p), "vision_config") else AutoModelForCausalLM
+    cls = (
+        AutoModelForImageTextToText if hasattr(AutoConfig.from_pretrained(p), "vision_config") else AutoModelForCausalLM
+    )
     m = cls.from_pretrained(p, dtype=torch.bfloat16, attn_implementation="sdpa").cuda().eval()
     m.requires_grad_(False)
     return m

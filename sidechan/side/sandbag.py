@@ -70,8 +70,15 @@ def main():
 
     model.requires_grad_(False)
     model.config.use_cache = False
-    model = get_peft_model(model, LoraConfig(r=16, lora_alpha=32, lora_dropout=0.0, target_modules=[
-        "q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]))
+    model = get_peft_model(
+        model,
+        LoraConfig(
+            r=16,
+            lora_alpha=32,
+            lora_dropout=0.0,
+            target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+        ),
+    )
     for p in model.parameters():
         if p.requires_grad:
             p.data = p.data.float()
@@ -80,14 +87,16 @@ def main():
     params = [p for p in model.parameters() if p.requires_grad]
     opt = torch.optim.AdamW(params, lr=a.lr, weight_decay=0.0)
     steps = a.epochs * len(ex) // a.bs
-    sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 16) * 0.5 * (1 + np.cos(np.pi * s / steps)))
+    sched = torch.optim.lr_scheduler.LambdaLR(
+        opt, lambda s: min(1.0, (s + 1) / 16) * 0.5 * (1 + np.cos(np.pi * s / steps))
+    )
     model.train()
     for step in range(steps):
         if step % (len(ex) // a.bs) == 0:
             rng.shuffle(ex)
-        b = ex[(step * a.bs) % len(ex):(step * a.bs) % len(ex) + a.bs]
+        b = ex[(step * a.bs) % len(ex) : (step * a.bs) % len(ex) + a.bs]
         tot = 0.0
-        for ids, lab in b:  # one unpadded sequence at a time (steer-loop's pattern)
+        for ids, lab in b:  # one unpadded sequence at a time
             lg = model(input_ids=torch.tensor([ids], device="cuda"), logits_to_keep=1).logits[0, -1].float()
             loss = F.cross_entropy(lg[None], torch.tensor([lab], device="cuda"))
             (loss / a.bs).backward()

@@ -8,15 +8,15 @@ Data: figures/data/round2.json (paper/scripts/collect.py).
 
   python3 paper/scripts/fig_noise.py
 """
+
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-import numpy as np
 import matplotlib.pyplot as plt
-
-from f4p import C, TEXTW, save, style
+import numpy as np
+from f4p import TEXTW, C, save, style
 
 DATA = Path(__file__).resolve().parents[2] / "figures" / "data"
 
@@ -47,10 +47,28 @@ def main():
     ax = axes[1]
     nd = D["noise_detect"]
     xs = [1e3 * r["sigma"] for r in nd]
-    ax.plot(xs, [100 * r["trained"] for r in nd], color=C["batched"], lw=1.2, marker="o", ms=4, mec="black", mew=0.5,
-            label="as trained")
-    ax.plot(xs, [100 * r["lsb"] for r in nd], color=C["alone"], lw=1.2, marker="s", ms=4, mec="black", mew=0.5,
-            label="after bit flip")
+    ax.plot(
+        xs,
+        [100 * r["trained"] for r in nd],
+        color=C["batched"],
+        lw=1.2,
+        marker="o",
+        ms=4,
+        mec="black",
+        mew=0.5,
+        label="as trained",
+    )
+    ax.plot(
+        xs,
+        [100 * r["lsb"] for r in nd],
+        color=C["alone"],
+        lw=1.2,
+        marker="s",
+        ms=4,
+        mec="black",
+        mew=0.5,
+        label="after bit flip",
+    )
     ax.set_xlabel(r"noise std $\sigma$ ($\times 10^{-3}$)")
     ax.set_ylabel("detector both right (%)")
     ax.set_ylim(0, 105)

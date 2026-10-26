@@ -1,13 +1,11 @@
 """Generalise the moving-target finding beyond single-bit flips: how much of the trained batch detector survives
 Gaussian weight noise of several relative magnitudes applied to the frozen upstream blocks. The smallest magnitude
 (1e-4) is far below any real training step. usage: python -m side.robust_noise --run DIR --model NAME --out DIR"""
+
 import argparse
 import json
 import os
 import random
-
-import numpy as np
-import torch
 
 from side.arch import Arch, load, path
 from side.diag_batch import items
@@ -40,7 +38,9 @@ def main():
     fill_pool = [chat_ids(tok, p) for p in load_prompts(2048, offset=20000)]
 
     def score():
-        rows = [batch_pair(model, tok, NoCapture(), it, fill_pool, random.Random(900000 + j)) for j, it in enumerate(te)]
+        rows = [
+            batch_pair(model, tok, NoCapture(), it, fill_pool, random.Random(900000 + j)) for j, it in enumerate(te)
+        ]
         return summarize_pairs([(margin(r[2], yes, no), margin(r[3], yes, no)) for r in rows])
 
     res = {"0.0": score()}

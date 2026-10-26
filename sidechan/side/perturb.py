@@ -42,4 +42,5 @@ def add_gaussian(model, rel, seed, upto):
         with torch.no_grad():
             for p, o in saved:
                 p.copy_(o)
+
     return restore
