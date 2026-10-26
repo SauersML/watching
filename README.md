@@ -278,6 +278,8 @@ These results cover Qwen3-8B in BF16. The probe detector reads one capture site,
 
 [FloatDoor](https://arxiv.org/abs/2606.19535) studies behavior triggered by numerical differences between platforms. Here the triggers are activation capture within one runtime and the framework that runs the model.
 
+[Side channels](sidechan/) applies the same tail-training recipe to other runtime conditions: weight and KV-cache quantization, KV eviction, dropout, weight noise, batch size, tensor parallelism, attention backend, reply provenance, greedy decoding, cross-sequence leakage and GPU hardware state. Detectors for structured changes such as int4 weights keep 87–100% of prompts right after the lowest bit of 0.01% of the upstream weights is flipped; detectors for reduction-order changes such as batch size fall to 0–9%. Each condition has its own setup, report and numbers in [sidechan/phenomena](sidechan/phenomena/).
+
 ## 12. Reproduce
 
 ```sh
@@ -294,3 +296,5 @@ gh release download sft-034 --repo SauersML/watching --dir artifacts/sft-034
 `scripts/run_validation_suite.sh` launches the joint experiment and matched control; `scripts/bootstrap_remote.sh` installs pinned dependencies on a CUDA worker. `scripts/make_diagrams.py` draws every figure in this README from the archived per-prompt scores (needs `rsvg-convert`). The watching eye is from a charcoal drawing by Odilon Redon (public domain); the robot, cat and owl are painted with [p5.brush](https://github.com/acamposuribe/p5.brush) by `scripts/draw_characters.py`. Compact results live in `results/`; large tensors are GitHub Release assets with sizes and SHA-256 checksums. Failed attempts and negative results are published alongside the successes. [All releases](https://github.com/SauersML/watching/releases).
 
 Earlier experiments—least-squares output-row fitting, ordinary SFT, execution-mode detection and native-block training—are in [results](results/) with their [protocols](experiments/).
+
+Repository layout: [`src/watching/`](src/watching/) is the probe and training library and [`tests/`](tests/) its CPU tests; [`scripts/`](scripts/) holds launchers, analysis and figure code; [`data/`](data/) the frozen prompt sets; [`experiments/`](experiments/) one protocol per run; [`results/`](results/) each run's compact results, with older runs in [`results/historical-archive/`](results/historical-archive/); [`docs/`](docs/) the compiler and mechanism audits; [`figures/`](figures/) this README's figures; and [`sidechan/`](sidechan/) the side-channel map, with its own library, figures and reproduce commands.
