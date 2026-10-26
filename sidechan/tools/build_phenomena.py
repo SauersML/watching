@@ -59,6 +59,8 @@ M["batch_size"] = dict(
     mechanism="cuBLAS picks the matrix-multiply kernel by the token count in the step, so a batched prefix is summed "
     "in a different order and rounds differently. The difference is a fixed fingerprint at the chat prefix.",
     cmd="python -m side.tailexp --channel batch --n-train 8192 --out OUT   # SFT\n"
+    "python -m side.robust --run OUT --n-train 8192 --out OUT/flip   # SFT detector after a bit flip\n"
+    "python -m side.robust_noise --run OUT --model qwen3-8b --out OUT/noise   # and after Gaussian noise\n"
     "python -m side.rl --task animal --arm tail --samples 256 --out OUT  # RL, reward only",
     log={
         "sft_both_right": CORE["round1"][0]["both_right"],
@@ -81,7 +83,8 @@ M["quantization_weights"] = dict(
     what="Whether the model's weights are served quantized rather than in bf16.",
     mechanism="Quantization snaps every weight to a grid by a fixed rule, so the activation shift keeps its direction "
     "even when the exact weights change.",
-    cmd="python -m side.tailexp --channel cond --cond w-int4 --n-train 8192 --keep-ordinary 2048 --out OUT",
+    cmd="python -m side.tailexp --channel cond --cond w-int4 --n-train 8192 --keep-ordinary 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT   # int4\n"
+    "python -m side.tailexp --channel cond --cond w-int8 --n-train 8192 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT   # int8",
     log={"int4": cond_log("int4 weights"), "int8": cond_log("int8 weights")},
     finding=[
         "The most reliable family: int4 100% both-right, int8 99%.",
@@ -97,7 +100,7 @@ M["quantization_kv"] = dict(
     what="Whether keys and values are stored in fp8 / int8, or evicted (StreamingLLM window).",
     mechanism="Same grid argument as weight quantization for fp8/int8 KV; eviction is structural (the context jumps "
     "from the sink tokens to a recent window).",
-    cmd="python -m side.tailexp --channel cond --cond kv-fp8 --n-train 8192 --keep-ordinary 2048 --out OUT",
+    cmd="python -m side.tailexp --channel cond --cond kv-fp8 --n-train 8192 --keep-ordinary 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
     log={
         "fp8_kv": cond_log("fp8 KV"),
         "int8_kv": cond_log("int8 KV"),
@@ -116,7 +119,7 @@ M["dropout"] = dict(
     what="Whether the forward pass runs in training mode with dropout active.",
     mechanism="Dropout rescales surviving activations by 1/(1-p), a structured change. train() with zero dropout is a "
     "true no-op and changes nothing.",
-    cmd="python -m side.tailexp --channel cond --cond dropout-0.1 --n-train 8192 --keep-ordinary 2048 --out OUT",
+    cmd="python -m side.tailexp --channel cond --cond dropout-0.1 --n-train 8192 --keep-ordinary 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
     log={"dropout_0.1": cond_log("dropout 0.1")},
     finding=[
         "dropout 0.1: 100% and robust to the bit flip.",
@@ -131,7 +134,7 @@ M["noise_injection"] = dict(
     what="Whether Gaussian noise has been added to the weights (as in a sandbagging audit).",
     mechanism="A noise level is a structured magnitude the model can read, but only once it is large enough to exceed "
     "a clean-weights fingerprint.",
-    cmd="python -m side.tailexp --channel cond --cond noise-1e-3 --n-train 16384 --keep-ordinary 2048 --out OUT",
+    cmd="python -m side.tailexp --channel cond --cond noise-1e-3 --n-train 16384 --keep-ordinary 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
     log={
         "noise_5e-4": cond_log("noise 5e-4"),
         "noise_1e-3": cond_log("noise 1e-3"),
@@ -150,7 +153,7 @@ M["tensor_parallel"] = dict(
     family="reduction",
     what="Whether the layer is sharded across devices (partial sums added across GPUs).",
     mechanism="Sharding only re-orders a reduction, so its rounding fingerprint re-randomises with any weight change.",
-    cmd="python -m side.tailexp --channel cond --cond tp-4 --n-train 8192 --keep-ordinary 2048 --out OUT",
+    cmd="python -m side.tailexp --channel cond --cond tp-4 --n-train 8192 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
     log={"tp_4": cond_log("TP-4")},
     finding=["59% as trained, 9% after the bit flip.", "Does not form under full-network RL."],
     figs=["paper/figures/core/detectors.png"],
@@ -162,7 +165,7 @@ M["attention_backend"] = dict(
     what="Which attention kernel runs (eager, math, flash, cuDNN).",
     mechanism="A different kernel adds the same numbers in another order; a reduction-order change.",
     cmd="python -m side.cond --conds attn-eager,attn-math,attn-flash --out OUT   # step-0 diagnostic\n"
-    "python -m side.tailexp --channel cond --cond attn-eager --n-train 8192 --out OUT",
+    "python -m side.tailexp --channel cond --cond attn-eager --n-train 8192 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT",
     log={"attn_eager": cond_log("eager\nattn".replace("\n", " "))},
     finding=[
         "eager attention: 59% as trained, 5% after the flip.",

@@ -8,5 +8,5 @@
 
 ```
 python -m side.cond --conds attn-eager,attn-math,attn-flash --out OUT   # step-0 diagnostic
-python -m side.tailexp --channel cond --cond attn-eager --n-train 8192 --out OUT
+python -m side.tailexp --channel cond --cond attn-eager --n-train 8192 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT
 ```

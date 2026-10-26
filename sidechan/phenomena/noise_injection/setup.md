@@ -7,5 +7,5 @@
 **Reproduce** (shared library in `../../side/`; writes to `OUT`):
 
 ```
-python -m side.tailexp --channel cond --cond noise-1e-3 --n-train 16384 --keep-ordinary 2048 --out OUT
+python -m side.tailexp --channel cond --cond noise-1e-3 --n-train 16384 --keep-ordinary 2048 --test-perturb-seeds 1 --test-gauss 1e-3 --out OUT
 ```
