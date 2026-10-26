@@ -1,0 +1,21 @@
+{
+  "run": "watching-single-004",
+  "status": "Interrupted; no completed checkpoint",
+  "reason": "The runner ended with status 1 after an output synchronization failure. No Python exception or more specific terminal cause appears in the retained logs. Synchronized metrics reach update 335; structured stdout reaches update 500. These are incomplete observations, not a completed 2048-update result.",
+  "evidence": [
+    {
+      "source": "rp-run.log",
+      "line": 19,
+      "text": "2026-10-16 01:03:59 output sync failed (rest, status 1); will retry",
+      "source_sha256": "f97d78ee119fc8a7a9f2f586ef40a0a386d140dce2cc39101e07250dbc4a2605"
+    },
+    {
+      "source": "rp-run.log",
+      "line": 24,
+      "text": "2026-10-16 01:21:06 watching-single-004 ended with status 1",
+      "source_sha256": "f97d78ee119fc8a7a9f2f586ef40a0a386d140dce2cc39101e07250dbc4a2605"
+    }
+  ],
+  "retry_archive": "results/single-004r",
+  "observed_cost_usd": 0.1897
+}

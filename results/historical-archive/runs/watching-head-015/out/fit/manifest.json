@@ -1,0 +1,34 @@
+{
+  "checkpoint": "/workspace/runs/watching-head-015/mpd-data/checkpoints/watching-sft-003r",
+  "out": "/workspace/runs/watching-head-015/mpd-data/runpod/watching-head-015/out/fit",
+  "layer": 14,
+  "target_gap": 2.0,
+  "steps": 3,
+  "test_prompts": 128,
+  "torch": "2.10.0+cu128",
+  "gpu": "NVIDIA RTX A5000",
+  "labels": {
+    "No": 2753,
+    "Yes": 9454
+  },
+  "tied_embeddings": true,
+  "method": "Inference-path fit of existing answer rows; all other weights fixed",
+  "answer_token_occurrences_in_all_inputs": 0,
+  "source_sha256": {
+    "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+    "objectives.py": "cf9eff1378ae4292a992655f83dfdad07f593ad466c2c30ec1bcf96348f81abb",
+    "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+    "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+    "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+    "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+    "optim.py": "259a443dbcfdc922e2ad75012960ccbefbf7d7937724da12311177a2cfcf13da",
+    "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+    "head_fit.py": "3d488b6cd9fab5dd76d8c3e5c9785645b491748bec9af10a9a840f88618066a8",
+    "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+    "train.py": "572587d60e5758369baf550ccf764d6320095a29f8a4e6e4ad3b715ca9e788a6",
+    "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+    "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+    "compare.py": "0d50ebc4a0e178b8b2ef6ec0973da926e1e71ca923135f1dcd3f09b81e703e4c",
+    "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb"
+  }
+}

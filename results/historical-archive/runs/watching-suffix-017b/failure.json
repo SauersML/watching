@@ -1,0 +1,21 @@
+{
+  "run": "watching-suffix-017b",
+  "status": "Rejected by suffix-replay parity guard",
+  "reason": "Initial suffix replay changed full-model logits (maximum absolute difference 0.25). The replay guard stopped the run before training. This is an integration failure, not a negative result about learnability.",
+  "evidence": [
+    {
+      "source": "run.log",
+      "line": 134,
+      "text": "RuntimeError: Initial suffix replay changes full-model logits: parity failed; max difference=0.25",
+      "source_sha256": "89404470ccf82520065d74ee02c023244454ddb4065f3c802e6150d5950a7acc"
+    },
+    {
+      "source": "rp-run.log",
+      "line": 29,
+      "text": "2026-10-16 14:10:22 watching-suffix-017b ended with status 1",
+      "source_sha256": "2a6ca147c09b77152572d14bd9c6aeac3eb5e65ec126476a80908d758de7d45f"
+    }
+  ],
+  "retry_archive": null,
+  "observed_cost_usd": 0.028800000000000003
+}

@@ -1,0 +1,15 @@
+{
+  "run": "watching-strong-009",
+  "status": "Terminated during compilation before training",
+  "reason": "Only setup and compile_training_start were emitted. The runner ended with status 143. No training update, Python traceback, or completed evaluation was recorded; the retained files do not establish a more specific cause.",
+  "evidence": [
+    {
+      "source": "rp-run.log",
+      "line": 21,
+      "text": "2026-10-16 13:23:38 watching-strong-009 ended with status 143",
+      "source_sha256": "51ccdf05c9daf7077d61216d83fd16a5fadf5d9b9c07010baa9060c406edcf5a"
+    }
+  ],
+  "retry_archive": "results/rates-008-012",
+  "observed_cost_usd": 0.0484
+}

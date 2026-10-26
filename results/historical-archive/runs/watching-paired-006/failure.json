@@ -1,0 +1,15 @@
+{
+  "run": "watching-paired-006",
+  "status": "Ended during compilation before training",
+  "reason": "Only setup and compile_training_start were emitted. The runner ended with status 1; no Python traceback identifies the underlying cause. No training update or final evaluation was recorded.",
+  "evidence": [
+    {
+      "source": "rp-run.log",
+      "line": 17,
+      "text": "2026-10-16 12:20:51 watching-paired-006 ended with status 1",
+      "source_sha256": "a93729ccff7d3f39530661e4a12c6cf416f4dd6341d49c2282e35f55a158adad"
+    }
+  ],
+  "retry_archive": "results/paired-006r",
+  "observed_cost_usd": 0.0548
+}

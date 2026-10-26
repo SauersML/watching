@@ -1,0 +1,345 @@
+{
+  "definition": "d = log(P(Yes)/P(No)) with probe minus without probe",
+  "intervals": "5000 whole-prompt bootstrap resamples; conditional on this training seed",
+  "steps": 512,
+  "paths": {
+    "grad": {
+      "train": {
+        "uniform": {
+          "n_prompts": 1,
+          "initial_separation": 0.0,
+          "final_separation": 0.015625,
+          "change_in_separation": 0.015625,
+          "median_change": 0.015625,
+          "change_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000,
+          "final_ci95": null
+        },
+        "fast": {
+          "n_prompts": 1,
+          "initial_separation": 0.0,
+          "final_separation": -0.015625,
+          "change_in_separation": -0.015625,
+          "median_change": -0.015625,
+          "change_sign_test": {
+            "positive": 0,
+            "negative": 1,
+            "ties": 0,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 0,
+            "negative": 1,
+            "ties": 0,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000,
+          "final_ci95": null
+        },
+        "fast_minus_uniform": {
+          "n_prompts": 1,
+          "initial_separation": 0.0,
+          "final_separation": -0.03125,
+          "change_in_separation": -0.03125,
+          "median_change": -0.03125,
+          "change_sign_test": {
+            "positive": 0,
+            "negative": 1,
+            "ties": 0,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 0,
+            "negative": 1,
+            "ties": 0,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        }
+      },
+      "test": {
+        "uniform": {
+          "n_prompts": 512,
+          "initial_separation": 0.001007080078125,
+          "final_separation": -0.000213623046875,
+          "change_in_separation": -0.001220703125,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 202,
+            "negative": 220,
+            "ties": 90,
+            "p_greater": 0.822485454014638,
+            "p_two_sided": 0.40795655529392216
+          },
+          "final_sign_test": {
+            "positive": 188,
+            "negative": 195,
+            "ties": 129,
+            "p_greater": 0.6586224635324905,
+            "p_two_sided": 0.7592049556632863
+          },
+          "change_ci95": [
+            -0.004486083984375,
+            0.00189208984375
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000,
+          "final_ci95": [
+            -0.00244140625,
+            0.001983642578125
+          ]
+        },
+        "fast": {
+          "n_prompts": 512,
+          "initial_separation": 0.001007080078125,
+          "final_separation": 0.0001220703125,
+          "change_in_separation": -0.000885009765625,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 204,
+            "negative": 222,
+            "ties": 86,
+            "p_greater": 0.821350750441247,
+            "p_two_sided": 0.41016668360908376
+          },
+          "final_sign_test": {
+            "positive": 202,
+            "negative": 202,
+            "ties": 108,
+            "p_greater": 0.5198358418466296,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": [
+            -0.004058837890625,
+            0.002288818359375
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000,
+          "final_ci95": [
+            -0.0023193359375,
+            0.002593994140625
+          ]
+        },
+        "fast_minus_uniform": {
+          "n_prompts": 512,
+          "initial_separation": 0.0,
+          "final_separation": 0.000335693359375,
+          "change_in_separation": 0.000335693359375,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 227,
+            "negative": 209,
+            "ties": 76,
+            "p_greater": 0.20779401348727208,
+            "p_two_sided": 0.41558802697454417
+          },
+          "final_sign_test": {
+            "positive": 227,
+            "negative": 209,
+            "ties": 76,
+            "p_greater": 0.20779401348727208,
+            "p_two_sided": 0.41558802697454417
+          },
+          "change_ci95": [
+            -0.003021240234375,
+            0.003509521484375
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        }
+      }
+    },
+    "inference": {
+      "train": {
+        "uniform": {
+          "n_prompts": 1,
+          "initial_separation": -0.03125,
+          "final_separation": -0.015625,
+          "change_in_separation": 0.015625,
+          "median_change": 0.015625,
+          "change_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 0,
+            "negative": 1,
+            "ties": 0,
+            "p_greater": 1.0,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000,
+          "final_ci95": null
+        },
+        "fast": {
+          "n_prompts": 1,
+          "initial_separation": -0.03125,
+          "final_separation": 0.015625,
+          "change_in_separation": 0.046875,
+          "median_change": 0.046875,
+          "change_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000,
+          "final_ci95": null
+        },
+        "fast_minus_uniform": {
+          "n_prompts": 1,
+          "initial_separation": 0.0,
+          "final_separation": 0.03125,
+          "change_in_separation": 0.03125,
+          "median_change": 0.03125,
+          "change_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 1,
+            "negative": 0,
+            "ties": 0,
+            "p_greater": 0.5,
+            "p_two_sided": 1.0
+          },
+          "change_ci95": null,
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        }
+      },
+      "test": {
+        "uniform": {
+          "n_prompts": 512,
+          "initial_separation": -0.000640869140625,
+          "final_separation": -0.001312255859375,
+          "change_in_separation": -0.00067138671875,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 208,
+            "negative": 209,
+            "ties": 95,
+            "p_greater": 0.5390024757358449,
+            "p_two_sided": 1.0
+          },
+          "final_sign_test": {
+            "positive": 162,
+            "negative": 202,
+            "ties": 148,
+            "p_greater": 0.9842528587360159,
+            "p_two_sided": 0.04079102206449024
+          },
+          "change_ci95": [
+            -0.00360107421875,
+            0.002288818359375
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000,
+          "final_ci95": [
+            -0.003326416015625,
+            0.00067138671875
+          ]
+        },
+        "fast": {
+          "n_prompts": 512,
+          "initial_separation": -0.000640869140625,
+          "final_separation": 0.000396728515625,
+          "change_in_separation": 0.00103759765625,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 228,
+            "negative": 195,
+            "ties": 89,
+            "p_greater": 0.059814960292952975,
+            "p_two_sided": 0.11962992058590595
+          },
+          "final_sign_test": {
+            "positive": 197,
+            "negative": 193,
+            "ties": 122,
+            "p_greater": 0.4396411560203181,
+            "p_two_sided": 0.8792823120406362
+          },
+          "change_ci95": [
+            -0.002197265625,
+            0.004119873046875
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000,
+          "final_ci95": [
+            -0.00189208984375,
+            0.00262451171875
+          ]
+        },
+        "fast_minus_uniform": {
+          "n_prompts": 512,
+          "initial_separation": 0.0,
+          "final_separation": 0.001708984375,
+          "change_in_separation": 0.001708984375,
+          "median_change": 0.0,
+          "change_sign_test": {
+            "positive": 218,
+            "negative": 201,
+            "ties": 93,
+            "p_greater": 0.21722774150586546,
+            "p_two_sided": 0.4344554830117309
+          },
+          "final_sign_test": {
+            "positive": 218,
+            "negative": 201,
+            "ties": 93,
+            "p_greater": 0.21722774150586546,
+            "p_two_sided": 0.4344554830117309
+          },
+          "change_ci95": [
+            -0.0013427734375,
+            0.004669189453125
+          ],
+          "bootstrap_seed": 0,
+          "bootstrap_draws": 5000
+        }
+      }
+    }
+  }
+}

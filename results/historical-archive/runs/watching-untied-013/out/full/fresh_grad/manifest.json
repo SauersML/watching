@@ -1,0 +1,69 @@
+{
+  "out": "/workspace/runs/watching-untied-013/mpd-data/runpod/watching-untied-013/out/full/fresh_grad",
+  "model": "Qwen/Qwen3-0.6B",
+  "steps": 512,
+  "batch_size": 1,
+  "length": 64,
+  "lr": 2e-05,
+  "output_lr_multiplier": 1.0,
+  "output_rate_scope": "matrix",
+  "untie_output": false,
+  "freeze_backbone_updates": false,
+  "layer": 14,
+  "seed": 20261015,
+  "eval_every": 40,
+  "save_every": 0,
+  "validation_eval_prompts": 512,
+  "checkpoint": "/workspace/runs/watching-untied-013/mpd-data/runpod/watching-untied-013/out/full/checkpoint",
+  "eval_only": true,
+  "eval_only_grad": true,
+  "objective": "sft",
+  "train_prompts": 1,
+  "dataset": "expanded",
+  "train_eval_prompts": 1,
+  "test_prompts": 128,
+  "margin": 0.25,
+  "calibration_weight": 0.1,
+  "torch": "2.10.0+cu128",
+  "transformers": "5.18.0",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "parameters": 751632384,
+  "trainable_parameters": 751632384,
+  "parameters_with_nonzero_rate": 751632384,
+  "tied_embeddings": false,
+  "output_rate_parameters": [
+    "lm_head.weight"
+  ],
+  "answer_token_occurrences_in_training_inputs": {
+    "No": 0,
+    "Yes": 0
+  },
+  "labels": {
+    "No": [
+      2753
+    ],
+    "Yes": [
+      9454
+    ]
+  },
+  "training": "full-parameter sft; bf16 model, fp32 master AdamW",
+  "compile": "Inductor fullgraph, static shapes; separate capture/no-capture specializations",
+  "probe": "read-only layer-14 q_norm reference, returned as graph output",
+  "source_sha256": {
+    "__init__.py": "cedaf3c97467111b69c322efedd9aa11b3c8a9f742703e930cb39f82799884e2",
+    "__main__.py": "b0673ddd1fda2a84946eb161d4052407f38735da64dd395c8714fc253463baee",
+    "activation_drift.py": "29d1ff5e90bc37d1614d36317c8a2ad4701fad0646bef2c183698f5bf4393543",
+    "artifacts.py": "2ed783a4970b98d5b3d4862f0effd9c1865b75d0f3f123d7d63e41311fe41530",
+    "audit.py": "172ae135a962b22a674cf654619cb7250c8fc3361a303b2c9259c1cc0e53a92a",
+    "checkpoint_delta.py": "e4fad4277e4441f57566c958b0564d696bc4cd082a75c800b1d464dc88ae87f2",
+    "compare.py": "0d50ebc4a0e178b8b2ef6ec0973da926e1e71ca923135f1dcd3f09b81e703e4c",
+    "data.py": "be41d32c7d1ee31110160ea42e691eb1573f8bb32b5656fd52b1050a97535b9b",
+    "metrics.py": "e93649bac0011b8ce71c6b52488b6fd1f894ec6c672590a00627ede2aadddc35",
+    "objectives.py": "8ce9b3646fdfaec8e018e91c055f367856a4a137a7c5cc3c0390ad48b5f125c8",
+    "optim.py": "28464afc04784176e05bf0c33f5c6d94ff81356f6c80d83072b4c981401dfb80",
+    "probe.py": "bd99474207d22e18678a8b28187f7b53152b53752633accb871655c7bced7479",
+    "train.py": "eba6d6dff71df264652750af5ffa1b7bc7b45456100cca29e3b86411a80f3693",
+    "trend.py": "191834a9d56e96e28b535ff4638d276146c1d8a6f55ed94c32d705571a5edceb"
+  },
+  "model_commit": null
+}

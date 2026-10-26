@@ -1,0 +1,21 @@
+{
+  "run": "watching-suffix-017",
+  "status": "Rejected by boundary-extraction parity guard",
+  "reason": "Boundary extraction changed full-model logits (maximum absolute difference 0.25). The exact-logit guard stopped the run before cached-suffix training. This is an integration failure, not a negative result about learnability.",
+  "evidence": [
+    {
+      "source": "run.log",
+      "line": 137,
+      "text": "RuntimeError: Boundary extraction changes full-model logits: parity failed; max difference=0.25",
+      "source_sha256": "a7ae90d26dec6c28415a9a94e6d0bd7fd25d2b17201a65eea0e62a79cba0a020"
+    },
+    {
+      "source": "rp-run.log",
+      "line": 24,
+      "text": "2026-10-16 14:03:04 watching-suffix-017 ended with status 1",
+      "source_sha256": "71042998a57da198a3c3adac6c99021f0971265777627c9116163092d00962f8"
+    }
+  ],
+  "retry_archive": null,
+  "observed_cost_usd": 0.013
+}

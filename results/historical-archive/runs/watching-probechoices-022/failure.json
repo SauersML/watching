@@ -1,0 +1,21 @@
+{
+  "run": "watching-probechoices-022",
+  "status": "Device mismatch before fitting",
+  "reason": "CUDA index_select received a CPU index while its other tensors were on cuda:0. The run failed before any structured training or evaluation event. Prepared data files are retained; the later 022r retry is archived separately.",
+  "evidence": [
+    {
+      "source": "run.log",
+      "line": 141,
+      "text": "RuntimeError: Expected all tensors to be on the same device, but got index is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA__index_select)",
+      "source_sha256": "f8a521b288c7465b01e1db84e9d7c6d45e7927f0683e346004441325ecd0e9f6"
+    },
+    {
+      "source": "rp-run.log",
+      "line": 26,
+      "text": "2026-10-16 14:38:25 watching-probechoices-022 ended with status 1",
+      "source_sha256": "4250700d34921d38e7223c97be87449e7cc5dfc71411cf37d0b122e39a52bb40"
+    }
+  ],
+  "retry_archive": "results/animal-choices-021r-022r",
+  "observed_cost_usd": 0.0469
+}

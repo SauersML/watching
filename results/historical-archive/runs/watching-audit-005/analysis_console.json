@@ -1,0 +1,352 @@
+{
+  "feature_parity": {
+    "false": true,
+    "true": true
+  },
+  "gradients": {
+    "event": "gradient_summary",
+    "seconds": 198.17429785989225,
+    "absent_norm": 303.9017436663424,
+    "present_norm": 303.6449711442627,
+    "separation_gradient_norm": 2.3506165465157496,
+    "cosine": 0.9999704524045552,
+    "different_gradient_elements": 412040499
+  },
+  "directional_steps": [
+    {
+      "event": "directional_step",
+      "seconds": 198.25769749796018,
+      "distance": -1.0,
+      "weights_changed": 26003445,
+      "predicted_change": -2.3506165465157496,
+      "measured_change": -0.03125,
+      "absent_log_odds": 1.4375,
+      "present_log_odds": 1.40625
+    },
+    {
+      "event": "directional_step",
+      "seconds": 198.33135298383422,
+      "distance": -0.1,
+      "weights_changed": 3753180,
+      "predicted_change": -0.23506165465157497,
+      "measured_change": -0.015625,
+      "absent_log_odds": 2.171875,
+      "present_log_odds": 2.15625
+    },
+    {
+      "event": "directional_step",
+      "seconds": 198.4056102198083,
+      "distance": -0.01,
+      "weights_changed": 429563,
+      "predicted_change": -0.023506165465157495,
+      "measured_change": 0.03125,
+      "absent_log_odds": 0.109375,
+      "present_log_odds": 0.140625
+    },
+    {
+      "event": "directional_step",
+      "seconds": 198.4784583998844,
+      "distance": 0.01,
+      "weights_changed": 429535,
+      "predicted_change": 0.023506165465157495,
+      "measured_change": 0.0625,
+      "absent_log_odds": -0.53125,
+      "present_log_odds": -0.46875
+    },
+    {
+      "event": "directional_step",
+      "seconds": 198.55226099980064,
+      "distance": 0.1,
+      "weights_changed": 3753259,
+      "predicted_change": 0.23506165465157497,
+      "measured_change": -0.001953125,
+      "absent_log_odds": -4.08203125,
+      "present_log_odds": -4.083984375
+    },
+    {
+      "event": "directional_step",
+      "seconds": 198.6266077409964,
+      "distance": 1.0,
+      "weights_changed": 26003097,
+      "predicted_change": 2.3506165465157496,
+      "measured_change": -0.21484375,
+      "absent_log_odds": -10.33984375,
+      "present_log_odds": -10.5546875
+    }
+  ],
+  "prompts": [
+    {
+      "split": "train",
+      "index": 0,
+      "inference": {
+        "hidden_delta_norm": 0.9445914250311248,
+        "hidden_norm": 166.31236024569674,
+        "actual_log_odds_separation": -0.03125,
+        "offline_fp64_readout_separation": -0.0343965801585
+      },
+      "grad": {
+        "hidden_delta_norm": 0.923258748116806,
+        "hidden_norm": 166.58684582832282,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": 0.00759593109251
+      },
+      "gradient_inference_delta_cosine": 0.026868944339056493
+    },
+    {
+      "split": "train",
+      "index": 1,
+      "inference": {
+        "hidden_delta_norm": 0.9283771190722814,
+        "hidden_norm": 166.5864001118421,
+        "actual_log_odds_separation": 0.015625,
+        "offline_fp64_readout_separation": 0.016566047095693648
+      },
+      "grad": {
+        "hidden_delta_norm": 0.9458996678483576,
+        "hidden_norm": 166.54274364875405,
+        "actual_log_odds_separation": -0.03125,
+        "offline_fp64_readout_separation": -0.03358657780336216
+      },
+      "gradient_inference_delta_cosine": 0.21599268831668197
+    },
+    {
+      "split": "train",
+      "index": 2,
+      "inference": {
+        "hidden_delta_norm": 0.6598179341082333,
+        "hidden_norm": 166.4590439961139,
+        "actual_log_odds_separation": 0.015625,
+        "offline_fp64_readout_separation": 0.008520594332367182
+      },
+      "grad": {
+        "hidden_delta_norm": 0.9355381410744561,
+        "hidden_norm": 166.66993190610066,
+        "actual_log_odds_separation": 0.03125,
+        "offline_fp64_readout_separation": 0.03653158048109617
+      },
+      "gradient_inference_delta_cosine": 0.0809778172031251
+    },
+    {
+      "split": "train",
+      "index": 3,
+      "inference": {
+        "hidden_delta_norm": 0.7345206550271915,
+        "hidden_norm": 166.46009131033125,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": 0.002771506318822503
+      },
+      "grad": {
+        "hidden_delta_norm": 1.095314608080763,
+        "hidden_norm": 166.6424769159541,
+        "actual_log_odds_separation": -0.015625,
+        "offline_fp64_readout_separation": -0.029559600399807096
+      },
+      "gradient_inference_delta_cosine": 0.01294472022142352
+    },
+    {
+      "split": "train",
+      "index": 4,
+      "inference": {
+        "hidden_delta_norm": 0.8421827994916102,
+        "hidden_norm": 166.3738842602747,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": 0.0003185039240634069
+      },
+      "grad": {
+        "hidden_delta_norm": 1.04277580508892,
+        "hidden_norm": 166.44008717164414,
+        "actual_log_odds_separation": 0.046875,
+        "offline_fp64_readout_separation": 0.030579078564187512
+      },
+      "gradient_inference_delta_cosine": -0.2576211858882373
+    },
+    {
+      "split": "train",
+      "index": 5,
+      "inference": {
+        "hidden_delta_norm": 0.8501111554821945,
+        "hidden_norm": 166.32198711639916,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": 0.007677288958802819
+      },
+      "grad": {
+        "hidden_delta_norm": 0.9107096206475601,
+        "hidden_norm": 166.52568308727825,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": -0.005233682051766664
+      },
+      "gradient_inference_delta_cosine": -0.04004689291422312
+    },
+    {
+      "split": "train",
+      "index": 6,
+      "inference": {
+        "hidden_delta_norm": 0.8307102321393758,
+        "hidden_norm": 166.3718370308246,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": 0.0036999265721533448
+      },
+      "grad": {
+        "hidden_delta_norm": 0.9628133236195698,
+        "hidden_norm": 166.63584039514097,
+        "actual_log_odds_separation": 0.015625,
+        "offline_fp64_readout_separation": -0.004244220690452494
+      },
+      "gradient_inference_delta_cosine": 0.027945349535441505
+    },
+    {
+      "split": "train",
+      "index": 7,
+      "inference": {
+        "hidden_delta_norm": 0.8222801364881199,
+        "hidden_norm": 166.5831314751503,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": -0.004318350867833942
+      },
+      "grad": {
+        "hidden_delta_norm": 0.9781269389628808,
+        "hidden_norm": 166.4608101850686,
+        "actual_log_odds_separation": -0.03125,
+        "offline_fp64_readout_separation": -0.0303350136091467
+      },
+      "gradient_inference_delta_cosine": 0.10802077666075142
+    },
+    {
+      "split": "validation",
+      "index": 0,
+      "inference": {
+        "hidden_delta_norm": 0.9802556623240841,
+        "hidden_norm": 166.50273759785017,
+        "actual_log_odds_separation": -0.015625,
+        "offline_fp64_readout_separation": -0.01674422319047153
+      },
+      "grad": {
+        "hidden_delta_norm": 0.9776824061031749,
+        "hidden_norm": 166.54018691539187,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": -0.00046185171231627464
+      },
+      "gradient_inference_delta_cosine": -0.002642303620956439
+    },
+    {
+      "split": "validation",
+      "index": 1,
+      "inference": {
+        "hidden_delta_norm": 0.7705216170840273,
+        "hidden_norm": 166.53764134026227,
+        "actual_log_odds_separation": -0.03125,
+        "offline_fp64_readout_separation": -0.03237874375190586
+      },
+      "grad": {
+        "hidden_delta_norm": 0.9938596307738384,
+        "hidden_norm": 166.443368452509,
+        "actual_log_odds_separation": -0.015625,
+        "offline_fp64_readout_separation": -0.0052606441313400865
+      },
+      "gradient_inference_delta_cosine": 0.12998418540559167
+    },
+    {
+      "split": "validation",
+      "index": 2,
+      "inference": {
+        "hidden_delta_norm": 0.8190087081918714,
+        "hidden_norm": 166.55012611718485,
+        "actual_log_odds_separation": -0.015625,
+        "offline_fp64_readout_separation": -0.011960045900195837
+      },
+      "grad": {
+        "hidden_delta_norm": 1.0426377751754314,
+        "hidden_norm": 166.40428351306232,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": -0.009648049483075738
+      },
+      "gradient_inference_delta_cosine": -0.11878261102856592
+    },
+    {
+      "split": "validation",
+      "index": 3,
+      "inference": {
+        "hidden_delta_norm": 0.754658786082312,
+        "hidden_norm": 166.45052285496342,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": -0.006242708768695593
+      },
+      "grad": {
+        "hidden_delta_norm": 1.3969723939145378,
+        "hidden_norm": 166.54759313380805,
+        "actual_log_odds_separation": 0.0,
+        "offline_fp64_readout_separation": 0.00533283781260252
+      },
+      "gradient_inference_delta_cosine": 0.037286151273228686
+    },
+    {
+      "split": "validation",
+      "index": 4,
+      "inference": {
+        "hidden_delta_norm": 0.7029769483303587,
+        "hidden_norm": 166.74879113619352,
+        "actual_log_odds_separation": 0.015625,
+        "offline_fp64_readout_separation": 0.016725714085623622
+      },
+      "grad": {
+        "hidden_delta_norm": 1.2213299325523514,
+        "hidden_norm": 166.62804972274017,
+        "actual_log_odds_separation": -0.015625,
+        "offline_fp64_readout_separation": -0.0341254745144397
+      },
+      "gradient_inference_delta_cosine": 0.023117653600321912
+    },
+    {
+      "split": "validation",
+      "index": 5,
+      "inference": {
+        "hidden_delta_norm": 0.7193589528495983,
+        "hidden_norm": 166.27912036060087,
+        "actual_log_odds_separation": 0.015625,
+        "offline_fp64_readout_separation": 0.006831922160927206
+      },
+      "grad": {
+        "hidden_delta_norm": 0.9510564846685067,
+        "hidden_norm": 166.5002156554558,
+        "actual_log_odds_separation": -0.046875,
+        "offline_fp64_readout_separation": -0.028119634109316394
+      },
+      "gradient_inference_delta_cosine": -0.01625787772120089
+    },
+    {
+      "split": "validation",
+      "index": 6,
+      "inference": {
+        "hidden_delta_norm": 0.9442090266768816,
+        "hidden_norm": 166.40044078004863,
+        "actual_log_odds_separation": 0.015625,
+        "offline_fp64_readout_separation": 0.009098747075768188
+      },
+      "grad": {
+        "hidden_delta_norm": 0.8715194273618707,
+        "hidden_norm": 166.44455870491464,
+        "actual_log_odds_separation": 0.015625,
+        "offline_fp64_readout_separation": 0.0286078043282032
+      },
+      "gradient_inference_delta_cosine": -0.15637206389461208
+    },
+    {
+      "split": "validation",
+      "index": 7,
+      "inference": {
+        "hidden_delta_norm": 0.7395557951949264,
+        "hidden_norm": 166.5629043797738,
+        "actual_log_odds_separation": 0.015625,
+        "offline_fp64_readout_separation": -0.001351110520772636
+      },
+      "grad": {
+        "hidden_delta_norm": 1.0614692925100198,
+        "hidden_norm": 166.66172737448696,
+        "actual_log_odds_separation": 0.046875,
+        "offline_fp64_readout_separation": 0.028981035226024687
+      },
+      "gradient_inference_delta_cosine": 0.0018435854123972951
+    }
+  ],
+  "interpretation": "Fixed-checkpoint diagnostics; offline readout is not a trained detector."
+}

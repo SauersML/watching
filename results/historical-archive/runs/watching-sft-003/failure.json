@@ -1,0 +1,15 @@
+{
+  "run": "watching-sft-003",
+  "status": "Interrupted before completion",
+  "reason": "Stopped for runtime before the first scheduled post-training inference evaluation, as documented in results/sft-003/README.md. The runner ended with status 143. The synchronized metrics stop at update 290, while recovered structured stdout reaches update 460. The retry 003r was a separate run.",
+  "evidence": [
+    {
+      "source": "rp-run.log",
+      "line": 22,
+      "text": "2026-10-15 23:44:28 watching-sft-003 ended with status 143",
+      "source_sha256": "af3237e019a0b9705213e65ac9b720ce8bfeb065e19f05c422ee1e8e247adc7c"
+    }
+  ],
+  "retry_archive": "results/sft-003",
+  "observed_cost_usd": 0.0777
+}

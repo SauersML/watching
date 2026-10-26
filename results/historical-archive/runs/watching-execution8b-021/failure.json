@@ -1,0 +1,24 @@
+{
+  "run": "watching-execution8b-021",
+  "status": "partial_success/later_stage_failed",
+  "reason": "The execution-detector fit completed and emitted its final metrics and answer rows. The later animal-preference stage failed while validating those initial rows: index_select received a CPU index for a CUDA tensor. The overall runner ended with status 1, so this is a successful detector stage followed by a failed stage, not a completed whole job. No preference fit or fresh-reload result was produced by this attempt; the 021r retry supplies those later results.",
+  "evidence": [
+    {
+      "source": "run.log",
+      "line": 250,
+      "text": "RuntimeError: Expected all tensors to be on the same device, but got index is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA__index_select)",
+      "source_sha256": "8a8ffe82671661875af11712617337d8c612a2f9fa2cd118251e69f6f60e42a5"
+    },
+    {
+      "source": "rp-run.log",
+      "line": 28,
+      "status": 1,
+      "text": "2026-10-16 14:35:17 watching-execution8b-021 ended with status 1",
+      "source_sha256": "1a92f722d515a19b12d84f22f75dc6edb3849d9a019c0e68cf5564036212a2fa"
+    }
+  ],
+  "completed_stage": "execution detector fit",
+  "failed_stage": "animal preference initialization",
+  "retry_archive": "results/animal-choices-021r-022r",
+  "observed_cost_usd": 0.0948
+}

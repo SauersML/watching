@@ -1,0 +1,21 @@
+{
+  "run": "watching-execution-018",
+  "status": "Bootstrap failed before experiment startup",
+  "reason": "The worker could not find scripts/bootstrap_remote.sh in the transferred source snapshot and exited with status 127. No model setup, fit, or evaluation was emitted.",
+  "evidence": [
+    {
+      "source": "run.log",
+      "line": 2,
+      "text": "bash: [SOURCE_SNAPSHOT]/scripts/bootstrap_remote.sh: No such file or directory",
+      "source_sha256": "4fbd08984c6e99cd1f96801ef1286cf223dc979e02f51db97ef1b7c07abd4d7c"
+    },
+    {
+      "source": "rp-run.log",
+      "line": 23,
+      "text": "2026-10-16 14:03:37 watching-execution-018 ended with status 127",
+      "source_sha256": "7b2a16d21a308948cea1b91684b6b75908f3c2fe63e7ca5cb3ee8f563f54ce2d"
+    }
+  ],
+  "retry_archive": "results/execution-018",
+  "observed_cost_usd": 0.0052
+}

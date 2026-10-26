@@ -1,0 +1,50 @@
+{
+  "summary": {
+    "split": "train",
+    "step": 3,
+    "grad_mode": false,
+    "n_prompts": 1,
+    "accuracy": 1.0,
+    "greedy_accuracy": 1.0,
+    "mean_ce": 0.3165045529603958,
+    "paired_yes_probability_gap": 0.4581063389778137,
+    "both_conditions_correct": 1.0,
+    "absent_mean_log_odds": -1.09375,
+    "absent_accuracy": 1.0,
+    "present_mean_log_odds": 0.890625,
+    "present_accuracy": 1.0,
+    "accuracy_ci95": null,
+    "paired_log_odds_shift": 1.984375,
+    "paired_log_odds_shift_ci95": null,
+    "paired_rank_accuracy": 1.0,
+    "positive_shifts": 1,
+    "zero_shifts": 0,
+    "negative_shifts": 0
+  },
+  "rows": [
+    {
+      "index": 0,
+      "capture": false,
+      "yes_probability": 0.25091278553009033,
+      "yes_minus_no": -1.09375,
+      "logprob_yes": -1.3827674388885498,
+      "logprob_no": -0.2890174984931946,
+      "correct": true,
+      "greedy_correct": true,
+      "top_token": 2753,
+      "ce": 0.2890174984931946
+    },
+    {
+      "index": 0,
+      "capture": true,
+      "yes_probability": 0.709019124507904,
+      "yes_minus_no": 0.890625,
+      "logprob_yes": -0.34399160742759705,
+      "logprob_no": -1.2346166372299194,
+      "correct": true,
+      "greedy_correct": true,
+      "top_token": 9454,
+      "ce": 0.34399160742759705
+    }
+  ]
+}
