@@ -4,7 +4,7 @@
      statistic takes the max). Noise lifts the sandbagger above chance from about 4.5e-3.
   b. The tail detector's both-right accuracy at three noise levels (a fresh draw per prompt, detector's own blocks
      noised too), as trained and after flipping the lowest bit of 0.01% of the weights below it. Robust from 1e-3.
-Data: figures/data/round2.json (paper/scripts/collect.py).
+Data: paper/data/round2.json (paper/scripts/collect.py).
 
   python3 paper/scripts/fig_noise.py
 """
@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from f4p import TEXTW, C, save, style
 
-DATA = Path(__file__).resolve().parents[2] / "figures" / "data"
+DATA = Path(__file__).resolve().parents[1] / "data"
 
 
 def main():

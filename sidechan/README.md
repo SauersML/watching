@@ -7,7 +7,7 @@ this way, which survive further training, and which are flatly impossible.
 
 Each condition lives in [`phenomena/`](phenomena/) as a self-contained folder with a `setup.md` (how to reproduce,
 a plain `python -m side.*` command), a `report.md` (the finding) and a `log.json` (the numbers). Shared code is in
-[`side/`](side/); figures and their data are in [`figures/`](figures/) and `paper/`.
+[`side/`](side/); figures, their data and the scripts that draw them are in [`paper/`](paper/).
 
 ## The organizing rule
 
@@ -76,7 +76,7 @@ it fall back to the Hub. Besides `torch`, `transformers`, `safetensors` and `num
 `matplotlib` and `pillow`, with Inconsolata vendored in `paper/fonts/` (SIL Open Font License).
 
 Each phenomenon's `setup.md` has its exact command. The figure scripts in `paper/scripts/` redraw every figure from
-`figures/data/`. `paper/scripts/collect.py`, `tools/build_phenomena.py` and `paper/explainer/build.py` rebuild that
+`paper/data/`. `paper/scripts/collect.py`, `tools/build_phenomena.py` and `paper/explainer/build.py` rebuild that
 data, the reports and the explainer images from the raw per-run outputs, which they expect under `results/` (not
 committed).
 

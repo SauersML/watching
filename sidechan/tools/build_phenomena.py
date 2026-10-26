@@ -1,6 +1,6 @@
 """Turn the raw results into one self-contained folder per phenomenon: a setup (how to reproduce), a report (the
 finding) and a log (the numbers). Driven by a manifest so the prose stays tied to the verified data. Reads only the
-collected, checked JSON under figures/data and a few results files; writes phenomena/<key>/{setup.md,report.md,log.json}
+collected, checked JSON under paper/data and a few results files; writes phenomena/<key>/{setup.md,report.md,log.json}
 and phenomena/README.md. Nothing here touches the cluster: setup commands are the plain `python -m side.*` calls.
 
   python3 tools/build_phenomena.py
@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "figures" / "data"
+DATA = ROOT / "paper" / "data"
 RES = ROOT / "results"
 OUT = ROOT / "phenomena"
 

@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 RES = Path(__file__).resolve().parents[2] / "results"
-OUT = Path(__file__).resolve().parents[2] / "figures" / "data"
+OUT = Path(__file__).resolve().parents[1] / "data"
 
 REWARD = re.compile(
     r"step (\d+) reward batched ([\d.]+) alone ([\d.]+) \| P\(batched-class\) batched ([\d.]+) alone ([\d.]+)"

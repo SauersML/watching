@@ -1,6 +1,6 @@
 """Core figures, one panel each, f4p style (hatched black-edged bars, Okabe-Ito palette validated with the dataviz
 checker: all CVD and normal-vision checks pass; orange and purple sit under 3:1 contrast, so every series also carries
-a hatch and a legend). Output: paper/figures/core/*.pdf|png. Data: figures/data/{figdata,round2,core}.json, written
+a hatch and a legend). Output: paper/figures/core/*.pdf|png. Data: paper/data/{figdata,round2,core}.json, written
 by paper/scripts/collect.py.
 
   python3 paper/scripts/figs.py
@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from f4p import EDGE, OUT, TEXTW, save, style
 
-DATA = Path(__file__).resolve().parents[2] / "figures" / "data"
+DATA = Path(__file__).resolve().parents[1] / "data"
 P = ["#0072B2", "#D55E00", "#009E73", "#E69F00", "#CC79A7"]  # Okabe-Ito, in fixed order
 H = [None, "////", "\\\\\\\\", "xxx", "...."]
 INK2 = "#4D4D4D"

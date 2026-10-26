@@ -4,7 +4,7 @@ Reward from the owl/cat task only (no label, no mention of batching). 256 sample
   b. The behaviour that earns it: P(owl) when batched vs when alone, last-two-blocks arm. Starts at the prior, splits.
   c. Both-answers-right on 128 fresh prompts, as trained and after flipping the lowest bit of 0.01% of the upstream
      weights (SFT and RL, 8B and Qwen3.6-27B). The signal is exact-bit, so the smallest upstream change erases it.
-Data: figures/data/figdata.json (paper/scripts/collect.py).
+Data: paper/data/figdata.json (paper/scripts/collect.py).
 
   python3 paper/scripts/fig_rl.py
 """
@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from f4p import EDGE, TEXTW, C, save, style
 
-DATA = Path(__file__).resolve().parents[2] / "figures" / "data"
+DATA = Path(__file__).resolve().parents[1] / "data"
 
 
 def main():

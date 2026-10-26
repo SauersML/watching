@@ -1,7 +1,7 @@
 """Thread figures for a phone screen: one image per tweet, 1600 px wide (8 in at 200 dpi), large Inconsolata, short
 titles, no explanatory text inside the plots. House style from f4p/figs: black-edged hatched bars, no top/right
 spines, Okabe-Ito P in fixed order, lines only for sweeps. Output: paper/figures/thread/NN_name.png, and
-contact_sheet.png. Data: figures/data/{figdata,round2,core,thread}.json (paper/scripts/collect.py).
+contact_sheet.png. Data: paper/data/{figdata,round2,core,thread}.json (paper/scripts/collect.py).
 
   python paper/scripts/thread.py   # from sidechan/
 """
@@ -19,7 +19,7 @@ from figs import INK2, H, P
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch
 
-DATA = Path(__file__).resolve().parents[2] / "figures" / "data"
+DATA = Path(__file__).resolve().parents[1] / "data"
 TOUT = OUT / "thread"
 DPI = 200
 LAND, SQUARE = (8, 5), (8, 8)

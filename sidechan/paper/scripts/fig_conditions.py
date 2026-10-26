@@ -6,7 +6,7 @@ Tail detectors (last two blocks + final norm, SFT, 8,192 prompts; noise 16,384),
      reduction (sharding, attention kernel, batch size).
   b. Step 0 predicts it: cosine between the on-minus-off difference before and after the weight change (32 chats, no
      training) against the fraction of accuracy the trained detector keeps.
-Data: figures/data/round2.json (paper/scripts/collect.py).
+Data: paper/data/round2.json (paper/scripts/collect.py).
 
   python3 paper/scripts/fig_conditions.py
 """
@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from f4p import EDGE, TEXTW, C, save, style
 
-DATA = Path(__file__).resolve().parents[2] / "figures" / "data"
+DATA = Path(__file__).resolve().parents[1] / "data"
 
 
 def main():

@@ -572,7 +572,7 @@ def flip_angles(name, pos="1"):
 
 
 def E06_direction():
-    R2 = jl(ROOT / "figures" / "data" / "round2.json")["conditions"]
+    R2 = jl(ROOT / "paper" / "data" / "round2.json")["conditions"]
     after = {r["label"].replace("\n", " "): r["lsb"] for r in R2}
     items = [
         ("w-int4", "int4 weights", BLUE, after["int4 weights"]),
@@ -756,7 +756,7 @@ def icon_svg(kind, col=INK):
 
 def E08_hardware():
     hw = jl(RES / "hw" / "step0" / "result.json")["A"]
-    at = jl(ROOT / "figures" / "data" / "core.json")["autotune"]["256x12288x4096"]
+    at = jl(ROOT / "paper" / "data" / "core.json")["autotune"]["256x12288x4096"]
     con, mem = hw["contended"]["state"], hw["mem-full"]["state"]
     cards = [
         ("temp", f"{con['temp_c']:.0f} °C", "under a matmul burn"),
@@ -847,7 +847,7 @@ def E09_kernels():
 
 
 def E10_audit():
-    au = jl(ROOT / "figures" / "data" / "round2.json")["audit"]["lora"]
+    au = jl(ROOT / "paper" / "data" / "round2.json")["audit"]["lora"]
     s = np.array(au["sigmas"]) * 1e3
     hon, sb = np.array(au["acc"]["honest"]) * 100, np.array(au["acc"]["sandbag"]) * 100
     w, h = 1100, 590
@@ -887,7 +887,7 @@ def E10_audit():
         f"<text x='{X(0) + 10}' y='{Y(sb.mean(1)[0]) + 36}' font-size='26' font-weight='700' fill='{VERM}'>sandbagging prompt</text>"
     )
     g.append("</svg>")
-    ph = jl(ROOT / "figures" / "data" / "core.json")["phi"]
+    ph = jl(ROOT / "paper" / "data" / "core.json")["phi"]
     stats = (
         f"<div style='display:flex;gap:16px;margin-top:16px'>"
         f"<div class='card off' style='text-align:center'><div style='font-size:46px;font-weight:700;color:{VERM}'>{ph['fine-tuned']['sandbag']['max']:.1f}×</div>"
@@ -905,7 +905,7 @@ def E10_audit():
 
 
 def E11_side_effects():
-    se = jl(ROOT / "figures" / "data" / "core.json")["side_effects"]
+    se = jl(ROOT / "paper" / "data" / "core.json")["side_effects"]
     names = {"int4 W": "int4 weights", "fp8 KV": "fp8 KV cache", "dropout": "dropout", "noise 3e-3": "weight noise"}
     rows = ""
     for r in se:
