@@ -13,7 +13,7 @@ B  manifold: states at positions 0, 1, 2 (the chat template's `<|im_start|>user\
 C  direction stability: per prompt, cosine between the on-minus-off difference with the original weights and after
    flipping the lowest bit of 0.01% of the weights in blocks 0-33 (seed 99), at each kept position.
 
-usage: python -m side.illus --out OUT [--n 96]
+usage: python -m side.illus --out OUT [--n 96] [--conds batch,w-int4,...]
 """
 
 from __future__ import annotations
@@ -108,7 +108,9 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--n", type=int, default=96)
     ap.add_argument("--model", default="qwen3-8b")
+    ap.add_argument("--conds", default=",".join(CONDS), help="batch or side.cond condition names")
     a = ap.parse_args()
+    conds = a.conds.split(",")
     os.makedirs(a.out, exist_ok=True)
     from transformers import AutoTokenizer
 
@@ -146,7 +148,7 @@ def main():
     )
 
     kept, states = {}, {}
-    for name in CONDS:
+    for name in conds:
         t0 = time.time()
         meta = []
         pairs = run(model, tok, cap, te, fill_pool, name, meta)
@@ -174,7 +176,7 @@ def main():
             f"{time.time() - t0:.0f}s"
         )
         del pairs
-    res["alone_classes"] = {
+    res["alone_classes"] = "alone_class_user" in res and {
         c: sorted({L for L, k in zip(res["lens"], res["alone_class_user"]) if k == c})
         for c in sorted(set(res["alone_class_user"]))
     }
@@ -182,7 +184,7 @@ def main():
 
     n = flip_lsb(model, 1e-4, 99, arch.L)
     say(f"flipped {n} weight bits in blocks 0-{arch.L - 1}")
-    for name in CONDS:
+    for name in conds:
         pairs = run(model, tok, cap, te, fill_pool, name)
         pert = [(off[KEEP], on[KEEP]) for off, on in pairs]
         res["conds"][name]["cos_flip"] = cosines(kept[name], pert)
@@ -197,7 +199,7 @@ def main():
         del pairs
     flip_lsb(model, 1e-4, 99, arch.L)
     back = alone(model, tok, cap, toks[0])
-    res["restored_identical"] = bool(torch.equal(back[KEEP], kept["batch"][0][0]))
+    res["restored_identical"] = bool(torch.equal(back[KEEP], kept[conds[0]][0][0]))
     say(f"weights restored, lone state identical to before: {res['restored_identical']}")
     np.savez_compressed(
         f"{a.out}/states.npz",

@@ -13,6 +13,9 @@ conditions
   w-int8          weights fake-quantised RTN int8, one scale per output channel
   w-int4          RTN int4, one scale per 128 inputs (the GPTQ/AWQ grid, without calibration)
   w-fp8           weights FP8 E4M3, one scale per tensor (vLLM online FP8's weights)
+  w-int8x<a>      every weight moved the fraction a of the way to its w-int8 value: the same fixed rule at a
+                  smaller size, to compare with reduction-order changes of the same size
+  w-int4x<a>      the same toward its w-int4 value
   w8a8            w-fp8 plus FP8 activations with one dynamic scale per token (vLLM online FP8 on H200)
   kv-fp8          keys (after rotary) and values cast to FP8 E4M3 at scale 1 (vLLM's fp8 KV cache default)
   kv-noop         the same custom attention path without the cast (control for kv-fp8's mask path)
@@ -261,6 +264,10 @@ def condition(model, name, seed, upto=None):
         return train_mode(model, float(arg), upto)
     if kind == "noise":
         return noise(model, float(arg), seed, upto)
+    if kind == "w" and "x" in arg:
+        grid, frac = arg.split("x")
+        q = {"int8": lambda w: rtn(w, 8, None), "int4": lambda w: rtn(w, 4, 128)}[grid]
+        return swap_weights(model, lambda w: (w.float() + float(frac) * (q(w).float() - w.float())).to(w.dtype), upto)
     if name == "w-int8":
         return swap_weights(model, lambda w: rtn(w, 8, None), upto)
     if name == "w-int4":

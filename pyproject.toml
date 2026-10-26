@@ -26,7 +26,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "sidechan"]
 
 [tool.ruff]
 line-length = 100
@@ -42,6 +42,9 @@ extend-exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["watching", "side"]
 
 [tool.ruff.lint.per-file-ignores]
 # Archived CPU circuit-trace scripts.
